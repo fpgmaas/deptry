@@ -1,0 +1,30 @@
+site_name: poetry-check-deps
+repo_url: https://github.com/fpgmaas/poetry-check-deps
+site_url: https://fpgmaas.github.io/poetry-check-deps
+site_description: A repository to check for unused dependencies in a poetry managed python project
+site_author: Florian Maas
+
+nav:
+  - Home: index.md
+  - Modules: modules.md
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+            setup_commands:
+                - import sys
+                - sys.path.append('../')
+copyright: Maintained by Florian Maas.
+theme:
+  name: material
+  feature:
+    tabs: true
+  palette:
+    primary: white
+    accent: blue
+markdown_extensions:
+  - toc:
+      permalink: true
+  - pymdownx.arithmatex:
+      generic: true
