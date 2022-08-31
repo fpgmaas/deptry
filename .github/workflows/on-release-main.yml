@@ -1,0 +1,87 @@
+on:
+  release:
+    types: [published]
+    branches: [main]
+
+name: release-main
+
+jobs:
+
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+    
+      - name: Check out
+        uses: actions/checkout@v2
+
+      - name: Set up the environment
+        uses: ./.github/actions/setup-poetry-env
+
+      - name: Run checks
+        uses: ./.github/actions/run-checks
+
+      - name: Documentation Test
+        run: |
+          source .venv/bin/activate
+          make docs-test
+
+  tox:
+    needs: quality
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.8', '3.9', '3.10']
+    steps:
+      - name: Check out
+        uses: actions/checkout@v2
+
+      - name: Set up the environment
+        uses: ./.github/actions/setup-poetry-env
+        with: 
+          python-version: ${{ matrix.python-version }}
+
+      - name: Test with tox 
+        run: |
+          source .venv/bin/activate
+          poetry add tox-gh-actions
+          tox
+
+  publish:
+      runs-on: ubuntu-latest
+      needs: tox
+      steps:
+
+        - name: Check out
+          uses: actions/checkout@v2
+
+        - name: Set up the environment
+          uses: ./.github/actions/setup-poetry-env
+
+        - name: Set output
+          id: vars
+          run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
+        
+        - name: Build and publish
+          run: |
+            source .venv/bin/activate
+            poetry version $RELEASE_VERSION
+            make build-and-publish
+          env: 
+            PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+            RELEASE_VERSION: ${{ steps.vars.outputs.tag }}
+
+  documentation:
+    runs-on: ubuntu-latest
+    needs: publish
+    steps:
+
+      - name: Check out
+        uses: actions/checkout@v2
+
+      - name: Set up the environment
+        uses: ./.github/actions/setup-poetry-env
+        
+      - name: Generate documentation
+        run: |
+            source .venv/bin/activate
+            mkdocs gh-deploy --force
