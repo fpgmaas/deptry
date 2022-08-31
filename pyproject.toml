@@ -12,6 +12,11 @@ packages = [
 
 [tool.poetry.dependencies]
 python = ">=3.8,<3.11"
+pandas = "^1.4.3"
+numpy = "^1.23.2"
+jupyterlab = "^3.4.5"
+toml = "^0.10.2"
+cookiecutter-poetry = "^0.3.7"
 
 
 [tool.poetry.dev-dependencies]
