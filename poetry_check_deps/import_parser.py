@@ -5,6 +5,8 @@ import ast
 class ImportParser:
     """
     Get a list of imported modules from a python file.
+
+    TODO get this to work with ipynb files. Maybe need to convert to py files first?
     """
 
     def __init__(self) -> None:
@@ -28,5 +30,6 @@ class ImportParser:
         modules = []
         for file in modules_per_file:
             modules += file['modules']
-        return modules
+        return sorted(list(set(modules)))
+
 
