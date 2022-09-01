@@ -21,15 +21,18 @@ class ImportsToPackageNames:
         for module in imported_modules:
             try:
                 packages.append(metadata(module)["Name"])
+                logging.debug(f"imported module {module}'s corresponding package name is {metadata(module)['Name']}.")
             except:
                 if module in stdlib:
                     pass
+                    logging.debug(f"module {module} is in the Python standard library.")
                 else:
-                    logging.warn(f"Failed to find corresponding package name for import {module}")
+                    logging.warn(f"Warning: Failed to find corresponding package name for import {module}")
 
         if len(packages) == 0:
             logging.warn(
                 f"No metadata was found for any of the imported modules. Did you install your virtual environment?"
             )
+        logging.debug("\n")
 
         return packages

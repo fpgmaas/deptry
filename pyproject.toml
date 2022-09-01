@@ -14,7 +14,6 @@ packages = [
 python = ">=3.8,<3.11"
 pandas = "^1.4.3"
 numpy = "^1.23.2"
-jupyterlab = "^3.4.5"
 toml = "^0.10.2"
 cookiecutter-poetry = "^0.3.7"
 isort = "^5.10.1"
@@ -72,6 +71,14 @@ exclude = [
 ignore_dependencies = [
 'jupyterlab'
 ]
+ignore_directories = [
+  '.venv','tests'
+]
 
 [tool.poetry.scripts]
 deptry = "deptry.cli:deptry"
+
+[tool.pytest.ini_options]
+norecursedirs = [
+    "tests/data/*",
+]
