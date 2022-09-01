@@ -9,7 +9,7 @@ DEFAULTS = {"ignore_dependencies": None, "ignore_directories": [".venv"]}
 
 class Config:
     """
-    Create configuration for deptry. First they are set to the defaults. If configuration is found in pyproject.toml,
+    Create configuration for deptry. First the configuration parameters are set to the defaults. If configuration is found in pyproject.toml,
     this overrides the defaults. CLI arguments have highest priority, so if they are provided, they override the values set by
     either the defaults or pyproject.toml.
     """
@@ -38,6 +38,6 @@ class Config:
             pyproject_text = Path("./pyproject.toml").read_text()
             pyproject_data = toml.loads(pyproject_text)
             return pyproject_data["tool"]["deptry"]
-        except:
+        except:  # noqa
             logging.debug("No configuration for deptry was found in pyproject.toml.")
             return None
