@@ -13,7 +13,12 @@ def deptry():
 
 
 @click.command()
-@click.option("--verbose", "-v", is_flag=True, help="Print more output.")
+@click.option(
+    "--verbose",
+    "-v",
+    is_flag=True,
+    help="Boolean flag for verbosity. Using this flag will display more information about files, imports and dependencies while running.",
+)
 @click.option(
     "--ignore-dependencies",
     "-i",
@@ -24,7 +29,8 @@ def deptry():
     "--ignore-directories",
     "-id",
     multiple=True,
-    help="Directories in which .py files should not be scanned for imports to determine if a dependency is used or not. Defaults to 'venv'. Specify multiple directories by using this flag twice, e.g. `-id .venv -id other_dir`",
+    help="""Directories in which .py files should not be scanned for imports to determine if a dependency is used or not. 
+    Defaults to 'venv'. Specify multiple directories by using this flag twice, e.g. `-id .venv -id other_dir`""",
 )
 def check(verbose, ignore_dependencies, ignore_directories):
 
