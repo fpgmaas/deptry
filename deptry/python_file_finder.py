@@ -12,15 +12,15 @@ class PythonFileFinder:
     in non-ignored directories.
     """
 
-    def __init__(self, paths_to_ignore: List[str] = [".venv"], include_ipynb: bool = False) -> None:
-        self.paths_to_ignore = paths_to_ignore
+    def __init__(self, ignore_directories: List[str] = [".venv"], include_ipynb: bool = False) -> None:
+        self.ignore_directories = ignore_directories
         self.include_ipynb = include_ipynb
 
     def get_list_of_python_files(self):
         all_py_files = self._get_all_python_files()
         if self.include_ipynb:
             all_py_files = self._add_ipynb_files(all_py_files)
-        all_py_files = self._remove_paths_to_ignore(all_py_files)
+        all_py_files = self._remove_ignore_directories(all_py_files)
         nl = "\n"
         logging.debug(f"Python files to scan for imports:\n{nl.join([str(x) for x in all_py_files])}\n")
         return all_py_files
@@ -31,9 +31,9 @@ class PythonFileFinder:
     def _add_ipynb_files(self, all_py_files: List[Path]) -> List[Path]:
         return all_py_files + [path for path in Path(".").rglob("*.ipynb")]
 
-    def _remove_paths_to_ignore(self, all_py_files: List[Path]) -> List[Path]:
+    def _remove_ignore_directories(self, all_py_files: List[Path]) -> List[Path]:
         return [
             path
             for path in all_py_files
-            if not any([str(path).startswith(pattern) for pattern in self.paths_to_ignore])
+            if not any([str(path).startswith(pattern) for pattern in self.ignore_directories])
         ]
