@@ -1,6 +1,6 @@
-site_name: poetry-check-deps
-repo_url: https://github.com/fpgmaas/poetry-check-deps
-site_url: https://fpgmaas.github.io/poetry-check-deps
+site_name: deptry
+repo_url: https://github.com/fpgmaas/deptry
+site_url: https://fpgmaas.github.io/deptry
 site_description: A repository to check for unused dependencies in a poetry managed python project
 site_author: Florian Maas
 
