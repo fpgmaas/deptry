@@ -68,5 +68,10 @@ exclude = [
     'tests'
 ]
 
+[tool.deptry]
+ignore_dependencies = [
+'jupyterlab'
+]
+
 [tool.poetry.scripts]
 deptry = "deptry.cli:deptry"
