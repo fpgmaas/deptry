@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 from typing import List
 
@@ -20,6 +21,8 @@ class PythonFileFinder:
         if self.include_ipynb:
             all_py_files = self._add_ipynb_files(all_py_files)
         all_py_files = self._remove_paths_to_ignore(all_py_files)
+        nl = "\n"
+        logging.debug(f"Python files to scan for imports:\n{nl.join([str(x) for x in all_py_files])}\n")
         return all_py_files
 
     def _get_all_python_files(self) -> List[Path]:

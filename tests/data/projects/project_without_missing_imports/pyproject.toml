@@ -1,0 +1,10 @@
+[tool.poetry]
+name = "test"
+version = "0.0.1"
+description = "A test project"
+authors = ["test <test@test.com>"]
+
+[tool.poetry.dependencies]
+python = ">=3.8,<3.11"
+pandas = "^1.4.3"
+numpy = "^1.23.2"
