@@ -1,1 +1,1 @@
-::: poetry_check_deps
+::: deptry

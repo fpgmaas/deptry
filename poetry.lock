@@ -476,7 +476,7 @@ python-versions = "*"
 name = "isort"
 version = "5.10.1"
 description = "A Python utility / library to sort Python imports."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6.1,<4.0"
 
@@ -1599,7 +1599,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8,<3.11"
-content-hash = "274e978d1a51bde587358d15bf2f7237147133745ef3e4f226a8587f2cde6792"
+content-hash = "58227726d10832a2b54f8b67e46f803ae500b298436c0478d0e88f92124055b4"
 
 [metadata.files]
 anyio = [
