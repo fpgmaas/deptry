@@ -1,6 +1,5 @@
 from pathlib import Path
 from typing import List
-import numpy.random as rd
 
 
 class PythonFileFinder:
