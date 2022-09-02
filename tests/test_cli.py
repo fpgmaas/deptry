@@ -20,7 +20,7 @@ def run_within_dir(path: str):
 def test_cli_returns_error(tmp_path):
 
     tmp_path_proj = tmp_path / "project_with_missing_imports"
-    shutil.copytree("tests/projects/project_with_missing_imports", tmp_path_proj)
+    shutil.copytree("tests/data/projects/project_with_missing_imports", tmp_path_proj)
 
     with run_within_dir(str(tmp_path_proj)):
         subprocess.check_call(shlex.split("poetry install --no-interaction --no-root")) == 0
@@ -35,7 +35,7 @@ def test_cli_returns_error(tmp_path):
 def test_cli_returns_no_error(tmp_path):
 
     tmp_path_proj = tmp_path / "project_without_missing_imports"
-    shutil.copytree("tests/projects/project_without_missing_imports", tmp_path_proj)
+    shutil.copytree("tests/data/projects/project_without_missing_imports", tmp_path_proj)
 
     with run_within_dir(str(tmp_path_proj)):
         subprocess.check_call(shlex.split("poetry install --no-interaction --no-root")) == 0

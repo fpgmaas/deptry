@@ -8,20 +8,51 @@
 [![Imports with isort](https://img.shields.io/badge/%20imports-isort-%231674b1)](https://pycqa.github.io/isort/)
 [![License](https://img.shields.io/github/license/fpgmaas/deptry)](https://img.shields.io/github/license/fpgmaas/deptry)
 
-A repository to check for unused dependencies in a poetry managed python project
+---
 
-- **Github repository**: <https://github.com/fpgmaas/deptry/>
-- **Documentation** <https://fpgmaas.github.io/deptry/>
+__deptry__ is a command line tool to check for unused dependencies in a poetry managed python project. It does so by scanning the imported modules within all `.py` files in 
+a directory and it's subdirectories, and comparing those to the dependencies listed in `pyproject.toml`. 
 
-## Releasing a new version
+---
 
-- Create an API Token on [Pypi](https://pypi.org/).
-- Add the API Token to your projects secrets with the name `PYPI_TOKEN` by visiting 
-[this page](https://github.com/fpgmaas/deptry/settings/secrets/actions/new).
-- Create a [new release](https://github.com/fpgmaas/deptry/releases/new) on Github. 
-Create a new tag in the form ``*.*.*``.
+**Documentation**: <https://fpgmaas.github.io/deptry/>
 
-For more details, see [here](https://fpgmaas.github.io/cookiecutter-poetry/releasing.html).
+---
+
+## Installation and usage
+
+### Installation
+
+__deptry__ can be added to your project with 
+
+```
+poetry add deptry
+```
+
+Alternatively, it can be installed with `pip install deptry`, but since configuration is set within __pyproject.toml__, this is not recommended.
+
+### Prerequisites
+
+In order to check for obsolete imports, __deptry__ should be run directly within the directory that contains the __pyproject.toml__ file, and it requires the environment created with __pyproject.toml__ to be activated.
+
+### Usage
+
+To scan your project for obsolete imports, run
+
+```sh
+deptry check
+```
+
+or for a more verbose version
+
+```sh
+deptry check -v
+```
+
+__deptry__ can be configured by using additional command line arguments, or 
+by adding a `[tool.deptry]` section in __pyproject.toml__.
+
+For more information, see the documentation. //TODO
 
 ---
 
