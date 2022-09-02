@@ -4,8 +4,10 @@ from typing import Dict
 
 import toml
 
-DEFAULTS = {"ignore_dependencies": None, "ignore_directories": [".venv"]}
+DEFAULTS = {"ignore_dependencies": None, "ignore_directories": [".venv"], "ignore_notebooks": False}
 
+import logging
+logger = logging.getLogger(__name__)
 
 class Config:
     """
@@ -25,13 +27,13 @@ class Config:
             for argument in self.config.keys():
                 if argument in pyproject_toml_config:
                     self.config[argument] = pyproject_toml_config[argument]
-                    logging.debug(f"Argument {argument} set to {pyproject_toml_config[argument]} by pyproject.toml")
+                    logger.debug(f"Argument {argument} set to {pyproject_toml_config[argument]} by pyproject.toml")
 
     def _override_config_with_cli_arguments(self, cli_arguments):
         for argument in cli_arguments.keys():
             if cli_arguments[argument] is not None:
                 self.config[argument] = cli_arguments[argument]
-                logging.debug(f"Argument {argument} set to {cli_arguments[argument]} by command line argument")
+                logger.debug(f"Argument {argument} set to {cli_arguments[argument]} by command line argument")
 
     def _read_configuration_from_pyproject_toml(self):
         try:
@@ -39,5 +41,5 @@ class Config:
             pyproject_data = toml.loads(pyproject_text)
             return pyproject_data["tool"]["deptry"]
         except:  # noqa
-            logging.debug("No configuration for deptry was found in pyproject.toml.")
+            logger.debug("No configuration for deptry was found in pyproject.toml.")
             return None

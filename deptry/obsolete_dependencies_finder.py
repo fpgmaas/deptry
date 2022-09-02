@@ -4,6 +4,8 @@ from typing import List
 
 import toml
 
+import logging
+logger = logging.getLogger(__name__)
 
 class ObsoleteDependenciesFinder:
     """
@@ -18,14 +20,14 @@ class ObsoleteDependenciesFinder:
 
     def find(self):
         dependencies = self._get_project_dependencies()
-        logging.debug(f"The project's dependencies are: {dependencies}")
-        logging.debug(f"The imported packages are: {self.imported_packages}")
-        logging.debug(f"The dependencies to ignore are: {self.ignore_dependencies}")
+        logger.debug(f"The project's dependencies are: {dependencies}")
+        logger.debug(f"The imported packages are: {self.imported_packages}")
+        logger.debug(f"The dependencies to ignore are: {self.ignore_dependencies}")
         obsolete_dependencies = set(dependencies) - set(self.imported_packages) - set(["python"])
         if self.ignore_dependencies:
             obsolete_dependencies = obsolete_dependencies - set(self.ignore_dependencies)
         obsolete_dependencies = sorted(list(obsolete_dependencies))
-        logging.debug(f"The obsolete dependencies are: {obsolete_dependencies}\n")
+        logger.debug(f"The obsolete dependencies are: {obsolete_dependencies}\n")
         return obsolete_dependencies
 
     def _get_project_dependencies(self):

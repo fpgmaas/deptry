@@ -2,32 +2,35 @@ import logging
 from pathlib import Path
 from typing import List
 
+import logging
+logger = logging.getLogger(__name__)
 
 class PythonFileFinder:
     """
     Get a list of all .py and .ipynb files recursively within a directory.
+    If ignore_notebooks is set to True, .ipynb files are ignored and only .py files are returned.
     """
 
-    def __init__(self, ignore_directories: List[str] = [".venv"], include_ipynb: bool = False) -> None:
+    def __init__(self, ignore_directories: List[str] = [".venv"], ignore_notebooks: bool = False) -> None:
         self.ignore_directories = ignore_directories
-        self.include_ipynb = include_ipynb
+        self.ignore_notebooks = ignore_notebooks
 
-    def get_list_of_python_files(self):
-        all_py_files = self._get_all_python_files()
-        if self.include_ipynb:
-            all_py_files = self._add_ipynb_files(all_py_files)
-        all_py_files = self._remove_ignore_directories(all_py_files)
+    def get_all_python_files_in(self, directory: Path):
+        all_python_files = self._get_all_py_files_in(directory)
+        if not self.ignore_notebooks:
+            all_python_files += self._get_all_ipynb_files_in(directory)
+        all_python_files = self._remove_directories_to_ignore(all_python_files)
         nl = "\n"
-        logging.debug(f"Python files to scan for imports:\n{nl.join([str(x) for x in all_py_files])}\n")
-        return all_py_files
+        logger.debug(f"Python files to scan for imports:\n{nl.join([str(x) for x in all_python_files])}\n")
+        return all_python_files
 
-    def _get_all_python_files(self) -> List[Path]:
-        return [path for path in Path(".").rglob("*.py")]
+    def _get_all_py_files_in(self, directory: Path) -> List[Path]:
+        return [path for path in directory.rglob("*.py")]
 
-    def _add_ipynb_files(self, all_py_files: List[Path]) -> List[Path]:
-        return all_py_files + [path for path in Path(".").rglob("*.ipynb")]
+    def _get_all_ipynb_files_in(self, directory: Path) -> List[Path]:
+        return [path for path in directory.rglob("*.ipynb")]
 
-    def _remove_ignore_directories(self, all_py_files: List[Path]) -> List[Path]:
+    def _remove_directories_to_ignore(self, all_py_files: List[Path]) -> List[Path]:
         return [
             path
             for path in all_py_files

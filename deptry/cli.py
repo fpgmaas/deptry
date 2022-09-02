@@ -1,4 +1,3 @@
-import logging
 import sys
 
 import click
@@ -6,6 +5,8 @@ import click
 from deptry.config import Config
 from deptry.core import Core
 
+import logging
+logger = logging.getLogger(__name__)
 
 @click.group()
 def deptry():
@@ -32,9 +33,16 @@ def deptry():
     help="""Directories in which .py files should not be scanned for imports to determine if a dependency is used or not.
     Defaults to 'venv'. Specify multiple directories by using this flag twice, e.g. `-id .venv -id other_dir`""",
 )
-def check(verbose, ignore_dependencies, ignore_directories):
+@click.option(
+    "--ignore-notebooks",
+    "-nb",
+    is_flag=True,
+    help="Boolean flag to specify if notebooks should be ignored while scanning for imports.",
+)
+def check(verbose, ignore_dependencies, ignore_directories, ignore_notebooks):
 
     log_level = logging.DEBUG if verbose else logging.INFO
+    logger.setLevel(logging.DEBUG)
     logging.basicConfig(level=log_level, handlers=[logging.StreamHandler()], format="%(message)s")
 
     cli_arguments = {}  # a dictionary with the cli arguments, if they are used.
@@ -42,13 +50,17 @@ def check(verbose, ignore_dependencies, ignore_directories):
         cli_arguments["ignore_dependencies"] = list(ignore_dependencies)
     if len(ignore_directories) > 0:
         cli_arguments["ignore_directories"] = list(ignore_directories)
+    if ignore_notebooks:
+        cli_arguments["ignore_notebooks"] = True
     config = Config(cli_arguments)
 
     obsolete_dependencies = Core(
-        ignore_dependencies=config.config["ignore_dependencies"], ignore_directories=config.config["ignore_directories"]
+        ignore_dependencies=config.config["ignore_dependencies"],
+        ignore_directories=config.config["ignore_directories"],
+        ignore_notebooks=config.config["ignore_notebooks"],
     ).run()
     if len(obsolete_dependencies):
-        logging.info(f"pyproject.toml contains obsolete dependencies: {obsolete_dependencies}")
+        logger.info(f"pyproject.toml contains obsolete dependencies: {obsolete_dependencies}")
         sys.exit(1)
     else:
         sys.exit(0)
