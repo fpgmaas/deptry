@@ -28,7 +28,7 @@ class ImportParser:
             logging.debug(f"Found the following imports in {str(path_to_py_file)}: {modules}")
             return modules
         except:  # noqa
-            logging.warn(f"Warning: Parsing imports for file {str(path_to_py_file)} failed.")
+            logging.warning(f"Warning: Parsing imports for file {str(path_to_py_file)} failed.")
 
     def get_imported_modules_for_list_of_files(self, list_of_paths: List[Path]) -> List[str]:
         modules_per_file = [
