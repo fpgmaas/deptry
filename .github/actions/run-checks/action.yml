@@ -9,6 +9,7 @@ runs:
       - name: Formatting check
         run: |
               source .venv/bin/activate
+              ls -al
               make check
         shell: bash
 
