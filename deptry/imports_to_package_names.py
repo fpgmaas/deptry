@@ -8,6 +8,8 @@ from isort.stdlibs.py38 import stdlib as stdlib38
 from isort.stdlibs.py39 import stdlib as stdlib39
 from isort.stdlibs.py310 import stdlib as stdlib310
 
+COMMON_PACKAGES_WITHOUT_METADATA = {"bs4": "beautifulsoup4", "dotenv": "python-dotenv"}
+
 
 class ImportsToPackageNames:
     """
@@ -32,14 +34,16 @@ class ImportsToPackageNames:
             except:  # noqa
                 if module in self._get_stdlib_packages():
                     logging.debug(f"module {module} is in the Python standard library.")
+                elif module in COMMON_PACKAGES_WITHOUT_METADATA.keys():
+                    packages.append(COMMON_PACKAGES_WITHOUT_METADATA[module])
                 else:
-                    logging.warn(f"Warning: Failed to find corresponding package name for import {module}")
+                    logging.warning(f"Warning: Failed to find corresponding package name for import {module}")
 
         if len(packages) == 0:
-            logging.warn(
+            logging.warning(
                 "Warning: No metadata was found for any of the imported modules. This can simply be because the package only uses the Python standard library,"
             )
-            logging.warn(
+            logging.warning(
                 "but this can also be caused by the environment not being installed, found, or activated. Run `deptry check` with the `-v` flag for more details."
             )
         logging.debug("\n")

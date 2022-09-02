@@ -29,7 +29,7 @@ __deptry__ can be added to your project with
 poetry add deptry
 ```
 
-Alternatively, it can be installed with `pip install deptry`, but since configuration is set within __pyproject.toml__, this is not recommended.
+Alternatively, it can be installed with `pip install deptry`.
 
 ### Prerequisites
 
