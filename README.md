@@ -52,7 +52,7 @@ deptry check -v
 __deptry__ can be configured by using additional command line arguments, or 
 by adding a `[tool.deptry]` section in __pyproject.toml__.
 
-For more information, see the documentation. //TODO
+For more information, see the [documentation](https://fpgmaas.github.io/deptry/).
 
 ---
 

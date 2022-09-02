@@ -7,8 +7,6 @@ from typing import List
 class ImportParser:
     """
     Get a list of imported modules from a python file.
-
-    TODO get this to work with ipynb files. Need to convert to py files first, or extract the python code from the json?
     """
 
     def __init__(self) -> None:
