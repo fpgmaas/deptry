@@ -6,10 +6,6 @@ from typing import List
 class PythonFileFinder:
     """
     Get a list of all .py and .ipynb files recursively within a directory.
-
-    TODO: This can be probably sped up easily by not listing all files within the
-    ignored directories and them dropping them from the list, but only listing files
-    in non-ignored directories.
     """
 
     def __init__(self, ignore_directories: List[str] = [".venv"], include_ipynb: bool = False) -> None:
