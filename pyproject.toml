@@ -72,8 +72,3 @@ ignore_directories = [
 
 [tool.poetry.scripts]
 deptry = "deptry.cli:deptry"
-
-[tool.pytest.ini_options]
-norecursedirs = [
-    "tests/data/*",
-]
