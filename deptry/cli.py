@@ -29,7 +29,7 @@ def deptry():
     "--ignore-directories",
     "-id",
     multiple=True,
-    help="""Directories in which .py files should not be scanned for imports to determine if a dependency is used or not. 
+    help="""Directories in which .py files should not be scanned for imports to determine if a dependency is used or not.
     Defaults to 'venv'. Specify multiple directories by using this flag twice, e.g. `-id .venv -id other_dir`""",
 )
 def check(verbose, ignore_dependencies, ignore_directories):
