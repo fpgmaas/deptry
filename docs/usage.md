@@ -9,7 +9,7 @@ In order to check for obsolete imports, _deptry_ should be run directly within t
 _deptry_ can be run with
 
 ```sh
-deptry check
+deptry check .
 ```
 
 which might output the following:
@@ -23,7 +23,7 @@ pyproject.toml contains obsolete dependencies: ['pandas', 'numpy']
 To show more details about the scanned python files, the imported modules found, and how deptry determined which dependencies are obsolete, add the `-v` flag:
 
 ```sh
-deptry check -v
+deptry check . -v
 ```
 
 ## Ignore dependencies
@@ -32,13 +32,13 @@ Sometimes, you might want _deptry_ to ignore certain dependencies, for example w
 incorrectly marks a dependency as obsolete. Dependencies can be ignore with the `-i` flag:
 
 ```sh
-deptry check -i pandas
+deptry check . -i pandas
 ```
 
 Multiple dependencies can be ignored by using the flag multiple times:
 
 ```sh
-deptry check -i pandas -i numpy
+deptry check . -i pandas -i numpy
 ```
 
 ## Ignore directories
@@ -48,7 +48,7 @@ the `.venv` directory is ignored. To ignore other directories, use the `-id` fla
 both the `.venv` directory and another directory, use the flag twice:
 
 ```sh
-deptry check -id .venv -id other_directory
+deptry check . -id .venv -id other_directory
 ```
 
 ## Ignore notebooks
@@ -56,7 +56,7 @@ deptry check -id .venv -id other_directory
 By default, _deptry_ scans the working directory for `.py` and `.ipynb` files to check for import statements. To ignore `.ipynb` files, use the `--ignore-notebooks` flag:
 
 ```sh
-deptry check --ignore-notebooks
+deptry check . --ignore-notebooks
 ```
 
 ## pyproject.toml
