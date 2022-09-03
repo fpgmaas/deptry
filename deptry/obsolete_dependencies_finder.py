@@ -12,11 +12,11 @@ class ObsoleteDependenciesFinder:
     to not mark packages as obsolete, even if they are not imported in the project.
     """
 
-    def __init__(self, imported_packages: List[str], ignore_dependencies: List[str]):
+    def __init__(self, imported_packages: List[str], ignore_dependencies: List[str]) -> None:
         self.imported_packages = imported_packages
         self.ignore_dependencies = ignore_dependencies
 
-    def find(self):
+    def find(self) -> List[str]:
         dependencies = self._get_project_dependencies()
         logging.debug(f"The project's dependencies are: {dependencies}")
         logging.debug(f"The imported packages are: {self.imported_packages}")
@@ -24,11 +24,11 @@ class ObsoleteDependenciesFinder:
         obsolete_dependencies = set(dependencies) - set(self.imported_packages) - set(["python"])
         if self.ignore_dependencies:
             obsolete_dependencies = obsolete_dependencies - set(self.ignore_dependencies)
-        obsolete_dependencies = sorted(list(obsolete_dependencies))
-        logging.debug(f"The obsolete dependencies are: {obsolete_dependencies}\n")
-        return obsolete_dependencies
+        obsolete_dependencies_sorted = sorted(list(obsolete_dependencies))
+        logging.debug(f"The obsolete dependencies are: {obsolete_dependencies_sorted}\n")
+        return obsolete_dependencies_sorted
 
-    def _get_project_dependencies(self):
+    def _get_project_dependencies(self) -> List[str]:
         pyproject_text = Path("./pyproject.toml").read_text()
         pyproject_data = toml.loads(pyproject_text)
         dependencies = list(pyproject_data["tool"]["poetry"]["dependencies"].keys())

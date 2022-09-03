@@ -8,12 +8,12 @@ from deptry.python_file_finder import PythonFileFinder
 
 
 class Core:
-    def __init__(self, ignore_dependencies: List[str], ignore_directories: List[str], ignore_notebooks: bool):
+    def __init__(self, ignore_dependencies: List[str], ignore_directories: List[str], ignore_notebooks: bool) -> None:
         self.ignore_dependencies = ignore_dependencies
         self.ignore_directories = ignore_directories
         self.ignore_notebooks = ignore_notebooks
 
-    def run(self):
+    def run(self) -> List[str]:
         all_python_files = PythonFileFinder(
             ignore_directories=self.ignore_directories, ignore_notebooks=self.ignore_notebooks
         ).get_all_python_files_in(Path("."))

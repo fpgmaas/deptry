@@ -1,6 +1,6 @@
 import logging
 from pathlib import Path
-from typing import Dict
+from typing import Dict, Optional
 
 import toml
 
@@ -14,12 +14,12 @@ class Config:
     either the defaults or pyproject.toml.
     """
 
-    def __init__(self, cli_arguments: Dict):
+    def __init__(self, cli_arguments: Dict) -> None:
         self.config = DEFAULTS
         self._override_config_with_pyproject_toml()
         self._override_config_with_cli_arguments(cli_arguments)
 
-    def _override_config_with_pyproject_toml(self):
+    def _override_config_with_pyproject_toml(self) -> None:
         pyproject_toml_config = self._read_configuration_from_pyproject_toml()
         if pyproject_toml_config:
             for argument in self.config.keys():
@@ -27,13 +27,13 @@ class Config:
                     self.config[argument] = pyproject_toml_config[argument]
                     logging.debug(f"Argument {argument} set to {pyproject_toml_config[argument]} by pyproject.toml")
 
-    def _override_config_with_cli_arguments(self, cli_arguments):
+    def _override_config_with_cli_arguments(self, cli_arguments: Dict) -> None:
         for argument in cli_arguments.keys():
             if cli_arguments[argument] is not None:
                 self.config[argument] = cli_arguments[argument]
                 logging.debug(f"Argument {argument} set to {cli_arguments[argument]} by command line argument")
 
-    def _read_configuration_from_pyproject_toml(self):
+    def _read_configuration_from_pyproject_toml(self) -> Optional[Dict]:
         try:
             pyproject_text = Path("./pyproject.toml").read_text()
             pyproject_data = toml.loads(pyproject_text)

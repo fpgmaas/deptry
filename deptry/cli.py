@@ -1,4 +1,5 @@
 import logging
+import pathlib
 import sys
 from typing import List
 
@@ -10,7 +11,7 @@ from deptry.utils import run_within_dir
 
 
 @click.group()
-def deptry():
+def deptry() -> None:
     pass
 
 
@@ -42,7 +43,7 @@ def deptry():
     help="Boolean flag to specify if notebooks should be ignored while scanning for imports.",
 )
 def check(
-    directory: click.Path,
+    directory: pathlib.Path,
     verbose: bool,
     ignore_dependencies: List[str],
     ignore_directories: List[str],
@@ -53,7 +54,8 @@ def check(
         log_level = logging.DEBUG if verbose else logging.INFO
         logging.basicConfig(level=log_level, handlers=[logging.StreamHandler()], format="%(message)s")
 
-        cli_arguments = {}  # a dictionary with the cli arguments, if they are used.
+        # a dictionary with the cli arguments, if they are used.
+        cli_arguments = {}  # type: ignore
         if len(ignore_dependencies) > 0:
             cli_arguments["ignore_dependencies"] = list(ignore_dependencies)
         if len(ignore_directories) > 0:
