@@ -10,9 +10,8 @@
 
 ---
 
-It's very easy to add dependencies to a project, but finding out which dependencies are no longer required is a lot more difficult and time consuming.
-
-_deptry_ aims to solve this by providing a simple CLI to check for unused dependencies in a poetry managed Python project. It does so by scanning the imported modules within all Python files in a directory and it's subdirectories, and comparing those to the dependencies listed in `pyproject.toml`. 
+_deptry_ is a command line tool to check for unused dependencies in a poetry managed Python project. It does so by scanning the imported modules within all Python files in 
+a directory and it's subdirectories, and comparing those to the dependencies listed in `pyproject.toml`. 
 
 ---
 
