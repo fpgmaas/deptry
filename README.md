@@ -10,7 +10,7 @@
 
 ---
 
-__deptry__ is a command line tool to check for unused dependencies in a poetry managed Python project. It does so by scanning the imported modules within all Python files in 
+_deptry_ is a command line tool to check for unused dependencies in a poetry managed Python project. It does so by scanning the imported modules within all Python files in 
 a directory and it's subdirectories, and comparing those to the dependencies listed in `pyproject.toml`. 
 
 ---
@@ -40,13 +40,13 @@ In order to check for obsolete imports, __deptry__ should be run directly within
 To scan your project for obsolete imports, run
 
 ```sh
-deptry check
+deptry check .
 ```
 
 or for a more verbose version
 
 ```sh
-deptry check -v
+deptry check . -v
 ```
 
 __deptry__ can be configured by using additional command line arguments, or 

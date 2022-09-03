@@ -5,6 +5,7 @@ import click
 
 from deptry.config import Config
 from deptry.core import Core
+from deptry.utils import run_within_dir
 
 
 @click.group()
@@ -13,6 +14,7 @@ def deptry():
 
 
 @click.command()
+@click.argument("directory", type=click.Path(exists=True))
 @click.option(
     "--verbose",
     "-v",
@@ -38,31 +40,32 @@ def deptry():
     is_flag=True,
     help="Boolean flag to specify if notebooks should be ignored while scanning for imports.",
 )
-def check(verbose, ignore_dependencies, ignore_directories, ignore_notebooks):
+def check(directory, verbose, ignore_dependencies, ignore_directories, ignore_notebooks):
 
-    log_level = logging.DEBUG if verbose else logging.INFO
-    logging.basicConfig(level=log_level, handlers=[logging.StreamHandler()], format="%(message)s")
+    with run_within_dir(directory):
+        log_level = logging.DEBUG if verbose else logging.INFO
+        logging.basicConfig(level=log_level, handlers=[logging.StreamHandler()], format="%(message)s")
 
-    cli_arguments = {}  # a dictionary with the cli arguments, if they are used.
-    if len(ignore_dependencies) > 0:
-        cli_arguments["ignore_dependencies"] = list(ignore_dependencies)
-    if len(ignore_directories) > 0:
-        cli_arguments["ignore_directories"] = list(ignore_directories)
-    if ignore_notebooks:
-        cli_arguments["ignore_notebooks"] = True
-    config = Config(cli_arguments)
+        cli_arguments = {}  # a dictionary with the cli arguments, if they are used.
+        if len(ignore_dependencies) > 0:
+            cli_arguments["ignore_dependencies"] = list(ignore_dependencies)
+        if len(ignore_directories) > 0:
+            cli_arguments["ignore_directories"] = list(ignore_directories)
+        if ignore_notebooks:
+            cli_arguments["ignore_notebooks"] = True
+        config = Config(cli_arguments)
 
-    obsolete_dependencies = Core(
-        ignore_dependencies=config.config["ignore_dependencies"],
-        ignore_directories=config.config["ignore_directories"],
-        ignore_notebooks=config.config["ignore_notebooks"],
-    ).run()
-    if len(obsolete_dependencies):
-        logging.info(f"pyproject.toml contains obsolete dependencies: {obsolete_dependencies}")
-        sys.exit(1)
-    else:
-        logging.info("Succes! No obsolete dependencies found.")
-        sys.exit(0)
+        obsolete_dependencies = Core(
+            ignore_dependencies=config.config["ignore_dependencies"],
+            ignore_directories=config.config["ignore_directories"],
+            ignore_notebooks=config.config["ignore_notebooks"],
+        ).run()
+        if len(obsolete_dependencies):
+            logging.info(f"pyproject.toml contains obsolete dependencies: {obsolete_dependencies}")
+            sys.exit(1)
+        else:
+            logging.info("Succes! No obsolete dependencies found.")
+            sys.exit(0)
 
 
 deptry.add_command(check)

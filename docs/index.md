@@ -36,7 +36,7 @@ In order to check for obsolete imports, _deptry_ should be run directly within t
 To scan your project for obsolete imports, run
 
 ```sh
-deptry check
+deptry check .
 ```
 
 which might output:
