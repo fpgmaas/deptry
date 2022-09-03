@@ -15,6 +15,8 @@ check: ## Check code formatting using isort, black, flake8 and mypy.
 	@black --check .
 	@echo "🚀 Checking code formatting: Running flake8"
 	@flake8 .
+	@echo "🚀 Checking code formatting: Running mypy"
+	@mypy .
 	@echo "🚀 Checking for obsolete dependencies: Running deptry"
 	@deptry check .
 

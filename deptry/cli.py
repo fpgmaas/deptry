@@ -1,5 +1,6 @@
 import logging
 import sys
+from typing import List
 
 import click
 
@@ -40,7 +41,13 @@ def deptry():
     is_flag=True,
     help="Boolean flag to specify if notebooks should be ignored while scanning for imports.",
 )
-def check(directory, verbose, ignore_dependencies, ignore_directories, ignore_notebooks):
+def check(
+    directory: click.Path,
+    verbose: bool,
+    ignore_dependencies: List[str],
+    ignore_directories: List[str],
+    ignore_notebooks: bool,
+) -> None:
 
     with run_within_dir(directory):
         log_level = logging.DEBUG if verbose else logging.INFO
