@@ -2,8 +2,6 @@ import logging
 from pathlib import Path
 from typing import List
 
-import logging
-logger = logging.getLogger(__name__)
 
 class PythonFileFinder:
     """
@@ -21,7 +19,7 @@ class PythonFileFinder:
             all_python_files += self._get_all_ipynb_files_in(directory)
         all_python_files = self._remove_directories_to_ignore(all_python_files)
         nl = "\n"
-        logger.debug(f"Python files to scan for imports:\n{nl.join([str(x) for x in all_python_files])}\n")
+        logging.debug(f"Python files to scan for imports:\n{nl.join([str(x) for x in all_python_files])}\n")
         return all_python_files
 
     def _get_all_py_files_in(self, directory: Path) -> List[Path]:

@@ -1,3 +1,4 @@
+import logging
 import sys
 
 import click
@@ -5,8 +6,6 @@ import click
 from deptry.config import Config
 from deptry.core import Core
 
-import logging
-logger = logging.getLogger(__name__)
 
 @click.group()
 def deptry():
@@ -42,7 +41,6 @@ def deptry():
 def check(verbose, ignore_dependencies, ignore_directories, ignore_notebooks):
 
     log_level = logging.DEBUG if verbose else logging.INFO
-    logger.setLevel(logging.DEBUG)
     logging.basicConfig(level=log_level, handlers=[logging.StreamHandler()], format="%(message)s")
 
     cli_arguments = {}  # a dictionary with the cli arguments, if they are used.
@@ -60,9 +58,10 @@ def check(verbose, ignore_dependencies, ignore_directories, ignore_notebooks):
         ignore_notebooks=config.config["ignore_notebooks"],
     ).run()
     if len(obsolete_dependencies):
-        logger.info(f"pyproject.toml contains obsolete dependencies: {obsolete_dependencies}")
+        logging.info(f"pyproject.toml contains obsolete dependencies: {obsolete_dependencies}")
         sys.exit(1)
     else:
+        logging.info("Succes! No obsolete dependencies found.")
         sys.exit(0)
 
 

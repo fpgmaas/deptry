@@ -1,5 +1,5 @@
-from typing import List
 from pathlib import Path
+from typing import List
 
 from deptry.import_parser import ImportParser
 from deptry.imports_to_package_names import ImportsToPackageNames

@@ -1,12 +1,11 @@
 import ast
 import logging
+import shutil
 from pathlib import Path
 from typing import List
 
 from deptry.notebook_converter import NotebookConverter
 
-import logging
-logger = logging.getLogger(__name__)
 
 class ImportParser:
     """
@@ -17,13 +16,14 @@ class ImportParser:
         self.temp_directory = temp_directory
 
     def get_imported_modules_for_list_of_files(self, list_of_files: List[Path]) -> List[str]:
-        modules_per_file = [self.get_imported_modules_for_file(file) for file in list_of_files]
+        modules_per_file = [self._get_imported_modules_for_file(file) for file in list_of_files]
         all_modules = self._flatten_list(modules_per_file)
         unique_modules = sorted(list(set(all_modules)))
-        logger.debug(f"All imported modules: {unique_modules}\n")
+        logging.debug(f"All imported modules: {unique_modules}\n")
+        shutil.rmtree(self.temp_directory)
         return unique_modules
 
-    def get_imported_modules_for_file(self, path_to_file: Path) -> List[str]:
+    def _get_imported_modules_for_file(self, path_to_file: Path) -> List[str]:
         if str(path_to_file).endswith(".ipynb"):
             path_to_py_file = self._convert_ipynb_to_py(path_to_file)
         else:
@@ -31,10 +31,10 @@ class ImportParser:
 
         try:
             modules = self._get_imported_modules_for_py_file(path_to_py_file)
-            logger.debug(f"Found the following imports in {str(path_to_file)}: {modules}")
+            logging.debug(f"Found the following imports in {str(path_to_file)}: {modules}")
             return modules
         except Exception as e:
-            logger.warning(f"Warning: Parsing imports for file {str(path_to_file)} failed.")
+            logging.warning(f"Warning: Parsing imports for file {str(path_to_file)} failed.")
             raise (e)
 
     def _get_imported_modules_for_py_file(self, path_to_py_file: Path):

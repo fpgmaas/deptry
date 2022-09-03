@@ -20,8 +20,7 @@ def run_within_dir(path: str):
 def test_cli_returns_error(tmp_path):
     """
     data/projects/project_with_obsolete has obsolete dependencies.
-    Verify that `deptry check` returns status code 1
-    and verify that it finds the right obsolete dependencies.
+    Verify that `deptry check` returns status code 1 and verify that it finds the right obsolete dependencies.
     """
 
     tmp_path_proj = tmp_path / "project_with_obsolete"
@@ -33,7 +32,9 @@ def test_cli_returns_error(tmp_path):
         assert result.returncode == 1
         assert result.stderr == "pyproject.toml contains obsolete dependencies: ['isort']\n"
 
-        result = subprocess.run(shlex.split("poetry run deptry check --ignore-notebooks"), capture_output=True, text=True)
+        result = subprocess.run(
+            shlex.split("poetry run deptry check --ignore-notebooks"), capture_output=True, text=True
+        )
         assert result.returncode == 1
         assert result.stderr == "pyproject.toml contains obsolete dependencies: ['cookiecutter-poetry', 'isort']\n"
 

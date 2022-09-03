@@ -8,9 +8,6 @@ from isort.stdlibs.py38 import stdlib as stdlib38
 from isort.stdlibs.py39 import stdlib as stdlib39
 from isort.stdlibs.py310 import stdlib as stdlib310
 
-import logging
-logger = logging.getLogger(__name__)
-
 COMMON_PACKAGES_WITHOUT_METADATA = {"bs4": "beautifulsoup4", "dotenv": "python-dotenv"}
 
 
@@ -33,23 +30,23 @@ class ImportsToPackageNames:
         for module in imported_modules:
             try:
                 packages.append(metadata(module)["Name"])
-                logger.debug(f"imported module {module}'s corresponding package name is {metadata(module)['Name']}.")
+                logging.debug(f"imported module {module}'s corresponding package name is {metadata(module)['Name']}.")
             except:  # noqa
                 if module in self._get_stdlib_packages():
-                    logger.debug(f"module {module} is in the Python standard library.")
+                    logging.debug(f"module {module} is in the Python standard library.")
                 elif module in COMMON_PACKAGES_WITHOUT_METADATA.keys():
                     packages.append(COMMON_PACKAGES_WITHOUT_METADATA[module])
                 else:
-                    logger.warning(f"Warning: Failed to find corresponding package name for import {module}")
+                    logging.warning(f"Warning: Failed to find corresponding package name for import {module}")
 
         if len(packages) == 0:
-            logger.warning(
+            logging.warning(
                 "Warning: No metadata was found for any of the imported modules. This can simply be because the package only uses the Python standard library,"
             )
-            logger.warning(
+            logging.warning(
                 "but this can also be caused by the environment not being installed, found, or activated. Run `deptry check` with the `-v` flag for more details."
             )
-        logger.debug("\n")
+        logging.debug("\n")
 
         return packages
 
