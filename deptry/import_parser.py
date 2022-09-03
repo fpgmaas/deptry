@@ -8,34 +8,29 @@ from deptry.notebook_import_extractor import NotebookImportExtractor
 
 class ImportParser:
     """
-    Get a list of imported modules from a python file.
+    Scan a Python file for import statements and return a list of imported modules.
     """
 
     def __init__(self) -> None:
         pass
 
     def get_imported_modules_for_list_of_files(self, list_of_files: List[Path]) -> List[str]:
-        modules_per_file = [self._get_imported_modules_for_file(file) for file in list_of_files]
+        modules_per_file = [self._get_imported_modules_from_file(file) for file in list_of_files]
         all_modules = self._flatten_list(modules_per_file)
         unique_modules = sorted(list(set(all_modules)))
         logging.debug(f"All imported modules: {unique_modules}\n")
         return unique_modules
 
-    def _get_imported_modules_for_file(self, path_to_file: Path) -> List[str]:
-        if str(path_to_file).endswith(".ipynb"):
-            try:
+    def _get_imported_modules_from_file(self, path_to_file: Path) -> List[str]:
+        try:
+            if str(path_to_file).endswith(".ipynb"):
                 modules = self._get_imported_modules_from_ipynb(path_to_file)
-                logging.debug(f"Found the following imports in {str(path_to_file)}: {modules}")
-            except Exception as e:
-                logging.warning(f"Warning: Parsing imports for file {str(path_to_file)} failed.")
-                raise (e)
-        else:
-            try:
+            else:
                 modules = self._get_imported_modules_from_py(path_to_file)
-                logging.debug(f"Found the following imports in {str(path_to_file)}: {modules}")
-            except Exception as e:
-                logging.warning(f"Warning: Parsing imports for file {str(path_to_file)} failed.")
-                raise (e)
+            logging.debug(f"Found the following imports in {str(path_to_file)}: {modules}")
+        except Exception as e:
+            logging.warning(f"Warning: Parsing imports for file {str(path_to_file)} failed.")
+            raise (e)
         return modules
 
     def _get_imported_modules_from_py(self, path_to_py_file: Path):
