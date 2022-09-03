@@ -4,7 +4,7 @@ from typing import Dict
 
 import toml
 
-DEFAULTS = {"ignore_dependencies": None, "ignore_directories": [".venv"]}
+DEFAULTS = {"ignore_dependencies": None, "ignore_directories": [".venv"], "ignore_notebooks": False}
 
 
 class Config:
