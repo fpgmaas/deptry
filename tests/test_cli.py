@@ -57,8 +57,8 @@ def test_cli_returns_no_error(tmp_path):
 def test_cli_argument_overwrites_pyproject_toml_argument(tmp_path):
     """
     The cli argument should overwrite the pyproject.toml argument. In project_with_obsolete, pyproject.toml specifies
-    to ignore 'toml' and the obsolete dependencies are ['click', 'cookiecutter-poetry', 'isort'].
-    Verify that this is changed to ['cookiecutter-poetry', 'isort', 'toml'] if we run the command with `-i click`
+    to ignore 'toml' and the obsolete dependencies are ['click', 'isort'].
+    Verify that this is changed to ['isort', 'toml'] if we run the command with `-i click`
     """
 
     tmp_path_proj = tmp_path / "project_with_obsolete"
@@ -68,9 +68,7 @@ def test_cli_argument_overwrites_pyproject_toml_argument(tmp_path):
         subprocess.check_call(shlex.split("poetry install --no-interaction --no-root")) == 0
         result = subprocess.run(shlex.split("poetry run deptry check -i click"), capture_output=True, text=True)
         assert result.returncode == 1
-        assert (
-            result.stderr == "pyproject.toml contains obsolete dependencies: ['cookiecutter-poetry', 'isort', 'toml']\n"
-        )
+        assert result.stderr == "pyproject.toml contains obsolete dependencies: ['isort', 'toml']\n"
 
 
 def test_cli_help():
