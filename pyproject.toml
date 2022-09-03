@@ -11,7 +11,7 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.8,<3.11"
+python = ">=3.7,<3.11"
 toml = "^0.10.2"
 isort = "^5.10.1"
 click = "^8.1.3"
