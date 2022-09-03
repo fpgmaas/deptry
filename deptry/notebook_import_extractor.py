@@ -39,7 +39,7 @@ class NotebookImportExtractor:
     def _contains_import_statements(line: str) -> bool:
         return re.search(r"^(?:from\s+(\w+)(?:\.\w+)?\s+)?import\s+([^\s,.]+)(?:\.\w+)?", line) is not None
 
-    def _extract_import_statements_from_cell(self, cell: dict) -> str:
+    def _extract_import_statements_from_cell(self, cell: dict) -> List[str]:
         return [line for line in cell["source"] if self._contains_import_statements(line)]
 
     @staticmethod

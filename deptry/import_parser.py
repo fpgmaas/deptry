@@ -33,28 +33,28 @@ class ImportParser:
             raise (e)
         return modules
 
-    def _get_imported_modules_from_py(self, path_to_py_file: Path):
+    def _get_imported_modules_from_py(self, path_to_py_file: Path) -> List[str]:
         with open(path_to_py_file) as f:
-            root = ast.parse(f.read(), path_to_py_file)
+            root = ast.parse(f.read(), path_to_py_file)  # type: ignore
         return self._get_modules_from_ast_root(root)
 
-    def _get_imported_modules_from_ipynb(self, path_to_ipynb_file: Path):
+    def _get_imported_modules_from_ipynb(self, path_to_ipynb_file: Path) -> List[str]:
         imports = NotebookImportExtractor().extract(path_to_ipynb_file)
         root = ast.parse("\n".join(imports))
         return self._get_modules_from_ast_root(root)
 
     @staticmethod
-    def _get_modules_from_ast_root(root):
+    def _get_modules_from_ast_root(root: ast.Module) -> List[str]:
         modules = []
         for node in ast.iter_child_nodes(root):
             if isinstance(node, ast.Import):
                 modules += [x.name.split(".")[0] for x in node.names]
             elif isinstance(node, ast.ImportFrom):
-                modules.append(node.module.split(".")[0])
+                modules.append(node.module.split(".")[0])  # type: ignore
         return modules
 
     @staticmethod
-    def _flatten_list(modules_per_file):
+    def _flatten_list(modules_per_file: List[List]) -> List:
         all_modules = []
         for modules in modules_per_file:
             if modules:
