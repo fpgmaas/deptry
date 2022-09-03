@@ -43,12 +43,20 @@ deptry check -i pandas -i numpy
 
 ## Ignore directories
 
-_deptry_ scans the working directory and it's subdirectories recursively for `.py` files to scan for import statements. By default,
+_deptry_ scans the working directory and it's subdirectories recursively for `.py` and `.ipynb` files to scan for import statements. By default,
 the `.venv` directory is ignored. To ignore other directories, use the `-id` flag. Note that this overwrites the default, so to ignore
 both the `.venv` directory and another directory, use the flag twice:
 
 ```sh
 deptry check -id .venv -id other_directory
+```
+
+## Ignore notebooks
+
+By default, _deptry_ scans the working directory for `.py` and `.ipynb` files to check for import statements. To ignore `.ipynb` files, use the `--ignore-notebooks` flag:
+
+```sh
+deptry check --ignore-notebooks
 ```
 
 ## pyproject.toml
@@ -64,6 +72,7 @@ ignore_directories = [
 '.venv',
 'other_directory'
 ]
+ignore_notebooks = false
 ```
 
 ## Lookup hierarchy

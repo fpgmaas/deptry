@@ -16,7 +16,7 @@ class ImportsToPackageNames:
     For a list of imported modules, find for each module (e.g. python_dateutil) the corresponding package
     name used to install it (e.g. python-dateutil) and return those names as a list.
 
-    There are two reasons that can cause the corresponding package name not to be found:
+    There are three reasons that can cause the corresponding package name not to be found:
     - The package is in the Python standard library. In this case, nothing is added to the output list.
     - The package lacks metadata. In this case, a warning is raised.
     - The package is not installed.

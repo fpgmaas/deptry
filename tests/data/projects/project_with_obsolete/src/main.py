@@ -1,7 +1,6 @@
 from os import chdir, walk
 from pathlib import Path
-from typing import List
 
-import numpy as np
-import pandas
+import click
+import pandas as pd
 from numpy.random import sample
