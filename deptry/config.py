@@ -3,7 +3,6 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 import toml
-from typeguard import TypeCheckError, check_type
 
 DEFAULTS = {"ignore_dependencies": None, "ignore_directories": [".venv"], "ignore_notebooks": False}
 
@@ -46,16 +45,10 @@ class Config:
 
     def _override_with_toml_argument(self, argument: str, expected_type: Any, pyproject_toml_config: Dict) -> None:
         """
-        If argument is found in pyproject.toml, check if it's the correct type and then override the default argument with the found value.
+        If argument is found in pyproject.toml, override the default argument with the found value.
         """
         if argument in pyproject_toml_config:
             value = pyproject_toml_config[argument]
-            try:
-                check_type(value, expected_type)
-            except TypeCheckError:
-                raise TypeCheckError(
-                    f"Invalid argument supplied for `{argument}` in pyproject.toml. Should be {str(expected_type)}"
-                )
             setattr(self, argument, value)
             self._log_changed_by_pyproject_toml(argument, value)
 
