@@ -22,7 +22,7 @@ jobs:
 
   documentation:
     runs-on: ubuntu-latest
-    needs: publish
+    needs: quality
     steps:
 
       - name: Check out
