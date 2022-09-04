@@ -54,20 +54,16 @@ def check(
         log_level = logging.DEBUG if verbose else logging.INFO
         logging.basicConfig(level=log_level, handlers=[logging.StreamHandler()], format="%(message)s")
 
-        # a dictionary with the cli arguments, if they are used.
-        cli_arguments = {}  # type: ignore
-        if len(ignore_dependencies) > 0:
-            cli_arguments["ignore_dependencies"] = list(ignore_dependencies)
-        if len(ignore_directories) > 0:
-            cli_arguments["ignore_directories"] = list(ignore_directories)
-        if ignore_notebooks:
-            cli_arguments["ignore_notebooks"] = True
-        config = Config(cli_arguments)
+        config = Config(
+            ignore_dependencies=ignore_dependencies,
+            ignore_directories=ignore_directories,
+            ignore_notebooks=ignore_notebooks,
+        )
 
         obsolete_dependencies = Core(
-            ignore_dependencies=config.config["ignore_dependencies"],
-            ignore_directories=config.config["ignore_directories"],
-            ignore_notebooks=config.config["ignore_notebooks"],
+            ignore_dependencies=config.ignore_dependencies,
+            ignore_directories=config.ignore_directories,
+            ignore_notebooks=config.ignore_notebooks,
         ).run()
         if len(obsolete_dependencies):
             logging.info(f"pyproject.toml contains obsolete dependencies: {obsolete_dependencies}")
