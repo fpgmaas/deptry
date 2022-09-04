@@ -1,7 +1,7 @@
 import logging
 import sys
 from importlib.metadata import metadata
-from typing import List
+from typing import List, Set
 
 from isort.stdlibs.py37 import stdlib as stdlib37
 from isort.stdlibs.py38 import stdlib as stdlib38
@@ -50,7 +50,7 @@ class ImportsToPackageNames:
 
         return packages
 
-    def _get_stdlib_packages(self):
+    def _get_stdlib_packages(self) -> Set[str]:
         incorrect_version_error = ValueError(
             f"Incorrect Python version {'.'.join([str(x) for x in sys.version_info[0:3]])}. Only 3.7, 3.8, 3.9 and 3.10 are currently supported."
         )
