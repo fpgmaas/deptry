@@ -37,7 +37,9 @@ class ImportsToPackageNames:
                 elif module in COMMON_PACKAGES_WITHOUT_METADATA.keys():
                     packages.append(COMMON_PACKAGES_WITHOUT_METADATA[module])
                 else:
-                    logging.warning(f"Warning: Failed to find corresponding package name for import {module}")
+                    logging.warning(
+                        f"Warning: Failed to find corresponding package name for import {module} in current environment."
+                    )
 
         if len(packages) == 0:
             logging.warning(

@@ -8,7 +8,8 @@ from deptry.notebook_import_extractor import NotebookImportExtractor
 
 class ImportParser:
     """
-    Scan a Python file for import statements and return a list of imported modules.
+    Class to scan Python files or Python code for import statements. Scanning is done by creating the abstract syntax tree
+    and extracting all nodes that contain import statements.
     """
 
     def __init__(self) -> None:
