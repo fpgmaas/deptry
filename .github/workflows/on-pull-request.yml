@@ -14,32 +14,26 @@ jobs:
 
       - name: Set up the environment
         uses: ./.github/actions/setup-poetry-env
+        with:
+          documentation: false
 
       - name: Run checks
         uses: ./.github/actions/run-checks
 
-      - name: Documentation Test
-        run: |
-          source .venv/bin/activate
-          make docs-test
-
-  tox:
+  documentation:
     runs-on: ubuntu-latest
-    needs: quality
-    strategy:
-      matrix:
-        python-version: ['3.8', '3.9', '3.10']
+    needs: publish
     steps:
+
       - name: Check out
         uses: actions/checkout@v2
 
       - name: Set up the environment
         uses: ./.github/actions/setup-poetry-env
-        with: 
-          python-version: ${{ matrix.python-version }}
-
-      - name: Test with tox 
+        with:
+          documentation: true
+        
+      - name: Generate documentation
         run: |
-          source .venv/bin/activate
-          poetry add tox-gh-actions
-          tox
+            source .venv/bin/activate
+            mkdocs gh-deploy --force
