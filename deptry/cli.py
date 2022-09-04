@@ -54,10 +54,13 @@ def check(
         log_level = logging.DEBUG if verbose else logging.INFO
         logging.basicConfig(level=log_level, handlers=[logging.StreamHandler()], format="%(message)s")
 
+        # Pass the CLI arguments to Config, if they are provided, otherwise pass 'None'.
+        # This way, we can distinguish if a argument was actually passed by the user
+        # (e.g. ignore_notebooks is 'False' by default).
         config = Config(
-            ignore_dependencies=ignore_dependencies,
-            ignore_directories=ignore_directories,
-            ignore_notebooks=ignore_notebooks,
+            ignore_dependencies=ignore_dependencies if ignore_dependencies else None,
+            ignore_directories=ignore_directories if ignore_directories else None,
+            ignore_notebooks=ignore_notebooks if ignore_notebooks else None,
         )
 
         obsolete_dependencies = Core(
