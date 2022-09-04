@@ -40,13 +40,13 @@ In order to check for obsolete imports, __deptry__ should be run directly within
 To scan your project for obsolete imports, run
 
 ```sh
-deptry check .
+deptry .
 ```
 
 or for a more verbose version
 
 ```sh
-deptry check . -v
+deptry . -v
 ```
 
 __deptry__ can be configured by using additional command line arguments, or 
