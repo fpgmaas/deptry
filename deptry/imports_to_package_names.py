@@ -44,7 +44,7 @@ class ImportsToPackageNames:
                 "Warning: No metadata was found for any of the imported modules. This can simply be because the package only uses the Python standard library,"
             )
             logging.warning(
-                "but this can also be caused by the environment not being installed, found, or activated. Run `deptry check` with the `-v` flag for more details."
+                "but this can also be caused by the environment not being installed, found, or activated. Run `deptry` with the `-v` flag for more details."
             )
         logging.debug("\n")
 

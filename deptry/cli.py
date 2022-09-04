@@ -10,11 +10,6 @@ from deptry.core import Core
 from deptry.utils import run_within_dir
 
 
-@click.group()
-def deptry() -> None:
-    pass
-
-
 @click.command()
 @click.argument("directory", type=click.Path(exists=True))
 @click.option(
@@ -42,7 +37,7 @@ def deptry() -> None:
     is_flag=True,
     help="Boolean flag to specify if notebooks should be ignored while scanning for imports.",
 )
-def check(
+def deptry(
     directory: pathlib.Path,
     verbose: bool,
     ignore_dependencies: List[str],
@@ -74,6 +69,3 @@ def check(
         else:
             logging.info("Succes! No obsolete dependencies found.")
             sys.exit(0)
-
-
-deptry.add_command(check)
