@@ -19,21 +19,21 @@ a directory and it's subdirectories, and comparing those to the dependencies lis
 
 ---
 
-## Installation and usage
+## Quickstart
 
 ### Installation
 
-__deptry__ can be added to your project with 
+_deptry_ can be added to your project with 
 
 ```
-poetry add deptry
+poetry add --dev deptry
 ```
 
 Alternatively, it can be installed with `pip install deptry`.
 
 ### Prerequisites
 
-In order to check for obsolete imports, __deptry__ should be run directly within the directory that contains the __pyproject.toml__ file, and it requires the environment created with __pyproject.toml__ to be activated.
+In order to check for obsolete imports, _deptry_ requires a _pyproject.toml_ file to be present in the directory passed as the first argument, and it requires the corresponding environment to be activated.
 
 ### Usage
 

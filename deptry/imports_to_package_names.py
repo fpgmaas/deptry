@@ -30,15 +30,17 @@ class ImportsToPackageNames:
         for module in imported_modules:
             try:
                 packages.append(metadata(module)["Name"])
-                logging.debug(f"imported module {module}'s corresponding package name is {metadata(module)['Name']}.")
+                logging.debug(
+                    f"Corresponding package name for imported module `{module}` is `{metadata(module)['Name']}`."
+                )
             except:  # noqa
                 if module in self._get_stdlib_packages():
-                    logging.debug(f"module {module} is in the Python standard library.")
+                    logging.debug(f"module `{module}` is in the Python standard library.")
                 elif module in COMMON_PACKAGES_WITHOUT_METADATA.keys():
                     packages.append(COMMON_PACKAGES_WITHOUT_METADATA[module])
                 else:
                     logging.warning(
-                        f"Warning: Failed to find corresponding package name for import {module} in current environment."
+                        f"Warning: Failed to find corresponding package name for import `{module}` in current environment."
                     )
 
         if len(packages) == 0:
