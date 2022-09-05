@@ -51,6 +51,7 @@ runs:
     - name: Install library
       run: poetry install --no-interaction
       shell: bash
+      
     - name: Activate environment
       run: source .venv/bin/activate
       shell: bash
