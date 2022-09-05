@@ -43,12 +43,5 @@ To scan your project for obsolete imports, run
 deptry .
 ```
 
-which might output:
-
-```
-pyproject.toml contains obsolete dependencies: ['pandas', 'numpy']
-```
-
 _deptry_ can be configured by using additional command line arguments, or 
-by adding a `[tool.deptry]` section in _pyproject.toml_. For more information, see the [Usage and Configuration](./usage.md)
-
+by adding a `[tool.deptry]` section in _pyproject.toml_. For more information, see [Usage and Configuration](./usage.md)

@@ -59,7 +59,7 @@ class ImportParser:
         """
         imports = []
         for node in ast.iter_child_nodes(root):
-            if isinstance(node, ast.If):
+            if isinstance(node, ast.If) or isinstance(node, ast.Try) or isinstance(node, ast.ExceptHandler):
                 imports += self._get_import_nodes_from(node)
             elif isinstance(node, ast.Import) or isinstance(node, ast.ImportFrom):
                 imports += [node]
