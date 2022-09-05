@@ -21,11 +21,6 @@ jobs:
       - name: Run checks
         uses: ./.github/actions/run-checks
 
-      - name: Documentation Test
-        run: |
-          source .venv/bin/activate
-          make docs-test
-
   tox:
     runs-on: ubuntu-latest
     needs: quality
