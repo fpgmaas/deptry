@@ -38,7 +38,7 @@ jobs:
           make docs-test
 
   tox:
-    needs: docs-test
+    needs: quality
     runs-on: ubuntu-latest
     strategy:
       matrix:
