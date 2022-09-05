@@ -18,11 +18,11 @@ def test_cli_returns_error(tmp_path):
         subprocess.check_call(shlex.split("poetry install --no-interaction --no-root")) == 0
         result = subprocess.run(shlex.split("poetry run deptry ."), capture_output=True, text=True)
         assert result.returncode == 1
-        assert result.stderr.endswith("pyproject.toml contains obsolete dependencies: ['isort']\n")
+        assert "pyproject.toml contains obsolete dependencies:\n\n\tisort\n\n" in result.stderr
 
         result = subprocess.run(shlex.split("poetry run deptry . --ignore-notebooks"), capture_output=True, text=True)
         assert result.returncode == 1
-        assert result.stderr.endswith("pyproject.toml contains obsolete dependencies: ['isort', 'toml']\n")
+        assert "pyproject.toml contains obsolete dependencies:\n\n\tisort\n\ttoml\n\n" in result.stderr
 
 
 def test_cli_returns_no_error(tmp_path):
@@ -54,7 +54,7 @@ def test_cli_argument_overwrites_pyproject_toml_argument(tmp_path):
         subprocess.check_call(shlex.split("poetry install --no-interaction --no-root")) == 0
         result = subprocess.run(shlex.split("poetry run deptry . -i toml"), capture_output=True, text=True)
         assert result.returncode == 1
-        assert result.stderr.endswith("pyproject.toml contains obsolete dependencies: ['isort', 'pkginfo']\n")
+        assert "pyproject.toml contains obsolete dependencies:\n\n\tisort\n\tpkginfo\n\n" in result.stderr
 
 
 def test_cli_help():
