@@ -66,6 +66,9 @@ exclude = [
 ignore_directories = [
   '.venv','tests','docs'
 ]
+ignore_dependencies = [
+  'importlib-metadata'
+]
 
 [tool.poetry.scripts]
 deptry = "deptry.cli:deptry"
