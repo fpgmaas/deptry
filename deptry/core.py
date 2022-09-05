@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 from typing import List
 
@@ -6,17 +7,16 @@ from deptry.imports_to_package_names import ImportsToPackageNames
 from deptry.obsolete_dependencies_finder import ObsoleteDependenciesFinder
 from deptry.python_file_finder import PythonFileFinder
 
-import logging
 
 class Core:
     def __init__(self, ignore_dependencies: List[str], ignore_directories: List[str], ignore_notebooks: bool) -> None:
         self.ignore_dependencies = ignore_dependencies
         self.ignore_directories = ignore_directories
         self.ignore_notebooks = ignore_notebooks
-        logging.debug('Running with the following configuration:')
-        logging.debug(f'ignore_dependencies: {ignore_dependencies}')
-        logging.debug(f'ignore_directories: {ignore_directories}')
-        logging.debug(f'ignore_notebooks: {ignore_notebooks}')
+        logging.debug("Running with the following configuration:")
+        logging.debug(f"ignore_dependencies: {ignore_dependencies}")
+        logging.debug(f"ignore_directories: {ignore_directories}")
+        logging.debug(f"ignore_notebooks: {ignore_notebooks}")
 
     def run(self) -> List[str]:
         all_python_files = PythonFileFinder(
