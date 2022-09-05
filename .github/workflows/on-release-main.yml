@@ -10,7 +10,7 @@ jobs:
   quality:
     runs-on: ubuntu-latest
     steps:
-    
+
       - name: Check out
         uses: actions/checkout@v2
 
@@ -20,13 +20,25 @@ jobs:
       - name: Run checks
         uses: ./.github/actions/run-checks
 
+  docs-test:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Check out
+        uses: actions/checkout@v2
+
+      - name: Set up the environment
+        uses: ./.github/actions/setup-poetry-env
+        with:
+          documentation: true
+
       - name: Documentation Test
         run: |
           source .venv/bin/activate
           make docs-test
 
   tox:
-    needs: quality
+    needs: docs-test
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -80,6 +92,8 @@ jobs:
 
       - name: Set up the environment
         uses: ./.github/actions/setup-poetry-env
+        with:
+          documentation: true
         
       - name: Generate documentation
         run: |

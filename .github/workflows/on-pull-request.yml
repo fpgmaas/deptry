@@ -5,7 +5,7 @@ on:
 name: on-pull-request
 
 jobs:
-  quality:
+    quality:
     runs-on: ubuntu-latest
     steps:
 
@@ -18,6 +18,18 @@ jobs:
       - name: Run checks
         uses: ./.github/actions/run-checks
 
+  docs-test:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Check out
+        uses: actions/checkout@v2
+
+      - name: Set up the environment
+        uses: ./.github/actions/setup-poetry-env
+        with:
+          documentation: true
+
       - name: Documentation Test
         run: |
           source .venv/bin/activate
@@ -25,7 +37,7 @@ jobs:
 
   tox:
     runs-on: ubuntu-latest
-    needs: quality
+    needs: docs-test
     strategy:
       matrix:
         python-version: ['3.7' ,'3.8', '3.9', '3.10']

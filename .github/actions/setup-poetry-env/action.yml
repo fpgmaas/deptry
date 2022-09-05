@@ -3,10 +3,15 @@
 name: "setup-poetry-env"
 description: "Composite action to setup the Python and poetry environment."
 inputs:
-   python-version:
+  python-version:
      required: false
      description: "The python version to use"
      default: 3.9.7
+  documentation: 
+    required: false
+    default: false
+    description: "When this is set to true, install poetry environment without dev dependencies and with dependencies for the documentation"
+
 runs:
   using: "composite"
   steps:
@@ -30,29 +35,41 @@ runs:
         virtualenvs-in-project: true
         installer-parallel: true
 
-    #----------------------------------------------
+    #--------------------------------------------------------------------------------------------
     #       load cached venv if cache exists
-    #----------------------------------------------
+    #--------------------------------------------------------------------------------------------
     - name: Load cached venv
+      if: ${{ github.event.inputs.documentation == 'true' }}
       id: cached-poetry-dependencies
       uses: actions/cache@v2
       with:
         path: .venv
-        key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
+        key: venv-${{ github.event.inputs.documentation }}-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
 
-    #----------------------------------------------
-    # install dependencies if cache does not exist
-    #----------------------------------------------
+    #--------------------------------------------------------------------------------
+    # install dependencies if cache does not exist and inputs.documentation = 'false'
+    #--------------------------------------------------------------------------------
     - name: Install dependencies
-      if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+      if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true' && ${{ github.event.inputs.documentation == 'false' }}
       run: poetry install --no-interaction --no-root
       shell: bash
-    #----------------------------------------------
-    # install your root project, if required
-    #----------------------------------------------
-    - name: Install library
+
+    #--------------------------------------------------------------------------------
+    # install root project if cache does not exist and inputs.documentation = 'false'
+    #--------------------------------------------------------------------------------
+    - name: Install dependencies
+      if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true' && ${{ github.event.inputs.documentation == 'false' }}
       run: poetry install --no-interaction
       shell: bash
+
+    #---------------------------------------------------------------------------------------------
+    # install documentation dependencies if cache does not exist and inputs.documentation = 'true'
+    #---------------------------------------------------------------------------------------------
+    - name: Install dependencies
+      if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true' && ${{ github.event.inputs.documentation == 'false' }}
+      run: poetry install --no-interaction --with docs --without dev
+      shell: bash
+
     - name: Activate environment
       run: source .venv/bin/activate
       shell: bash
