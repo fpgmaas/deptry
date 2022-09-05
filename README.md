@@ -26,10 +26,14 @@ a directory and it's subdirectories, and comparing those to the dependencies lis
 _deptry_ can be added to your project with 
 
 ```
-poetry add --dev deptry
+poetry add --group dev deptry
 ```
 
-Alternatively, it can be installed with `pip install deptry`.
+or for older versions of poetry:
+
+```
+poetry add --dev deptry
+```
 
 ### Prerequisites
 

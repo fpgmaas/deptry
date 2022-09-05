@@ -64,7 +64,36 @@ def deptry(
             ignore_notebooks=config.ignore_notebooks,
         ).run()
         if len(obsolete_dependencies):
-            logging.info(f"pyproject.toml contains obsolete dependencies: {obsolete_dependencies}")
+            sep = "\n\t"
+            logging.info(f"pyproject.toml contains obsolete dependencies:\n\n\t{sep.join(obsolete_dependencies)}\n")
+            logging.info(
+                """Consider removing them from your projects dependencies. If a package is used for development purposes,
+you should add it to your development dependencies instead:
+
+$ poetry add --group dev your_dependency
+
+or for older versions of poetry:
+
+$ poetry add --dev your_dependency
+
+If you think a dependency is incorrectly marked as obsolete, please file a bug report at https://github.com/fpgmaas/deptry/issues/new/choose.
+You can ignore a dependency by passing it to the `-i` argument:
+
+$ deptry . -i your_dependency
+
+or by adding dependencies to be ignored to deptry's configuration in pyproject.toml:
+
+```
+[tool.deptry]
+ignore_directories = [
+  '.venv'
+]
+ignore_dependencies = [
+  'your_dependency'
+]
+```
+"""
+            )
             sys.exit(1)
         else:
             logging.info("Succes! No obsolete dependencies found.")
