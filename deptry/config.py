@@ -33,6 +33,8 @@ class Config:
         pyproject_toml_config = self._read_configuration_from_pyproject_toml()
         if pyproject_toml_config:
             self._override_with_toml_argument("ignore_dependencies", List[str], pyproject_toml_config)
+            self._override_with_toml_argument("ignore_directories", List[str], pyproject_toml_config)
+            self._override_with_toml_argument("ignore_notebooks", List[str], pyproject_toml_config)
 
     def _read_configuration_from_pyproject_toml(self) -> Optional[Dict]:
         try:

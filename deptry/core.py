@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 from typing import List
 
@@ -12,6 +13,10 @@ class Core:
         self.ignore_dependencies = ignore_dependencies
         self.ignore_directories = ignore_directories
         self.ignore_notebooks = ignore_notebooks
+        logging.debug("Running with the following configuration:")
+        logging.debug(f"ignore_dependencies: {ignore_dependencies}")
+        logging.debug(f"ignore_directories: {ignore_directories}")
+        logging.debug(f"ignore_notebooks: {ignore_notebooks}")
 
     def run(self) -> List[str]:
         all_python_files = PythonFileFinder(

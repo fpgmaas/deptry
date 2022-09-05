@@ -1,39 +1,39 @@
 Dependencies are:
 
 ```
-pandas
-numpy
 toml
-cookiecutter-poetry
+urllib3
 isort
 click
+requests
+pkginfo
 ```
 
 Imported in .py files are
 
 ```
-pandas
-numpy
 click
+requests
+urllib3
 ```
 
 Additional imports in .ipynb file:
 
 ```
-cookiecutter_poetry
+toml
 ```
 
 pyproject.toml specifies to ignore the dependency:
 
 ```
-toml
+pkginfo
 ```
 
 So expected output for obsolete packages when ignoring ipynb: 
 
 ```
-cookiecutter-poetry
 isort
+toml
 ```
 Expected output for obsolete packages when including ipynb files: 
 

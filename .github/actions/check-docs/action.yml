@@ -1,5 +1,5 @@
-name: "setup-poetry-env"
-description: "Composite action to setup the Python and poetry environment."
+name: "check-docs"
+description: "Composite action to verify the documentation."
 inputs:
    python-version:
      required: false
@@ -18,6 +18,7 @@ runs:
       uses: actions/setup-python@v2
       with:
         python-version: ${{ inputs.python-version }}
+
     #----------------------------------------------
     #  -----  install & configure poetry  -----
     #----------------------------------------------
@@ -35,23 +36,21 @@ runs:
       id: cached-poetry-dependencies
       uses: actions/cache@v2
       with:
-        path: .venv
-        key: venv-${{ runner.os }}-${{ hashFiles('poetry.lock') }}
+        path: docs/.venv
+        key: docs-venv-${{ runner.os }}-${{ hashFiles('poetry.lock') }}
 
     #----------------------------------------------
     # install dependencies if cache does not exist
     #----------------------------------------------
     - name: Install dependencies
       if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
-      run: poetry install --no-interaction --no-root
+      run: |
+        cd docs
+        poetry install --no-interaction --no-root
       shell: bash
-    #----------------------------------------------
-    # install your root project, if required
-    #----------------------------------------------
-    - name: Install library
-      run: poetry install --no-interaction
-      shell: bash
-      
-    - name: Activate environment
-      run: source .venv/bin/activate
+
+    - name: Run checks
+      run: |
+        cd docs
+        poetry run mkdocs build -s
       shell: bash
