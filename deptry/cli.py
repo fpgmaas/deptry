@@ -67,7 +67,7 @@ def deptry(
             sep = "\n\t"
             logging.info(f"pyproject.toml contains obsolete dependencies:\n\n\t{sep.join(obsolete_dependencies)}\n")
             logging.info(
-                f"""Consider removing them from your projects dependencies. If a package is used for development purposes,
+                """Consider removing them from your projects dependencies. If a package is used for development purposes,
 you should add it to your development dependencies instead:
 
 $ poetry add --group dev your_dependency
