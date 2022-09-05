@@ -36,7 +36,7 @@ runs:
         installer-parallel: true
 
     #--------------------------------------------------------------------------------------------
-    #       load cached venv for documentation if cache exists and inputs.documentation = 'true'
+    #       load cached venv if cache exists
     #--------------------------------------------------------------------------------------------
     - name: Load cached venv
       if: ${{ github.event.inputs.documentation == 'true' }}
@@ -44,18 +44,7 @@ runs:
       uses: actions/cache@v2
       with:
         path: .venv
-        key: venv-documentation-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
-
-    #--------------------------------------------------------------------------------------------
-    #       load cached venv if cache exists and inputs.documentation = 'false'
-    #--------------------------------------------------------------------------------------------
-    - name: Load cached venv
-      if: ${{ github.event.inputs.documentation == 'false' }}
-      id: cached-poetry-dependencies
-      uses: actions/cache@v2
-      with:
-        path: .venv
-        key: venv-n-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
+        key: venv-${{ github.event.inputs.documentation }}-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
 
     #--------------------------------------------------------------------------------
     # install dependencies if cache does not exist and inputs.documentation = 'false'
@@ -72,7 +61,7 @@ runs:
       if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true' && ${{ github.event.inputs.documentation == 'false' }}
       run: poetry install --no-interaction --no-root --with docs --without dev
       shell: bash
-      
+
     - name: Activate environment
       run: source .venv/bin/activate
       shell: bash
