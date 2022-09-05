@@ -64,10 +64,10 @@ def deptry(
             ignore_notebooks=config.ignore_notebooks,
         ).run()
         if len(obsolete_dependencies):
-            sep = '\n\t'
+            sep = "\n\t"
             logging.info(f"pyproject.toml contains obsolete dependencies:\n\n\t{sep.join(obsolete_dependencies)}\n")
             logging.info(
-"""Consider removing them from your projects dependencies. If a package is used for development purposes,
+                """Consider removing them from your projects dependencies. If a package is used for development purposes,
 you should add it to your development dependencies instead:
 
 $ poetry add --group dev your_dependency
@@ -92,7 +92,8 @@ ignore_dependencies = [
   'your_dependency'
 ]
 ```
-""")
+"""
+            )
             sys.exit(1)
         else:
             logging.info("Succes! No obsolete dependencies found.")
