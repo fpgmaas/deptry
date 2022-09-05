@@ -30,3 +30,17 @@ else:
 """
     )
     assert set(imported_modules) == set(["numpy", "pandas", "typing", "logging"])
+
+
+def test_import_parser_tryexcept():
+    imported_modules = ImportParser().get_imported_modules_from_str(
+        """
+import pandas as pd
+from numpy import random
+try:
+    import click
+except:
+    import logging
+"""
+    )
+    assert set(imported_modules) == set(["numpy", "pandas", "click", "logging"])

@@ -47,12 +47,6 @@ To scan your project for obsolete imports, run
 deptry .
 ```
 
-or for a more verbose version
-
-```sh
-deptry . -v
-```
-
 __deptry__ can be configured by using additional command line arguments, or 
 by adding a `[tool.deptry]` section in __pyproject.toml__.
 
