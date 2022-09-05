@@ -13,7 +13,7 @@ def test_import_parser_ipynb():
     imported_modules = ImportParser().get_imported_modules_from_file(
         Path("tests/data/projects/project_with_obsolete/src/notebook.ipynb")
     )
-    assert set(imported_modules) == set(["click", "pandas", "numpy", "cookiecutter_poetry"])
+    assert set(imported_modules) == set(["click", "requests", "urllib3", "toml"])
 
 
 def test_import_parser_ifelse():

@@ -21,17 +21,12 @@ jobs:
       - name: Run checks
         uses: ./.github/actions/run-checks
 
-      - name: Documentation Test
-        run: |
-          source .venv/bin/activate
-          make docs-test
-
   tox:
     runs-on: ubuntu-latest
     needs: quality
     strategy:
       matrix:
-        python-version: ['3.8', '3.9', '3.10']
+        python-version: ['3.7', '3.8', '3.9', '3.10']
     steps:
       - name: Check out
         uses: actions/checkout@v2
@@ -46,3 +41,14 @@ jobs:
           source .venv/bin/activate
           poetry add tox-gh-actions
           tox
+
+  check-docs:
+    runs-on: ubuntu-latest
+    needs: quality
+    steps:
+      
+      - name: Check out
+        uses: actions/checkout@v2
+
+      - name: check documentation
+        uses: ./.github/actions/check-docs
