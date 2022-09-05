@@ -67,7 +67,7 @@ runs:
     #---------------------------------------------------------------------------------------------
     - name: Install dependencies
       if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true' && ${{ github.event.inputs.documentation == 'true' }}
-      run: poetry install --no-interaction --with docs --without dev
+      run: poetry install --no-interaction --only docs
       shell: bash
 
     - name: Activate environment
