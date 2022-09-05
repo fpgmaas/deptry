@@ -46,3 +46,14 @@ jobs:
           source .venv/bin/activate
           poetry add tox-gh-actions
           tox
+
+  check-docs:
+    runs-on: ubuntu-latest
+    needs: quality
+    steps:
+      
+      - name: Check out
+        uses: actions/checkout@v2
+
+      - name: check documentation
+        uses: ./.github/actions/check-docs
