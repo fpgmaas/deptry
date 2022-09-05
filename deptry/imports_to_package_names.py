@@ -1,6 +1,5 @@
 import logging
 import sys
-
 from typing import List, Set
 
 from isort.stdlibs.py37 import stdlib as stdlib37
