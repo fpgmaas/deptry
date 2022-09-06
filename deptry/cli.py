@@ -96,5 +96,5 @@ ignore_dependencies = [
             )
             sys.exit(1)
         else:
-            logging.info("Succes! No obsolete dependencies found.")
+            logging.info("Success! No obsolete dependencies found.")
             sys.exit(0)
