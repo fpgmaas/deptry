@@ -76,12 +76,11 @@ or for older versions of poetry:
 
 $ poetry add --dev your_dependency
 
-If you think a dependency is incorrectly marked as obsolete, please file a bug report at https://github.com/fpgmaas/deptry/issues/new/choose.
-You can ignore a dependency by passing it to the `-i` argument:
+Dependencies can be ignored by passing them to the `-i` argument:
 
 $ deptry . -i your_dependency
 
-or by adding dependencies to be ignored to deptry's configuration in pyproject.toml:
+or by adding them to deptry's configuration in pyproject.toml:
 
 ```
 [tool.deptry]
@@ -92,6 +91,9 @@ ignore_dependencies = [
   'your_dependency'
 ]
 ```
+
+If you think a dependency is incorrectly marked as obsolete, please file a bug report at https://github.com/fpgmaas/deptry/issues/new/choose.
+
 """
             )
             sys.exit(1)
