@@ -1,19 +1,21 @@
-from typing import List
-from pathlib import Path
-from deptry.dependency import Dependency
-import toml
 import logging
+from pathlib import Path
+from typing import List
+
+import toml
+
+from deptry.dependency import Dependency
+
 
 class DependencyGetter:
-    
-    def __init__(self, ignore_dependencies: List[str]) -> None:
-        self.ignore_dependencies = ignore_dependencies
-    
+    def __init__(self, ignore_dependencies: List[str] = []) -> None:
+        self.ignore_dependencies = ignore_dependencies if ignore_dependencies else []
+
     def get(self):
         pyproject_toml_dependencies = self._get_pyproject_toml_dependencies()
         dependencies = []
         for dep in pyproject_toml_dependencies:
-            if not dep == 'python' and not dep in self.ignore_dependencies:
+            if not dep == "python" and not dep in self.ignore_dependencies:
                 dependencies.append(Dependency(dep))
         self._log_dependencies(dependencies)
         return dependencies
@@ -25,7 +27,7 @@ class DependencyGetter:
         return sorted(dependencies)
 
     def _log_dependencies(self, dependencies):
-        logging.debug('The project contains the following dependencies:')
+        logging.debug("The project contains the following dependencies:")
         for dependency in dependencies:
             logging.debug(str(dependency))
-        logging.debug('')
+        logging.debug("")

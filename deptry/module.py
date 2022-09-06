@@ -1,61 +1,60 @@
-from importlib.metadata import PackageNotFoundError
-from typing import List, Set
-
-from pathlib import Path
+import logging
 import sys
+from importlib.metadata import PackageNotFoundError
+from pathlib import Path
+from typing import List, Set
 
 from isort.stdlibs.py37 import stdlib as stdlib37
 from isort.stdlibs.py38 import stdlib as stdlib38
 from isort.stdlibs.py39 import stdlib as stdlib39
 from isort.stdlibs.py310 import stdlib as stdlib310
 
-from deptry.utils import import_importlib_metadata
 from deptry.dependency import Dependency
-import logging
+from deptry.utils import import_importlib_metadata
 
 metadata = import_importlib_metadata()
 
+
 class Module:
-    
-    def __init__(self, name: str, dependencies: List[Dependency]):
+    def __init__(self, name: str, dependencies: List[Dependency] = None):
+        """
+        Dependencies, optional. scan top-level module names.
+        """
         self.name = name
         self.standard_library = False
         self.package = self._get_package_name(dependencies)
-        
-    
+
     def _get_package_name(self, dependencies):
         try:
             return self._extract_package_name_from_metadata()
         except PackageNotFoundError:
             if self._module_in_standard_library():
                 self.standard_library = True
-            elif self._module_found_in_top_levels(dependencies):
+            elif dependencies and self._module_found_in_top_levels(dependencies):
                 logging.debug(
-                        f"Failed to find metadata for import `{self.name}` in current environment, but it was encountered in a dependency's top-level module names."
-                    )
+                    f"Failed to find metadata for import `{self.name}` in current environment, but it was encountered in a dependency's top-level module names."
+                )
             else:
                 logging.warning(
-                        f"Warning: Failed to find corresponding package name for import `{self.name}` in current environment."
-                    )
+                    f"Warning: Failed to find corresponding package name for import `{self.name}` in current environment."
+                )
 
     def _module_found_in_top_levels(self, dependencies):
         return any([self.name in dependency.top_levels for dependency in dependencies if dependency.top_levels])
 
     def _extract_package_name_from_metadata(self):
         package = metadata.metadata(self.name)["Name"]
-        logging.debug(
-            f"Corresponding package name for imported module `{self.name}` is `{package}`."
-            )
+        logging.debug(f"Corresponding package name for imported module `{self.name}` is `{package}`.")
         return package
-    
+
     def _module_in_standard_library(self):
         if self.name in self._get_stdlib_packages():
             logging.debug(f"module `{self.name}` is in the Python standard library.")
             return True
-    
+
     def __repr__(self):
         return f"Module '{self.name}'"
-    
+
     def __str__(self):
         if self.standard_library:
             return f"Module '{self.name}' from standard library"
@@ -63,7 +62,7 @@ class Module:
             if self.package:
                 return f"Module '{self.name}' from package '{self.package}'"
             else:
-               return f"Module '{self.name}' from unknown source" 
+                return f"Module '{self.name}' from unknown source"
 
     def _get_stdlib_packages(self) -> Set[str]:
         incorrect_version_error = ValueError(
