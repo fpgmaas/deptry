@@ -3,9 +3,9 @@ from pathlib import Path
 from typing import List
 
 from deptry.import_parser import ImportParser
-from deptry.imports_to_package_names import ImportsToPackageNames
 from deptry.obsolete_dependencies_finder import ObsoleteDependenciesFinder
 from deptry.python_file_finder import PythonFileFinder
+from deptry.dependency_getter import DependencyGetter
 
 
 class Core:
@@ -16,15 +16,15 @@ class Core:
         logging.debug("Running with the following configuration:")
         logging.debug(f"ignore_dependencies: {ignore_dependencies}")
         logging.debug(f"ignore_directories: {ignore_directories}")
-        logging.debug(f"ignore_notebooks: {ignore_notebooks}")
+        logging.debug(f"ignore_notebooks: {ignore_notebooks}\n")
 
     def run(self) -> List[str]:
+        dependencies = DependencyGetter(ignore_dependencies=self.ignore_dependencies).get()
         all_python_files = PythonFileFinder(
             ignore_directories=self.ignore_directories, ignore_notebooks=self.ignore_notebooks
         ).get_all_python_files_in(Path("."))
         imported_modules = ImportParser().get_imported_modules_for_list_of_files(all_python_files)
-        imported_packages = ImportsToPackageNames().convert(imported_modules)
         obsolete_dependencies = ObsoleteDependenciesFinder(
-            imported_packages=imported_packages, ignore_dependencies=self.ignore_dependencies
+            imported_modules=imported_modules, dependencies = dependencies
         ).find()
         return obsolete_dependencies

@@ -3,6 +3,8 @@ from pathlib import Path
 from typing import List
 
 import toml
+from deptry.dependency import Dependency
+from deptry.module import Module
 
 
 class ObsoleteDependenciesFinder:
@@ -12,24 +14,39 @@ class ObsoleteDependenciesFinder:
     to not mark packages as obsolete, even if they are not imported in the project.
     """
 
-    def __init__(self, imported_packages: List[str], ignore_dependencies: List[str]) -> None:
-        self.imported_packages = imported_packages
-        self.ignore_dependencies = ignore_dependencies
+    def __init__(self, imported_modules: List[str], dependencies: List[Dependency]) -> None:
+        self.imported_modules = [Module(mod, dependencies) for mod in imported_modules]
+        logging.debug('')
+        self.dependencies = dependencies
 
     def find(self) -> List[str]:
-        dependencies = self._get_project_dependencies()
-        logging.debug(f"The project's dependencies are: {dependencies}")
-        logging.debug(f"The imported packages are: {self.imported_packages}")
-        logging.debug(f"The dependencies to ignore are: {self.ignore_dependencies}")
-        obsolete_dependencies = set(dependencies) - set(self.imported_packages) - set(["python"])
-        if self.ignore_dependencies:
-            obsolete_dependencies = obsolete_dependencies - set(self.ignore_dependencies)
-        obsolete_dependencies_sorted = sorted(list(obsolete_dependencies))
-        logging.debug(f"The obsolete dependencies are: {obsolete_dependencies_sorted}\n")
-        return obsolete_dependencies_sorted
+        logging.debug('Scanning for obsolete dependencies...')
+        obsolete_dependencies = []
 
-    def _get_project_dependencies(self) -> List[str]:
-        pyproject_text = Path("./pyproject.toml").read_text()
-        pyproject_data = toml.loads(pyproject_text)
-        dependencies = list(pyproject_data["tool"]["poetry"]["dependencies"].keys())
-        return sorted(dependencies)
+        for dependency in self.dependencies:
+            if not self._dependency_found_in_imported_modules(dependency):
+                if not self._any_of_the_top_levels_imported(dependency):
+                    obsolete_dependencies.append(dependency)
+                    logging.debug(f"Dependency '{dependency.name}' does not seem to be used.")
+        
+        logging.debug('')
+        return [dependency.name for dependency in obsolete_dependencies]
+
+    def _dependency_found_in_imported_modules(self, dependency: Dependency):
+        for module in self.imported_modules:
+            if module.package == dependency.name:
+                logging.debug(f"Dependency '{dependency.name}' is used as module {module.package}.")
+                return True
+        else:
+            return False
+
+
+    def _any_of_the_top_levels_imported(self, dependency: Dependency):
+        if not dependency.top_levels:
+            return False
+        else:
+            for top_level in dependency.top_levels:
+                if any(module.name == top_level for module in self.imported_modules):
+                    logging.debug(f"Dependency '{dependency.name}' is not obsolete, since imported module '{top_level}' is in its top-level module names")
+                    return True
+        return False

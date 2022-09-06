@@ -17,45 +17,53 @@ metadata = import_importlib_metadata()
 
 class Module:
     
-    def __init__(self, module: str, dependencies = List[Dependency]):
-        self.module = module
-        self.package = self._get_package_name()
+    def __init__(self, name: str, dependencies: List[Dependency]):
+        self.name = name
+        self.standard_library = False
+        self.package = self._get_package_name(dependencies)
+        
     
     def _get_package_name(self, dependencies):
         try:
-            self.package = self._extract_package_name_from_metadata()
+            return self._extract_package_name_from_metadata()
         except PackageNotFoundError:
             if self._module_in_standard_library():
-                pass
-            elif self._module_found_in_top_levels:
-                logging.info(
-                        f"Failed to find metadata for import `{self.module}` in current environment, but it was encountered in a dependency's top-levels."
+                self.standard_library = True
+            elif self._module_found_in_top_levels(dependencies):
+                logging.debug(
+                        f"Failed to find metadata for import `{self.name}` in current environment, but it was encountered in a dependency's top-level module names."
                     )
             else:
                 logging.warning(
-                        f"Warning: Failed to find corresponding package name for import `{self.module}` in current environment."
+                        f"Warning: Failed to find corresponding package name for import `{self.name}` in current environment."
                     )
 
-    def _module_found_in_top_levels(self):
-        any([self.module in dependency.top_levels for dependency in self.dependencies])
+    def _module_found_in_top_levels(self, dependencies):
+        return any([self.name in dependency.top_levels for dependency in dependencies if dependency.top_levels])
 
     def _extract_package_name_from_metadata(self):
-        package = metadata.metadata(self.module)["Name"]
+        package = metadata.metadata(self.name)["Name"]
         logging.debug(
-            f"Corresponding package name for imported module `{self.module}` is `{package}`."
+            f"Corresponding package name for imported module `{self.name}` is `{package}`."
             )
         return package
     
     def _module_in_standard_library(self):
-        if self.module in self._get_stdlib_packages():
-            logging.debug(f"module `{self.module}` is in the Python standard library.")
+        if self.name in self._get_stdlib_packages():
+            logging.debug(f"module `{self.name}` is in the Python standard library.")
             return True
     
     def __repr__(self):
-        return f"Module '{self.module}'"
+        return f"Module '{self.name}'"
     
     def __str__(self):
-        return f"Module '{self.module}' from package {self.package}"
+        if self.standard_library:
+            return f"Module '{self.name}' from standard library"
+        else:
+            if self.package:
+                return f"Module '{self.name}' from package '{self.package}'"
+            else:
+               return f"Module '{self.name}' from unknown source" 
 
     def _get_stdlib_packages(self) -> Set[str]:
         incorrect_version_error = ValueError(
