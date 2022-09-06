@@ -5,6 +5,8 @@ from typing import List, Union
 
 from deptry.notebook_import_extractor import NotebookImportExtractor
 
+RECURSION_TYPES = [ast.If, ast.Try, ast.ExceptHandler, ast.FunctionDef, ast.ClassDef]
+
 
 class ImportParser:
     """
@@ -57,9 +59,10 @@ class ImportParser:
         are defined within if/else or try/except statements. In that case, the ast.Import or ast.ImportFrom node
         is a child of an ast.If/Try/ExceptHandler node.
         """
+
         imports = []
         for node in ast.iter_child_nodes(root):
-            if isinstance(node, ast.If) or isinstance(node, ast.Try) or isinstance(node, ast.ExceptHandler):
+            if any([isinstance(node, recursion_type) for recursion_type in RECURSION_TYPES]):
                 imports += self._get_import_nodes_from(node)
             elif isinstance(node, ast.Import) or isinstance(node, ast.ImportFrom):
                 imports += [node]

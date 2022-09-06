@@ -44,3 +44,28 @@ except:
 """
     )
     assert set(imported_modules) == set(["numpy", "pandas", "click", "logging"])
+
+
+def test_import_parser_func():
+    imported_modules = ImportParser().get_imported_modules_from_str(
+        """
+import pandas as pd
+from numpy import random
+def func():
+    import click
+"""
+    )
+    assert set(imported_modules) == set(["numpy", "pandas", "click"])
+
+
+def test_import_parser_class():
+    imported_modules = ImportParser().get_imported_modules_from_str(
+        """
+import pandas as pd
+from numpy import random
+class MyClass:
+    def __init__(self):
+        import click
+"""
+    )
+    assert set(imported_modules) == set(["numpy", "pandas", "click"])
