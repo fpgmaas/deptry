@@ -1,3 +1,4 @@
+import logging
 from typing import List
 
 from deptry.utils import import_importlib_metadata
@@ -17,9 +18,13 @@ class Dependency:
 
     @staticmethod
     def _get_top_levels(name: str) -> List[str]:
-        top_levels = metadata.distribution(name).read_text("top_level.txt")
-        if top_levels:
-            return [x for x in top_levels.split("\n") if len(x) > 0]
+        try:
+            top_levels = metadata.distribution(name).read_text("top_level.txt")
+            if top_levels:
+                return [x for x in top_levels.split("\n") if len(x) > 0]
+        except PackageNotFoundError:
+            logging.warning(f"Warning: Package '{name}' not found in current environment.")
+            return None
 
     def __repr__(self) -> str:
         return f"Dependency '{self.name}'"
