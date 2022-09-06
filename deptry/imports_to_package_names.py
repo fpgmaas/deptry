@@ -7,13 +7,9 @@ from isort.stdlibs.py38 import stdlib as stdlib38
 from isort.stdlibs.py39 import stdlib as stdlib39
 from isort.stdlibs.py310 import stdlib as stdlib310
 
-# importlib.metadata is in the standard library since Python version 3.8
-if sys.version_info[1] == 7:
-    from importlib_metadata import metadata
-else:
-    from importlib.metadata import metadata
+from deptry.utils import import_importlib_metadata
+metadata = import_importlib_metadata()
 
-COMMON_PACKAGES_WITHOUT_METADATA = {"bs4": "beautifulsoup4", "dotenv": "python-dotenv"}
 
 
 class ImportsToPackageNames:
