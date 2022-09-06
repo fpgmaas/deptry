@@ -1,6 +1,5 @@
 import logging
 import sys
-from importlib.metadata import PackageNotFoundError
 from typing import List, Set
 
 from isort.stdlibs.py37 import stdlib as stdlib37
@@ -11,13 +10,21 @@ from isort.stdlibs.py310 import stdlib as stdlib310
 from deptry.dependency import Dependency
 from deptry.utils import import_importlib_metadata
 
-metadata = import_importlib_metadata()
+metadata, PackageNotFoundError = import_importlib_metadata()
 
 
 class Module:
     def __init__(self, name: str, dependencies: List[Dependency] = None) -> None:
         """
-        Dependencies, optional. scan top-level module names.
+        A Module object that represents an imported module. If the metadata field 'Name' is found for a module, it's added as the associated package name.
+        Otherwise, check if it is part of the standard library.
+
+        If the metadata is not found and it's not part of the standard library, check if the module is equal to any of the top-level module names
+        of any of the installed dependencies. If so, it's not added as the Module's package name (since it's ambiguous, e.g. 'google' is the top-level
+        name for both 'google-cloud-bigquery' and 'google-cloud-auth', so which one is the associated package for the module 'google'?) However,
+        we do know that this information can be used in detecting obsolete dependencies, so there is no need to raise a warning.
+
+        If nothing is found, a warning is logged to inform the user that there is no information available about this package.
         """
         self.name = name
         self.standard_library = False
@@ -51,10 +58,10 @@ class Module:
             logging.debug(f"module `{self.name}` is in the Python standard library.")
             return True
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"Module '{self.name}'"
 
-    def __str__(self):
+    def __str__(self) -> str:
         if self.standard_library:
             return f"Module '{self.name}' from standard library"
         else:

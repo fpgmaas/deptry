@@ -8,6 +8,13 @@ from deptry.dependency import Dependency
 
 
 class DependencyGetter:
+    """
+    Class to get a project's list of dependencies from pyproject.toml.
+
+    Args:
+        ignore_dependencies: A list of dependencies which should be omitted from the resulting list.
+    """
+
     def __init__(self, ignore_dependencies: List[str] = []) -> None:
         self.ignore_dependencies = ignore_dependencies if ignore_dependencies else []
 
@@ -26,7 +33,7 @@ class DependencyGetter:
         dependencies = list(pyproject_data["tool"]["poetry"]["dependencies"].keys())
         return sorted(dependencies)
 
-    def _log_dependencies(self, dependencies):
+    def _log_dependencies(self, dependencies: List[Dependency]) -> None:
         logging.debug("The project contains the following dependencies:")
         for dependency in dependencies:
             logging.debug(str(dependency))

@@ -54,8 +54,8 @@ class ImportParser:
     def _get_import_nodes_from(self, root: Union[ast.Module, ast.If]):
         """
         Recursively collect import nodes from a Python module. This is needed to find imports that
-        are defined within if/else statements. In that case, the ast.Import or ast.ImportFrom node
-        is a child of an ast.If node.
+        are defined within if/else or try/except statements. In that case, the ast.Import or ast.ImportFrom node
+        is a child of an ast.If/Try/ExceptHandler node.
         """
         imports = []
         for node in ast.iter_child_nodes(root):

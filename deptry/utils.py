@@ -26,12 +26,16 @@ def run_within_dir(path: Path):
 
 
 def import_importlib_metadata():
-    # importlib.metadata is in the standard library since Python version 3.8
+    """
+    importlib.metadata is in the standard library since Python version 3.8
+    """
     if sys.version_info[1] == 7:
         import importlib_metadata as metadata
+        from importlib_metadata import PackageNotFoundError
 
-        return metadata
+        return metadata, PackageNotFoundError
     else:
         import importlib.metadata as metadata
+        from importlib.metadata import PackageNotFoundError
 
-        return metadata
+        return metadata, PackageNotFoundError

@@ -2,10 +2,15 @@ from typing import List
 
 from deptry.utils import import_importlib_metadata
 
-metadata = import_importlib_metadata()
+metadata, PackageNotFoundError = import_importlib_metadata()
 
 
 class Dependency:
+    """
+    A project's dependency with it's associated top-level module names. There are stored in the metadata's top_level.txt.
+    An example of this is 'matplotlib' with top-levels: ['matplotlib', 'mpl_toolkits', 'pylab'].
+    """
+
     def __init__(self, name: str) -> None:
         self.name = name
         self.top_levels = self._get_top_levels(name)

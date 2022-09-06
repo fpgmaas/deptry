@@ -7,9 +7,13 @@ from deptry.module import Module
 
 class ObsoleteDependenciesFinder:
     """
-    Given a list of imported packages in a project, fetch the project dependencies from pyproject.toml and
-    determine which dependencies are not used in the project. Optionally, ignore_dependencies can be used
-    to not mark packages as obsolete, even if they are not imported in the project.
+    Given a list of imported modules and a list of project dependencies, determine which ones are obsolete.
+
+    This is done by checking for each dependency if there is any module of which the metadata field 'Name' is equal to the dependency.
+    If that is found, the dependency is not obsolete.
+    Otherwise, we look at the top-level module names of the dependency, and check if any of those is imported. An example of this is
+    'matplotlib' with top-levels: ['matplotlib', 'mpl_toolkits', 'pylab']. `mpl_toolkits` does not have any associated metadata,
+    but if this is imported, the associated dependency `matplotlib` is not obsolete, even if `matplotlib` itself is not imported anywhere.
     """
 
     def __init__(self, imported_modules: List[str], dependencies: List[Dependency]) -> None:
@@ -30,7 +34,7 @@ class ObsoleteDependenciesFinder:
         logging.debug("")
         return [dependency.name for dependency in obsolete_dependencies]
 
-    def _dependency_found_in_imported_modules(self, dependency: Dependency):
+    def _dependency_found_in_imported_modules(self, dependency: Dependency) -> bool:
         for module in self.imported_modules:
             if module.package == dependency.name:
                 logging.debug(f"Dependency '{dependency.name}' is used as module {module.package}.")
@@ -38,7 +42,7 @@ class ObsoleteDependenciesFinder:
         else:
             return False
 
-    def _any_of_the_top_levels_imported(self, dependency: Dependency):
+    def _any_of_the_top_levels_imported(self, dependency: Dependency) -> bool:
         if not dependency.top_levels:
             return False
         else:
