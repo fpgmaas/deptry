@@ -15,7 +15,7 @@ class DependencyGetter:
         pyproject_toml_dependencies = self._get_pyproject_toml_dependencies()
         dependencies = []
         for dep in pyproject_toml_dependencies:
-            if not dep == "python" and not dep in self.ignore_dependencies:
+            if not dep == "python" and dep not in self.ignore_dependencies:
                 dependencies.append(Dependency(dep))
         self._log_dependencies(dependencies)
         return dependencies

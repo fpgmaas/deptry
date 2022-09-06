@@ -1,8 +1,5 @@
 import logging
-from pathlib import Path
 from typing import List
-
-import toml
 
 from deptry.dependency import Dependency
 from deptry.module import Module

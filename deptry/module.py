@@ -1,7 +1,6 @@
 import logging
 import sys
 from importlib.metadata import PackageNotFoundError
-from pathlib import Path
 from typing import List, Set
 
 from isort.stdlibs.py37 import stdlib as stdlib37
@@ -16,7 +15,7 @@ metadata = import_importlib_metadata()
 
 
 class Module:
-    def __init__(self, name: str, dependencies: List[Dependency] = None):
+    def __init__(self, name: str, dependencies: List[Dependency] = None) -> None:
         """
         Dependencies, optional. scan top-level module names.
         """
@@ -24,7 +23,7 @@ class Module:
         self.standard_library = False
         self.package = self._get_package_name(dependencies)
 
-    def _get_package_name(self, dependencies):
+    def _get_package_name(self, dependencies: List[Dependency]) -> str:
         try:
             return self._extract_package_name_from_metadata()
         except PackageNotFoundError:
@@ -39,10 +38,10 @@ class Module:
                     f"Warning: Failed to find corresponding package name for import `{self.name}` in current environment."
                 )
 
-    def _module_found_in_top_levels(self, dependencies):
+    def _module_found_in_top_levels(self, dependencies: List[Dependency]) -> bool:
         return any([self.name in dependency.top_levels for dependency in dependencies if dependency.top_levels])
 
-    def _extract_package_name_from_metadata(self):
+    def _extract_package_name_from_metadata(self) -> str:
         package = metadata.metadata(self.name)["Name"]
         logging.debug(f"Corresponding package name for imported module `{self.name}` is `{package}`.")
         return package
