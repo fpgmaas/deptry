@@ -12,7 +12,7 @@ class MissingDependenciesFinder:
     """
 
     def __init__(
-        self, imported_modules: List[Module], dependencies: List[Dependency], ignore_missing: List[str]
+        self, imported_modules: List[Module], dependencies: List[Dependency], ignore_missing: List[str] = []
     ) -> None:
         self.imported_modules = imported_modules
         self.imported_modules = self._filter_out_standard_library_from(self.imported_modules)

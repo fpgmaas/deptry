@@ -39,7 +39,7 @@ from deptry.utils import run_within_dir
     multiple=True,
     help="""
     Dependencies listed in pyproject.toml that should never be marked as obsolete, even if they are not imported in any of the files scanned.
-    Can be used multiple times. For example; `deptry . -io dependency-1 -io dependency-2`.
+    Can be used multiple times. For example; `deptry . -io foo -io bar`.
     """,
 )
 @click.option(
@@ -47,14 +47,14 @@ from deptry.utils import run_within_dir
     "-im",
     multiple=True,
     help="""Modules that should never be marked as having missing dependencies, even if the matching package for the import statement cannot be found.
-    Can be used multiple times. For example; `deptry . -io module_1 -io module_2`.""",
+    Can be used multiple times. For example; `deptry . -io foo -io bar`.""",
 )
 @click.option(
     "--ignore-transitive",
     "-it",
     multiple=True,
     help="""Modules that should never be marked as 'missing due to transitive' even though deptry determines them to be transitive.
-    Can be used multiple times. For example; `deptry . -it module_1 -io module_2`.""",
+    Can be used multiple times. For example; `deptry . -it foo -io bar`.""",
 )
 @click.option(
     "--ignore-directories",

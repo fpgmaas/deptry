@@ -7,7 +7,7 @@ from deptry.module import Module
 
 class TransitiveDependenciesFinder:
     """
-    Given a list of imported modules and a list of project dependencies, determine which ones are missing.
+    Given a list of imported modules and a list of project dependencies, determine which ones are transitive.
     """
 
     def __init__(
