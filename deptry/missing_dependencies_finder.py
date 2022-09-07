@@ -4,20 +4,23 @@ from typing import List
 from deptry.dependency import Dependency
 from deptry.module import Module
 
+
 class MissingDependenciesFinder:
     """
     Given a list of imported modules and a list of project dependencies, determine which ones are missing.
     TODO make one class dependencyfinder that the other three inherit from
     """
 
-    def __init__(self, imported_modules: List[Module], dependencies: List[Dependency], ignore_missing: List[str]) -> None:
+    def __init__(
+        self, imported_modules: List[Module], dependencies: List[Dependency], ignore_missing: List[str]
+    ) -> None:
         self.imported_modules = imported_modules
         self.imported_modules = self._filter_out_standard_library_from(self.imported_modules)
         self.dependencies = dependencies
         self.ignore_missing = ignore_missing
 
     def find(self) -> List[str]:
-        logging.debug("Scanning for missing dependencies...")
+        logging.debug("\nScanning for missing dependencies...")
         missing_dependencies = self._get_missing_dependencies()
         return missing_dependencies
 
@@ -29,7 +32,9 @@ class MissingDependenciesFinder:
                     logging.debug(f"Identified module '{module.name}' as a missing dependency, but ignoring.")
                 else:
                     missing_dependencies.append(module.name)
-                    logging.debug(f"No package found to import module '{module.name}' from. Marked as a missing dependency.")
+                    logging.debug(
+                        f"No package found to import module '{module.name}' from. Marked as a missing dependency."
+                    )
         return missing_dependencies
 
     def _module_in_any_top_level(self, module: Module) -> bool:
@@ -45,4 +50,4 @@ class MissingDependenciesFinder:
         return False
 
     def _filter_out_standard_library_from(self, imported_modules: List[Module]):
-        return [module for module in imported_modules if not module.standard_library]   
+        return [module for module in imported_modules if not module.standard_library]

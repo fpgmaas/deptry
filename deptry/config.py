@@ -4,8 +4,16 @@ from typing import Any, Dict, List, Optional
 
 import toml
 
-DEFAULTS = {"ignore_obsolete": [], "ignore_missing": [], "ignore_transitive": [], "ignore_directories": [".venv","tests"], "ignore_notebooks": False, "skip_obsolete" : False,
-"skip_missing" : False, "skip_transitive" : False}
+DEFAULTS = {
+    "ignore_obsolete": [],
+    "ignore_missing": [],
+    "ignore_transitive": [],
+    "ignore_directories": [".venv", "tests"],
+    "ignore_notebooks": False,
+    "skip_obsolete": False,
+    "skip_missing": False,
+    "skip_transitive": False,
+}
 
 
 class Config:
@@ -24,11 +32,20 @@ class Config:
         skip_missing: Optional[bool],
         skip_transitive: Optional[bool],
         ignore_directories: Optional[List[str]],
-        ignore_notebooks: Optional[bool]
+        ignore_notebooks: Optional[bool],
     ) -> None:
         self._set_defaults()
         self._override_config_with_pyproject_toml()
-        self._override_config_with_cli_arguments(ignore_obsolete, ignore_missing, ignore_transitive, ignore_directories, ignore_notebooks, skip_obsolete, skip_missing, skip_transitive)
+        self._override_config_with_cli_arguments(
+            ignore_obsolete,
+            ignore_missing,
+            ignore_transitive,
+            ignore_directories,
+            ignore_notebooks,
+            skip_obsolete,
+            skip_missing,
+            skip_transitive,
+        )
 
     def _set_defaults(self) -> None:
         self.ignore_obsolete = DEFAULTS["ignore_obsolete"]
@@ -85,7 +102,7 @@ class Config:
         if ignore_obsolete:
             self.ignore_obsolete = ignore_obsolete
             self._log_changed_by_command_line_argument("ignore_obsolete", ignore_obsolete)
-    
+
         if ignore_missing:
             self.ignore_missing = ignore_missing
             self._log_changed_by_command_line_argument("ignore_missing", ignore_missing)

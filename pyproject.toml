@@ -74,6 +74,9 @@ ignore_directories = [
 ignore_transitive = [
   'urllib3'
 ]
+ignore_obsolete = [
+  'matplotlib'
+]
 
 [tool.poetry.scripts]
 deptry = "deptry.cli:deptry"

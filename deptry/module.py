@@ -1,5 +1,7 @@
 import logging
+import os
 import sys
+from pathlib import Path
 from typing import List, Set
 
 from isort.stdlibs.py37 import stdlib as stdlib37
@@ -9,9 +11,6 @@ from isort.stdlibs.py310 import stdlib as stdlib310
 
 from deptry.dependency import Dependency
 from deptry.utils import import_importlib_metadata
-
-import os
-from pathlib import Path
 
 metadata, PackageNotFoundError = import_importlib_metadata()
 
@@ -95,6 +94,6 @@ class Module:
             raise incorrect_version_error
 
     def _module_is_local_directory(self):
-        directories = [ f for f in os.listdir() if Path(f).is_dir() ]
-        local_modules = [subdir for subdir in directories if '__init__.py' in os.listdir(subdir)]
-        return self.name in local_modules    
+        directories = [f for f in os.listdir() if Path(f).is_dir()]
+        local_modules = [subdir for subdir in directories if "__init__.py" in os.listdir(subdir)]
+        return self.name in local_modules

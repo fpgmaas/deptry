@@ -4,6 +4,7 @@ from typing import List
 from deptry.dependency import Dependency
 from deptry.module import Module
 
+
 class ObsoleteDependenciesFinder:
     """
     Given a list of imported modules and a list of project dependencies, determine which ones are obsolete.
@@ -15,24 +16,27 @@ class ObsoleteDependenciesFinder:
     but if this is imported, the associated dependency `matplotlib` is not obsolete, even if `matplotlib` itself is not imported anywhere.
     """
 
-    def __init__(self, imported_modules: List[Module], dependencies: List[Dependency], ignore_obsolete: List[str] = []) -> None:
+    def __init__(
+        self, imported_modules: List[Module], dependencies: List[Dependency], ignore_obsolete: List[str] = []
+    ) -> None:
         self.imported_modules = imported_modules
         self.dependencies = dependencies
         self.ignore_obsolete = ignore_obsolete
 
     def find(self) -> List[str]:
-        logging.debug("Scanning for obsolete dependencies...")
+        logging.debug("\nScanning for obsolete dependencies...")
         obsolete_dependencies = []
 
         for dependency in self.dependencies:
-            if not self._dependency_found_in_imported_modules(dependency) and not self._any_of_the_top_levels_imported(dependency):
-                if dependency in self.ignore_obsolete:
+            if not self._dependency_found_in_imported_modules(dependency) and not self._any_of_the_top_levels_imported(
+                dependency
+            ):
+                if dependency.name in self.ignore_obsolete:
                     logging.debug(f"Dependency '{dependency.name}' found to be obsolete, but ignoring.")
                 else:
                     obsolete_dependencies.append(dependency)
                     logging.debug(f"Dependency '{dependency.name}' does not seem to be used.")
 
-        logging.debug("")
         return [dependency.name for dependency in obsolete_dependencies]
 
     def _dependency_found_in_imported_modules(self, dependency: Dependency) -> bool:

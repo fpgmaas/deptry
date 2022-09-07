@@ -1,18 +1,19 @@
 import logging
 from pathlib import Path
-from typing import List, Dict
+from typing import Dict, List
 
 from deptry.dependency_getter import DependencyGetter
 from deptry.import_parser import ImportParser
 from deptry.missing_dependencies_finder import MissingDependenciesFinder
+from deptry.module import Module
 from deptry.obsolete_dependencies_finder import ObsoleteDependenciesFinder
 from deptry.python_file_finder import PythonFileFinder
-from deptry.module import Module
 from deptry.transitive_dependencies_finder import TransitiveDependenciesFinder
 
 
 class Core:
-    def __init__(self, 
+    def __init__(
+        self,
         ignore_obsolete: List[str],
         ignore_missing: List[str],
         ignore_transitive: List[str],
@@ -20,8 +21,8 @@ class Core:
         skip_missing: bool,
         skip_transitive: bool,
         ignore_directories: List[str],
-        ignore_notebooks: bool
-        ) -> None:
+        ignore_notebooks: bool,
+    ) -> None:
         self.ignore_obsolete = ignore_obsolete
         self.ignore_missing = ignore_missing
         self.ignore_transitive = ignore_transitive
@@ -51,15 +52,15 @@ class Core:
 
         result = {}
         if not self.skip_obsolete:
-            result['obsolete'] = ObsoleteDependenciesFinder(
+            result["obsolete"] = ObsoleteDependenciesFinder(
                 imported_modules=imported_modules, dependencies=dependencies, ignore_obsolete=self.ignore_obsolete
             ).find()
         if not self.skip_missing:
-            result['missing'] = MissingDependenciesFinder(
+            result["missing"] = MissingDependenciesFinder(
                 imported_modules=imported_modules, dependencies=dependencies, ignore_missing=self.ignore_missing
             ).find()
         if not self.skip_transitive:
-            result['transitive'] = TransitiveDependenciesFinder(
+            result["transitive"] = TransitiveDependenciesFinder(
                 imported_modules=imported_modules, dependencies=dependencies, ignore_transitive=self.ignore_transitive
             ).find()
 
