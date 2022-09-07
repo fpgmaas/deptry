@@ -42,7 +42,7 @@ class ObsoleteDependenciesFinder:
     def _dependency_found_in_imported_modules(self, dependency: Dependency) -> bool:
         for module in self.imported_modules:
             if module.package == dependency.name:
-                logging.debug(f"Dependency '{dependency.name}' is used as module {module.package}.")
+                logging.debug(f"Dependency '{dependency.name}' is used as module '{module.name}'.")
                 return True
         else:
             return False
