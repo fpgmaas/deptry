@@ -151,7 +151,7 @@ def log_transitive_dependencies(dependencies: List[str], sep="\n\t") -> None:
         f"There are transitive dependencies that should be explicitly defined as dependencies in pyproject.toml:\n{sep}{sep.join(dependencies)}\n"
     )
     logging.info(
-        """They are currently imported but not specified directly as your project's dependencies. This issue also be caused 
+        """They are currently imported but not specified directly as your project's dependencies. This issue also be caused
 by a development dependency that is found to be used within the scanned Python files."""
     )
 
