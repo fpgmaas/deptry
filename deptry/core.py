@@ -1,12 +1,14 @@
 import logging
 from pathlib import Path
-from typing import List, Dict,
+from typing import List, Dict
 
 from deptry.dependency_getter import DependencyGetter
 from deptry.import_parser import ImportParser
 from deptry.missing_dependencies_finder import MissingDependenciesFinder
 from deptry.obsolete_dependencies_finder import ObsoleteDependenciesFinder
 from deptry.python_file_finder import PythonFileFinder
+from deptry.module import Module
+from deptry.transitive_dependencies_finder import TransitiveDependenciesFinder
 
 
 class Core:
@@ -45,16 +47,20 @@ class Core:
             ignore_directories=self.ignore_directories, ignore_notebooks=self.ignore_notebooks
         ).get_all_python_files_in(Path("."))
         imported_modules = ImportParser().get_imported_modules_for_list_of_files(all_python_files)
+        imported_modules = [Module(mod, dependencies) for mod in imported_modules]
 
-        obsolete_dependencies = ObsoleteDependenciesFinder(
-            imported_modules=imported_modules, dependencies=dependencies
-        ).find()
-        missing_dependencies = MissingDependenciesFinder(
-            imported_modules=imported_modules, dependencies=dependencies
-        ).find()
+        result = {}
+        if not self.skip_obsolete:
+            result['obsolete'] = ObsoleteDependenciesFinder(
+                imported_modules=imported_modules, dependencies=dependencies, ignore_obsolete=self.ignore_obsolete
+            ).find()
+        if not self.skip_missing:
+            result['missing'] = MissingDependenciesFinder(
+                imported_modules=imported_modules, dependencies=dependencies, ignore_missing=self.ignore_missing
+            ).find()
+        if not self.skip_transitive:
+            result['transitive'] = TransitiveDependenciesFinder(
+                imported_modules=imported_modules, dependencies=dependencies, ignore_transitive=self.ignore_transitive
+            ).find()
 
-        return {
-            'obsolete': obsolete_dependencies, 
-            'missing' : missing_dependencies['missing'], 
-            'transitive' : missing_dependencies['transitive']
-            }
+        return result

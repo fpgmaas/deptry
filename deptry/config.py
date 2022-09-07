@@ -4,7 +4,7 @@ from typing import Any, Dict, List, Optional
 
 import toml
 
-DEFAULTS = {"ignore_obsolete": None, "ignore_missing": None, "ignore_transitive": None, "ignore_directories": [".venv"], "ignore_notebooks": False, "skip_obsolete" : False,
+DEFAULTS = {"ignore_obsolete": [], "ignore_missing": [], "ignore_transitive": [], "ignore_directories": [".venv","tests"], "ignore_notebooks": False, "skip_obsolete" : False,
 "skip_missing" : False, "skip_transitive" : False}
 
 

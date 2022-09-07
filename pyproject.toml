@@ -69,10 +69,10 @@ exclude = [
 
 [tool.deptry]
 ignore_directories = [
-  '.venv','tests','docs'
+  '.venv','docs'
 ]
-ignore_dependencies = [
-  'importlib-metadata'
+ignore_transitive = [
+  'urllib3'
 ]
 
 [tool.poetry.scripts]

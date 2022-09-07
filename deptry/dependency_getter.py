@@ -16,6 +16,7 @@ class DependencyGetter:
     """
 
     def __init__(self) -> None:
+        pass
 
     def get(self):
         pyproject_toml_dependencies = self._get_pyproject_toml_dependencies()

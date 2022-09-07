@@ -4,33 +4,35 @@ from typing import List
 from deptry.dependency import Dependency
 from deptry.module import Module
 
-class MissingDependenciesFinder:
+class TransitiveDependenciesFinder:
     """
     Given a list of imported modules and a list of project dependencies, determine which ones are missing.
-    TODO make one class dependencyfinder that the other three inherit from
     """
 
-    def __init__(self, imported_modules: List[Module], dependencies: List[Dependency], ignore_missing: List[str]) -> None:
+    def __init__(self, imported_modules: List[Module], dependencies: List[Dependency], ignore_transitive: List[str] = []) -> None:
         self.imported_modules = imported_modules
         self.imported_modules = self._filter_out_standard_library_from(self.imported_modules)
         self.dependencies = dependencies
-        self.ignore_missing = ignore_missing
+        self.ignore_transitive = ignore_transitive
 
     def find(self) -> List[str]:
-        logging.debug("Scanning for missing dependencies...")
-        missing_dependencies = self._get_missing_dependencies()
-        return missing_dependencies
+        logging.debug("Scanning for transitive dependencies...")
+        transitive_dependencies = self._get_transitive_dependencies()
+        return transitive_dependencies
 
-    def _get_missing_dependencies(self):
-        missing_dependencies = []
+
+    def _get_transitive_dependencies(self):
+        transitive_dependencies = []
         for module in self.imported_modules:
-            if module.package is None and not self._module_in_any_top_level(module) and not module.local_module:
-                if module.name in self.ignore_missing:
-                    logging.debug(f"Identified module '{module.name}' as a missing dependency, but ignoring.")
+            if module.package is not None and not self._module_in_any_top_level(module) and not self._module_in_dependencies(module) and not module.local_module:
+                if module.name in self.ignore_transitive:
+                    logging.debug(f"Module '{module.package}' found to be a transitive dependency, but ignoring.")
                 else:
-                    missing_dependencies.append(module.name)
-                    logging.debug(f"No package found to import module '{module.name}' from. Marked as a missing dependency.")
-        return missing_dependencies
+                    transitive_dependencies.append(module.package)
+                    logging.debug(f"Dependency '{module.package}' marked as a transitive dependency.")
+
+
+        return transitive_dependencies
 
     def _module_in_any_top_level(self, module: Module) -> bool:
         for dependency in self.dependencies:
