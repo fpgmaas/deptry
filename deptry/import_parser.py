@@ -30,6 +30,7 @@ class ImportParser:
                 modules = self._get_imported_modules_from_ipynb(path_to_file)
             else:
                 modules = self._get_imported_modules_from_py(path_to_file)
+            modules = sorted(list(set(modules)))
             logging.debug(f"Found the following imports in {str(path_to_file)}: {modules}")
         except Exception as e:
             logging.warning(f"Warning: Parsing imports for file {str(path_to_file)} failed.")
