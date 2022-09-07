@@ -4,7 +4,6 @@ from typing import List
 from deptry.dependency import Dependency
 from deptry.module import Module
 
-
 class ObsoleteDependenciesFinder:
     """
     Given a list of imported modules and a list of project dependencies, determine which ones are obsolete.

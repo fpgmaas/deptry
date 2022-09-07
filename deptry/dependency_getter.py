@@ -15,14 +15,13 @@ class DependencyGetter:
         ignore_dependencies: A list of dependencies which should be omitted from the resulting list.
     """
 
-    def __init__(self, ignore_dependencies: List[str] = []) -> None:
-        self.ignore_dependencies = ignore_dependencies if ignore_dependencies else []
+    def __init__(self) -> None:
 
     def get(self):
         pyproject_toml_dependencies = self._get_pyproject_toml_dependencies()
         dependencies = []
         for dep in pyproject_toml_dependencies:
-            if not dep == "python" and dep not in self.ignore_dependencies:
+            if not dep == "python":
                 dependencies.append(Dependency(dep))
         self._log_dependencies(dependencies)
         return dependencies

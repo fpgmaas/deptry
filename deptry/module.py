@@ -10,6 +10,9 @@ from isort.stdlibs.py310 import stdlib as stdlib310
 from deptry.dependency import Dependency
 from deptry.utils import import_importlib_metadata
 
+import os
+from pathlib import Path
+
 metadata, PackageNotFoundError = import_importlib_metadata()
 
 
@@ -29,6 +32,7 @@ class Module:
         self.name = name
         self.standard_library = False
         self.package = self._get_package_name(dependencies)
+        self.local_module = self._module_is_local_directory()
 
     def _get_package_name(self, dependencies: List[Dependency]) -> str:
         try:
@@ -41,8 +45,8 @@ class Module:
                     f"Failed to find metadata for import `{self.name}` in current environment, but it was encountered in a dependency's top-level module names."
                 )
             else:
-                logging.warning(
-                    f"Warning: Failed to find corresponding package name for import `{self.name}` in current environment."
+                logging.debug(
+                    f"Failed to find corresponding package name for import `{self.name}` in current environment."
                 )
 
     def _module_found_in_top_levels(self, dependencies: List[Dependency]) -> bool:
@@ -76,14 +80,21 @@ class Module:
         )
         if sys.version_info[0] == 3:
             if sys.version_info[1] == 7:
-                return stdlib37
+                stdlib = stdlib37
             elif sys.version_info[1] == 8:
-                return stdlib38
+                stdlib = stdlib38
             elif sys.version_info[1] == 9:
-                return stdlib39
+                stdlib = stdlib39
             elif sys.version_info[1] == 10:
-                return stdlib310
+                stdlib = stdlib310
             else:
                 raise incorrect_version_error
+            stdlib.add("__future__")
+            return stdlib
         else:
             raise incorrect_version_error
+
+    def _module_is_local_directory(self):
+        directories = [ f for f in os.listdir() if Path(f).is_dir() ]
+        local_modules = [subdir for subdir in directories if '__init__.py' in os.listdir(subdir)]
+        return self.name in local_modules    
