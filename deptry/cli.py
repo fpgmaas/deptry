@@ -1,4 +1,3 @@
-from importlib.metadata import PackageNotFoundError, metadata
 import logging
 import pathlib
 import sys
@@ -8,7 +7,7 @@ import click
 
 from deptry.config import Config
 from deptry.core import Core
-from deptry.utils import run_within_dir, import_importlib_metadata
+from deptry.utils import import_importlib_metadata, run_within_dir
 
 
 @click.command()
@@ -86,7 +85,7 @@ def deptry(
     skip_transitive: bool,
     ignore_directories: List[str],
     ignore_notebooks: bool,
-    version: bool
+    version: bool,
 ) -> None:
 
     log_level = logging.DEBUG if verbose else logging.INFO
@@ -97,11 +96,11 @@ def deptry(
         sys.exit(0)
 
     if not directory:
-        logging.warning('Missing argument directory. E.g. `deptry .`')
+        logging.warning("Missing argument directory. E.g. `deptry .`")
         sys.exit(1)
 
-    with run_within_dir(directory):            
-        
+    with run_within_dir(directory):
+
         # Pass the CLI arguments to Config, if they are provided, otherwise pass 'None'.
         # This way, we can distinguish if a argument was actually passed by the user
         # (e.g. ignore_notebooks is 'False' by default).
@@ -198,6 +197,7 @@ For more information, see the documentation: https://fpgmaas.github.io/deptry/
 If you have encountered a bug, have a feature request or if you have any other feedback, please file a bug report at https://github.com/fpgmaas/deptry/issues/new/choose.
 """
     )
+
 
 def display_deptry_version():
     metadata, *_ = import_importlib_metadata()
