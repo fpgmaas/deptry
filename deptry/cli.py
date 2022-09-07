@@ -7,11 +7,11 @@ import click
 
 from deptry.config import Config
 from deptry.core import Core
-from deptry.utils import run_within_dir
+from deptry.utils import import_importlib_metadata, run_within_dir
 
 
 @click.command()
-@click.argument("directory", type=click.Path(exists=True))
+@click.argument("directory", type=click.Path(exists=True), required=False)
 @click.option(
     "--verbose",
     "-v",
@@ -69,6 +69,11 @@ from deptry.utils import run_within_dir
     is_flag=True,
     help="Boolean flag to specify if notebooks should be ignored while scanning for imports.",
 )
+@click.option(
+    "--version",
+    is_flag=True,
+    help="Display the current version and exit.",
+)
 def deptry(
     directory: pathlib.Path,
     verbose: bool,
@@ -80,11 +85,21 @@ def deptry(
     skip_transitive: bool,
     ignore_directories: List[str],
     ignore_notebooks: bool,
+    version: bool,
 ) -> None:
 
+    log_level = logging.DEBUG if verbose else logging.INFO
+    logging.basicConfig(level=log_level, handlers=[logging.StreamHandler()], format="%(message)s")
+
+    if version:
+        display_deptry_version()
+        sys.exit(0)
+
+    if not directory:
+        logging.warning("Missing argument directory. E.g. `deptry .`")
+        sys.exit(1)
+
     with run_within_dir(directory):
-        log_level = logging.DEBUG if verbose else logging.INFO
-        logging.basicConfig(level=log_level, handlers=[logging.StreamHandler()], format="%(message)s")
 
         # Pass the CLI arguments to Config, if they are provided, otherwise pass 'None'.
         # This way, we can distinguish if a argument was actually passed by the user
@@ -182,3 +197,8 @@ For more information, see the documentation: https://fpgmaas.github.io/deptry/
 If you have encountered a bug, have a feature request or if you have any other feedback, please file a bug report at https://github.com/fpgmaas/deptry/issues/new/choose.
 """
     )
+
+
+def display_deptry_version():
+    metadata, *_ = import_importlib_metadata()
+    logging.info(f'deptry {metadata.version("deptry")}')
