@@ -17,7 +17,7 @@ _deptry_ is a command line tool to check for issues with dependencies in a poetr
 - Misplaced dependencies: Development dependencies that should be included as regular dependencies.
 
 _deptry_ detects these issue by scanning the imported modules within all Python files in 
-a directory and it's subdirectories, and comparing those to the dependencies listed in `pyproject.toml`.
+a directory and it's subdirectories, and comparing those to the dependencies listed in _pyproject.toml_.
 
 ## Quickstart
 
@@ -37,11 +37,11 @@ poetry add --dev deptry
 
 ### Prerequisites
 
-In order to check for obsolete imports, _deptry_ requires a _pyproject.toml_ file to be present in the directory passed as the first argument, and it requires the corresponding environment to be activated.
+In order to check for dependency issues, _deptry_ requires a _pyproject.toml_ file to be present in the directory passed as the first argument, and it requires the corresponding environment to be activated.
 
 ### Usage
 
-To scan your project for obsolete imports, run
+To scan your project for dependency issues, run
 
 ```sh
 deptry .

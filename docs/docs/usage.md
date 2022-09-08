@@ -18,22 +18,25 @@ _deptry_ can be run with
 deptry .
 ```
 
+To determine issues with imported modules and dependencies, _deptry_ will scan the working directory and it's subdirectories recursively for `.py` and `.ipynb` files, so it can
+extract the imported modules from those files. Any files solely used for development purposes, such as files used for unit testing, should not be scanned. By default, the directories
+`.venv` and `tests` are excluded. 
+
+## Excluding files and directories
+ 
+To ignore other directories than the default `.venv` and `tests`, use the `--exclude` flag. Note that this overwrites the defaults, so to ignore
+both the `.venv` and `tests` directories and another directory, use the flag thrice:
+
+```sh
+deptry . --exclude .venv --exclude tests --exclude other_directory
+```
+
 ## Increased verbosity
 
 To show more details about the scanned python files, the imported modules found, and how deptry determined which dependencies are obsolete, add the `-v` flag:
 
 ```sh
 deptry . -v
-```
-
-## Exclude files and directories
-
-_deptry_ scans the working directory and it's subdirectories recursively for `.py` and `.ipynb` files to scan for import statements. Any files solely used for development purposes should not be scanned. 
-By default, the `.venv` and the `tests` directory are excluded. To ignore other directories, use the `--exclude` flag. Note that this overwrites the default, so to ignore
-both the `.venv` and `tests` directories and another directory, use the flag thrice:
-
-```sh
-deptry . --exclude .venv --exclude tests --exclude other_directory
 ```
 
 ## Skip checks for obsolete, transitive or misplaced development dependencies.

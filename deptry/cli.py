@@ -51,28 +51,29 @@ from deptry.utils import import_importlib_metadata, run_within_dir
     "--ignore-missing",
     "-im",
     multiple=True,
-    help="""Modules that should never be marked as having missing dependencies, even if the matching package for the import statement cannot be found.
+    help="""Modules that should never be marked as missing dependencies, even if the matching package for the import statement cannot be found.
     Can be used multiple times. For example; `deptry . -io foo -io bar`.""",
 )
 @click.option(
     "--ignore-transitive",
     "-it",
     multiple=True,
-    help="""Modules that should never be marked as 'missing due to transitive' even though deptry determines them to be transitive.
+    help="""Dependencies that should never be marked as an issue due to it being a transitive dependency, even though deptry determines them to be transitive.
     Can be used multiple times. For example; `deptry . -it foo -io bar`.""",
 )
 @click.option(
     "--ignore-misplaced-dev",
     "-id",
     multiple=True,
-    help="""Modules that should never be marked as 'missing due to transitive' even though deptry determines them to be transitive.
-    Can be used multiple times. For example; `deptry . -it foo -io bar`.""",
+    help="""Modules that should never be marked as a misplaced development dependency, even though it seems to not be used solely for development purposes.
+    Can be used multiple times. For example; `deptry . -id foo -id bar`.""",
 )
 @click.option(
     "--exclude",
     multiple=True,
     help="""Directories or files in which .py files should not be scanned for imports to determine if there are dependency issues.
-    Defaults to ['venv','tests']. Specify multiple directories by using this flag twice, e.g. `-id .venv -id tests -id other_dir`.""",
+    Defaults to ['venv','tests']. Specify multiple directories by using this flag multiple times, e.g. `--exclude .venv --exclude tests
+    --exclude other_dir`.""",
 )
 @click.option(
     "--ignore-notebooks",
