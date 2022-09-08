@@ -97,3 +97,9 @@ class Module:
         directories = [f for f in os.listdir() if Path(f).is_dir()]
         local_modules = [subdir for subdir in directories if "__init__.py" in os.listdir(subdir)]
         return self.name in local_modules
+
+    def is_local_module(self):
+        return self.local_module
+
+    def is_standard_library(self):
+        return self.standard_library

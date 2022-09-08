@@ -1,5 +1,5 @@
 from deptry.dependency import Dependency
-from deptry.missing_dependencies_finder import MissingDependenciesFinder
+from deptry.issue_finders.missing import MissingDependenciesFinder
 from deptry.module import Module
 
 
@@ -15,6 +15,6 @@ def test_simple_with_ignore():
     dependencies = []
     modules = [Module("foobar", dependencies)]
     deps = MissingDependenciesFinder(
-        imported_modules=modules, dependencies=dependencies, ignore_missing=["foobar"]
+        imported_modules=modules, dependencies=dependencies, list_to_ignore=["foobar"]
     ).find()
     assert len(deps) == 0
