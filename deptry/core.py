@@ -4,11 +4,9 @@ from typing import Dict, List
 
 from deptry.dependency_getter import DependencyGetter
 from deptry.import_parser import ImportParser
-from deptry.issue_finders.missing_dependencies_finder import MissingDependenciesFinder
-from deptry.issue_finders.obsolete_dependencies_finder import ObsoleteDependenciesFinder
-from deptry.issue_finders.transitive_dependencies_finder import (
-    TransitiveDependenciesFinder,
-)
+from deptry.issue_finders.missing import MissingDependenciesFinder
+from deptry.issue_finders.obsolete import ObsoleteDependenciesFinder
+from deptry.issue_finders.transitive import TransitiveDependenciesFinder
 from deptry.module import Module
 from deptry.python_file_finder import PythonFileFinder
 

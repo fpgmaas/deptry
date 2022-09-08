@@ -19,19 +19,26 @@ class MissingDependenciesFinder(IssueFinder):
 
     def find(self) -> List[str]:
         logging.debug("\nScanning for missing dependencies...")
-        missing_dependencies = self._get_missing_dependencies()
-        return missing_dependencies
-
-    def _get_missing_dependencies(self):
         missing_dependencies = []
         for module in self.imported_modules:
-            logging.info(f"Scanning module {module.name}...")
-            if module.package is None and not self._module_in_any_top_level(module) and not module.is_local_module():
-                if module.name in self.list_to_ignore:
-                    logging.debug(f"Identified module '{module.name}' as a missing dependency, but ignoring.")
-                else:
-                    missing_dependencies.append(module.name)
-                    logging.debug(
-                        f"No package found to import module '{module.name}' from. Marked as a missing dependency."
-                    )
+            logging.debug(f"Scanning module {module.name}...")
+            if self._is_missing(module):
+                missing_dependencies.append(module.name)
         return missing_dependencies
+
+    def _is_missing(self, module: Module) -> bool:
+
+        if (
+            module.package is None
+            and not self._module_in_any_top_level(module)
+            and not self._module_in_dependencies(module)
+            and not module.is_local_module()
+        ):
+            if module.name in self.list_to_ignore:
+                logging.debug(f"Identified module '{module.name}' as a missing dependency, but ignoring.")
+            else:
+                logging.debug(
+                    f"No package found to import module '{module.name}' from. Marked as a missing dependency."
+                )
+                return True
+        return False

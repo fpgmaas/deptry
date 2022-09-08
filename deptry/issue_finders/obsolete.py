@@ -25,15 +25,20 @@ class ObsoleteDependenciesFinder(IssueFinder):
     def find(self) -> List[str]:
         logging.debug("\nScanning for obsolete dependencies...")
         obsolete_dependencies = []
-
         for dependency in self.dependencies:
-            if not self._dependency_found_in_imported_modules(dependency) and not self._any_of_the_top_levels_imported(
-                dependency
-            ):
-                if dependency.name in self.list_to_ignore:
-                    logging.debug(f"Dependency '{dependency.name}' found to be obsolete, but ignoring.")
-                else:
-                    obsolete_dependencies.append(dependency)
-                    logging.debug(f"Dependency '{dependency.name}' does not seem to be used.")
+            logging.debug(f"Scanning module {dependency.name}...")
+            if self._is_obsolete(dependency):
+                obsolete_dependencies.append(dependency.name)
+        return obsolete_dependencies
 
-        return [dependency.name for dependency in obsolete_dependencies]
+    def _is_obsolete(self, dependency: Dependency) -> bool:
+
+        if not self._dependency_found_in_imported_modules(dependency) and not self._any_of_the_top_levels_imported(
+            dependency
+        ):
+            if dependency.name in self.list_to_ignore:
+                logging.debug(f"Dependency '{dependency.name}' found to be obsolete, but ignoring.")
+            else:
+                logging.debug(f"Dependency '{dependency.name}' does not seem to be used.")
+                return True
+        return False
