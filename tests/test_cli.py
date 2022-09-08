@@ -45,7 +45,7 @@ def test_cli_ignore_flags(dir_with_venv_installed):
 def test_cli_skip_flags(dir_with_venv_installed):
     with run_within_dir(str(dir_with_venv_installed)):
         result = subprocess.run(
-            shlex.split("poetry run deptry . --skip-obsolete --skip-missing --skip-develop --skip-transitive"),
+            shlex.split("poetry run deptry . --skip-obsolete --skip-missing --skip-misplaced-dev --skip-transitive"),
             capture_output=True,
             text=True,
         )

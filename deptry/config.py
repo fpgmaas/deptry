@@ -8,13 +8,13 @@ DEFAULTS = {
     "ignore_obsolete": [],
     "ignore_missing": [],
     "ignore_transitive": [],
-    "ignore_develop": [],
+    "ignore_misplaced_dev": [],
     "exclude": [".venv", "tests"],
     "ignore_notebooks": False,
     "skip_obsolete": False,
     "skip_missing": False,
     "skip_transitive": False,
-    "skip_develop": False,
+    "skip_misplaced_dev": False,
 }
 
 
@@ -30,11 +30,11 @@ class Config:
         ignore_obsolete: Optional[List[str]],
         ignore_missing: Optional[List[str]],
         ignore_transitive: Optional[List[str]],
-        ignore_develop: Optional[List[str]],
+        ignore_misplaced_dev: Optional[List[str]],
         skip_obsolete: Optional[bool],
         skip_missing: Optional[bool],
         skip_transitive: Optional[bool],
-        skip_develop: Optional[bool],
+        skip_misplaced_dev: Optional[bool],
         exclude: Optional[List[str]],
         ignore_notebooks: Optional[bool],
     ) -> None:
@@ -44,26 +44,26 @@ class Config:
             ignore_obsolete=ignore_obsolete,
             ignore_missing=ignore_missing,
             ignore_transitive=ignore_transitive,
-            ignore_develop=ignore_develop,
+            ignore_misplaced_dev=ignore_misplaced_dev,
             exclude=exclude,
             ignore_notebooks=ignore_notebooks,
             skip_obsolete=skip_obsolete,
             skip_missing=skip_missing,
             skip_transitive=skip_transitive,
-            skip_develop=skip_develop,
+            skip_misplaced_dev=skip_misplaced_dev,
         )
 
     def _set_defaults(self) -> None:
         self.ignore_obsolete = DEFAULTS["ignore_obsolete"]
         self.ignore_missing = DEFAULTS["ignore_missing"]
         self.ignore_transitive = DEFAULTS["ignore_transitive"]
-        self.ignore_develop = DEFAULTS["ignore_develop"]
+        self.ignore_misplaced_dev = DEFAULTS["ignore_misplaced_dev"]
         self.exclude = DEFAULTS["exclude"]
         self.ignore_notebooks = DEFAULTS["ignore_notebooks"]
         self.skip_obsolete = DEFAULTS["skip_obsolete"]
         self.skip_missing = DEFAULTS["skip_missing"]
         self.skip_transitive = DEFAULTS["skip_transitive"]
-        self.skip_develop = DEFAULTS["skip_develop"]
+        self.skip_misplaced_dev = DEFAULTS["skip_misplaced_dev"]
 
     def _override_config_with_pyproject_toml(self) -> None:
         pyproject_toml_config = self._read_configuration_from_pyproject_toml()
@@ -71,11 +71,11 @@ class Config:
             self._override_with_toml_argument("ignore_obsolete", List[str], pyproject_toml_config)
             self._override_with_toml_argument("ignore_missing", List[str], pyproject_toml_config)
             self._override_with_toml_argument("ignore_transitive", List[str], pyproject_toml_config)
-            self._override_with_toml_argument("ignore_develop", List[str], pyproject_toml_config)
+            self._override_with_toml_argument("ignore_misplaced_dev", List[str], pyproject_toml_config)
             self._override_with_toml_argument("skip_missing", List[str], pyproject_toml_config)
             self._override_with_toml_argument("skip_obsolete", List[str], pyproject_toml_config)
             self._override_with_toml_argument("skip_transitive", List[str], pyproject_toml_config)
-            self._override_with_toml_argument("skip_develop", List[str], pyproject_toml_config)
+            self._override_with_toml_argument("skip_misplaced_dev", List[str], pyproject_toml_config)
             self._override_with_toml_argument("exclude", List[str], pyproject_toml_config)
             self._override_with_toml_argument("ignore_notebooks", List[str], pyproject_toml_config)
 
@@ -102,13 +102,13 @@ class Config:
         ignore_obsolete: Optional[List[str]],
         ignore_missing: Optional[List[str]],
         ignore_transitive: Optional[List[str]],
-        ignore_develop: Optional[List[str]],
+        ignore_misplaced_dev: Optional[List[str]],
         exclude: Optional[List[str]],
         ignore_notebooks: Optional[bool],
         skip_obsolete: Optional[bool],
         skip_missing: Optional[bool],
         skip_transitive: Optional[bool],
-        skip_develop: Optional[bool],
+        skip_misplaced_dev: Optional[bool],
     ) -> None:
 
         if ignore_obsolete:
@@ -123,9 +123,9 @@ class Config:
             self.ignore_transitive = ignore_transitive
             self._log_changed_by_command_line_argument("ignore_transitive", ignore_transitive)
 
-        if ignore_develop:
-            self.ignore_develop = ignore_develop
-            self._log_changed_by_command_line_argument("ignore_develop", ignore_develop)
+        if ignore_misplaced_dev:
+            self.ignore_misplaced_dev = ignore_misplaced_dev
+            self._log_changed_by_command_line_argument("ignore_misplaced_dev", ignore_misplaced_dev)
 
         if skip_obsolete:
             self.skip_obsolete = skip_obsolete
@@ -139,9 +139,9 @@ class Config:
             self.skip_transitive = skip_transitive
             self._log_changed_by_command_line_argument("skip_transitive", skip_transitive)
 
-        if skip_develop:
-            self.skip_develop = skip_develop
-            self._log_changed_by_command_line_argument("skip_develop", skip_develop)
+        if skip_misplaced_dev:
+            self.skip_misplaced_dev = skip_misplaced_dev
+            self._log_changed_by_command_line_argument("skip_misplaced_dev", skip_misplaced_dev)
 
         if exclude:
             self.exclude = exclude

@@ -5,17 +5,18 @@ from deptry.dependency import Dependency
 from deptry.module import Module
 
 
-class DevDependenciesFinder:
+class MisplacedDevDependenciesFinder:
     """
-    Given a list of imported modules and a list of project dependencies, determine which ones are transitive.
+    Given a list of imported modules and a list of project dependencies, determine which development dependencies
+    should be regular dependencies.
     """
 
     def __init__(
-        self, imported_modules: List[Module], dependencies: List[Dependency], ignore_develop: List[str] = []
+        self, imported_modules: List[Module], dependencies: List[Dependency], ignore_misplaced_dev: List[str] = []
     ) -> None:
         self.imported_modules = imported_modules
         self.dependencies = dependencies
-        self.ignore_develop = ignore_develop
+        self.ignore_misplaced_dev = ignore_misplaced_dev
 
     def find(self) -> List[str]:
         logging.debug("\nScanning for incorrect development dependencies...")
@@ -28,9 +29,9 @@ class DevDependenciesFinder:
 
     def _is_development_dependency(self, module: Module) -> bool:
         if module.dev_dependency:
-            if module.name in self.ignore_develop:
+            if module.name in self.ignore_misplaced_dev:
                 logging.debug(f"Module '{module.package}' found to be a development dependency, but ignoring.")
             else:
-                logging.debug(f"Dependency '{module.package}' marked as a transitive dependency.")
+                logging.debug(f"Dependency '{module.package}' marked as a misplaced development dependency.")
                 return True
         return False
