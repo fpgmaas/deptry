@@ -1,6 +1,6 @@
 from deptry.dependency import Dependency
+from deptry.issue_finders.obsolete import ObsoleteDependenciesFinder
 from deptry.module import Module
-from deptry.obsolete_dependencies_finder import ObsoleteDependenciesFinder
 
 
 def test_simple():
@@ -15,7 +15,7 @@ def test_simple_with_ignore():
     dependencies = [Dependency("click"), Dependency("toml")]
     modules = [Module("toml", dependencies)]
     deps = ObsoleteDependenciesFinder(
-        imported_modules=modules, dependencies=dependencies, ignore_obsolete=["click"]
+        imported_modules=modules, dependencies=dependencies, list_to_ignore=["click"]
     ).find()
     assert len(deps) == 0
 

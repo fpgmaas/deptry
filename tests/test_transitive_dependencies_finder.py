@@ -1,6 +1,6 @@
 from deptry.dependency import Dependency
+from deptry.issue_finders.transitive import TransitiveDependenciesFinder
 from deptry.module import Module
-from deptry.transitive_dependencies_finder import TransitiveDependenciesFinder
 
 
 def test_simple():
@@ -18,6 +18,6 @@ def test_simple_with_ignore():
     dependencies = []
     modules = [Module("foobar", dependencies)]
     deps = TransitiveDependenciesFinder(
-        imported_modules=modules, dependencies=dependencies, ignore_transitive=["foobar"]
+        imported_modules=modules, dependencies=dependencies, list_to_ignore=["foobar"]
     ).find()
     assert len(deps) == 0
