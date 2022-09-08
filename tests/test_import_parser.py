@@ -69,3 +69,8 @@ class MyClass:
 """
     )
     assert set(imported_modules) == set(["numpy", "pandas", "click"])
+
+
+def test_import_parser_relative():
+    imported_modules = ImportParser().get_imported_modules_from_str("""from . import foo""")
+    assert set(imported_modules) == set([])

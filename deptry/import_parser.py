@@ -18,6 +18,7 @@ class ImportParser:
         pass
 
     def get_imported_modules_for_list_of_files(self, list_of_files: List[Path]) -> List[str]:
+        logging.info(f"Scanning {len(list_of_files)} files...")
         modules_per_file = [self.get_imported_modules_from_file(file) for file in list_of_files]
         all_modules = self._flatten_list(modules_per_file)
         unique_modules = sorted(list(set(all_modules)))
@@ -76,7 +77,8 @@ class ImportParser:
             if isinstance(node, ast.Import):
                 modules += [x.name.split(".")[0] for x in node.names]
             elif isinstance(node, ast.ImportFrom):
-                modules.append(node.module.split(".")[0])  # type: ignore
+                if node.module:  # nodes for imports like `from . import foo` do not have a module attribute.
+                    modules.append(node.module.split(".")[0])  # type: ignore
         return modules
 
     @staticmethod
