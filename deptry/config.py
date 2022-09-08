@@ -1,8 +1,7 @@
 import logging
-from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-import toml
+from deptry.utils import load_pyproject_toml
 
 DEFAULTS = {
     "ignore_obsolete": [],
@@ -68,27 +67,26 @@ class Config:
     def _override_config_with_pyproject_toml(self) -> None:
         pyproject_toml_config = self._read_configuration_from_pyproject_toml()
         if pyproject_toml_config:
-            self._override_with_toml_argument("ignore_obsolete", List[str], pyproject_toml_config)
-            self._override_with_toml_argument("ignore_missing", List[str], pyproject_toml_config)
-            self._override_with_toml_argument("ignore_transitive", List[str], pyproject_toml_config)
-            self._override_with_toml_argument("ignore_misplaced_dev", List[str], pyproject_toml_config)
-            self._override_with_toml_argument("skip_missing", List[str], pyproject_toml_config)
-            self._override_with_toml_argument("skip_obsolete", List[str], pyproject_toml_config)
-            self._override_with_toml_argument("skip_transitive", List[str], pyproject_toml_config)
-            self._override_with_toml_argument("skip_misplaced_dev", List[str], pyproject_toml_config)
-            self._override_with_toml_argument("exclude", List[str], pyproject_toml_config)
-            self._override_with_toml_argument("ignore_notebooks", List[str], pyproject_toml_config)
+            self._override_with_toml_argument("ignore_obsolete", pyproject_toml_config)
+            self._override_with_toml_argument("ignore_missing", pyproject_toml_config)
+            self._override_with_toml_argument("ignore_transitive", pyproject_toml_config)
+            self._override_with_toml_argument("ignore_misplaced_dev", pyproject_toml_config)
+            self._override_with_toml_argument("skip_missing", pyproject_toml_config)
+            self._override_with_toml_argument("skip_obsolete", pyproject_toml_config)
+            self._override_with_toml_argument("skip_transitive", pyproject_toml_config)
+            self._override_with_toml_argument("skip_misplaced_dev", pyproject_toml_config)
+            self._override_with_toml_argument("exclude", pyproject_toml_config)
+            self._override_with_toml_argument("ignore_notebooks", pyproject_toml_config)
 
     def _read_configuration_from_pyproject_toml(self) -> Optional[Dict]:
+        pyproject_data = load_pyproject_toml()
         try:
-            pyproject_text = Path("./pyproject.toml").read_text()
-            pyproject_data = toml.loads(pyproject_text)
             return pyproject_data["tool"]["deptry"]
-        except:  # noqa
+        except KeyError:  # noqa
             logging.debug("No configuration for deptry was found in pyproject.toml.")
             return None
 
-    def _override_with_toml_argument(self, argument: str, expected_type: Any, pyproject_toml_config: Dict) -> None:
+    def _override_with_toml_argument(self, argument: str, pyproject_toml_config: Dict) -> None:
         """
         If argument is found in pyproject.toml, override the default argument with the found value.
         """

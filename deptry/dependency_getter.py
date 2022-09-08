@@ -1,10 +1,8 @@
 import logging
-from pathlib import Path
-from typing import Dict, List
-
-import toml
+from typing import List
 
 from deptry.dependency import Dependency
+from deptry.utils import load_pyproject_toml
 
 
 class DependencyGetter:
@@ -31,18 +29,22 @@ class DependencyGetter:
         self._log_dependencies(dependencies)
         return dependencies
 
-    def _load_pyproject_toml(self) -> Dict:
-        pyproject_text = Path("./pyproject.toml").read_text()
-        return toml.loads(pyproject_text)
-
     def _get_pyproject_toml_dependencies(self) -> List[str]:
-        pyproject_data = self._load_pyproject_toml()
+        pyproject_data = load_pyproject_toml()
         dependencies = list(pyproject_data["tool"]["poetry"]["dependencies"].keys())
         return sorted(dependencies)
 
     def _get_pyproject_toml_dev_dependencies(self) -> List[str]:
+        """
+        These can be either under;
+
+        [tool.poetry.dev-dependencies]
+        [tool.poetry.group.dev.dependencies]
+
+        or both.
+        """
         dev_dependencies = {}
-        pyproject_data = self._load_pyproject_toml()
+        pyproject_data = load_pyproject_toml()
         try:
             dev_dependencies = {**pyproject_data["tool"]["poetry"]["dev-dependencies"], **dev_dependencies}
         except KeyError:

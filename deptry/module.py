@@ -52,22 +52,22 @@ class Module:
 class ModuleBuilder:
     def __init__(self, name: str, dependencies: List[Dependency] = [], dev_dependencies: List[Dependency] = []) -> None:
         """
-        A Module object that represents an imported module. If the metadata field 'Name' is found for a module, it's added as the associated package name.
-        Otherwise, check if it is part of the standard library.
+        Create a Module object that represents an imported module.
 
-        If the metadata is not found and it's not part of the standard library, check if the module is equal to any of the top-level module names
-        of any of the installed dependencies. If so, it's not added as the Module's package name (since it's ambiguous, e.g. 'google' is the top-level
-        name for both 'google-cloud-bigquery' and 'google-cloud-auth', so which one is the associated package for the module 'google'?) However,
-        we do know that this information can be used in detecting obsolete dependencies, so there is no need to raise a warning.
-
-        If nothing is found, a warning is logged to inform the user that there is no information available about this package.
-        TODO: Move name arg to build func
+        Args:
+            name: The name of the imported module
+            dependencies: A list of the project's dependencies
+            dependencies: A list of the project's development dependencies
         """
         self.name = name
         self.dependencies = dependencies
         self.dev_dependencies = dev_dependencies
 
     def build(self) -> Module:
+        """
+        Build the Module object. First check if the module is in the standard library or if it's a local module,
+        in that case many checks can be omitted.
+        """
 
         standard_library = self._in_standard_library()
         if standard_library:
@@ -92,21 +92,25 @@ class ModuleBuilder:
                 )
 
     def _get_package_name(self) -> str:
+        """
+        Most packages simply have a field called "Name" in their metadata. This method extracts that field.
+        """
         try:
-            return self._extract_package_name_from_metadata()
+            return metadata.metadata(self.name)["Name"]
         except PackageNotFoundError:
             pass
 
     def _get_corresponding_top_levels(self, dependencies: List[Dependency]) -> bool:
+        """
+        Not all modules have associated metadata. e.g. `mpl_toolkits` from `matplotlib` has no metadata. However, it is in the
+        top-level module names of package matplotlib. This function extracts all dependencies which have this module in their top-level module names.
+        This can be multiple. e.g. `google-cloud-api` and `google-cloud-bigquery` both have `google` in their top-level module names.
+        """
         return [
             dependency.name
             for dependency in dependencies
             if dependency.top_levels and self.name in dependency.top_levels
         ]
-
-    def _extract_package_name_from_metadata(self) -> str:
-        package = metadata.metadata(self.name)["Name"]
-        return package
 
     def _in_standard_library(self):
         if self.name in self._get_stdlib_packages():
@@ -127,18 +131,28 @@ class ModuleBuilder:
                 stdlib = stdlib310
             else:
                 raise incorrect_version_error
-            stdlib.add("__future__")
+            stdlib.add("__future__")  # Not sure why this is omitted explicitly in isort's source code.
             return stdlib
         else:
             raise incorrect_version_error
 
     def _is_local_directory(self):
+        """
+        Check if the module is a local directory with an __init__.py file.
+        """
         directories = [f for f in os.listdir() if Path(f).is_dir()]
         local_modules = [subdir for subdir in directories if "__init__.py" in os.listdir(subdir)]
         return self.name in local_modules
 
     def _has_matching_dependency(self, package, top_levels):
+        """
+        Check if this module is provided by a listed dependency. This is the case if either the package name that was found in the metadata is
+        listed as a dependency, or if the we found a top-level module name match earlier.
+        """
         return (package in [dep.name for dep in self.dependencies]) or len(top_levels) > 0
 
     def _has_matching_dev_dependency(self, package, dev_top_levels):
+        """
+        Same as _has_matching_dependency, but for development dependencies.
+        """
         return (package in [dep.name for dep in self.dev_dependencies]) or len(dev_top_levels) > 0
