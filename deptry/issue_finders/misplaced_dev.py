@@ -8,7 +8,9 @@ from deptry.module import Module
 class MisplacedDevDependenciesFinder:
     """
     Given a list of imported modules and a list of project dependencies, determine which development dependencies
-    should be regular dependencies.
+    should actually be regular dependencies.
+
+    This is the case for any development dependency encountered, since files solely used for development purposes should be excluded from scanning.
     """
 
     def __init__(
@@ -30,7 +32,9 @@ class MisplacedDevDependenciesFinder:
     def _is_development_dependency(self, module: Module) -> bool:
         if module.dev_dependency:
             if module.name in self.ignore_misplaced_dev:
-                logging.debug(f"Module '{module.package}' found to be a development dependency, but ignoring.")
+                logging.debug(
+                    f"Module '{module.package}' found to be a misplaced development dependency, but ignoring."
+                )
             else:
                 logging.debug(f"Dependency '{module.package}' marked as a misplaced development dependency.")
                 return True

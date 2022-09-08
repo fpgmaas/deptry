@@ -29,4 +29,7 @@ class PythonFileFinder:
         return [path for path in directory.rglob("*.ipynb")]
 
     def _remove_directories_to_ignore(self, all_py_files: List[Path]) -> List[Path]:
+        """
+        Simply use startswith() to determine which directories and files to exclude. This should definitely be improved in the future.
+        """
         return [path for path in all_py_files if not any([str(path).startswith(pattern) for pattern in self.exclude])]

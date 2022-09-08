@@ -8,6 +8,13 @@ from deptry.module import Module
 class TransitiveDependenciesFinder:
     """
     Given a list of imported modules and a list of project dependencies, determine which ones are transitive.
+    This is done by elimination; if a module uses an installed package but the package is;
+    - not a local directory
+    - not in standard library
+    - not a dependency
+    - not a dev dependency
+
+    Then it must be a transitive dependency.
     """
 
     def __init__(

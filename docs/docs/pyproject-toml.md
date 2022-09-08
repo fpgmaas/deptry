@@ -32,6 +32,8 @@ ignore_transitive = [
 skip_missing = true
 ```
 
+For an explanation of the arguments run `deptry --help` or see [Usage and Configuration](./usage.md).
+
 ## Lookup hierarchy
 
 Command-line options have defaults that you can see with `deptry --help`. A _pyproject.toml_ can override those defaults. Finally, options provided by the user on the command line override both.
