@@ -9,8 +9,8 @@ from deptry.utils import run_within_dir
 
 @pytest.fixture(scope="session")
 def dir_with_venv_installed(tmp_path_factory):
-    tmp_path_proj = tmp_path_factory.getbasetemp()
-    shutil.copytree("tests/data/example_project", str(tmp_path_proj), dirs_exist_ok=True)
+    tmp_path_proj = tmp_path_factory.getbasetemp() / 'example_project'
+    shutil.copytree("tests/data/example_project", str(tmp_path_proj))
     with run_within_dir(str(tmp_path_proj)):
         subprocess.check_call(shlex.split("poetry install --no-interaction --no-root")) == 0
     return tmp_path_proj
