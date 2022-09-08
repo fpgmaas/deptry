@@ -18,7 +18,7 @@ _deptry_ can be run with
 deptry .
 ```
 
-To determine issues with imported modules and dependencies, _deptry_ will scan the working directory and it's subdirectories recursively for `.py` and `.ipynb` files, so it can
+To determine issues with imported modules and dependencies, _deptry_ will scan the working directory and its subdirectories recursively for `.py` and `.ipynb` files, so it can
 extract the imported modules from those files. Any files solely used for development purposes, such as files used for unit testing, should not be scanned. By default, the directories
 `.venv` and `tests` are excluded. 
 

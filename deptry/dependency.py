@@ -8,7 +8,7 @@ metadata, PackageNotFoundError = import_importlib_metadata()
 
 class Dependency:
     """
-    A project's dependency with it's associated top-level module names. There are stored in the metadata's top_level.txt.
+    A project's dependency with its associated top-level module names. There are stored in the metadata's top_level.txt.
     An example of this is 'matplotlib' with top-levels: ['matplotlib', 'mpl_toolkits', 'pylab'].
     """
 
