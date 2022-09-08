@@ -2,59 +2,63 @@ import shlex
 import shutil
 import subprocess
 
+import pytest
+
 from deptry.utils import run_within_dir
 
 
-def test_cli_returns_error(tmp_path):
-    """
-    data/projects/project_with_obsolete has obsolete dependencies.
-    Verify that `deptry` returns status code 1 and verify that it finds the right obsolete dependencies.
-    """
-
-    tmp_path_proj = tmp_path / "project_with_obsolete"
-    shutil.copytree("tests/data/projects/project_with_obsolete", tmp_path_proj)
-
+@pytest.fixture(scope="session")
+def dir_with_venv_installed(tmp_path_factory):
+    tmp_path_proj = tmp_path_factory.getbasetemp() / "example_project"
+    shutil.copytree("tests/data/example_project", str(tmp_path_proj))
     with run_within_dir(str(tmp_path_proj)):
         subprocess.check_call(shlex.split("poetry install --no-interaction --no-root")) == 0
+    return tmp_path_proj
+
+
+def test_cli_returns_error(dir_with_venv_installed):
+    with run_within_dir(str(dir_with_venv_installed)):
         result = subprocess.run(shlex.split("poetry run deptry ."), capture_output=True, text=True)
         assert result.returncode == 1
-        assert "pyproject.toml contains obsolete dependencies:\n\n\tisort\n\n" in result.stderr
+        assert "pyproject.toml contains obsolete dependencies:\n\n\tisort\n\trequests\n\n" in result.stderr
+        assert "There are dependencies missing from pyproject.toml:\n\n\twhite\n\n" in result.stderr
+        assert "There are imported modules from development dependencies detected:\n\n\tblack\n\n" in result.stderr
 
+
+def test_cli_ignore_notebooks(dir_with_venv_installed):
+    with run_within_dir(str(dir_with_venv_installed)):
         result = subprocess.run(shlex.split("poetry run deptry . --ignore-notebooks"), capture_output=True, text=True)
         assert result.returncode == 1
-        assert "pyproject.toml contains obsolete dependencies:\n\n\tisort\n\ttoml\n\n" in result.stderr
+        assert "pyproject.toml contains obsolete dependencies:\n\n\tisort\n\trequests\n\ttoml\n\n" in result.stderr
 
 
-def test_cli_returns_no_error(tmp_path):
-    """
-    data/projects/project_without_obsolete has no obsolete dependencies.
-    Verify that `deptry` completes with status code 0.
-    """
-
-    tmp_path_proj = tmp_path / "project_without_obsolete"
-    shutil.copytree("tests/data/projects/project_without_obsolete", tmp_path_proj)
-
-    with run_within_dir(str(tmp_path_proj)):
-        subprocess.check_call(shlex.split("poetry install --no-interaction --no-root")) == 0
-        result = subprocess.run(shlex.split("poetry run deptry ."), capture_output=True, text=True)
+def test_cli_ignore_flags(dir_with_venv_installed):
+    with run_within_dir(str(dir_with_venv_installed)):
+        result = subprocess.run(
+            shlex.split("poetry run deptry . -io isort -io pkginfo -io requests -im white -id black"),
+            capture_output=True,
+            text=True,
+        )
         assert result.returncode == 0
 
 
-def test_cli_argument_overwrites_pyproject_toml_argument(tmp_path):
-    """
-    The cli argument should overwrite the pyproject.toml argument. In project_with_obsolete, pyproject.toml specifies
-    to ignore 'pkginfo' and the obsolete dependencies are ['isort','toml'].
-    Verify that this is changed to ['isort','pkginfo'] if we run the command with `-io toml` (so cli argument overwrites the toml argument)
-    """
+def test_cli_skip_flags(dir_with_venv_installed):
+    with run_within_dir(str(dir_with_venv_installed)):
+        result = subprocess.run(
+            shlex.split("poetry run deptry . --skip-obsolete --skip-missing --skip-misplaced-dev --skip-transitive"),
+            capture_output=True,
+            text=True,
+        )
+        assert result.returncode == 0
 
-    tmp_path_proj = tmp_path / "project_with_obsolete"
-    shutil.copytree("tests/data/projects/project_with_obsolete", tmp_path_proj)
 
-    with run_within_dir(str(tmp_path_proj)):
-        subprocess.check_call(shlex.split("poetry install --no-interaction --no-root")) == 0
-        result = subprocess.run(shlex.split("poetry run deptry . -io toml"), capture_output=True, text=True)
+def test_cli_exclude(dir_with_venv_installed):
+    with run_within_dir(str(dir_with_venv_installed)):
+        result = subprocess.run(
+            shlex.split("poetry run deptry . --exclude src/notebook.ipynb "), capture_output=True, text=True
+        )
         assert result.returncode == 1
-        assert "pyproject.toml contains obsolete dependencies:\n\n\tisort\n\tpkginfo\n\n" in result.stderr
+        assert "pyproject.toml contains obsolete dependencies:\n\n\tisort\n\trequests\n\ttoml\n\n" in result.stderr
 
 
 def test_cli_help():

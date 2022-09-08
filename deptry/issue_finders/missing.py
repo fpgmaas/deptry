@@ -2,20 +2,20 @@ import logging
 from typing import List
 
 from deptry.dependency import Dependency
-from deptry.issue_finders.issue_finder import IssueFinder
 from deptry.module import Module
 
 
-class MissingDependenciesFinder(IssueFinder):
+class MissingDependenciesFinder:
     """
     Given a list of imported modules and a list of project dependencies, determine which ones are missing.
-    TODO make one class dependencyfinder that the other three inherit from
     """
 
     def __init__(
-        self, imported_modules: List[Module], dependencies: List[Dependency], list_to_ignore: List[str] = []
+        self, imported_modules: List[Module], dependencies: List[Dependency], ignore_missing: List[str] = []
     ) -> None:
-        super().__init__(imported_modules, dependencies, list_to_ignore)
+        self.imported_modules = imported_modules
+        self.dependencies = dependencies
+        self.ignore_missing = ignore_missing
 
     def find(self) -> List[str]:
         logging.debug("\nScanning for missing dependencies...")
@@ -28,13 +28,8 @@ class MissingDependenciesFinder(IssueFinder):
 
     def _is_missing(self, module: Module) -> bool:
 
-        if (
-            module.package is None
-            and not self._module_in_any_top_level(module)
-            and not self._module_in_dependencies(module)
-            and not module.is_local_module()
-        ):
-            if module.name in self.list_to_ignore:
+        if module.package is None and not module.dependency and not module.dev_dependency and not module.local_module:
+            if module.name in self.ignore_missing:
                 logging.debug(f"Identified module '{module.name}' as a missing dependency, but ignoring.")
             else:
                 logging.debug(

@@ -4,20 +4,22 @@
 
 _deptry_ can be configured by adding a `[tool.deptry]` section to _pyproject.toml_. The possible arguments are:
 
-- `ignore_directories`: `List`
+- `exclude`: `List`
 - `ignore_notebooks`: `bool`
 - `ignore_obsolete`: `List`
 - `ignore_missing`: `List`
+- `ignore_misplaced_dev`: `List`
 - `ignore_transitive`: `List`
 - `skip_obsolete`: `bool`
 - `skip_missing`: `bool`
 - `skip_transitive`: `bool`
+- `skip_misplaced_dev`: `bool`
 
 An example of such a section is given below.
 
 ```
 [tool.deptry]
-ignore_directories = [
+exclude = [
   '.venv','tests','docs'
 ]
 ignore_obsolete = [
