@@ -34,6 +34,11 @@ from deptry.utils import import_importlib_metadata, run_within_dir
     help="Boolean flag to specify if deptry should skip scanning the project for transitive dependencies.",
 )
 @click.option(
+    "--skip-misplaced-dev",
+    is_flag=True,
+    help="Boolean flag to specify if deptry should skip scanning the project for development dependencies that should be regular dependencies.",
+)
+@click.option(
     "--ignore-obsolete",
     "-io",
     multiple=True,
@@ -46,22 +51,29 @@ from deptry.utils import import_importlib_metadata, run_within_dir
     "--ignore-missing",
     "-im",
     multiple=True,
-    help="""Modules that should never be marked as having missing dependencies, even if the matching package for the import statement cannot be found.
+    help="""Modules that should never be marked as missing dependencies, even if the matching package for the import statement cannot be found.
     Can be used multiple times. For example; `deptry . -io foo -io bar`.""",
 )
 @click.option(
     "--ignore-transitive",
     "-it",
     multiple=True,
-    help="""Modules that should never be marked as 'missing due to transitive' even though deptry determines them to be transitive.
+    help="""Dependencies that should never be marked as an issue due to it being a transitive dependency, even though deptry determines them to be transitive.
     Can be used multiple times. For example; `deptry . -it foo -io bar`.""",
 )
 @click.option(
-    "--ignore-directories",
+    "--ignore-misplaced-dev",
     "-id",
     multiple=True,
-    help="""Directories in which .py files should not be scanned for imports to determine if dependencies are obsolete, missing or transitive.
-    Defaults to ['venv','tests']. Specify multiple directories by using this flag twice, e.g. `-id .venv -id tests -id other_dir`.""",
+    help="""Modules that should never be marked as a misplaced development dependency, even though it seems to not be used solely for development purposes.
+    Can be used multiple times. For example; `deptry . -id foo -id bar`.""",
+)
+@click.option(
+    "--exclude",
+    multiple=True,
+    help="""Directories or files in which .py files should not be scanned for imports to determine if there are dependency issues.
+    Defaults to ['venv','tests']. Specify multiple directories by using this flag multiple times, e.g. `--exclude .venv --exclude tests
+    --exclude other_dir`.""",
 )
 @click.option(
     "--ignore-notebooks",
@@ -80,10 +92,12 @@ def deptry(
     ignore_obsolete: List[str],
     ignore_missing: List[str],
     ignore_transitive: List[str],
+    ignore_misplaced_dev: List[str],
     skip_obsolete: bool,
     skip_missing: bool,
     skip_transitive: bool,
-    ignore_directories: List[str],
+    skip_misplaced_dev: bool,
+    exclude: List[str],
     ignore_notebooks: bool,
     version: bool,
 ) -> None:
@@ -108,22 +122,26 @@ def deptry(
             ignore_obsolete=ignore_obsolete if ignore_obsolete else None,
             ignore_missing=ignore_missing if ignore_missing else None,
             ignore_transitive=ignore_transitive if ignore_transitive else None,
-            ignore_directories=ignore_directories if ignore_directories else None,
+            ignore_misplaced_dev=ignore_misplaced_dev if ignore_misplaced_dev else None,
+            exclude=exclude if exclude else None,
             ignore_notebooks=ignore_notebooks if ignore_notebooks else None,
             skip_obsolete=skip_obsolete if skip_obsolete else None,
             skip_missing=skip_missing if skip_missing else None,
             skip_transitive=skip_transitive if skip_transitive else None,
+            skip_misplaced_dev=skip_misplaced_dev if skip_misplaced_dev else None,
         )
 
         result = Core(
             ignore_obsolete=config.ignore_obsolete,
             ignore_missing=config.ignore_missing,
             ignore_transitive=config.ignore_transitive,
-            ignore_directories=config.ignore_directories,
+            ignore_misplaced_dev=config.ignore_misplaced_dev,
+            exclude=config.exclude,
             ignore_notebooks=config.ignore_notebooks,
             skip_obsolete=config.skip_obsolete,
             skip_missing=config.skip_missing,
             skip_transitive=config.skip_transitive,
+            skip_misplaced_dev=config.skip_misplaced_dev,
         ).run()
         issue_found = False
         if not skip_obsolete and "obsolete" in result and result["obsolete"]:
@@ -134,6 +152,9 @@ def deptry(
             issue_found = True
         if not skip_transitive and "transitive" in result and result["transitive"]:
             log_transitive_dependencies(result["transitive"])
+            issue_found = True
+        if not skip_misplaced_dev and "misplaced_dev" in result and result["misplaced_dev"]:
+            log_misplaced_develop_dependencies(result["misplaced_dev"])
             issue_found = True
 
         if issue_found:
@@ -165,9 +186,16 @@ def log_transitive_dependencies(dependencies: List[str], sep="\n\t") -> None:
     logging.info(
         f"There are transitive dependencies that should be explicitly defined as dependencies in pyproject.toml:\n{sep}{sep.join(dependencies)}\n"
     )
+    logging.info("""They are currently imported but not specified directly as your project's dependencies.""")
+
+
+def log_misplaced_develop_dependencies(dependencies: List[str], sep="\n\t") -> None:
+    logging.info("\n-----------------------------------------------------\n")
+    logging.info(f"There are imported modules from development dependencies detected:\n{sep}{sep.join(dependencies)}\n")
     logging.info(
-        """They are currently imported but not specified directly as your project's dependencies. This issue also be caused
-by a development dependency that is found to be used within the scanned Python files."""
+        """Consider moving them to `[tool.poetry.dependencies]` in pyproject.toml. If this is not correct and the
+dependencies listed above are indeed development dependencies, it's likely that files were scanned that are only used
+for development purposes. Run `deptry -v .` to see a list of scanned files."""
     )
 
 
@@ -175,7 +203,7 @@ def log_additional_info():
     logging.info("\n-----------------------------------------------------\n")
     logging.info(
         """Dependencies and directories can be ignored by passing additional command-line arguments. See `deptry --help` for more details.
-Alternatively, deptry can be configured through `pyproject.toml`:
+Alternatively, deptry can be configured through `pyproject.toml`. An example:
 
 ```
 [tool.deptry]
@@ -188,7 +216,7 @@ ignore_missing = [
 ignore_transitive = [
   'your-dependency'
 ]
-ignore_directories = [
+exclude = [
   '.venv', 'tests', 'docs'
 ]
 ```

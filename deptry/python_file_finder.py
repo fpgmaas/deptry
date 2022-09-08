@@ -9,8 +9,8 @@ class PythonFileFinder:
     If ignore_notebooks is set to True, .ipynb files are ignored and only .py files are returned.
     """
 
-    def __init__(self, ignore_directories: List[str] = [".venv"], ignore_notebooks: bool = False) -> None:
-        self.ignore_directories = ignore_directories
+    def __init__(self, exclude: List[str] = [".venv"], ignore_notebooks: bool = False) -> None:
+        self.exclude = exclude
         self.ignore_notebooks = ignore_notebooks
 
     def get_all_python_files_in(self, directory: Path) -> List[Path]:
@@ -29,8 +29,4 @@ class PythonFileFinder:
         return [path for path in directory.rglob("*.ipynb")]
 
     def _remove_directories_to_ignore(self, all_py_files: List[Path]) -> List[Path]:
-        return [
-            path
-            for path in all_py_files
-            if not any([str(path).startswith(pattern) for pattern in self.ignore_directories])
-        ]
+        return [path for path in all_py_files if not any([str(path).startswith(pattern) for pattern in self.exclude])]

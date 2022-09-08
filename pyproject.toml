@@ -68,8 +68,8 @@ exclude = [
 ]
 
 [tool.deptry]
-ignore_directories = [
-  '.venv','docs', 'tests'
+exclude = [
+  '.venv','docs','tests'
 ]
 
 [tool.poetry.scripts]

@@ -2,11 +2,10 @@ import logging
 from typing import List
 
 from deptry.dependency import Dependency
-from deptry.issue_finders.issue_finder import IssueFinder
 from deptry.module import Module
 
 
-class ObsoleteDependenciesFinder(IssueFinder):
+class ObsoleteDependenciesFinder:
     """
     Given a list of imported modules and a list of project dependencies, determine which ones are obsolete.
 
@@ -18,9 +17,11 @@ class ObsoleteDependenciesFinder(IssueFinder):
     """
 
     def __init__(
-        self, imported_modules: List[Module], dependencies: List[Dependency], list_to_ignore: List[str] = []
+        self, imported_modules: List[Module], dependencies: List[Dependency], ignore_obsolete: List[str] = []
     ) -> None:
-        super().__init__(imported_modules, dependencies, list_to_ignore)
+        self.imported_modules = imported_modules
+        self.dependencies = dependencies
+        self.ignore_obsolete = ignore_obsolete
 
     def find(self) -> List[str]:
         logging.debug("\nScanning for obsolete dependencies...")
@@ -36,9 +37,25 @@ class ObsoleteDependenciesFinder(IssueFinder):
         if not self._dependency_found_in_imported_modules(dependency) and not self._any_of_the_top_levels_imported(
             dependency
         ):
-            if dependency.name in self.list_to_ignore:
+            if dependency.name in self.ignore_obsolete:
                 logging.debug(f"Dependency '{dependency.name}' found to be obsolete, but ignoring.")
             else:
                 logging.debug(f"Dependency '{dependency.name}' does not seem to be used.")
                 return True
+        return False
+
+    def _dependency_found_in_imported_modules(self, dependency: Dependency) -> bool:
+        for module in self.imported_modules:
+            if module.package == dependency.name:
+                return True
+        else:
+            return False
+
+    def _any_of_the_top_levels_imported(self, dependency: Dependency) -> bool:
+        if not dependency.top_levels:
+            return False
+        else:
+            for top_level in dependency.top_levels:
+                if any(module.name == top_level for module in self.imported_modules):
+                    return True
         return False

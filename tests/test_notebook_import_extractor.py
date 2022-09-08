@@ -8,7 +8,7 @@ from deptry.notebook_import_extractor import NotebookImportExtractor
 
 
 def test_convert_notebook():
-    imports = NotebookImportExtractor().extract("tests/data/projects/project_with_obsolete/src/notebook.ipynb")
+    imports = NotebookImportExtractor().extract("tests/data/example_project/src/notebook.ipynb")
     assert "import click" in imports[0]
-    assert "import requests as req" in imports[1]
-    assert len(imports) == 4
+    assert "from urllib3 import contrib" in imports[1]
+    assert len(imports) == 3

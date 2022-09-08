@@ -1,3 +1,5 @@
+## Dependencies
+
 Dependencies are:
 
 ```
@@ -9,12 +11,21 @@ requests
 pkginfo
 ```
 
+dev-dependencies:
+
+```
+black
+```
+
+## Imports
+
 Imported in .py files are
 
 ```
 click
-requests
 urllib3
+black
+white
 ```
 
 Additional imports in .ipynb file:
@@ -23,20 +34,21 @@ Additional imports in .ipynb file:
 toml
 ```
 
+## Config
+
 pyproject.toml specifies to ignore the dependency:
 
 ```
 pkginfo
 ```
 
-So expected output for obsolete packages when ignoring ipynb: 
+## Output
+
+So expected output without any additional configuration:
 
 ```
-isort
-toml
-```
-Expected output for obsolete packages when including ipynb files: 
-
-```
-isort
+obsolete: requests (because pkginfo is ignored)
+missing: white
+transitive: None
+dev: black
 ```
