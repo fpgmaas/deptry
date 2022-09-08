@@ -2,6 +2,9 @@ import os
 import sys
 from contextlib import contextmanager
 from pathlib import Path
+from typing import Dict
+
+import toml
 
 
 @contextmanager
@@ -39,3 +42,12 @@ def import_importlib_metadata():
         from importlib.metadata import PackageNotFoundError
 
         return metadata, PackageNotFoundError
+
+
+def load_pyproject_toml() -> Dict:
+    try:
+        pyproject_text = Path("./pyproject.toml").read_text()
+        pyproject_data = toml.loads(pyproject_text)
+        return pyproject_data
+    except FileNotFoundError:
+        raise FileNotFoundError(f"No file `pyproject.toml` found in directory {os.getcwd()}")
