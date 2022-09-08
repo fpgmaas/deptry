@@ -16,8 +16,8 @@ _deptry_ is a command line tool to check for issues with dependencies in a poetr
 - Transitive dependencies: Packages from which code is imported, but the package (A) itself is not in your projects dependencies. Instead, another package (B) is in your list of dependencies, which depends on (A). Package (A) should be added to your project's list of dependencies.
 - Misplaced dependencies: Development dependencies that should be included as regular dependencies.
 
-_deptry_ detects these issue by scanning the imported modules within all Python files in 
-a directory and it's subdirectories, and comparing those to the dependencies listed in _pyproject.toml_.
+_deptry_ detects these issues by scanning the imported modules within all Python files in 
+a directory and its subdirectories, and comparing those to the dependencies listed in _pyproject.toml_.
 
 ## Quickstart
 
@@ -34,6 +34,12 @@ or for older versions of poetry:
 ```
 poetry add --dev deptry
 ```
+
+!!! important
+
+    _deptry_ is still in the early phases of development. Although we will do our best not to introduce any backwards-incompatible changes, at this stage
+    this can not be guaranteed. For one-off testing of your project's dependencies, this is no issue. However,
+    if you plan to use _deptry_ in a CI/CD pipeline, it is a good idea to pin the version.
 
 ### Prerequisites
 
