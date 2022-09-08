@@ -18,6 +18,7 @@ class ImportParser:
         pass
 
     def get_imported_modules_for_list_of_files(self, list_of_files: List[Path]) -> List[str]:
+        logging.info(f"Scanning {len(list_of_files)} files...")
         modules_per_file = [self.get_imported_modules_from_file(file) for file in list_of_files]
         all_modules = self._flatten_list(modules_per_file)
         unique_modules = sorted(list(set(all_modules)))
