@@ -8,7 +8,7 @@
 
 ---
 
-_deptry_ is a command line tool to check for issues with dependencies in a poetry managed Python project. It checks for three types of issues:
+_deptry_ is a command line tool to check for issues with dependencies in a poetry managed Python project. It checks for fourtypes of issues:
 
 - Obsolete dependencies: Dependencies which are added to your project's dependencies, but which are not used within the codebase.
 - Transitive dependencies: Packages from which code is imported, but the package (A) itself is not in your projects dependencies. Instead, another package (B) is in your list of dependencies, which depends on (A). Package (A) should be added to your project's list of dependencies.

@@ -30,11 +30,11 @@ deptry . -v
 ## Ignore directories
 
 _deptry_ scans the working directory and it's subdirectories recursively for `.py` and `.ipynb` files to scan for import statements. By default,
-the `.venv` directory is ignored. To ignore other directories, use the `-id` flag. Note that this overwrites the default, so to ignore
+the `.venv` directory is ignored. To ignore other directories, use the `--exclude` flag. Note that this overwrites the default, so to ignore
 both the `.venv` directory and another directory, use the flag twice:
 
 ```sh
-deptry . -id .venv -id other_directory
+deptry . --exclude .venv --exclude tests --exclude other_directory
 ```
 
 ## Skip checks for obsolete, transitive or missing dependencies.

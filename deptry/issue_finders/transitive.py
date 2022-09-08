@@ -2,19 +2,20 @@ import logging
 from typing import List
 
 from deptry.dependency import Dependency
-from deptry.issue_finders.issue_finder import IssueFinder
 from deptry.module import Module
 
 
-class TransitiveDependenciesFinder(IssueFinder):
+class TransitiveDependenciesFinder:
     """
     Given a list of imported modules and a list of project dependencies, determine which ones are transitive.
     """
 
     def __init__(
-        self, imported_modules: List[Module], dependencies: List[Dependency], list_to_ignore: List[str] = []
+        self, imported_modules: List[Module], dependencies: List[Dependency], ignore_transitive: List[str] = []
     ) -> None:
-        super().__init__(imported_modules, dependencies, list_to_ignore)
+        self.imported_modules = imported_modules
+        self.dependencies = dependencies
+        self.ignore_transitive = ignore_transitive
 
     def find(self) -> List[str]:
         logging.debug("\nScanning for transitive dependencies...")
@@ -28,12 +29,12 @@ class TransitiveDependenciesFinder(IssueFinder):
     def _is_transitive(self, module: Module) -> bool:
         if (
             module.package is not None
-            and not self._module_in_any_top_level(module)
-            and not self._module_in_dependencies(module)
-            and not module.is_local_module()
+            and not module.dependency
+            and not module.dev_dependency
+            and not module.local_module
         ):
-            if module.name in self.list_to_ignore:
-                logging.debug(f"Module '{module.package}' found to be a transitive dependency, but ignoring.")
+            if module.name in self.ignore_transitive:
+                logging.debug(f"Dependency '{module.package}' found to be a transitive dependency, but ignoring.")
             else:
                 logging.debug(f"Dependency '{module.package}' marked as a transitive dependency.")
                 return True

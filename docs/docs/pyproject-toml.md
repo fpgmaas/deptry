@@ -4,7 +4,7 @@
 
 _deptry_ can be configured by adding a `[tool.deptry]` section to _pyproject.toml_. The possible arguments are:
 
-- `ignore_directories`: `List`
+- `exclude`: `List`
 - `ignore_notebooks`: `bool`
 - `ignore_obsolete`: `List`
 - `ignore_missing`: `List`
@@ -17,7 +17,7 @@ An example of such a section is given below.
 
 ```
 [tool.deptry]
-ignore_directories = [
+exclude = [
   '.venv','tests','docs'
 ]
 ignore_obsolete = [

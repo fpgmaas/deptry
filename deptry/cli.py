@@ -34,6 +34,11 @@ from deptry.utils import import_importlib_metadata, run_within_dir
     help="Boolean flag to specify if deptry should skip scanning the project for transitive dependencies.",
 )
 @click.option(
+    "--skip-develop",
+    is_flag=True,
+    help="Boolean flag to specify if deptry should skip scanning the project for development dependencies that should be regular dependencies.",
+)
+@click.option(
     "--ignore-obsolete",
     "-io",
     multiple=True,
@@ -57,10 +62,16 @@ from deptry.utils import import_importlib_metadata, run_within_dir
     Can be used multiple times. For example; `deptry . -it foo -io bar`.""",
 )
 @click.option(
-    "--ignore-directories",
+    "--ignore-develop",
     "-id",
     multiple=True,
-    help="""Directories in which .py files should not be scanned for imports to determine if dependencies are obsolete, missing or transitive.
+    help="""Modules that should never be marked as 'missing due to transitive' even though deptry determines them to be transitive.
+    Can be used multiple times. For example; `deptry . -it foo -io bar`.""",
+)
+@click.option(
+    "--exclude",
+    multiple=True,
+    help="""Directories or files in which .py files should not be scanned for imports to determine if there are dependency issues.
     Defaults to ['venv','tests']. Specify multiple directories by using this flag twice, e.g. `-id .venv -id tests -id other_dir`.""",
 )
 @click.option(
@@ -80,10 +91,12 @@ def deptry(
     ignore_obsolete: List[str],
     ignore_missing: List[str],
     ignore_transitive: List[str],
+    ignore_develop: List[str],
     skip_obsolete: bool,
     skip_missing: bool,
     skip_transitive: bool,
-    ignore_directories: List[str],
+    skip_develop: bool,
+    exclude: List[str],
     ignore_notebooks: bool,
     version: bool,
 ) -> None:
@@ -108,22 +121,26 @@ def deptry(
             ignore_obsolete=ignore_obsolete if ignore_obsolete else None,
             ignore_missing=ignore_missing if ignore_missing else None,
             ignore_transitive=ignore_transitive if ignore_transitive else None,
-            ignore_directories=ignore_directories if ignore_directories else None,
+            ignore_develop=ignore_develop if ignore_develop else None,
+            exclude=exclude if exclude else None,
             ignore_notebooks=ignore_notebooks if ignore_notebooks else None,
             skip_obsolete=skip_obsolete if skip_obsolete else None,
             skip_missing=skip_missing if skip_missing else None,
             skip_transitive=skip_transitive if skip_transitive else None,
+            skip_develop=skip_develop if skip_develop else None,
         )
 
         result = Core(
             ignore_obsolete=config.ignore_obsolete,
             ignore_missing=config.ignore_missing,
             ignore_transitive=config.ignore_transitive,
-            ignore_directories=config.ignore_directories,
+            ignore_develop=config.ignore_develop,
+            exclude=config.exclude,
             ignore_notebooks=config.ignore_notebooks,
             skip_obsolete=config.skip_obsolete,
             skip_missing=config.skip_missing,
             skip_transitive=config.skip_transitive,
+            skip_develop=config.skip_develop,
         ).run()
         issue_found = False
         if not skip_obsolete and "obsolete" in result and result["obsolete"]:
@@ -134,6 +151,9 @@ def deptry(
             issue_found = True
         if not skip_transitive and "transitive" in result and result["transitive"]:
             log_transitive_dependencies(result["transitive"])
+            issue_found = True
+        if not skip_develop and "develop" in result and result["develop"]:
+            log_develop_dependencies(result["develop"])
             issue_found = True
 
         if issue_found:
@@ -165,9 +185,16 @@ def log_transitive_dependencies(dependencies: List[str], sep="\n\t") -> None:
     logging.info(
         f"There are transitive dependencies that should be explicitly defined as dependencies in pyproject.toml:\n{sep}{sep.join(dependencies)}\n"
     )
+    logging.info("""They are currently imported but not specified directly as your project's dependencies.""")
+
+
+def log_develop_dependencies(dependencies: List[str], sep="\n\t") -> None:
+    logging.info("\n-----------------------------------------------------\n")
+    logging.info(f"There are imported modules from development dependencies detected:\n{sep}{sep.join(dependencies)}\n")
     logging.info(
-        """They are currently imported but not specified directly as your project's dependencies. This issue also be caused
-by a development dependency that is found to be used within the scanned Python files."""
+        """Consider moving them to `[tool.poetry.dependencies]` in pyproject.toml. If this is not correct and the
+dependencies listed above are indeed development dependencies, it's likely that  files were scanned that are used
+for development. Run `deptry -v .` to see a list of scanned files."""
     )
 
 
@@ -175,7 +202,7 @@ def log_additional_info():
     logging.info("\n-----------------------------------------------------\n")
     logging.info(
         """Dependencies and directories can be ignored by passing additional command-line arguments. See `deptry --help` for more details.
-Alternatively, deptry can be configured through `pyproject.toml`:
+Alternatively, deptry can be configured through `pyproject.toml`. An example:
 
 ```
 [tool.deptry]
@@ -188,7 +215,7 @@ ignore_missing = [
 ignore_transitive = [
   'your-dependency'
 ]
-ignore_directories = [
+exclude = [
   '.venv', 'tests', 'docs'
 ]
 ```
