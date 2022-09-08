@@ -19,6 +19,9 @@ theme:
     primary: white
     accent: blue
 markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
   - toc:
       permalink: true
   - pymdownx.arithmatex:
