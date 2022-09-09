@@ -69,9 +69,6 @@ exclude = [
 ignore_missing = [
   'importlib_metadata'
 ]
-ignore_obsolete = [
-  'importlib-metadata'
-]
 
 [tool.poetry.scripts]
 deptry = "deptry.cli:deptry"
