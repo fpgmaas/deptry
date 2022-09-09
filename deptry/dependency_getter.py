@@ -1,5 +1,5 @@
 import logging
-from typing import List
+from typing import Any, Dict, List
 
 from deptry.dependency import Dependency
 from deptry.utils import load_pyproject_toml
@@ -23,18 +23,23 @@ class DependencyGetter:
             pyproject_toml_dependencies = self._get_pyproject_toml_dependencies()
 
         dependencies = []
-        for dep in pyproject_toml_dependencies:
+        for dep, spec in pyproject_toml_dependencies.items():
             if not dep == "python":
-                dependencies.append(Dependency(dep))
+                # if of the shape `tomli = { version = "^2.0.1", python = "<3.11" }`, mark as conditional.
+                if isinstance(spec, dict) and "python" in spec.keys() and "version" in spec.keys():
+                    dependencies.append(Dependency(dep, conditional=True))
+                else:
+                    dependencies.append(Dependency(dep))
+        dependencies.sort(key=lambda x: x.name)
         self._log_dependencies(dependencies)
         return dependencies
 
-    def _get_pyproject_toml_dependencies(self) -> List[str]:
+    def _get_pyproject_toml_dependencies(self) -> Dict[str, Any]:
         pyproject_data = load_pyproject_toml()
-        dependencies = list(pyproject_data["tool"]["poetry"]["dependencies"].keys())
-        return sorted(dependencies)
+        dependencies = pyproject_data["tool"]["poetry"]["dependencies"]
+        return dependencies
 
-    def _get_pyproject_toml_dev_dependencies(self) -> List[str]:
+    def _get_pyproject_toml_dev_dependencies(self) -> Dict[str, Any]:
         """
         These can be either under;
 
@@ -53,7 +58,7 @@ class DependencyGetter:
             dev_dependencies = {**pyproject_data["tool"]["poetry"]["group"]["dev"]["dependencies"], **dev_dependencies}
         except KeyError:
             pass
-        return sorted(dev_dependencies)
+        return dev_dependencies
 
     def _log_dependencies(self, dependencies: List[Dependency]) -> None:
         logging.debug(f"The project contains the following {'dev-' if self.dev else ''}dependencies:")
