@@ -8,6 +8,7 @@ nav:
   - Home: index.md
   - Usage and Configuration: usage.md
   - Configuration with pyproject.toml: pyproject-toml.md
+  - FAQ: faq.md
 plugins:
   - search
 copyright: Maintained by <a href="https://fpgmaas.com">Florian</a>.

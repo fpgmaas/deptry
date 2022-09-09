@@ -8,15 +8,9 @@
 
 ---
 
-_deptry_ is a command line tool to check for issues with dependencies in a poetry managed Python project. It checks for four types of issues:
+_deptry_ is a command line tool to check for issues with dependencies in a poetry managed Python project, such as obsolete or missing dependencies.
 
-- Obsolete dependencies: Dependencies which are added to your project's dependencies, but which are not used within the codebase.
-- Missing dependencies: Modules that are imported within your project, but no corresponding package is found in the environment.
-- Transitive dependencies: Packages from which code is imported, but the package (A) itself is not in your projects dependencies. Instead, another package (B) is in your list of dependencies, which depends on (A). Package (A) should be added to your project's list of dependencies.
-- Misplaced dependencies: Development dependencies that should be included as regular dependencies.
-
-_deptry_ detects these issues by scanning the imported modules within all Python files in 
-a directory and its subdirectories, and comparing those to the dependencies listed in _pyproject.toml_.
+Dependency issues are detected by scanning for imported modules within all Python files in a directory and its subdirectories, and comparing those to the dependencies listed in pyproject.toml.
 
 ---
 
@@ -41,9 +35,7 @@ poetry add --dev deptry
 ```
 
 > **Warning**
-> _deptry_ is still in the early phases of development. Although we will do our best not to introduce any backwards-incompatible changes, 
-> at this stage this can not be guaranteed. For one-off testing of your project's dependencies, this is no issue. However,
-> if you plan to use _deptry_ in a CI/CD pipeline, it is a good idea to pin the version.
+> _deptry_ is still in the early phases of development. For one-off testing of your project's dependencies, this is no issue. However, if you plan to use _deptry_ in a CI/CD pipeline, it is a good idea to pin the version.
 
 ### Prerequisites
 
