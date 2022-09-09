@@ -12,8 +12,14 @@ class Dependency:
     An example of this is 'matplotlib' with top-levels: ['matplotlib', 'mpl_toolkits', 'pylab'].
     """
 
-    def __init__(self, name: str) -> None:
+    def __init__(self, name: str, conditional: bool = False) -> None:
+        """
+        Args:
+            name: Name of the dependency, as shown in pyproject.toml
+            conditional: boolean to indicate if the dependency is conditional, e.g. 'importlib-metadata': {'version': '*', 'python': '<=3.7'}
+        """
         self.name = name
+        self.conditional = conditional
         self.top_levels = self._get_top_levels(name)
 
     @staticmethod
@@ -30,4 +36,6 @@ class Dependency:
         return f"Dependency '{self.name}'"
 
     def __str__(self) -> str:
-        return f"Dependency '{self.name}' with top-levels: {self.top_levels}"
+        return (
+            f"{'Conditional d' if self.conditional else 'D'}ependency '{self.name}' with top-levels: {self.top_levels}."
+        )
