@@ -37,7 +37,7 @@ class ObsoleteDependenciesFinder:
 
     def _is_obsolete(self, dependency: Dependency) -> bool:
 
-        if dependency.conditional:
+        if dependency.is_conditional:
             logging.debug("Conditional dependency, so ignoring it.")
             return False
 

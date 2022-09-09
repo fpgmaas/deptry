@@ -24,8 +24,8 @@ class Module:
         package: str = None,
         top_levels: List[str] = None,
         dev_top_levels: List[str] = None,
-        dependency: bool = None,
-        dev_dependency: bool = None,
+        is_dependency: bool = None,
+        is_dev_dependency: bool = None,
     ):
         self.name = name
         self.standard_library = standard_library
@@ -33,8 +33,8 @@ class Module:
         self.package = package
         self.top_levels = top_levels
         self.dev_top_levels = dev_top_levels
-        self.dependency = dependency
-        self.dev_dependency = dev_dependency
+        self.is_dependency = is_dependency
+        self.is_dev_dependency = is_dev_dependency
         self._log()
 
     def _log(self):
@@ -72,26 +72,28 @@ class ModuleBuilder:
         standard_library = self._in_standard_library()
         if standard_library:
             return Module(self.name, standard_library=True)
-        else:
-            local_module = self._is_local_directory()
-            if local_module:
-                return Module(self.name, local_module=True)
-            else:
-                package = self._get_package_name()
-                top_levels = self._get_corresponding_top_levels(self.dependencies)
-                dev_top_levels = self._get_corresponding_top_levels(self.dev_dependencies)
-                dependency = self._has_matching_dependency(package, top_levels)
-                dev_dependency = self._has_matching_dev_dependency(package, dev_top_levels)
-                return Module(
-                    self.name,
-                    package=package,
-                    top_levels=top_levels,
-                    dev_top_levels=dev_top_levels,
-                    dependency=dependency,
-                    dev_dependency=dev_dependency,
-                )
+        
+        local_module = self._is_local_directory()
+        if local_module:
+            return Module(self.name, local_module=True)
+            
+        package = self._get_package_name_from_metadata()
+        top_levels = self._get_corresponding_top_levels_from(self.dependencies)
+        dev_top_levels = self._get_corresponding_top_levels_from(self.dev_dependencies)
 
-    def _get_package_name(self) -> str:
+        is_dependency = self._has_matching_dependency(package, top_levels)
+        is_dev_dependency = self._has_matching_dev_dependency(package, dev_top_levels)
+        return Module(
+            self.name,
+            package=package,
+            top_levels=top_levels,
+            dev_top_levels=dev_top_levels,
+            is_dependency=is_dependency,
+            is_dev_dependency=is_dev_dependency,
+        )
+
+
+    def _get_package_name_from_metadata(self) -> str:
         """
         Most packages simply have a field called "Name" in their metadata. This method extracts that field.
         """
@@ -100,7 +102,7 @@ class ModuleBuilder:
         except PackageNotFoundError:
             pass
 
-    def _get_corresponding_top_levels(self, dependencies: List[Dependency]) -> bool:
+    def _get_corresponding_top_levels_from(self, dependencies: List[Dependency]) -> bool:
         """
         Not all modules have associated metadata. e.g. `mpl_toolkits` from `matplotlib` has no metadata. However, it is in the
         top-level module names of package matplotlib. This function extracts all dependencies which have this module in their top-level module names.

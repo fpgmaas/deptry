@@ -28,7 +28,7 @@ class MissingDependenciesFinder:
 
     def _is_missing(self, module: Module) -> bool:
 
-        if module.package is None and not module.dependency and not module.dev_dependency and not module.local_module:
+        if module.package is None and not module.is_dependency and not module.is_dev_dependency and not module.local_module:
             if module.name in self.ignore_missing:
                 logging.debug(f"Identified module '{module.name}' as a missing dependency, but ignoring.")
             else:

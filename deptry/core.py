@@ -1,6 +1,7 @@
 import logging
 from pathlib import Path
 from typing import Dict, List
+from deptry.dependency import Dependency
 
 from deptry.dependency_getter import DependencyGetter
 from deptry.import_parser import ImportParser

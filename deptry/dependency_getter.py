@@ -25,12 +25,19 @@ class DependencyGetter:
         dependencies = []
         for dep, spec in pyproject_toml_dependencies.items():
             if not dep == "python":
+
                 # if of the shape `tomli = { version = "^2.0.1", python = "<3.11" }`, mark as conditional.
+                conditional = False
                 if isinstance(spec, dict) and "python" in spec.keys() and "version" in spec.keys():
-                    dependencies.append(Dependency(dep, conditional=True))
-                else:
-                    dependencies.append(Dependency(dep))
-        dependencies.sort(key=lambda x: x.name)
+                    conditional = True
+                
+                # if of the shape `isodate = {version = "*", optional = true}` mark as optional`
+                optional = False
+                if isinstance(spec, dict) and "optional" in spec.keys() and spec["optional"]:
+                    optional = True
+                
+                dependencies.append(Dependency(dep, conditional=conditional, optional=optional))
+
         self._log_dependencies(dependencies)
         return dependencies
 
