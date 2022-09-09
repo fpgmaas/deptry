@@ -5,7 +5,7 @@ description = "A test project"
 authors = ["test <test@test.com>"]
 
 [tool.poetry.dependencies]
-python = ">=3.7,<4.0"
+python = ">=3.7,<3.11"
 toml = "^0.10.2"
 urllib3 = "^1.26.12"
 isort = "^5.10.1"
