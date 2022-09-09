@@ -23,10 +23,10 @@ def test_simple_with_ignore():
 def test_top_level():
     """
     Test if top-level information is read, and correctly used to not mark a dependency as obsolete.
-    mpl_toolkits is in the top-level of matplotlib, so matplotlib should not be marked as an obsolete dependency.
+    blackd is in the top-level of matplotlib, so black should not be marked as an obsolete dependency.
     """
-    dependencies = [Dependency("matplotlib")]
-    modules = [ModuleBuilder("mpl_toolkits", dependencies).build()]
+    dependencies = [Dependency("black")]
+    modules = [ModuleBuilder("blackd", dependencies).build()]
     deps = ObsoleteDependenciesFinder(imported_modules=modules, dependencies=dependencies).find()
     assert len(deps) == 0
 
