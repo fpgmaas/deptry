@@ -30,7 +30,7 @@ class MisplacedDevDependenciesFinder:
         return dev_dependencies
 
     def _is_development_dependency(self, module: Module) -> bool:
-        if module.dev_dependency:
+        if module.is_dev_dependency:
             if module.name in self.ignore_misplaced_dev:
                 logging.debug(
                     f"Module '{module.package}' found to be a misplaced development dependency, but ignoring."

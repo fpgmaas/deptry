@@ -66,9 +66,6 @@ exclude = [
 exclude = [
   '.venv','docs','tests'
 ]
-ignore_missing = [
-  'importlib_metadata'
-]
 
 [tool.poetry.scripts]
 deptry = "deptry.cli:deptry"

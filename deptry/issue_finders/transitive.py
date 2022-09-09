@@ -36,8 +36,8 @@ class TransitiveDependenciesFinder:
     def _is_transitive(self, module: Module) -> bool:
         if (
             module.package is not None
-            and not module.dependency
-            and not module.dev_dependency
+            and not module.is_dependency
+            and not module.is_dev_dependency
             and not module.local_module
         ):
             if module.name in self.ignore_transitive:
