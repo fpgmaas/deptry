@@ -72,11 +72,11 @@ class ModuleBuilder:
         standard_library = self._in_standard_library()
         if standard_library:
             return Module(self.name, standard_library=True)
-        
+
         local_module = self._is_local_directory()
         if local_module:
             return Module(self.name, local_module=True)
-            
+
         package = self._get_package_name_from_metadata()
         top_levels = self._get_corresponding_top_levels_from(self.dependencies)
         dev_top_levels = self._get_corresponding_top_levels_from(self.dev_dependencies)
@@ -91,7 +91,6 @@ class ModuleBuilder:
             is_dependency=is_dependency,
             is_dev_dependency=is_dev_dependency,
         )
-
 
     def _get_package_name_from_metadata(self) -> str:
         """

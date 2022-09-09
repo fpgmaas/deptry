@@ -168,7 +168,7 @@ def deptry(
 
 def log_obsolete_dependencies(dependencies: List[str], sep="\n\t") -> None:
     logging.info("\n-----------------------------------------------------\n")
-    logging.info(f"pyproject.toml contains obsolete dependencies:\n{sep}{sep.join(dependencies)}\n")
+    logging.info(f"pyproject.toml contains obsolete dependencies:\n{sep}{sep.join(sorted(dependencies))}\n")
     logging.info(
         """Consider removing them from your projects dependencies. If a package is used for development purposes, you should add
 it to your development dependencies instead."""
@@ -177,21 +177,23 @@ it to your development dependencies instead."""
 
 def log_missing_dependencies(dependencies: List[str], sep="\n\t") -> None:
     logging.info("\n-----------------------------------------------------\n")
-    logging.info(f"There are dependencies missing from pyproject.toml:\n{sep}{sep.join(dependencies)}\n")
+    logging.info(f"There are dependencies missing from pyproject.toml:\n{sep}{sep.join(sorted(dependencies))}\n")
     logging.info("""Consider adding them to your project's dependencies. """)
 
 
 def log_transitive_dependencies(dependencies: List[str], sep="\n\t") -> None:
     logging.info("\n-----------------------------------------------------\n")
     logging.info(
-        f"There are transitive dependencies that should be explicitly defined as dependencies in pyproject.toml:\n{sep}{sep.join(dependencies)}\n"
+        f"There are transitive dependencies that should be explicitly defined as dependencies in pyproject.toml:\n{sep}{sep.join(sorted(dependencies))}\n"
     )
     logging.info("""They are currently imported but not specified directly as your project's dependencies.""")
 
 
 def log_misplaced_develop_dependencies(dependencies: List[str], sep="\n\t") -> None:
     logging.info("\n-----------------------------------------------------\n")
-    logging.info(f"There are imported modules from development dependencies detected:\n{sep}{sep.join(dependencies)}\n")
+    logging.info(
+        f"There are imported modules from development dependencies detected:\n{sep}{sep.join(sorted(dependencies))}\n"
+    )
     logging.info(
         """Consider moving them to `[tool.poetry.dependencies]` in pyproject.toml. If this is not correct and the
 dependencies listed above are indeed development dependencies, it's likely that files were scanned that are only used

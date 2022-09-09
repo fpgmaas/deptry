@@ -1,5 +1,5 @@
 import logging
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Union
 
 from deptry.dependency import Dependency
 from deptry.utils import load_pyproject_toml
@@ -24,18 +24,10 @@ class DependencyGetter:
 
         dependencies = []
         for dep, spec in pyproject_toml_dependencies.items():
+            # dep is the dependency name, spec is the version specification, e.g. "^0.2.2" or {"*", optional = true}
             if not dep == "python":
-
-                # if of the shape `tomli = { version = "^2.0.1", python = "<3.11" }`, mark as conditional.
-                conditional = False
-                if isinstance(spec, dict) and "python" in spec.keys() and "version" in spec.keys():
-                    conditional = True
-                
-                # if of the shape `isodate = {version = "*", optional = true}` mark as optional`
-                optional = False
-                if isinstance(spec, dict) and "optional" in spec.keys() and spec["optional"]:
-                    optional = True
-                
+                optional = self._is_optional(dep, spec)
+                conditional = self._is_conditional(dep, spec)
                 dependencies.append(Dependency(dep, conditional=conditional, optional=optional))
 
         self._log_dependencies(dependencies)
@@ -72,3 +64,17 @@ class DependencyGetter:
         for dependency in dependencies:
             logging.debug(str(dependency))
         logging.debug("")
+
+    @staticmethod
+    def _is_optional(dep: str, spec: Union[str, dict]):
+        # if of the shape `isodate = {version = "*", optional = true}` mark as optional`
+        if isinstance(spec, dict) and "optional" in spec.keys() and spec["optional"]:
+            return True
+        return False
+
+    @staticmethod
+    def _is_conditional(dep: str, spec: Union[str, dict]):
+        # if of the shape `tomli = { version = "^2.0.1", python = "<3.11" }`, mark as conditional.
+        if isinstance(spec, dict) and "python" in spec.keys() and "version" in spec.keys():
+            return True
+        return False
