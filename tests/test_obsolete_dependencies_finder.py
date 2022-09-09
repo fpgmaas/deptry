@@ -23,7 +23,7 @@ def test_simple_with_ignore():
 def test_top_level():
     """
     Test if top-level information is read, and correctly used to not mark a dependency as obsolete.
-    blackd is in the top-level of matplotlib, so black should not be marked as an obsolete dependency.
+    blackd is in the top-level of black, so black should not be marked as an obsolete dependency.
     """
     dependencies = [Dependency("black")]
     modules = [ModuleBuilder("blackd", dependencies).build()]
