@@ -118,7 +118,7 @@ class ModuleBuilder:
 
     def _get_stdlib_packages(self) -> Set[str]:
         incorrect_version_error = ValueError(
-            f"Incorrect Python version {'.'.join([str(x) for x in sys.version_info[0:3]])}. Only 3.7, 3.8, 3.9 and 3.10 are currently supported."
+            f"Incorrect Python version {'.'.join([str(x) for x in sys.version_info[0:3]])}. Only 3.7, 3.8, 3.9, 3.10 and 3.11 are currently supported."
         )
         if sys.version_info[0] == 3:
             if sys.version_info[1] == 7:
@@ -129,6 +129,9 @@ class ModuleBuilder:
                 stdlib = stdlib39
             elif sys.version_info[1] == 10:
                 stdlib = stdlib310
+            elif sys.version_info[1] == 11:
+                stdlib = stdlib310
+                stdlib.add("tomllib")  # new in python 3.11
             else:
                 raise incorrect_version_error
             stdlib.add("__future__")  # Not sure why this is omitted explicitly in isort's source code.
