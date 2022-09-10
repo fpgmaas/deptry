@@ -24,24 +24,26 @@ extract the imported modules from those files. Any files solely used for develop
 
 ## Excluding files and directories
  
-To ignore other directories and files than the default `.venv` and `tests`, use the `--exclude` (or `-e`) flag. 
+To ignore other directories and files than the default `.venv` and `tests`, use the `--exclude` (or `-e`) flag. The argument should be provided as a comma-separated list, and the paths should be specified as paths relative to the directory _deptry_ is running in, without the trailing `./`.
 
 ```sh
-deptry . --exclude other_file_or_directory --exclude
+deptry . --exclude foo,path/to/bar.py
 ```
 
-Note that this overwrites the defaults, so to ignore
-both the `.venv` and `tests` directories and another directory or file, use the flag thrice:
+Note that this overwrites the defaults, the configuration to ignore
+both `.venv`, `tests`, and another directory or file looks as follows:
 
 ```sh
-deptry . -e .venv -e tests -e other_file_or_directory
+deptry . --exclude .venv,tests,foo
 ```
 
 Alternatively, to add directories to the defaults instead of overwriting them, use the `--extend-exclude` (or `-ee`) flag. 
 
 ```sh
-deptry . --extend-exclude other_file_or_directory
+deptry . --extend-exclude foo,bar
 ```
+
+This will exclude `.venv`, `tests`, `foo` and `bar`.
 
 ## Increased verbosity
 
@@ -65,10 +67,10 @@ deptry . --skip-misplaced-dev
 ## Ignore dependencies
 
 Sometimes, you might want _deptry_ to ignore certain dependencies in certain checks, for example when you have an module that is used but not imported. 
-Dependencies can be ignored for each check separately with the `--ignore-obsolete`, `--ignore-transitive`, `--ignore-missing` or `--ignore-misplaced-dev` flag, or with their 
-respective abbreviations `-io`, `-it`, `-im` and `-id`. Each argument can be used multiple times to ignore multiple dependencies. Some examples:
+Dependencies or modules can be ignored for each check separately with the `--ignore-obsolete`, `--ignore-transitive`, `--ignore-missing` or `--ignore-misplaced-dev` flag, or with their 
+respective abbreviations `-io`, `-it`, `-im` and `-id`. Multiple elements can be passed to the argument by providing a comma-separated list.
 
-The following will ignore dependency foo while checking for obsolete dependencies and
+For example, the following will ignore dependency foo while checking for obsolete dependencies and
 will ignore module bar while checking for missing dependencies
 
 ```sh
@@ -78,7 +80,7 @@ deptry . --ignore-obsolete foo --ignore-missing bar
 The following  will ignore both foo and bar while checking for obsolete dependencies
 
 ```sh
-deptry . -io foo -io bar 
+deptry . --ignore-obsolete foo,bar
 ```
 
 ## Ignore notebooks
