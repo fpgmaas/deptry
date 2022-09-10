@@ -69,7 +69,7 @@ from deptry.utils import import_importlib_metadata, run_within_dir
     Can be used multiple times. For example; `deptry . -id foo -id bar`.""",
 )
 @click.option(
-    "--exclude", 
+    "--exclude",
     "-e",
     multiple=True,
     help="""Directories or files in which .py files should not be scanned for imports to determine if there are dependency issues.

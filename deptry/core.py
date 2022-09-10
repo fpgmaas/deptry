@@ -40,7 +40,7 @@ class Core:
         self.skip_misplaced_dev = skip_misplaced_dev
 
     def run(self) -> Dict:
-        
+
         self._log_config()
 
         dependencies = DependencyGetter().get()
@@ -80,4 +80,4 @@ class Core:
         logging.debug("Running with the following configuration:")
         for key, value in vars(self).items():
             logging.debug(f"{key}: {value}")
-        logging.debug('\n')
+        logging.debug("\n")
