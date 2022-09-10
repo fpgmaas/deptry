@@ -24,11 +24,23 @@ extract the imported modules from those files. Any files solely used for develop
 
 ## Excluding files and directories
  
-To ignore other directories than the default `.venv` and `tests`, use the `--exclude` flag. Note that this overwrites the defaults, so to ignore
-both the `.venv` and `tests` directories and another directory, use the flag thrice:
+To ignore other directories and files than the default `.venv` and `tests`, use the `--exclude` (or `-e`) flag. 
 
 ```sh
-deptry . --exclude .venv --exclude tests --exclude other_directory
+deptry . --exclude other_file_or_directory --exclude
+```
+
+Note that this overwrites the defaults, so to ignore
+both the `.venv` and `tests` directories and another directory or file, use the flag thrice:
+
+```sh
+deptry . -e .venv -e tests -e other_file_or_directory
+```
+
+Alternatively, to add directories to the defaults instead of overwriting them, use the `--extend-exclude` (or `-ee`) flag. 
+
+```sh
+deptry . --extend-exclude other_file_or_directory
 ```
 
 ## Increased verbosity

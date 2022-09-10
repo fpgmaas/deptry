@@ -9,6 +9,7 @@ DEFAULTS = {
     "ignore_transitive": [],
     "ignore_misplaced_dev": [],
     "exclude": [".venv", "tests"],
+    "extend_exclude": [],
     "ignore_notebooks": False,
     "skip_obsolete": False,
     "skip_missing": False,
@@ -35,6 +36,7 @@ class Config:
         skip_transitive: Optional[bool],
         skip_misplaced_dev: Optional[bool],
         exclude: Optional[List[str]],
+        extend_exclude: Optional[List[str]],
         ignore_notebooks: Optional[bool],
     ) -> None:
         self._set_defaults()
@@ -45,6 +47,7 @@ class Config:
             ignore_transitive=ignore_transitive,
             ignore_misplaced_dev=ignore_misplaced_dev,
             exclude=exclude,
+            extend_exclude=extend_exclude,
             ignore_notebooks=ignore_notebooks,
             skip_obsolete=skip_obsolete,
             skip_missing=skip_missing,
@@ -58,6 +61,7 @@ class Config:
         self.ignore_transitive = DEFAULTS["ignore_transitive"]
         self.ignore_misplaced_dev = DEFAULTS["ignore_misplaced_dev"]
         self.exclude = DEFAULTS["exclude"]
+        self.extend_exclude = DEFAULTS["extend_exclude"]
         self.ignore_notebooks = DEFAULTS["ignore_notebooks"]
         self.skip_obsolete = DEFAULTS["skip_obsolete"]
         self.skip_missing = DEFAULTS["skip_missing"]
@@ -76,6 +80,7 @@ class Config:
             self._override_with_toml_argument("skip_transitive", pyproject_toml_config)
             self._override_with_toml_argument("skip_misplaced_dev", pyproject_toml_config)
             self._override_with_toml_argument("exclude", pyproject_toml_config)
+            self._override_with_toml_argument("extend_exclude", pyproject_toml_config)
             self._override_with_toml_argument("ignore_notebooks", pyproject_toml_config)
 
     def _read_configuration_from_pyproject_toml(self) -> Optional[Dict]:
@@ -102,6 +107,7 @@ class Config:
         ignore_transitive: Optional[List[str]],
         ignore_misplaced_dev: Optional[List[str]],
         exclude: Optional[List[str]],
+        extend_exclude: Optional[List[str]],
         ignore_notebooks: Optional[bool],
         skip_obsolete: Optional[bool],
         skip_missing: Optional[bool],
@@ -145,6 +151,10 @@ class Config:
             self.exclude = exclude
             self._log_changed_by_command_line_argument("exclude", exclude)
 
+        if extend_exclude:
+            self.extend_exclude = extend_exclude
+            self._log_changed_by_command_line_argument("extend_exclude", extend_exclude)
+
         if ignore_notebooks:
             self.ignore_notebooks = ignore_notebooks
             self._log_changed_by_command_line_argument("ignore_notebooks", ignore_notebooks)
@@ -155,4 +165,4 @@ class Config:
 
     @staticmethod
     def _log_changed_by_command_line_argument(argument: str, value: Any) -> None:
-        logging.debug(f"Argument {argument} set to {str(value)} by pyproject.toml")
+        logging.debug(f"Argument {argument} set to {str(value)} by command line argument")

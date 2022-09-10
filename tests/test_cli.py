@@ -61,5 +61,14 @@ def test_cli_exclude(dir_with_venv_installed):
         assert "pyproject.toml contains obsolete dependencies:\n\n\tisort\n\trequests\n\ttoml\n\n" in result.stderr
 
 
+def test_cli_extend_exclude(dir_with_venv_installed):
+    with run_within_dir(str(dir_with_venv_installed)):
+        result = subprocess.run(
+            shlex.split("poetry run deptry . -ee src/notebook.ipynb "), capture_output=True, text=True
+        )
+        assert result.returncode == 1
+        assert "pyproject.toml contains obsolete dependencies:\n\n\tisort\n\trequests\n\ttoml\n\n" in result.stderr
+
+
 def test_cli_help():
     subprocess.check_call(shlex.split("deptry --help")) == 0
