@@ -6,3 +6,8 @@ ignore:
   - "deptry/cli.py"
   - "deptry/core.py"
   - "deptry/utils.py"
+  status:
+    project:
+      default:
+        target: auto
+        threshold: 0%
