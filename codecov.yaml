@@ -5,3 +5,4 @@ coverage:
 ignore:
   - "deptry/cli.py"
   - "deptry/core.py"
+  - "deptry/utils.py"
