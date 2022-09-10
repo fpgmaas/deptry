@@ -1,21 +1,8 @@
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict
 
+from deptry.cli_defaults import DEFAULTS
 from deptry.utils import load_pyproject_toml
-
-DEFAULTS = {
-    "ignore_obsolete": [],
-    "ignore_missing": [],
-    "ignore_transitive": [],
-    "ignore_misplaced_dev": [],
-    "exclude": [".venv", "tests"],
-    "extend_exclude": [],
-    "ignore_notebooks": False,
-    "skip_obsolete": False,
-    "skip_missing": False,
-    "skip_transitive": False,
-    "skip_misplaced_dev": False,
-}
 
 
 class Config:
@@ -27,137 +14,81 @@ class Config:
 
     def __init__(
         self,
-        ignore_obsolete: Optional[List[str]],
-        ignore_missing: Optional[List[str]],
-        ignore_transitive: Optional[List[str]],
-        ignore_misplaced_dev: Optional[List[str]],
-        skip_obsolete: Optional[bool],
-        skip_missing: Optional[bool],
-        skip_transitive: Optional[bool],
-        skip_misplaced_dev: Optional[bool],
-        exclude: Optional[List[str]],
-        extend_exclude: Optional[List[str]],
-        ignore_notebooks: Optional[bool],
+        ignore_obsolete: str = None,
+        ignore_missing: str = None,
+        ignore_transitive: str = None,
+        ignore_misplaced_dev: str = None,
+        skip_obsolete: bool = None,
+        skip_missing: bool = None,
+        skip_transitive: bool = None,
+        skip_misplaced_dev: bool = None,
+        exclude: str = None,
+        extend_exclude: str = None,
+        ignore_notebooks: bool = None,
     ) -> None:
-        self._set_defaults()
-        self._override_config_with_pyproject_toml()
-        self._override_config_with_cli_arguments(
-            ignore_obsolete=ignore_obsolete,
-            ignore_missing=ignore_missing,
-            ignore_transitive=ignore_transitive,
-            ignore_misplaced_dev=ignore_misplaced_dev,
-            exclude=exclude,
-            extend_exclude=extend_exclude,
-            ignore_notebooks=ignore_notebooks,
-            skip_obsolete=skip_obsolete,
-            skip_missing=skip_missing,
-            skip_transitive=skip_transitive,
-            skip_misplaced_dev=skip_misplaced_dev,
-        )
 
-    def _set_defaults(self) -> None:
-        self.ignore_obsolete = DEFAULTS["ignore_obsolete"]
-        self.ignore_missing = DEFAULTS["ignore_missing"]
-        self.ignore_transitive = DEFAULTS["ignore_transitive"]
-        self.ignore_misplaced_dev = DEFAULTS["ignore_misplaced_dev"]
-        self.exclude = DEFAULTS["exclude"]
-        self.extend_exclude = DEFAULTS["extend_exclude"]
-        self.ignore_notebooks = DEFAULTS["ignore_notebooks"]
-        self.skip_obsolete = DEFAULTS["skip_obsolete"]
-        self.skip_missing = DEFAULTS["skip_missing"]
-        self.skip_transitive = DEFAULTS["skip_transitive"]
-        self.skip_misplaced_dev = DEFAULTS["skip_misplaced_dev"]
+        self.pyproject_data = self._read_configuration_from_pyproject_toml()
+        self._set_string_to_list_config("ignore_obsolete", ignore_obsolete)
+        self._set_string_to_list_config("ignore_missing", ignore_missing)
+        self._set_string_to_list_config("ignore_transitive", ignore_transitive)
+        self._set_string_to_list_config("ignore_misplaced_dev", ignore_misplaced_dev)
+        self._set_string_to_list_config("exclude", exclude)
+        self._set_string_to_list_config("extend_exclude", extend_exclude)
+        self._set_bool_config("skip_obsolete", skip_obsolete)
+        self._set_bool_config("skip_missing", skip_missing)
+        self._set_bool_config("skip_transitive", skip_transitive)
+        self._set_bool_config("skip_misplaced_dev", skip_misplaced_dev)
+        self._set_bool_config("ignore_notebooks", ignore_notebooks)
 
-    def _override_config_with_pyproject_toml(self) -> None:
-        pyproject_toml_config = self._read_configuration_from_pyproject_toml()
-        if pyproject_toml_config:
-            self._override_with_toml_argument("ignore_obsolete", pyproject_toml_config)
-            self._override_with_toml_argument("ignore_missing", pyproject_toml_config)
-            self._override_with_toml_argument("ignore_transitive", pyproject_toml_config)
-            self._override_with_toml_argument("ignore_misplaced_dev", pyproject_toml_config)
-            self._override_with_toml_argument("skip_missing", pyproject_toml_config)
-            self._override_with_toml_argument("skip_obsolete", pyproject_toml_config)
-            self._override_with_toml_argument("skip_transitive", pyproject_toml_config)
-            self._override_with_toml_argument("skip_misplaced_dev", pyproject_toml_config)
-            self._override_with_toml_argument("exclude", pyproject_toml_config)
-            self._override_with_toml_argument("extend_exclude", pyproject_toml_config)
-            self._override_with_toml_argument("ignore_notebooks", pyproject_toml_config)
+    def _set_string_to_list_config(self, attribute: str, cli_value: str):
+        """
+        Set configuration for arguments that are supplied as strings in the CLI, but should be converted to a list.
+        """
+        self._set_default_string_to_list(attribute)
+        self._override_with_toml_argument(attribute)
+        self._override_with_cli_argument_string_to_list(attribute, cli_value)
 
-    def _read_configuration_from_pyproject_toml(self) -> Optional[Dict]:
+    def _set_bool_config(self, attribute: str, cli_value: str):
+        """
+        Set configuration for boolean arguments.
+        """
+        self._set_default_boolean(attribute)
+        self._override_with_toml_argument(attribute)
+        self._override_with_cli_argument_boolean(attribute, cli_value)
+
+    def _set_default_string_to_list(self, attribute: str):
+        setattr(self, attribute, self._comma_separated_string_to_list(DEFAULTS[attribute]))
+
+    def _set_default_boolean(self, attribute: str):
+        setattr(self, attribute, DEFAULTS[attribute])
+
+    def _override_with_cli_argument_string_to_list(self, attribute, value):
+        if value and not value == DEFAULTS[attribute]:
+            value_as_list = self._comma_separated_string_to_list(value)
+            self._log_changed_by_command_line_argument(attribute, value_as_list)
+            setattr(self, attribute, value_as_list)
+
+    def _override_with_cli_argument_boolean(self, attribute, value):
+        if value and not value == DEFAULTS[attribute]:
+            self._log_changed_by_command_line_argument(attribute, value)
+            setattr(self, attribute, value)
+
+    def _override_with_toml_argument(self, argument: str) -> None:
+        """
+        If argument is found in pyproject.toml, override the default argument with the found value.
+        """
+        if self.pyproject_data and argument in self.pyproject_data:
+            value = self.pyproject_data[argument]
+            setattr(self, argument, value)
+            self._log_changed_by_pyproject_toml(argument, value)
+
+    def _read_configuration_from_pyproject_toml(self) -> Dict:
         pyproject_data = load_pyproject_toml()
         try:
             return pyproject_data["tool"]["deptry"]
         except KeyError:  # noqa
             logging.debug("No configuration for deptry was found in pyproject.toml.")
             return None
-
-    def _override_with_toml_argument(self, argument: str, pyproject_toml_config: Dict) -> None:
-        """
-        If argument is found in pyproject.toml, override the default argument with the found value.
-        """
-        if argument in pyproject_toml_config:
-            value = pyproject_toml_config[argument]
-            setattr(self, argument, value)
-            self._log_changed_by_pyproject_toml(argument, value)
-
-    def _override_config_with_cli_arguments(  # noqa
-        self,
-        ignore_obsolete: Optional[List[str]],
-        ignore_missing: Optional[List[str]],
-        ignore_transitive: Optional[List[str]],
-        ignore_misplaced_dev: Optional[List[str]],
-        exclude: Optional[List[str]],
-        extend_exclude: Optional[List[str]],
-        ignore_notebooks: Optional[bool],
-        skip_obsolete: Optional[bool],
-        skip_missing: Optional[bool],
-        skip_transitive: Optional[bool],
-        skip_misplaced_dev: Optional[bool],
-    ) -> None:
-
-        if ignore_obsolete:
-            self.ignore_obsolete = ignore_obsolete
-            self._log_changed_by_command_line_argument("ignore_obsolete", ignore_obsolete)
-
-        if ignore_missing:
-            self.ignore_missing = ignore_missing
-            self._log_changed_by_command_line_argument("ignore_missing", ignore_missing)
-
-        if ignore_transitive:
-            self.ignore_transitive = ignore_transitive
-            self._log_changed_by_command_line_argument("ignore_transitive", ignore_transitive)
-
-        if ignore_misplaced_dev:
-            self.ignore_misplaced_dev = ignore_misplaced_dev
-            self._log_changed_by_command_line_argument("ignore_misplaced_dev", ignore_misplaced_dev)
-
-        if skip_obsolete:
-            self.skip_obsolete = skip_obsolete
-            self._log_changed_by_command_line_argument("skip_obsolete", skip_obsolete)
-
-        if skip_missing:
-            self.skip_missing = skip_missing
-            self._log_changed_by_command_line_argument("skip_missing", skip_missing)
-
-        if skip_transitive:
-            self.skip_transitive = skip_transitive
-            self._log_changed_by_command_line_argument("skip_transitive", skip_transitive)
-
-        if skip_misplaced_dev:
-            self.skip_misplaced_dev = skip_misplaced_dev
-            self._log_changed_by_command_line_argument("skip_misplaced_dev", skip_misplaced_dev)
-
-        if exclude:
-            self.exclude = exclude
-            self._log_changed_by_command_line_argument("exclude", exclude)
-
-        if extend_exclude:
-            self.extend_exclude = extend_exclude
-            self._log_changed_by_command_line_argument("extend_exclude", extend_exclude)
-
-        if ignore_notebooks:
-            self.ignore_notebooks = ignore_notebooks
-            self._log_changed_by_command_line_argument("ignore_notebooks", ignore_notebooks)
 
     @staticmethod
     def _log_changed_by_pyproject_toml(argument: str, value: Any) -> None:
@@ -166,3 +97,10 @@ class Config:
     @staticmethod
     def _log_changed_by_command_line_argument(argument: str, value: Any) -> None:
         logging.debug(f"Argument {argument} set to {str(value)} by command line argument")
+
+    @staticmethod
+    def _comma_separated_string_to_list(string: str):
+        if len(string) > 0:
+            return string.split(",")
+        else:
+            return []

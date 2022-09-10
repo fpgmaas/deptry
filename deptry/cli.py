@@ -5,6 +5,7 @@ from typing import List
 
 import click
 
+from deptry.cli_defaults import DEFAULTS
 from deptry.config import Config
 from deptry.core import Core
 from deptry.utils import import_importlib_metadata, run_within_dir
@@ -41,47 +42,58 @@ from deptry.utils import import_importlib_metadata, run_within_dir
 @click.option(
     "--ignore-obsolete",
     "-io",
-    multiple=True,
+    type=click.STRING,
     help="""
-    Dependencies listed in pyproject.toml that should never be marked as obsolete, even if they are not imported in any of the files scanned.
-    Can be used multiple times. For example; `deptry . -io foo -io bar`.
+    Comma-separated list of dependencies listed in pyproject.toml that should never be marked as obsolete, even if they are not imported in any of the files scanned.
+    For example; `deptry . --ignore-obsolete foo,bar`.
     """,
+    default=DEFAULTS["ignore_obsolete"],
 )
 @click.option(
     "--ignore-missing",
     "-im",
-    multiple=True,
-    help="""Modules that should never be marked as missing dependencies, even if the matching package for the import statement cannot be found.
-    Can be used multiple times. For example; `deptry . -io foo -io bar`.""",
+    type=click.STRING,
+    help="""Comma-separated list of modules that should never be marked as missing dependencies, even if the matching package for the import statement cannot be found.
+    For example; `deptry . --ignore-missing foo,bar`.
+    """,
+    default=DEFAULTS["ignore_missing"],
 )
 @click.option(
     "--ignore-transitive",
     "-it",
-    multiple=True,
-    help="""Dependencies that should never be marked as an issue due to it being a transitive dependency, even though deptry determines them to be transitive.
-    Can be used multiple times. For example; `deptry . -it foo -io bar`.""",
+    type=click.STRING,
+    help="""Comma-separated list of dependencies that should never be marked as an issue due to it being a transitive dependency, even though deptry determines them to be transitive.
+    For example; `deptry . --ignore-transitive foo,bar`.
+    """,
+    default=DEFAULTS["ignore_transitive"],
 )
 @click.option(
     "--ignore-misplaced-dev",
     "-id",
-    multiple=True,
-    help="""Modules that should never be marked as a misplaced development dependency, even though it seems to not be used solely for development purposes.
-    Can be used multiple times. For example; `deptry . -id foo -id bar`.""",
+    type=click.STRING,
+    help="""Comma-separated list of modules that should never be marked as a misplaced development dependency, even though it seems to not be used solely for development purposes.
+    For example; `deptry . --ignore-misplaced-dev foo,bar`.
+    """,
+    default=DEFAULTS["ignore_misplaced_dev"],
 )
 @click.option(
     "--exclude",
     "-e",
-    multiple=True,
-    help="""Directories or files in which .py files should not be scanned for imports to determine if there are dependency issues.
-    Defaults to ['venv','tests']. Specify multiple directories or files by using this flag multiple times, e.g. `-e .venv -e tests
-    -e other_dir`.""",
+    type=click.STRING,
+    help="""Comma-separated list of directories or files in which .py files should not be scanned for imports to determine if there are dependency issues.
+    For example: `deptry . --exclude .venv,tests,foo,bar.py`
+    """,
+    default=DEFAULTS["exclude"],
+    show_default=True,
 )
 @click.option(
     "--extend-exclude",
     "-ee",
-    multiple=True,
+    type=click.STRING,
     help="""Like --exclude, but adds additional files and directories on top of the excluded ones instead of overwriting the defaults.
-    (Useful if you simply want to add to the default) `deptry . -ee examples -ee not_this_file.py`""",
+    (Useful if you simply want to add to the default) `deptry . --extend-exclude foo,bar.py`""",
+    default=DEFAULTS["extend_exclude"],
+    show_default=True,
 )
 @click.option(
     "--ignore-notebooks",
@@ -128,17 +140,17 @@ def deptry(
         # This way, we can distinguish if a argument was actually passed by the user
         # (e.g. ignore_notebooks is 'False' by default).
         config = Config(
-            ignore_obsolete=list(ignore_obsolete) if ignore_obsolete else None,
-            ignore_missing=list(ignore_missing) if ignore_missing else None,
-            ignore_transitive=list(ignore_transitive) if ignore_transitive else None,
-            ignore_misplaced_dev=list(ignore_misplaced_dev) if ignore_misplaced_dev else None,
-            exclude=list(exclude) if exclude else None,
-            extend_exclude=list(extend_exclude) if extend_exclude else None,
-            ignore_notebooks=ignore_notebooks if ignore_notebooks else None,
-            skip_obsolete=skip_obsolete if skip_obsolete else None,
-            skip_missing=skip_missing if skip_missing else None,
-            skip_transitive=skip_transitive if skip_transitive else None,
-            skip_misplaced_dev=skip_misplaced_dev if skip_misplaced_dev else None,
+            ignore_obsolete=ignore_obsolete,
+            ignore_missing=ignore_missing,
+            ignore_transitive=ignore_transitive,
+            ignore_misplaced_dev=ignore_misplaced_dev,
+            exclude=exclude,
+            extend_exclude=extend_exclude,
+            ignore_notebooks=ignore_notebooks,
+            skip_obsolete=skip_obsolete,
+            skip_missing=skip_missing,
+            skip_transitive=skip_transitive,
+            skip_misplaced_dev=skip_misplaced_dev,
         )
 
         result = Core(

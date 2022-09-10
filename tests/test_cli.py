@@ -35,7 +35,7 @@ def test_cli_ignore_notebooks(dir_with_venv_installed):
 def test_cli_ignore_flags(dir_with_venv_installed):
     with run_within_dir(str(dir_with_venv_installed)):
         result = subprocess.run(
-            shlex.split("poetry run deptry . -io isort -io pkginfo -io requests -im white -id black"),
+            shlex.split("poetry run deptry . --ignore-obsolete isort,pkginfo,requests -im white -id black"),
             capture_output=True,
             text=True,
         )
