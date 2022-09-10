@@ -18,4 +18,7 @@ runs:
               source .venv/bin/activate
               make test
         shell: bash
+
+      - name: Upload coverage reports to Codecov with GitHub Action
+        uses: codecov/codecov-action@v3
         

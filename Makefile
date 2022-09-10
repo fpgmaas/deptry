@@ -20,7 +20,7 @@ check: ## Check code formatting using isort, black, flake8 and mypy.
 
 test: ## Test the code with pytest
 	@echo "🚀 Testing code: Running pytest"
-	@pytest -v --doctest-modules
+	@pytest --cov=./ --cov-report=xml
 
 build: clean-build ## Build wheel file using poetry
 	@echo "🚀 Creating wheel file"
