@@ -191,7 +191,7 @@ def deptry(
 
 def log_obsolete_dependencies(dependencies: List[str], sep="\n\t") -> None:
     logging.info("\n-----------------------------------------------------\n")
-    logging.info(f"pyproject.toml contains obsolete dependencies:\n{sep}{sep.join(sorted(dependencies))}\n")
+    logging.info(f"The project contains obsolete dependencies:\n{sep}{sep.join(sorted(dependencies))}\n")
     logging.info(
         """Consider removing them from your projects dependencies. If a package is used for development purposes, you should add
 it to your development dependencies instead."""

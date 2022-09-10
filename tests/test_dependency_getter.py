@@ -1,5 +1,5 @@
 from deptry.dependency import Dependency
-from deptry.dependency_getter import DependencyGetter
+from deptry.pyproject_toml_dependency_getter import PyprojectTomlDependencyGetter
 from deptry.utils import run_within_dir
 
 
@@ -16,7 +16,7 @@ foo-bar =  { version = ">=2.5.1,<4.0.0", optional = true, python = ">3.7" }"""
         with open("pyproject.toml", "w") as f:
             f.write(fake_pyproject_toml)
 
-        dependencies = DependencyGetter().get()
+        dependencies = PyprojectTomlDependencyGetter().get()
 
         assert len(dependencies) == 4
 

@@ -2,14 +2,17 @@ import logging
 from pathlib import Path
 from typing import Dict, List
 
-from deptry.dependency_getter import DependencyGetter
+from deptry.dependency import Dependency
+from deptry.dependency_management_detector import DependencyManagementDetector
 from deptry.import_parser import ImportParser
 from deptry.issue_finders.misplaced_dev import MisplacedDevDependenciesFinder
 from deptry.issue_finders.missing import MissingDependenciesFinder
 from deptry.issue_finders.obsolete import ObsoleteDependenciesFinder
 from deptry.issue_finders.transitive import TransitiveDependenciesFinder
-from deptry.module import ModuleBuilder
+from deptry.module import Module, ModuleBuilder
+from deptry.pyproject_toml_dependency_getter import PyprojectTomlDependencyGetter
 from deptry.python_file_finder import PythonFileFinder
+from deptry.requirements_txt_dependency_getter import RequirementsTxtDependencyGetter
 
 
 class Core:
@@ -43,8 +46,8 @@ class Core:
 
         self._log_config()
 
-        dependencies = DependencyGetter().get()
-        dev_dependencies = DependencyGetter(dev=True).get()
+        dependency_management_format = DependencyManagementDetector().detect()
+        dependencies, dev_dependencies = self._get_dependencies(dependency_management_format)
 
         all_python_files = PythonFileFinder(
             exclude=self.exclude + self.extend_exclude, ignore_notebooks=self.ignore_notebooks
@@ -54,6 +57,11 @@ class Core:
         imported_modules = [ModuleBuilder(mod, dependencies, dev_dependencies).build() for mod in imported_modules]
         imported_modules = [mod for mod in imported_modules if not mod.standard_library]
 
+        issues = self._find_issues(imported_modules, dependencies)
+
+        return issues
+
+    def _find_issues(self, imported_modules: List[Module], dependencies: List[Dependency]):
         result = {}
         if not self.skip_obsolete:
             result["obsolete"] = ObsoleteDependenciesFinder(
@@ -73,8 +81,21 @@ class Core:
                 dependencies=dependencies,
                 ignore_misplaced_dev=self.ignore_misplaced_dev,
             ).find()
-
         return result
+
+    def _get_dependencies(self, dependency_management_format: str):
+        if dependency_management_format == "pyproject_toml":
+            dependencies = PyprojectTomlDependencyGetter().get()
+            dev_dependencies = PyprojectTomlDependencyGetter(dev=True).get()
+        elif dependency_management_format == "requirements_txt":
+            dependencies = RequirementsTxtDependencyGetter().get()
+            dev_dependencies = RequirementsTxtDependencyGetter(dev=True).get()
+            print(dev_dependencies)
+        else:
+            raise ValueError(
+                "Incorrect dependency manage format. Only pyproject.toml and requirements.txt are supported."
+            )
+        return dependencies, dev_dependencies
 
     def _log_config(self):
         logging.debug("Running with the following configuration:")
