@@ -69,11 +69,19 @@ from deptry.utils import import_importlib_metadata, run_within_dir
     Can be used multiple times. For example; `deptry . -id foo -id bar`.""",
 )
 @click.option(
-    "--exclude",
+    "--exclude", 
+    "-e",
     multiple=True,
     help="""Directories or files in which .py files should not be scanned for imports to determine if there are dependency issues.
-    Defaults to ['venv','tests']. Specify multiple directories by using this flag multiple times, e.g. `--exclude .venv --exclude tests
-    --exclude other_dir`.""",
+    Defaults to ['venv','tests']. Specify multiple directories or files by using this flag multiple times, e.g. `-e .venv -e tests
+    -e other_dir`.""",
+)
+@click.option(
+    "--extend-exclude",
+    "-ee",
+    multiple=True,
+    help="""Like --exclude, but adds additional files and directories on top of the excluded ones instead of overwriting the defaults.
+    (Useful if you simply want to add to the default) `deptry . -ee examples -ee not_this_file.py`""",
 )
 @click.option(
     "--ignore-notebooks",
@@ -98,6 +106,7 @@ def deptry(
     skip_transitive: bool,
     skip_misplaced_dev: bool,
     exclude: List[str],
+    extend_exclude: List[str],
     ignore_notebooks: bool,
     version: bool,
 ) -> None:
@@ -119,11 +128,12 @@ def deptry(
         # This way, we can distinguish if a argument was actually passed by the user
         # (e.g. ignore_notebooks is 'False' by default).
         config = Config(
-            ignore_obsolete=ignore_obsolete if ignore_obsolete else None,
-            ignore_missing=ignore_missing if ignore_missing else None,
-            ignore_transitive=ignore_transitive if ignore_transitive else None,
-            ignore_misplaced_dev=ignore_misplaced_dev if ignore_misplaced_dev else None,
-            exclude=exclude if exclude else None,
+            ignore_obsolete=list(ignore_obsolete) if ignore_obsolete else None,
+            ignore_missing=list(ignore_missing) if ignore_missing else None,
+            ignore_transitive=list(ignore_transitive) if ignore_transitive else None,
+            ignore_misplaced_dev=list(ignore_misplaced_dev) if ignore_misplaced_dev else None,
+            exclude=list(exclude) if exclude else None,
+            extend_exclude=list(extend_exclude) if extend_exclude else None,
             ignore_notebooks=ignore_notebooks if ignore_notebooks else None,
             skip_obsolete=skip_obsolete if skip_obsolete else None,
             skip_missing=skip_missing if skip_missing else None,
@@ -137,6 +147,7 @@ def deptry(
             ignore_transitive=config.ignore_transitive,
             ignore_misplaced_dev=config.ignore_misplaced_dev,
             exclude=config.exclude,
+            extend_exclude=config.extend_exclude,
             ignore_notebooks=config.ignore_notebooks,
             skip_obsolete=config.skip_obsolete,
             skip_missing=config.skip_missing,
