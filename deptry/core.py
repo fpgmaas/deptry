@@ -24,6 +24,7 @@ class Core:
         skip_transitive: bool,
         skip_misplaced_dev: bool,
         exclude: List[str],
+        extend_exclude: List[str],
         ignore_notebooks: bool,
     ) -> None:
         self.ignore_obsolete = ignore_obsolete
@@ -31,30 +32,22 @@ class Core:
         self.ignore_transitive = ignore_transitive
         self.ignore_misplaced_dev = ignore_misplaced_dev
         self.exclude = exclude
+        self.extend_exclude = extend_exclude
         self.ignore_notebooks = ignore_notebooks
         self.skip_obsolete = skip_obsolete
         self.skip_missing = skip_missing
         self.skip_transitive = skip_transitive
         self.skip_misplaced_dev = skip_misplaced_dev
-        logging.debug("Running with the following configuration:")
-        logging.debug(f"ignore_obsolete: {ignore_obsolete}")
-        logging.debug(f"ignore_missing: {ignore_missing}")
-        logging.debug(f"ignore_transitive: {ignore_transitive}")
-        logging.debug(f"ignore_misplaced_dev: {ignore_misplaced_dev}")
-        logging.debug(f"skip_obsolete: {skip_obsolete}")
-        logging.debug(f"skip_missing: {skip_missing}")
-        logging.debug(f"skip_transitive: {skip_transitive}")
-        logging.debug(f"skip_misplaced_dev {skip_misplaced_dev}")
-        logging.debug(f"exclude: {exclude}")
-        logging.debug(f"ignore_notebooks: {ignore_notebooks}\n")
 
     def run(self) -> Dict:
+
+        self._log_config()
 
         dependencies = DependencyGetter().get()
         dev_dependencies = DependencyGetter(dev=True).get()
 
         all_python_files = PythonFileFinder(
-            exclude=self.exclude, ignore_notebooks=self.ignore_notebooks
+            exclude=self.exclude + self.extend_exclude, ignore_notebooks=self.ignore_notebooks
         ).get_all_python_files_in(Path("."))
 
         imported_modules = ImportParser().get_imported_modules_for_list_of_files(all_python_files)
@@ -82,3 +75,9 @@ class Core:
             ).find()
 
         return result
+
+    def _log_config(self):
+        logging.debug("Running with the following configuration:")
+        for key, value in vars(self).items():
+            logging.debug(f"{key}: {value}")
+        logging.debug("\n")
