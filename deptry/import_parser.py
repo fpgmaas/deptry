@@ -1,5 +1,4 @@
 import ast
-from enum import unique
 import logging
 from pathlib import Path
 from typing import List, Union
@@ -95,8 +94,11 @@ class ImportParser:
 
     @staticmethod
     def _filter_exceptions(modules: List[str]):
-        exceptions = ["setuptools"] # setuptools is usually available by default, so often not specified in dependencies.
+        exceptions = [
+            "setuptools"
+        ]  # setuptools is usually available by default, so often not specified in dependencies.
         for exception in exceptions:
             if exception in modules:
                 logging.debug(f"Found module {exception} to be imported, omitting from the list of modules.")
                 modules = [module for module in modules if not module == exception]
+        return modules
