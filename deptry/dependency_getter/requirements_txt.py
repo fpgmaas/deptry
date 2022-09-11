@@ -9,14 +9,24 @@ from deptry.dependency import Dependency
 class RequirementsTxtDependencyGetter:
     """
     Extract dependencies from a requirements.txt file.
+
+    By default, dependencies are extracted from requirements.txt if dev = False, and from ["dev-requirements.txt", "requirements-dev.txt"]
+    if dev = True, if any of these files exists. These defaults are overriden with the arguments requirements_txt and requirements_txt_dev.
     """
 
-    def __init__(self, dev: bool = False) -> None:
+    def __init__(
+        self,
+        requirements_txt: str = "requirements.txt",
+        requirements_txt_dev: List[str] = ["dev-requirements.txt", "requirements-dev.txt"],
+        dev: bool = False,
+    ) -> None:
         self.dev = dev
+        self.requirements_txt = requirements_txt
+        self.requirements_txt_dev = requirements_txt_dev
 
     def get(self):
         if not self.dev:
-            dependencies = self._get_dependencies_from_requirements_txt("requirements.txt")
+            dependencies = self._get_dependencies_from_requirements_txt(self.requirements_txt)
         else:
             dev_requirements_files = self._scan_for_dev_requirements_files()
             if dev_requirements_files:
@@ -30,8 +40,7 @@ class RequirementsTxtDependencyGetter:
         return dependencies
 
     def _scan_for_dev_requirements_files(self):
-        common_names = ["dev_requirements.txt", "dev-requirements.txt", "requirements-dev.txt", "requirements_dev.txt"]
-        dev_requirements_files = [file_name for file_name in common_names if file_name in os.listdir()]
+        dev_requirements_files = [file_name for file_name in self.requirements_txt_dev if file_name in os.listdir()]
         if dev_requirements_files:
             logging.debug(f"Found files with development requirements! {dev_requirements_files}")
         return dev_requirements_files
@@ -64,7 +73,7 @@ class RequirementsTxtDependencyGetter:
 
     @staticmethod
     def _find_dependency_name_in(line):
-        match = re.search("\A[a-zA-Z0-9-]+", line)
+        match = re.search("^[a-zA-Z0-9-]+", line)
         if match and not match.group(0)[0] == "-":
             name = match.group(0)
             return name

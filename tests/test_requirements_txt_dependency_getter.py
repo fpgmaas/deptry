@@ -3,7 +3,7 @@ from deptry.dependency_getter.requirements_txt import RequirementsTxtDependencyG
 from deptry.utils import run_within_dir
 
 
-def test_dependency_getter(tmp_path):
+def test_parse_requirements_txt(tmp_path):
 
     fake_requirements_txt = """click==8.1.3 #123asd
 colorama==0.4.5
@@ -62,15 +62,23 @@ urllib3 @ https://github.com/urllib3/urllib3/archive/refs/tags/1.26.8.zip
         assert "requests" in dependencies[11].top_levels
 
 
-def test_dependency_getter_dev(tmp_path):
+def test_with_name(tmp_path):
 
-    fake_requirements_txt = """click==8.1.3 #123asd
-colorama==0.4.5
-"""
+    with run_within_dir(tmp_path):
+        with open("req.txt", "w") as f:
+            f.write("click==8.1.3 #123asd\ncolorama==0.4.5")
+
+        dependencies = RequirementsTxtDependencyGetter(requirements_txt="req.txt").get()
+        assert len(dependencies) == 2
+        assert dependencies[0].name == "click"
+        assert dependencies[1].name == "colorama"
+
+
+def test_dev_single(tmp_path):
 
     with run_within_dir(tmp_path):
         with open("requirements-dev.txt", "w") as f:
-            f.write(fake_requirements_txt)
+            f.write("click==8.1.3 #123asd\ncolorama==0.4.5")
 
         dependencies = RequirementsTxtDependencyGetter(dev=True).get()
 
@@ -80,3 +88,31 @@ colorama==0.4.5
         assert not dependencies[1].is_conditional
         assert not dependencies[1].is_optional
         assert "colorama" in dependencies[1].top_levels
+
+
+def test_dev_multiple(tmp_path):
+
+    with run_within_dir(tmp_path):
+        with open("requirements-dev.txt", "w") as f:
+            f.write("click==8.1.3 #123asd")
+        with open("dev-requirements.txt", "w") as f:
+            f.write("bar")
+
+        dependencies = RequirementsTxtDependencyGetter(dev=True).get()
+        assert len(dependencies) == 2
+        assert "click" in [dependencies[0].name, dependencies[1].name]
+        assert "bar" in [dependencies[0].name, dependencies[1].name]
+
+
+def test_dev_multiple_with_arguments(tmp_path):
+
+    with run_within_dir(tmp_path):
+        with open("foo.txt", "w") as f:
+            f.write("click==8.1.3 #123asd")
+        with open("bar.txt", "w") as f:
+            f.write("bar")
+
+        dependencies = RequirementsTxtDependencyGetter(dev=True, requirements_txt_dev=["foo.txt", "bar.txt"]).get()
+        assert len(dependencies) == 2
+        assert dependencies[0].name == "click"
+        assert dependencies[1].name == "bar"

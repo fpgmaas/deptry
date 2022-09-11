@@ -10,4 +10,6 @@ DEFAULTS = {
     "skip_missing": False,
     "skip_transitive": False,
     "skip_misplaced_dev": False,
+    "requirements_txt": "requirements.txt",
+    "requirements_txt_dev": "dev-requirements.txt,requirements-dev.txt",
 }

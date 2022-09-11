@@ -115,3 +115,36 @@ skip_misplaced_dev = true
         assert config.skip_transitive
         assert config.skip_missing
         assert config.skip_misplaced_dev
+
+
+def test_requirements_txt(tmp_path):
+
+    with run_within_dir(tmp_path):
+
+        with open("pyproject.toml", "w") as f:
+            f.write("")
+
+        config = Config()
+        assert config.requirements_txt == "requirements.txt"
+        assert len(config.requirements_txt_dev) == 2
+        assert "requirements-dev.txt" in config.requirements_txt_dev
+        assert "dev-requirements.txt" in config.requirements_txt_dev
+
+        config = Config(requirements_txt="req.txt", requirements_txt_dev="dev-req.txt,foo.txt")
+        assert config.requirements_txt == "req.txt"
+        assert len(config.requirements_txt_dev) == 2
+        assert "dev-req.txt" in config.requirements_txt_dev
+        assert "foo.txt" in config.requirements_txt_dev
+
+        fake_pyproject_toml = """[tool.deptry]
+requirements_txt = "req.txt"
+requirements_txt_dev=["dev-req.txt", "foo.txt"]
+"""
+        with open("pyproject.toml", "w") as f:
+            f.write(fake_pyproject_toml)
+
+        config = Config()
+        assert config.requirements_txt == "req.txt"
+        assert len(config.requirements_txt_dev) == 2
+        assert "dev-req.txt" in config.requirements_txt_dev
+        assert "foo.txt" in config.requirements_txt_dev

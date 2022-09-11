@@ -38,3 +38,12 @@ def test_both(tmp_path):
 
         spec = DependencySpecificationDetector().detect()
         assert spec == "pyproject_toml"
+
+
+def test_requirements_txt_with_argument(tmp_path):
+    with run_within_dir(tmp_path):
+        with open("req.txt", "w") as f:
+            f.write('foo >= "1.0"')
+
+        spec = DependencySpecificationDetector(requirements_txt="req.txt").detect()
+        assert spec == "requirements_txt"

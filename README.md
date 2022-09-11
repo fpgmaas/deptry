@@ -9,9 +9,12 @@
 
 ---
 
-_deptry_ is a command line tool to check for issues with dependencies in a poetry managed Python project, such as obsolete or missing dependencies.
+_deptry_ is a command line tool to check for issues with dependencies in a Python project, such as obsolete or missing dependencies. It supports the following types of projects:
 
-Dependency issues are detected by scanning for imported modules within all Python files in a directory and its subdirectories, and comparing those to the dependencies listed in pyproject.toml.
+- Projects that use [Poetry](https://python-poetry.org/) and a corresponding _pyproject.toml_ file
+- Projects that use a _requirements.txt_ file according to the [pip](https://pip.pypa.io/en/stable/user_guide/) standards
+
+Dependency issues are detected by scanning for imported modules within all Python files in a directory and its subdirectories, and comparing those to the dependencies listed in the project's requirements.
 
 ---
 
@@ -25,14 +28,14 @@ Dependency issues are detected by scanning for imported modules within all Pytho
 
 _deptry_ can be added to your project with 
 
-```
+```shell
 poetry add --group dev deptry
 ```
 
-or for older versions of poetry:
+or with 
 
 ```
-poetry add --dev deptry
+pip install deptry
 ```
 
 > **Warning**
@@ -40,7 +43,7 @@ poetry add --dev deptry
 
 ### Prerequisites
 
-In order to check for obsolete imports, _deptry_ requires a _pyproject.toml_ file to be present in the directory passed as the first argument, and it requires the corresponding environment to be activated.
+_deptry_ should be run withing the root directory of the project to be scanned, and the proejct should be running in its own dedicated virtual environment.
 
 ### Usage
 
@@ -50,8 +53,8 @@ To scan your project for obsolete imports, run
 deptry .
 ```
 
-__deptry__ can be configured by using additional command line arguments, or 
-by adding a `[tool.deptry]` section in __pyproject.toml__.
+_deptry_ can be configured by using additional command line arguments, or 
+by adding a `[tool.deptry]` section in _pyproject.toml_.
 
 For more information, see the [documentation](https://fpgmaas.github.io/deptry/).
 

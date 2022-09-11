@@ -14,6 +14,7 @@ class PythonFileFinder:
         self.ignore_notebooks = ignore_notebooks
 
     def get_all_python_files_in(self, directory: Path) -> List[Path]:
+        logging.debug("Collecting Python files to scan...")
         all_python_files = self._get_all_py_files_in(directory)
         if not self.ignore_notebooks:
             all_python_files += self._get_all_ipynb_files_in(directory)

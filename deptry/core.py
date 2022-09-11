@@ -29,6 +29,8 @@ class Core:
         exclude: List[str],
         extend_exclude: List[str],
         ignore_notebooks: bool,
+        requirements_txt: str,
+        requirements_txt_dev: List[str],
     ) -> None:
         self.ignore_obsolete = ignore_obsolete
         self.ignore_missing = ignore_missing
@@ -41,12 +43,14 @@ class Core:
         self.skip_missing = skip_missing
         self.skip_transitive = skip_transitive
         self.skip_misplaced_dev = skip_misplaced_dev
+        self.requirements_txt = requirements_txt
+        self.requirements_txt_dev = requirements_txt_dev
 
     def run(self) -> Dict:
 
         self._log_config()
 
-        dependency_management_format = DependencySpecificationDetector().detect()
+        dependency_management_format = DependencySpecificationDetector(requirements_txt=self.requirements_txt).detect()
         dependencies, dev_dependencies = self._get_dependencies(dependency_management_format)
 
         all_python_files = PythonFileFinder(
@@ -88,9 +92,10 @@ class Core:
             dependencies = PyprojectTomlDependencyGetter().get()
             dev_dependencies = PyprojectTomlDependencyGetter(dev=True).get()
         elif dependency_management_format == "requirements_txt":
-            dependencies = RequirementsTxtDependencyGetter().get()
-            dev_dependencies = RequirementsTxtDependencyGetter(dev=True).get()
-            print(dev_dependencies)
+            dependencies = RequirementsTxtDependencyGetter(requirements_txt=self.requirements_txt).get()
+            dev_dependencies = RequirementsTxtDependencyGetter(
+                dev=True, requirements_txt_dev=self.requirements_txt_dev
+            ).get()
         else:
             raise ValueError(
                 "Incorrect dependency manage format. Only pyproject.toml and requirements.txt are supported."
@@ -101,4 +106,4 @@ class Core:
         logging.debug("Running with the following configuration:")
         for key, value in vars(self).items():
             logging.debug(f"{key}: {value}")
-        logging.debug("\n")
+        logging.debug("")

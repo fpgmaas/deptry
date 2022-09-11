@@ -106,6 +106,24 @@ from deptry.utils import import_importlib_metadata, run_within_dir
     is_flag=True,
     help="Display the current version and exit.",
 )
+@click.option(
+    "--requirements-txt",
+    "-rt",
+    type=click.STRING,
+    help="""A .txt files with the project's dependencies. If a file called pyproject.toml with a [tool.poetry.dependencies] section is found, this argument is ignored
+    and the dependencies are extracted from the pyproject.toml file instead. Example use: `deptry . --requirements-txt req/prod.txt`""",
+    default=DEFAULTS["requirements_txt"],
+    show_default=True,
+)
+@click.option(
+    "--requirements-txt-dev",
+    "-rtd",
+    type=click.STRING,
+    help=""".txt files to scan for additional development dependencies. If a file called pyproject.toml with a [tool.poetry.dependencies] section is found, this argument is ignored
+    and the dependencies are extracted from the pyproject.toml file instead. Can be multiple e.g. `deptry . --requirements-txt-dev req/dev.txt,req/test.txt`""",
+    default=DEFAULTS["requirements_txt_dev"],
+    show_default=True,
+)
 def deptry(
     directory: pathlib.Path,
     verbose: bool,
@@ -120,6 +138,8 @@ def deptry(
     exclude: List[str],
     extend_exclude: List[str],
     ignore_notebooks: bool,
+    requirements_txt: str,
+    requirements_txt_dev: str,
     version: bool,
 ) -> None:
 
@@ -151,6 +171,8 @@ def deptry(
             skip_missing=skip_missing,
             skip_transitive=skip_transitive,
             skip_misplaced_dev=skip_misplaced_dev,
+            requirements_txt=requirements_txt,
+            requirements_txt_dev=requirements_txt_dev,
         )
 
         result = Core(
@@ -165,6 +187,8 @@ def deptry(
             skip_missing=config.skip_missing,
             skip_transitive=config.skip_transitive,
             skip_misplaced_dev=config.skip_misplaced_dev,
+            requirements_txt=config.requirements_txt,
+            requirements_txt_dev=config.requirements_txt_dev,
         ).run()
         issue_found = False
         if not skip_obsolete and "obsolete" in result and result["obsolete"]:

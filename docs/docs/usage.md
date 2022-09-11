@@ -1,9 +1,5 @@
 # Usage & Configuration
 
-## Prerequisites
-
-In order to check for obsolete imports, _deptry_ requires a _pyproject.toml_ file to be present in the directory passed as the first argument, and it requires the corresponding environment to be activated.
-
 ## Configuration
 
 _deptry_ can be configured with command line arguments or by adding a `[tool.deptry]` section to _pyproject.toml_. Explanation for the command line arguments can
@@ -18,12 +14,22 @@ _deptry_ can be run with
 deptry .
 ```
 
+## pyproject.toml vs requirements.txt
+
+To determine the project's dependencies, _deptry_ will scan the root directory for a `pyproject.toml` file with a `[tool.poetry.dependencies]` section and for a file called `requirements.txt`.
+
+- If a `pyproject.toml` file with dependency specification is found, _deptry_ will extract both the projects dependencies and its development dependencies from there.
+- If a `requirements.txt` file is found, _deptry_ will extract the project's dependencies from there, and additionally it will look for the files `dev-dependencies.txt` and `dependencies-dev.txt` to determine the project's development dependencies.
+- If both a `pyproject.toml` file and `requirements.txt` are found, `pyproject.toml` takes priority, and that file is used to determine the project's dependencies.
+
+_deptry_ can also be configured to look for a `requirements.txt` file with another name or in another directory. See [requirements.txt files](#requirementstxt-files).
+
+## Excluding files and directories
+ 
 To determine issues with imported modules and dependencies, _deptry_ will scan the working directory and its subdirectories recursively for `.py` and `.ipynb` files, so it can
 extract the imported modules from those files. Any files solely used for development purposes, such as files used for unit testing, should not be scanned. By default, the directories
 `venv`, `.venv` and `tests` are excluded. 
 
-## Excluding files and directories
- 
 To ignore other directories and files than the default `venv`, `.venv` and `tests`, use the `--exclude` (or `-e`) flag. The argument should be provided as a comma-separated list, and the paths should be specified as paths relative to the directory _deptry_ is running in, without the trailing `./`.
 
 ```sh
@@ -90,3 +96,17 @@ By default, _deptry_ scans the working directory for `.py` and `.ipynb` files to
 ```sh
 deptry . --ignore-notebooks
 ```
+
+## requirements.txt files
+
+_deptry_ can also be configured to extract dependencies from [pip](https://pip.pypa.io/en/stable/user_guide/) requirements files other than `requirements.txt`. Similarly
+it can also be configured to extract development dependencies from other files than `dev-requirements.txt` and `requirements-dev.txt`. For this, use the `--requirements-txt` and
+`--requirements-txt-dev` arguments. For example:
+
+```
+deptry . \
+    --requirements-txt req/prod.txt \
+    --requirements-txt-dev req/dev.txt,req/test.txt
+```
+
+Here, the `requirements-txt` takes only a single file as argument, but multiple files can be passed to `requirements-txt-dev` by providing them as a comma-separated list.
