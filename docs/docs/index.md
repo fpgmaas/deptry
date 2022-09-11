@@ -10,9 +10,18 @@
 [![License](https://img.shields.io/github/license/fpgmaas/deptry)](https://img.shields.io/github/license/fpgmaas/deptry)
 ---
 
-_deptry_ is a command line tool to check for issues with dependencies in a poetry managed Python project, such as obsolete or missing dependencies. 
+_deptry_ is a command line tool to check for issues with dependencies in a Python project, such as obsolete or missing dependencies. It supports the following types of projects:
 
-Dependency issues are detected by scanning for imported modules within all Python files in a directory and its subdirectories, and comparing those to the dependencies listed in _pyproject.toml_.
+- Projects that use [Poetry](https://python-poetry.org/) and a corresponding _pyproject.toml_ file
+- Projects that use a _requirements.txt_ file according to the [pip](https://pip.pypa.io/en/stable/user_guide/) standards
+
+Dependency issues are detected by scanning for imported modules within all Python files in a directory and its subdirectories, and comparing those to the dependencies listed in the project's requirements.
+
+---
+
+**Documentation**: <https://fpgmaas.github.io/deptry/>
+
+---
 
 ## Quickstart
 
@@ -20,14 +29,14 @@ Dependency issues are detected by scanning for imported modules within all Pytho
 
 _deptry_ can be added to your project with 
 
-```
+```shell
 poetry add --group dev deptry
 ```
 
-or for older versions of poetry:
+or with 
 
 ```
-poetry add --dev deptry
+pip install deptry
 ```
 
 !!! important
@@ -36,11 +45,11 @@ poetry add --dev deptry
 
 ### Prerequisites
 
-In order to check for dependency issues, _deptry_ requires a _pyproject.toml_ file to be present in the directory passed as the first argument, and it requires the corresponding environment to be activated.
+_deptry_ should be run withing the root directory of the project to be scanned, and the proejct should be running in its own dedicated virtual environment.
 
 ### Usage
 
-To scan your project for dependency issues, run
+To scan your project for obsolete imports, run
 
 ```sh
 deptry .
