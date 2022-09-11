@@ -99,7 +99,7 @@ deptry . --ignore-notebooks
 
 ## requirements.txt files
 
-_deptry_ can also be configured to extract dependencies from [pip](https://pip.pypa.io/en/stable/user_guide/) requirements files other than `requirements.txt`. Similarly
+_deptry_ can be configured to extract dependencies from [pip](https://pip.pypa.io/en/stable/user_guide/) requirements files other than `requirements.txt`. Similarly
 it can also be configured to extract development dependencies from other files than `dev-requirements.txt` and `requirements-dev.txt`. For this, use the `--requirements-txt` and
 `--requirements-txt-dev` arguments. For example:
 

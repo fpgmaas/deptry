@@ -20,8 +20,9 @@ def test_cli_returns_error(dir_with_venv_installed):
     with run_within_dir(str(dir_with_venv_installed)):
         result = subprocess.run(shlex.split("poetry run deptry ."), capture_output=True, text=True)
         assert result.returncode == 1
+        print(result.stderr)
         assert "The project contains obsolete dependencies:\n\n\tisort\n\trequests\n\n" in result.stderr
-        assert "There are dependencies missing from pyproject.toml:\n\n\twhite\n\n" in result.stderr
+        assert "There are dependencies missing from the project's list of dependencies:\n\n\twhite\n\n" in result.stderr
         assert "There are imported modules from development dependencies detected:\n\n\tblack\n\n" in result.stderr
 
 

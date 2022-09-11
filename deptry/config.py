@@ -1,4 +1,5 @@
 import logging
+import os
 from typing import Any, Dict
 
 from deptry.cli_defaults import DEFAULTS
@@ -103,7 +104,11 @@ class Config:
             self._log_changed_by_pyproject_toml(argument, value)
 
     def _read_configuration_from_pyproject_toml(self) -> Dict:
-        pyproject_data = load_pyproject_toml()
+        if self._pyproject_toml_exists():
+            pyproject_data = load_pyproject_toml()
+        else:
+            logging.debug("No pyproject.toml file to read configuration from.")
+            return None
         try:
             return pyproject_data["tool"]["deptry"]
         except KeyError:  # noqa
@@ -124,3 +129,9 @@ class Config:
             return string.split(",")
         else:
             return []
+
+    @staticmethod
+    def _pyproject_toml_exists() -> bool:
+        if "pyproject.toml" in os.listdir():
+            return True
+        return False

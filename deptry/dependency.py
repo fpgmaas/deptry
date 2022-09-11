@@ -17,7 +17,7 @@ class Dependency:
     def __init__(self, name: str, conditional: bool = False, optional: bool = False) -> None:
         """
         Args:
-            name: Name of the dependency, as shown in pyproject.toml
+            name: Name of the dependency, as shown in pyproject.toml or requirements.txt
             conditional: boolean to indicate if the dependency is conditional, e.g. 'importlib-metadata': {'version': '*', 'python': '<=3.7'}
         """
         self.name = name

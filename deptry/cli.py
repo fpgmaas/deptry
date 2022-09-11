@@ -44,7 +44,7 @@ from deptry.utils import import_importlib_metadata, run_within_dir
     "-io",
     type=click.STRING,
     help="""
-    Comma-separated list of dependencies listed in pyproject.toml that should never be marked as obsolete, even if they are not imported in any of the files scanned.
+    Comma-separated list of dependencies that should never be marked as obsolete, even if they are not imported in any of the files scanned.
     For example; `deptry . --ignore-obsolete foo,bar`.
     """,
     default=DEFAULTS["ignore_obsolete"],
@@ -224,7 +224,9 @@ it to your development dependencies instead."""
 
 def log_missing_dependencies(dependencies: List[str], sep="\n\t") -> None:
     logging.info("\n-----------------------------------------------------\n")
-    logging.info(f"There are dependencies missing from pyproject.toml:\n{sep}{sep.join(sorted(dependencies))}\n")
+    logging.info(
+        f"There are dependencies missing from the project's list of dependencies:\n{sep}{sep.join(sorted(dependencies))}\n"
+    )
     logging.info("""Consider adding them to your project's dependencies. """)
 
 
@@ -242,7 +244,7 @@ def log_misplaced_develop_dependencies(dependencies: List[str], sep="\n\t") -> N
         f"There are imported modules from development dependencies detected:\n{sep}{sep.join(sorted(dependencies))}\n"
     )
     logging.info(
-        """Consider moving them to `[tool.poetry.dependencies]` in pyproject.toml. If this is not correct and the
+        """Consider moving them to your project's 'regular' dependencies. If this is not correct and the
 dependencies listed above are indeed development dependencies, it's likely that files were scanned that are only used
 for development purposes. Run `deptry -v .` to see a list of scanned files."""
     )
