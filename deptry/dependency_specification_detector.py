@@ -4,7 +4,7 @@ import os
 from deptry.utils import load_pyproject_toml
 
 
-class DependencyManagementDetector:
+class DependencySpecificationDetector:
     """
     Class to detect how dependencies are specified:
     - Either find a pyproject.toml with a [poetry.tool.dependencies] section

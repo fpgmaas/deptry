@@ -3,16 +3,16 @@ from pathlib import Path
 from typing import Dict, List
 
 from deptry.dependency import Dependency
-from deptry.dependency_management_detector import DependencyManagementDetector
+from deptry.dependency_getter.pyproject_toml import PyprojectTomlDependencyGetter
+from deptry.dependency_getter.requirements_txt import RequirementsTxtDependencyGetter
+from deptry.dependency_specification_detector import DependencySpecificationDetector
 from deptry.import_parser import ImportParser
 from deptry.issue_finders.misplaced_dev import MisplacedDevDependenciesFinder
 from deptry.issue_finders.missing import MissingDependenciesFinder
 from deptry.issue_finders.obsolete import ObsoleteDependenciesFinder
 from deptry.issue_finders.transitive import TransitiveDependenciesFinder
 from deptry.module import Module, ModuleBuilder
-from deptry.pyproject_toml_dependency_getter import PyprojectTomlDependencyGetter
 from deptry.python_file_finder import PythonFileFinder
-from deptry.requirements_txt_dependency_getter import RequirementsTxtDependencyGetter
 
 
 class Core:
@@ -46,7 +46,7 @@ class Core:
 
         self._log_config()
 
-        dependency_management_format = DependencyManagementDetector().detect()
+        dependency_management_format = DependencySpecificationDetector().detect()
         dependencies, dev_dependencies = self._get_dependencies(dependency_management_format)
 
         all_python_files = PythonFileFinder(

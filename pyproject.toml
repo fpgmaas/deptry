@@ -44,6 +44,7 @@ exclude = '''
     | \.pytest_cache
     | python-venv
     | \.venv
+    | venv
     | build
     | dist
     | \.tox
@@ -63,13 +64,14 @@ warn_unused_ignores = "True"
 show_error_codes = "True"
 ignore_missing_imports = "True"
 exclude = [
+    'venv',
     '\.venv',
     'tests'
 ]
 
 [tool.deptry]
 exclude = [
-  '.venv','docs','tests'
+  'venv','.venv','docs','tests'
 ]
 
 [tool.poetry.scripts]

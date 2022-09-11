@@ -20,11 +20,11 @@ deptry .
 
 To determine issues with imported modules and dependencies, _deptry_ will scan the working directory and its subdirectories recursively for `.py` and `.ipynb` files, so it can
 extract the imported modules from those files. Any files solely used for development purposes, such as files used for unit testing, should not be scanned. By default, the directories
-`.venv` and `tests` are excluded. 
+`venv`, `.venv` and `tests` are excluded. 
 
 ## Excluding files and directories
  
-To ignore other directories and files than the default `.venv` and `tests`, use the `--exclude` (or `-e`) flag. The argument should be provided as a comma-separated list, and the paths should be specified as paths relative to the directory _deptry_ is running in, without the trailing `./`.
+To ignore other directories and files than the default `venv`, `.venv` and `tests`, use the `--exclude` (or `-e`) flag. The argument should be provided as a comma-separated list, and the paths should be specified as paths relative to the directory _deptry_ is running in, without the trailing `./`.
 
 ```sh
 deptry . --exclude foo,path/to/bar.py
@@ -34,7 +34,7 @@ Note that this overwrites the defaults, the configuration to ignore
 both `.venv`, `tests`, and another directory or file looks as follows:
 
 ```sh
-deptry . --exclude .venv,tests,foo
+deptry . --exclude venv,.venv,tests,foo
 ```
 
 Alternatively, to add directories to the defaults instead of overwriting them, use the `--extend-exclude` (or `-ee`) flag. 
@@ -43,7 +43,7 @@ Alternatively, to add directories to the defaults instead of overwriting them, u
 deptry . --extend-exclude foo,bar
 ```
 
-This will exclude `.venv`, `tests`, `foo` and `bar`.
+This will exclude `venv`, `.venv`, `tests`, `foo` and `bar`.
 
 ## Increased verbosity
 

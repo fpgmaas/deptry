@@ -22,7 +22,7 @@ An example of a configuration section for _deptry_ is given below.
 ```
 [tool.deptry]
 exclude = [
-  '.venv','tests','docs'
+  'venv','.venv','tests','docs'
 ]
 ignore_obsolete = [
   'alpha',

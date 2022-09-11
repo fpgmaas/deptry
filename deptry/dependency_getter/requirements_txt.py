@@ -17,19 +17,19 @@ class RequirementsTxtDependencyGetter:
     def get(self):
         if not self.dev:
             dependencies = self._get_dependencies_from_requirements_txt("requirements.txt")
-            self._log_dependencies(dependencies=dependencies)
-            return dependencies
         else:
             dev_requirements_files = self._scan_for_dev_requirements_files()
             if dev_requirements_files:
                 dependencies = []
                 for file_name in dev_requirements_files:
                     dependencies += self._get_dependencies_from_requirements_txt(file_name)
-                return dependencies
             else:
                 return []
 
-    def _scan_for_dev_requirements_files():
+        self._log_dependencies(dependencies=dependencies)
+        return dependencies
+
+    def _scan_for_dev_requirements_files(self):
         common_names = ["dev_requirements.txt", "dev-requirements.txt", "requirements-dev.txt", "requirements_dev.txt"]
         dev_requirements_files = [file_name for file_name in common_names if file_name in os.listdir()]
         if dev_requirements_files:
@@ -37,6 +37,7 @@ class RequirementsTxtDependencyGetter:
         return dev_requirements_files
 
     def _get_dependencies_from_requirements_txt(self, file_name: str):
+        logging.debug(f"Scanning {file_name} for {'dev-' if self.dev else ''}dependencies")
         dependencies = []
 
         with open(file_name) as f:
