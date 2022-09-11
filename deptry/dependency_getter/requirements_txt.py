@@ -73,7 +73,7 @@ class RequirementsTxtDependencyGetter:
 
     @staticmethod
     def _find_dependency_name_in(line):
-        match = re.search("^[a-zA-Z0-9-]+", line)
+        match = re.search("^[a-zA-Z0-9-_]+", line)
         if match and not match.group(0)[0] == "-":
             name = match.group(0)
             return name
