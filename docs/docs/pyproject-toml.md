@@ -14,6 +14,8 @@ _deptry_ can be configured by adding a `[tool.deptry]` section to _pyproject.tom
 - `skip_missing`: `bool`
 - `skip_transitive`: `bool`
 - `skip_misplaced_dev`: `bool`
+- `requirements_txt`: `str`
+- `requirements_txt_dev`: `List`
 
 Note that the command line arguments that should be passed as a string with comma-separated values should simply be passed as a list in _pyproject.toml_.
 
@@ -22,7 +24,7 @@ An example of a configuration section for _deptry_ is given below.
 ```
 [tool.deptry]
 exclude = [
-  '.venv','tests','docs'
+  'venv','.venv','tests','docs'
 ]
 ignore_obsolete = [
   'alpha',

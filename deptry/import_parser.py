@@ -77,7 +77,9 @@ class ImportParser:
             if isinstance(node, ast.Import):
                 modules += [x.name.split(".")[0] for x in node.names]
             elif isinstance(node, ast.ImportFrom):
-                if node.module:  # nodes for imports like `from . import foo` do not have a module attribute.
+                if (
+                    node.module and node.level == 0
+                ):  # nodes for imports like `from . import foo` do not have a module attribute.
                     modules.append(node.module.split(".")[0])  # type: ignore
         return modules
 

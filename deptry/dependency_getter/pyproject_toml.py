@@ -5,7 +5,7 @@ from deptry.dependency import Dependency
 from deptry.utils import load_pyproject_toml
 
 
-class DependencyGetter:
+class PyprojectTomlDependencyGetter:
     """
     Class to get a project's list of dependencies from pyproject.toml.
 

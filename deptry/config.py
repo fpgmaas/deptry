@@ -1,4 +1,5 @@
 import logging
+import os
 from typing import Any, Dict
 
 from deptry.cli_defaults import DEFAULTS
@@ -25,6 +26,8 @@ class Config:
         exclude: str = None,
         extend_exclude: str = None,
         ignore_notebooks: bool = None,
+        requirements_txt: str = None,
+        requirements_txt_dev: str = None,
     ) -> None:
 
         self.pyproject_data = self._read_configuration_from_pyproject_toml()
@@ -39,6 +42,8 @@ class Config:
         self._set_bool_config("skip_transitive", skip_transitive)
         self._set_bool_config("skip_misplaced_dev", skip_misplaced_dev)
         self._set_bool_config("ignore_notebooks", ignore_notebooks)
+        self._set_string_config("requirements_txt", requirements_txt)
+        self._set_string_to_list_config("requirements_txt_dev", requirements_txt_dev)
 
     def _set_string_to_list_config(self, attribute: str, cli_value: str):
         """
@@ -56,10 +61,21 @@ class Config:
         self._override_with_toml_argument(attribute)
         self._override_with_cli_argument_boolean(attribute, cli_value)
 
+    def _set_string_config(self, attribute: str, cli_value: str):
+        """
+        Set configuration for arguments that are supplied as strings in the CLI, but should be converted to a list.
+        """
+        self._set_default_string(attribute)
+        self._override_with_toml_argument(attribute)
+        self._override_with_cli_argument_string(attribute, cli_value)
+
     def _set_default_string_to_list(self, attribute: str):
         setattr(self, attribute, self._comma_separated_string_to_list(DEFAULTS[attribute]))
 
     def _set_default_boolean(self, attribute: str):
+        setattr(self, attribute, DEFAULTS[attribute])
+
+    def _set_default_string(self, attribute: str):
         setattr(self, attribute, DEFAULTS[attribute])
 
     def _override_with_cli_argument_string_to_list(self, attribute, value):
@@ -67,6 +83,11 @@ class Config:
             value_as_list = self._comma_separated_string_to_list(value)
             self._log_changed_by_command_line_argument(attribute, value_as_list)
             setattr(self, attribute, value_as_list)
+
+    def _override_with_cli_argument_string(self, attribute, value):
+        if value and not value == DEFAULTS[attribute]:
+            self._log_changed_by_command_line_argument(attribute, value)
+            setattr(self, attribute, value)
 
     def _override_with_cli_argument_boolean(self, attribute, value):
         if value and not value == DEFAULTS[attribute]:
@@ -83,7 +104,11 @@ class Config:
             self._log_changed_by_pyproject_toml(argument, value)
 
     def _read_configuration_from_pyproject_toml(self) -> Dict:
-        pyproject_data = load_pyproject_toml()
+        if self._pyproject_toml_exists():
+            pyproject_data = load_pyproject_toml()
+        else:
+            logging.debug("No pyproject.toml file to read configuration from.")
+            return None
         try:
             return pyproject_data["tool"]["deptry"]
         except KeyError:  # noqa
@@ -104,3 +129,9 @@ class Config:
             return string.split(",")
         else:
             return []
+
+    @staticmethod
+    def _pyproject_toml_exists() -> bool:
+        if "pyproject.toml" in os.listdir():
+            return True
+        return False

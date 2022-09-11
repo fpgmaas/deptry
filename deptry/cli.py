@@ -44,7 +44,7 @@ from deptry.utils import import_importlib_metadata, run_within_dir
     "-io",
     type=click.STRING,
     help="""
-    Comma-separated list of dependencies listed in pyproject.toml that should never be marked as obsolete, even if they are not imported in any of the files scanned.
+    Comma-separated list of dependencies that should never be marked as obsolete, even if they are not imported in any of the files scanned.
     For example; `deptry . --ignore-obsolete foo,bar`.
     """,
     default=DEFAULTS["ignore_obsolete"],
@@ -81,7 +81,7 @@ from deptry.utils import import_importlib_metadata, run_within_dir
     "-e",
     type=click.STRING,
     help="""Comma-separated list of directories or files in which .py files should not be scanned for imports to determine if there are dependency issues.
-    For example: `deptry . --exclude .venv,tests,foo,bar.py`
+    For example: `deptry . --exclude venv,.venv,tests,foo,bar.py`
     """,
     default=DEFAULTS["exclude"],
     show_default=True,
@@ -106,6 +106,24 @@ from deptry.utils import import_importlib_metadata, run_within_dir
     is_flag=True,
     help="Display the current version and exit.",
 )
+@click.option(
+    "--requirements-txt",
+    "-rt",
+    type=click.STRING,
+    help="""A .txt files with the project's dependencies. If a file called pyproject.toml with a [tool.poetry.dependencies] section is found, this argument is ignored
+    and the dependencies are extracted from the pyproject.toml file instead. Example use: `deptry . --requirements-txt req/prod.txt`""",
+    default=DEFAULTS["requirements_txt"],
+    show_default=True,
+)
+@click.option(
+    "--requirements-txt-dev",
+    "-rtd",
+    type=click.STRING,
+    help=""".txt files to scan for additional development dependencies. If a file called pyproject.toml with a [tool.poetry.dependencies] section is found, this argument is ignored
+    and the dependencies are extracted from the pyproject.toml file instead. Can be multiple e.g. `deptry . --requirements-txt-dev req/dev.txt,req/test.txt`""",
+    default=DEFAULTS["requirements_txt_dev"],
+    show_default=True,
+)
 def deptry(
     directory: pathlib.Path,
     verbose: bool,
@@ -120,6 +138,8 @@ def deptry(
     exclude: List[str],
     extend_exclude: List[str],
     ignore_notebooks: bool,
+    requirements_txt: str,
+    requirements_txt_dev: str,
     version: bool,
 ) -> None:
 
@@ -151,6 +171,8 @@ def deptry(
             skip_missing=skip_missing,
             skip_transitive=skip_transitive,
             skip_misplaced_dev=skip_misplaced_dev,
+            requirements_txt=requirements_txt,
+            requirements_txt_dev=requirements_txt_dev,
         )
 
         result = Core(
@@ -165,6 +187,8 @@ def deptry(
             skip_missing=config.skip_missing,
             skip_transitive=config.skip_transitive,
             skip_misplaced_dev=config.skip_misplaced_dev,
+            requirements_txt=config.requirements_txt,
+            requirements_txt_dev=config.requirements_txt_dev,
         ).run()
         issue_found = False
         if not skip_obsolete and "obsolete" in result and result["obsolete"]:
@@ -191,7 +215,7 @@ def deptry(
 
 def log_obsolete_dependencies(dependencies: List[str], sep="\n\t") -> None:
     logging.info("\n-----------------------------------------------------\n")
-    logging.info(f"pyproject.toml contains obsolete dependencies:\n{sep}{sep.join(sorted(dependencies))}\n")
+    logging.info(f"The project contains obsolete dependencies:\n{sep}{sep.join(sorted(dependencies))}\n")
     logging.info(
         """Consider removing them from your projects dependencies. If a package is used for development purposes, you should add
 it to your development dependencies instead."""
@@ -200,7 +224,9 @@ it to your development dependencies instead."""
 
 def log_missing_dependencies(dependencies: List[str], sep="\n\t") -> None:
     logging.info("\n-----------------------------------------------------\n")
-    logging.info(f"There are dependencies missing from pyproject.toml:\n{sep}{sep.join(sorted(dependencies))}\n")
+    logging.info(
+        f"There are dependencies missing from the project's list of dependencies:\n{sep}{sep.join(sorted(dependencies))}\n"
+    )
     logging.info("""Consider adding them to your project's dependencies. """)
 
 
@@ -218,7 +244,7 @@ def log_misplaced_develop_dependencies(dependencies: List[str], sep="\n\t") -> N
         f"There are imported modules from development dependencies detected:\n{sep}{sep.join(sorted(dependencies))}\n"
     )
     logging.info(
-        """Consider moving them to `[tool.poetry.dependencies]` in pyproject.toml. If this is not correct and the
+        """Consider moving them to your project's 'regular' dependencies. If this is not correct and the
 dependencies listed above are indeed development dependencies, it's likely that files were scanned that are only used
 for development purposes. Run `deptry -v .` to see a list of scanned files."""
     )
@@ -242,7 +268,7 @@ ignore_transitive = [
   'your-dependency'
 ]
 exclude = [
-  '.venv', 'tests', 'docs'
+  'venv','.venv', 'tests', 'docs'
 ]
 ```
 
