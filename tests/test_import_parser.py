@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 
 from deptry.import_parser import ImportParser
+from deptry.utils import run_within_dir
 
 
 def test_import_parser_py():
@@ -74,3 +75,11 @@ class MyClass:
 def test_import_parser_relative():
     imported_modules = ImportParser().get_imported_modules_from_str("""from . import foo\nfrom .foo import bar""")
     assert set(imported_modules) == set([])
+
+
+def test_import_parser_ignores_setuptools(tmp_path):
+    with run_within_dir(tmp_path):
+        with open("file.py", "w") as f:
+            f.write("import setuptools\nimport foo")
+        imported_modules = ImportParser().get_imported_modules_for_list_of_files(["file.py"])
+        assert set(imported_modules) == set(["foo"])

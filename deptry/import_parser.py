@@ -22,6 +22,7 @@ class ImportParser:
         modules_per_file = [self.get_imported_modules_from_file(file) for file in list_of_files]
         all_modules = self._flatten_list(modules_per_file)
         unique_modules = sorted(list(set(all_modules)))
+        unique_modules = self._filter_exceptions(unique_modules)
         logging.debug(f"All imported modules: {unique_modules}\n")
         return unique_modules
 
@@ -90,3 +91,14 @@ class ImportParser:
             if modules:
                 all_modules += modules
         return all_modules
+
+    @staticmethod
+    def _filter_exceptions(modules: List[str]):
+        exceptions = [
+            "setuptools"
+        ]  # setuptools is usually available by default, so often not specified in dependencies.
+        for exception in exceptions:
+            if exception in modules:
+                logging.debug(f"Found module {exception} to be imported, omitting from the list of modules.")
+                modules = [module for module in modules if not module == exception]
+        return modules

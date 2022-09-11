@@ -81,7 +81,7 @@ from deptry.utils import import_importlib_metadata, run_within_dir
     "-e",
     type=click.STRING,
     help="""Comma-separated list of directories or files in which .py files should not be scanned for imports to determine if there are dependency issues.
-    For example: `deptry . --exclude venv,.venv,tests,foo,bar.py`
+    For example: `deptry . --exclude venv,.venv,tests,setup.py,foo,bar.py`
     """,
     default=DEFAULTS["exclude"],
     show_default=True,
@@ -268,7 +268,7 @@ ignore_transitive = [
   'your-dependency'
 ]
 exclude = [
-  'venv','.venv', 'tests', 'docs'
+  'venv','.venv', 'tests', 'setup.py', 'docs'
 ]
 ```
 

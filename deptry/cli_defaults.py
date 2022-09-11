@@ -3,7 +3,7 @@ DEFAULTS = {
     "ignore_missing": "",
     "ignore_transitive": "",
     "ignore_misplaced_dev": "",
-    "exclude": "venv,.venv,tests",
+    "exclude": "venv,.venv,tests,setup.py",
     "extend_exclude": "",
     "ignore_notebooks": False,
     "skip_obsolete": False,
