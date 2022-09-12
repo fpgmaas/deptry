@@ -58,6 +58,6 @@ class DependencySpecificationDetector:
                 return False
 
     def _check_if_project_uses_requirements_txt_for_dependencies(self):
-        if self.requirements_txt in os.listdir():
+        if os.path.isfile(self.requirements_txt):
             return True
         return False
