@@ -41,7 +41,7 @@ pip install deptry
 
 !!! important
 
-    _deptry_ is still in the early phases of development. For one-off testing of your project's dependencies, this is no issue. However, if you plan to use _deptry_ in a CI/CD pipeline, it is a good idea to pin the version.
+    When using pip to install _deptry_, make sure you install it within the virtual environment of your project. Installing _deptry_ globally will not work, since it needs to have access to the metadata of the packages in the virtual environment.
 
 ### Prerequisites
 
