@@ -13,6 +13,7 @@ from deptry.issue_finders.obsolete import ObsoleteDependenciesFinder
 from deptry.issue_finders.transitive import TransitiveDependenciesFinder
 from deptry.module import Module, ModuleBuilder
 from deptry.python_file_finder import PythonFileFinder
+from deptry.result_logger import ResultLogger
 
 
 class Core:
@@ -63,7 +64,7 @@ class Core:
 
         issues = self._find_issues(imported_modules, dependencies)
 
-        return issues
+        ResultLogger(issues = issues, mode=dependency_management_format).log_and_exit()
 
     def _find_issues(self, imported_modules: List[Module], dependencies: List[Dependency]):
         result = {}

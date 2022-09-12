@@ -190,27 +190,7 @@ def deptry(
             requirements_txt=config.requirements_txt,
             requirements_txt_dev=config.requirements_txt_dev,
         ).run()
-        issue_found = False
-        if not skip_obsolete and "obsolete" in result and result["obsolete"]:
-            log_obsolete_dependencies(result["obsolete"])
-            issue_found = True
-        if not skip_missing and "missing" in result and result["missing"]:
-            log_missing_dependencies(result["missing"])
-            issue_found = True
-        if not skip_transitive and "transitive" in result and result["transitive"]:
-            log_transitive_dependencies(result["transitive"])
-            issue_found = True
-        if not skip_misplaced_dev and "misplaced_dev" in result and result["misplaced_dev"]:
-            log_misplaced_develop_dependencies(result["misplaced_dev"])
-            issue_found = True
 
-        if issue_found:
-            log_additional_info()
-            sys.exit(1)
-        else:
-            # TODO: adapt message below; e.g. if only checking for obsolete and transitive, display 'No obsolete or transitive dependencies found' etc
-            logging.info("Success! No obsolete, missing, or transitive dependencies found.")
-            sys.exit(0)
 
 
 def log_obsolete_dependencies(dependencies: List[str], sep="\n\t") -> None:
