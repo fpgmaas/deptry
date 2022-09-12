@@ -14,6 +14,8 @@ _deptry_ can be run with
 deptry .
 ```
 
+Where `.` is the path to the root directory of the project to be scanned. All other arguments should be specified relative to this directory.
+
 ## pyproject.toml vs requirements.txt
 
 To determine the project's dependencies, _deptry_ will scan the root directory for a `pyproject.toml` file with a `[tool.poetry.dependencies]` section and for a file called `requirements.txt`.

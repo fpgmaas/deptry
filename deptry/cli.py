@@ -142,6 +142,12 @@ def deptry(
     requirements_txt_dev: str,
     version: bool,
 ) -> None:
+    """Find dependency issues in your Python project.
+
+    [DIRECTORY] is the path to the root directory of the project to be scanned.
+    All other arguments should be specified relative to [DIRECTORY].
+
+    """
 
     log_level = logging.DEBUG if verbose else logging.INFO
     logging.basicConfig(level=log_level, handlers=[logging.StreamHandler()], format="%(message)s")
