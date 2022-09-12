@@ -26,13 +26,13 @@ class RequirementsTxtDependencyGetter:
 
     def get(self):
         if not self.dev:
-            dependencies = self._get_dependencies_from_requirements_txt(self.requirements_txt)
+            dependencies = self._get_dependencies_from_requirements_file(self.requirements_txt)
         else:
             dev_requirements_files = self._scan_for_dev_requirements_files()
             if dev_requirements_files:
                 dependencies = []
                 for file_name in dev_requirements_files:
-                    dependencies += self._get_dependencies_from_requirements_txt(file_name)
+                    dependencies += self._get_dependencies_from_requirements_file(file_name)
             else:
                 return []
 
@@ -40,12 +40,15 @@ class RequirementsTxtDependencyGetter:
         return dependencies
 
     def _scan_for_dev_requirements_files(self):
+        """
+        Check if any of the files passed as requirements_txt_dev exist, and if so; return them.
+        """
         dev_requirements_files = [file_name for file_name in self.requirements_txt_dev if file_name in os.listdir()]
         if dev_requirements_files:
             logging.debug(f"Found files with development requirements! {dev_requirements_files}")
         return dev_requirements_files
 
-    def _get_dependencies_from_requirements_txt(self, file_name: str):
+    def _get_dependencies_from_requirements_file(self, file_name: str):
         logging.debug(f"Scanning {file_name} for {'dev-' if self.dev else ''}dependencies")
         dependencies = []
 
@@ -60,6 +63,9 @@ class RequirementsTxtDependencyGetter:
         return dependencies
 
     def _extract_dependency_from_line(self, line: str) -> Dependency:
+        """
+        Extract a dependency from a single line of a requirements.txt file.
+        """
         line = self._remove_comments_from(line)
         line = self._remove_newlines_from(line)
         name = self._find_dependency_name_in(line)
@@ -73,6 +79,9 @@ class RequirementsTxtDependencyGetter:
 
     @staticmethod
     def _find_dependency_name_in(line):
+        """
+        Find the dependency name of a dependency specified according to the pip-standards for requirement.txt
+        """
         match = re.search("^[a-zA-Z0-9-_]+", line)
         if match and not match.group(0)[0] == "-":
             name = match.group(0)

@@ -217,7 +217,7 @@ def log_obsolete_dependencies(dependencies: List[str], sep="\n\t") -> None:
     logging.info("\n-----------------------------------------------------\n")
     logging.info(f"The project contains obsolete dependencies:\n{sep}{sep.join(sorted(dependencies))}\n")
     logging.info(
-        """Consider removing them from your projects dependencies. If a package is used for development purposes, you should add
+        """Consider removing them from your project's dependencies. If a package is used for development purposes, you should add
 it to your development dependencies instead."""
     )
 
@@ -233,7 +233,7 @@ def log_missing_dependencies(dependencies: List[str], sep="\n\t") -> None:
 def log_transitive_dependencies(dependencies: List[str], sep="\n\t") -> None:
     logging.info("\n-----------------------------------------------------\n")
     logging.info(
-        f"There are transitive dependencies that should be explicitly defined as dependencies in pyproject.toml:\n{sep}{sep.join(sorted(dependencies))}\n"
+        f"There are transitive dependencies that should be explicitly defined as dependencies:\n{sep}{sep.join(sorted(dependencies))}\n"
     )
     logging.info("""They are currently imported but not specified directly as your project's dependencies.""")
 
