@@ -175,7 +175,7 @@ def deptry(
             requirements_txt_dev=requirements_txt_dev,
         )
 
-        result = Core(
+        Core(
             ignore_obsolete=config.ignore_obsolete,
             ignore_missing=config.ignore_missing,
             ignore_transitive=config.ignore_transitive,
@@ -190,72 +190,6 @@ def deptry(
             requirements_txt=config.requirements_txt,
             requirements_txt_dev=config.requirements_txt_dev,
         ).run()
-
-
-
-def log_obsolete_dependencies(dependencies: List[str], sep="\n\t") -> None:
-    logging.info("\n-----------------------------------------------------\n")
-    logging.info(f"The project contains obsolete dependencies:\n{sep}{sep.join(sorted(dependencies))}\n")
-    logging.info(
-        """Consider removing them from your project's dependencies. If a package is used for development purposes, you should add
-it to your development dependencies instead."""
-    )
-
-
-def log_missing_dependencies(dependencies: List[str], sep="\n\t") -> None:
-    logging.info("\n-----------------------------------------------------\n")
-    logging.info(
-        f"There are dependencies missing from the project's list of dependencies:\n{sep}{sep.join(sorted(dependencies))}\n"
-    )
-    logging.info("""Consider adding them to your project's dependencies. """)
-
-
-def log_transitive_dependencies(dependencies: List[str], sep="\n\t") -> None:
-    logging.info("\n-----------------------------------------------------\n")
-    logging.info(
-        f"There are transitive dependencies that should be explicitly defined as dependencies:\n{sep}{sep.join(sorted(dependencies))}\n"
-    )
-    logging.info("""They are currently imported but not specified directly as your project's dependencies.""")
-
-
-def log_misplaced_develop_dependencies(dependencies: List[str], sep="\n\t") -> None:
-    logging.info("\n-----------------------------------------------------\n")
-    logging.info(
-        f"There are imported modules from development dependencies detected:\n{sep}{sep.join(sorted(dependencies))}\n"
-    )
-    logging.info(
-        """Consider moving them to your project's 'regular' dependencies. If this is not correct and the
-dependencies listed above are indeed development dependencies, it's likely that files were scanned that are only used
-for development purposes. Run `deptry -v .` to see a list of scanned files."""
-    )
-
-
-def log_additional_info():
-    logging.info("\n-----------------------------------------------------\n")
-    logging.info(
-        """Dependencies and directories can be ignored by passing additional command-line arguments. See `deptry --help` for more details.
-Alternatively, deptry can be configured through `pyproject.toml`. An example:
-
-```
-[tool.deptry]
-ignore_obsolete = [
-  'your-dependency'
-]
-ignore_missing = [
-  'your_module'
-]
-ignore_transitive = [
-  'your-dependency'
-]
-exclude = [
-  'venv','.venv', 'tests', 'setup.py', 'docs'
-]
-```
-
-For more information, see the documentation: https://fpgmaas.github.io/deptry/
-If you have encountered a bug, have a feature request or if you have any other feedback, please file a bug report at https://github.com/fpgmaas/deptry/issues/new/choose.
-"""
-    )
 
 
 def display_deptry_version():

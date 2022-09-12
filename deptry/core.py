@@ -63,8 +63,7 @@ class Core:
         imported_modules = [mod for mod in imported_modules if not mod.standard_library]
 
         issues = self._find_issues(imported_modules, dependencies)
-
-        ResultLogger(issues = issues, mode=dependency_management_format).log_and_exit()
+        ResultLogger(issues=issues).log_and_exit()
 
     def _find_issues(self, imported_modules: List[Module], dependencies: List[Dependency]):
         result = {}
