@@ -18,24 +18,11 @@ SomeProject2 == 5.4 ; python_version < '3.8'
 SomeProject3 ; sys_platform == 'win32'
 requests [security] >= 2.8.1, == 2.8.* ; python_version < "2.7"
 # This is a comment, to show how #-prefixed lines are ignored.
-# It is possible to specify requirements as plain names.
 pytest
 pytest-cov
 beautifulsoup4
-
-# The syntax supported here is the same as that of requirement specifiers.
 docopt == 0.6.1
 requests [security] >= 2.8.1, == 2.8.* ; python_version < "2.7"
-urllib3 @ https://github.com/urllib3/urllib3/archive/refs/tags/1.26.8.zip
-
-# It is possible to refer to other requirement files or constraints files.
--r other-requirements.txt
--c constraints.txt
-
-# It is possible to refer to specific local distribution paths.
-./downloads/numpy-1.9.2-cp34-none-win32.whl
-
-# It is possible to refer to URLs.
 """
 
     with run_within_dir(tmp_path):
@@ -60,6 +47,27 @@ urllib3 @ https://github.com/urllib3/urllib3/archive/refs/tags/1.26.8.zip
         assert dependencies[11].is_conditional
         assert dependencies[11].is_optional
         assert "requests" in dependencies[11].top_levels
+
+def test_parse_requirements_txt_urls(tmp_path):
+
+    fake_requirements_txt = """
+urllib3 @ https://github.com/urllib3/urllib3/archive/refs/tags/1.26.8.zip
+https://github.com/urllib3/urllib3/archive/refs/tags/1.26.8.zip
+git+https://github.com/baz/foo-bar.git@asd#egg=foo-bar
+git+https://github.com/baz/foo-bar.git@asd
+"""
+
+    with run_within_dir(tmp_path):
+        with open("requirements.txt", "w") as f:
+            f.write(fake_requirements_txt)
+
+        dependencies = RequirementsTxtDependencyGetter().get()
+
+        assert len(dependencies) == 4
+        assert dependencies[0].name == "urllib3"
+        assert dependencies[1].name == "urllib3"
+        assert dependencies[2].name == "foo-bar"
+        assert dependencies[3].name == "foo-bar"
 
 
 def test_with_name(tmp_path):

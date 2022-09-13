@@ -78,16 +78,17 @@ class RequirementsTxtDependencyGetter:
             return None
 
     @staticmethod
-    def _find_dependency_name_in(line):
+    def _find_dependency_name_in(self,line):
         """
         Find the dependency name of a dependency specified according to the pip-standards for requirement.txt
         """
-        match = re.search("^[a-zA-Z0-9-_]+", line)
-        if match and not match.group(0)[0] == "-":
-            name = match.group(0)
-            return name
+        if self._line_is_url(line):
+            return self._extract_name_from_url(line)
         else:
-            return None
+            match = re.search("^[^-][a-zA-Z0-9-_]+", line)
+            if match:
+                return match.group(0)
+        return None
 
     @staticmethod
     def _remove_comments_from(line):
@@ -110,3 +111,23 @@ class RequirementsTxtDependencyGetter:
         for dependency in dependencies:
             logging.debug(str(dependency))
         logging.debug("")
+
+    @staticmethod
+    def _line_is_url(line):
+        return re.search('^(http|https|git\+https)',line)
+
+    @staticmethod
+    def _extract_name_from_url(line):
+
+        # for url like git+https://github.com/name/python-module.git@0d6dc38d58
+        match = re.search('\/((?:(?!\/).)*?)\.git',line) 
+        if match:
+            return match.group(1)
+            
+        # for url like https://github.com/urllib3/urllib3/archive/refs/tags/1.26.8.zip
+        match = re.search('\/((?:(?!\/).)*?)\/archive\/',line) 
+        if match:
+            return match.group(1)
+            
+        logging.warning(f'Could not parse dependency name from url {line}')    
+        return None
