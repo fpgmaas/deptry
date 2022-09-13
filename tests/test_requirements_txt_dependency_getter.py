@@ -31,7 +31,7 @@ requests [security] >= 2.8.1, == 2.8.* ; python_version < "2.7"
 
         dependencies = RequirementsTxtDependencyGetter().get()
 
-        assert len(dependencies) == 18
+        assert len(dependencies) == 17
 
         assert dependencies[1].name == "colorama"
         assert not dependencies[1].is_conditional

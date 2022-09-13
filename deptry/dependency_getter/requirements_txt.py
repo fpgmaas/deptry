@@ -77,7 +77,6 @@ class RequirementsTxtDependencyGetter:
         else:
             return None
 
-    @staticmethod
     def _find_dependency_name_in(self, line):
         """
         Find the dependency name of a dependency specified according to the pip-standards for requirement.txt
