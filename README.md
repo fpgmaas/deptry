@@ -1,4 +1,8 @@
-# deptry
+<p align="center">
+  <img width="460" height="300" src="docs/docs/static/deptry_Logo-01.svg">
+</p>
+
+---
 
 [![Release](https://img.shields.io/github/v/release/fpgmaas/deptry)](https://img.shields.io/github/v/release/fpgmaas/deptry)
 [![Build status](https://img.shields.io/github/workflow/status/fpgmaas/deptry/merge-to-main)](https://img.shields.io/github/workflow/status/fpgmaas/deptry/merge-to-main)
@@ -6,8 +10,6 @@
 [![codecov](https://codecov.io/gh/fpgmaas/deptry/branch/main/graph/badge.svg)](https://codecov.io/gh/fpgmaas/deptry)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/deptry)](https://img.shields.io/pypi/dm/deptry?style=flat-square)
 [![License](https://img.shields.io/github/license/fpgmaas/deptry)](https://img.shields.io/github/license/fpgmaas/deptry)
-
----
 
 _deptry_ is a command line tool to check for issues with dependencies in a Python project, such as obsolete or missing dependencies. It supports the following types of projects:
 
@@ -17,8 +19,9 @@ _deptry_ is a command line tool to check for issues with dependencies in a Pytho
 Dependency issues are detected by scanning for imported modules within all Python files in a directory and its subdirectories, and comparing those to the dependencies listed in the project's requirements.
 
 ---
-
-**Documentation**: <https://fpgmaas.github.io/deptry/>
+<p align="center">
+  <a href = "https://fpgmaas.github.io/deptry">Link to the documentation</a>
+</p>
 
 ---
 
@@ -48,7 +51,7 @@ _deptry_ should be run withing the root directory of the project to be scanned, 
 
 ### Usage
 
-To scan your project for obsolete imports, run
+To scan your project for dependency issues, run
 
 ```sh
 deptry .
