@@ -18,3 +18,15 @@ def test_simple_with_ignore():
         imported_modules=modules, dependencies=dependencies, ignore_missing=["foobar"]
     ).find()
     assert len(deps) == 0
+
+
+def test_no_error():
+    """
+    This should run without an error, even though `foo` is not installed.
+    """
+
+    dep = Dependency("foo")
+    module = ModuleBuilder("foo", [dep]).build()
+
+    deps = MissingDependenciesFinder(imported_modules=[module], dependencies=[dep]).find()
+    assert len(deps) == 0
