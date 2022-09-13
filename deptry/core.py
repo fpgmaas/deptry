@@ -62,10 +62,12 @@ class Core:
         imported_modules = [ModuleBuilder(mod, dependencies, dev_dependencies).build() for mod in imported_modules]
         imported_modules = [mod for mod in imported_modules if not mod.standard_library]
 
-        issues = self._find_issues(imported_modules, dependencies)
+        issues = self._find_issues(imported_modules, dependencies, dev_dependencies)
         ResultLogger(issues=issues).log_and_exit()
 
-    def _find_issues(self, imported_modules: List[Module], dependencies: List[Dependency]):
+    def _find_issues(
+        self, imported_modules: List[Module], dependencies: List[Dependency], dev_dependencies: List[Dependency]
+    ):
         result = {}
         if not self.skip_obsolete:
             result["obsolete"] = ObsoleteDependenciesFinder(
@@ -83,6 +85,7 @@ class Core:
             result["misplaced_dev"] = MisplacedDevDependenciesFinder(
                 imported_modules=imported_modules,
                 dependencies=dependencies,
+                dev_dependencies=dev_dependencies,
                 ignore_misplaced_dev=self.ignore_misplaced_dev,
             ).find()
         return result
