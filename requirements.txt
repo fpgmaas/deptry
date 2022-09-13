@@ -1,3 +1,0 @@
-urllib3 @ https://github.com/urllib3/urllib3/archive/refs/tags/1.26.8.zip
-https://github.com/urllib3/urllib3/archive/refs/tags/1.26.8.zip
-git+https://github.com/sbywater/django-assets.git@0d6dc38d588e7607352b013da34a27f8a10abe81#egg=django-assets

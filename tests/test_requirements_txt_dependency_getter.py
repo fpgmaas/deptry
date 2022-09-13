@@ -48,6 +48,7 @@ requests [security] >= 2.8.1, == 2.8.* ; python_version < "2.7"
         assert dependencies[11].is_optional
         assert "requests" in dependencies[11].top_levels
 
+
 def test_parse_requirements_txt_urls(tmp_path):
 
     fake_requirements_txt = """
