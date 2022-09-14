@@ -83,3 +83,53 @@ def test_import_parser_ignores_setuptools(tmp_path):
             f.write("import setuptools\nimport foo")
         imported_modules = ImportParser().get_imported_modules_for_list_of_files(["file.py"])
         assert set(imported_modules) == set(["foo"])
+
+
+def test_import_parser_ignores_setuptools(tmp_path):
+
+    with run_within_dir(tmp_path):
+        with open("file1.py", "w", encoding="utf-8") as f:
+            f.write(
+                """#!/usr/bin/python
+# -*- encoding: utf-8 -*-
+import foo
+print('嘉大')
+"""
+            )
+        with open("file2.py", "w", encoding="iso-8859-15") as f:
+            f.write(
+                """
+#!/usr/bin/python
+# -*- encoding: iso-8859-15 -*-
+import foo
+print('Æ	Ç')
+"""
+            )
+        with open("file3.py", "w", encoding="utf-16") as f:
+            f.write(
+                """#!/usr/bin/python
+# -*- encoding: utf-16 -*-
+import foo
+print('嘉大')
+"""
+            )
+        with open("file4.py", "w", encoding="cp861") as f:
+            f.write(
+                """#!/usr/bin/python
+# -*- encoding: cp861 -*-
+import foo
+print('foo')
+"""
+            )
+
+        imported_modules = ImportParser().get_imported_modules_from_file(Path("file1.py"))
+        assert set(imported_modules) == set(["foo"])
+
+        imported_modules = ImportParser().get_imported_modules_from_file(Path("file2.py"))
+        assert set(imported_modules) == set(["foo"])
+
+        imported_modules = ImportParser().get_imported_modules_from_file(Path("file3.py"))
+        assert set(imported_modules) == set(["foo"])
+
+        imported_modules = ImportParser().get_imported_modules_from_file(Path("file4.py"))
+        assert set(imported_modules) == set(["foo"])
