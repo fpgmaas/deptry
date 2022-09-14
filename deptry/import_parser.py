@@ -3,6 +3,8 @@ import logging
 from pathlib import Path
 from typing import List, Union
 
+import chardet
+
 from deptry.notebook_import_extractor import NotebookImportExtractor
 
 RECURSION_TYPES = [ast.If, ast.Try, ast.ExceptHandler, ast.FunctionDef, ast.ClassDef]
@@ -45,7 +47,7 @@ class ImportParser:
         return self._get_import_modules_from(import_nodes)
 
     def _get_imported_modules_from_py(self, path_to_py_file: Path) -> List[str]:
-        with open(path_to_py_file) as f:
+        with open(path_to_py_file, encoding=self._get_file_encoding(path_to_py_file)) as f:
             root = ast.parse(f.read(), path_to_py_file)  # type: ignore
         import_nodes = self._get_import_nodes_from(root)
         return self._get_import_modules_from(import_nodes)
@@ -102,3 +104,8 @@ class ImportParser:
                 logging.debug(f"Found module {exception} to be imported, omitting from the list of modules.")
                 modules = [module for module in modules if not module == exception]
         return modules
+
+    @staticmethod
+    def _get_file_encoding(file_name: Union[str, Path]) -> str:
+        rawdata = open(file_name, "rb").read()
+        return chardet.detect(rawdata)["encoding"]
