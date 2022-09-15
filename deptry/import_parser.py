@@ -47,10 +47,23 @@ class ImportParser:
         return self._get_import_modules_from(import_nodes)
 
     def _get_imported_modules_from_py(self, path_to_py_file: Path) -> List[str]:
-        with open(path_to_py_file, encoding=self._get_file_encoding(path_to_py_file)) as f:
-            root = ast.parse(f.read(), path_to_py_file)  # type: ignore
-        import_nodes = self._get_import_nodes_from(root)
-        return self._get_import_modules_from(import_nodes)
+        try:
+            with open(path_to_py_file) as f:
+                root = ast.parse(f.read(), path_to_py_file)  # type: ignore
+            import_nodes = self._get_import_nodes_from(root)
+            return self._get_import_modules_from(import_nodes)
+        except UnicodeDecodeError:
+            return self._get_imported_modules_from_py_and_guess_encoding(path_to_py_file)
+
+    def _get_imported_modules_from_py_and_guess_encoding(self, path_to_py_file: Path) -> List[str]:
+        try:
+            with open(path_to_py_file, encoding=self._get_file_encoding(path_to_py_file)) as f:
+                root = ast.parse(f.read(), path_to_py_file)  # type: ignore
+            import_nodes = self._get_import_nodes_from(root)
+            return self._get_import_modules_from(import_nodes)
+        except UnicodeDecodeError:
+            logging.warning(f"Warning: File {path_to_py_file} could not be decoded. Skipping...")
+            return []
 
     def _get_imported_modules_from_ipynb(self, path_to_ipynb_file: Path) -> List[str]:
         imports = NotebookImportExtractor().extract(path_to_ipynb_file)
