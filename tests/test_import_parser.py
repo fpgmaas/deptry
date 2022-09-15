@@ -113,14 +113,8 @@ import foo
 print('嘉大')
 """
             )
-        with open("file4.py", "w", encoding="cp861") as f:
-            f.write(
-                """#!/usr/bin/python
-# -*- encoding: cp861 -*-
-import foo
-print('foo')
-"""
-            )
+        with open("file4.py", "w") as f:
+            f.write("""my_string = '🐺'\nimport foo""")
 
         imported_modules = ImportParser().get_imported_modules_from_file(Path("file1.py"))
         assert set(imported_modules) == set(["foo"])
