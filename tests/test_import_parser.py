@@ -1,5 +1,8 @@
+import logging
 import os
+from ast import Import
 from pathlib import Path
+from unittest.mock import Mock
 
 from deptry.import_parser import ImportParser
 from deptry.utils import run_within_dir
@@ -127,3 +130,19 @@ print('嘉大')
 
         imported_modules = ImportParser().get_imported_modules_from_file(Path("file4.py"))
         assert set(imported_modules) == set(["foo"])
+
+
+def test_import_parser_file_encodings_warning(tmp_path, caplog):
+
+    with run_within_dir(tmp_path):
+        with open("file1.py", "w", encoding="utf-8") as f:
+            f.write("print('this is a mock unparseable file')")
+
+        mockObject = ImportParser
+        mockObject._get_import_modules_from = Mock(
+            side_effect=UnicodeDecodeError("fakecodec", b"\x00\x00", 1, 2, "Fake reason!")
+        )
+        with caplog.at_level(logging.WARNING):
+            imported_modules = mockObject().get_imported_modules_from_file(Path("file1.py"))
+            assert set(imported_modules) == set([])
+        assert "Warning: File file1.py could not be decoded. Skipping..." in caplog.text
