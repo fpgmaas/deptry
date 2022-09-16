@@ -64,5 +64,4 @@ For more information, see the [documentation](https://fpgmaas.github.io/deptry/)
 
 ---
 
-Repository initiated with [fpgmaas/cookiecutter-poetry](https://github.com/fpgmaas/cookiecutter-poetry).  
-Logo design by [Thys creative](https://thyscreative.com/)
+Repository initiated with [fpgmaas/cookiecutter-poetry](https://github.com/fpgmaas/cookiecutter-poetry).
