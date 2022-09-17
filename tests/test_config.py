@@ -52,9 +52,11 @@ exclude = [
 
         config = Config(exclude="")
         assert config.exclude == [".venv", "docs", "tests"]
+
         config = Config()
         assert config.exclude == [".venv", "docs", "tests"]
-        config = Config(exclude="foo,bar")
+
+        config = Config(exclude=["foo", "bar"])
         assert config.exclude == ["foo", "bar"]
 
 
@@ -73,9 +75,9 @@ extend_exclude = [
         with open("pyproject.toml", "w") as f:
             f.write(fake_pyproject_toml)
 
-        config = Config(extend_exclude="")
+        config = Config(extend_exclude=[])
         assert config.extend_exclude == ["foo"]
-        config = Config(extend_exclude="bar,barr")
+        config = Config(extend_exclude=["bar", "barr"])
         assert config.extend_exclude == ["bar", "barr"]
 
 
