@@ -79,9 +79,11 @@ from deptry.utils import import_importlib_metadata, run_within_dir
 @click.option(
     "--exclude",
     "-e",
+    multiple=True,
     type=click.STRING,
-    help="""Comma-separated list of directories or files in which .py files should not be scanned for imports to determine if there are dependency issues.
-    For example: `deptry . --exclude venv,.venv,tests,setup.py,foo,bar.py`
+    help="""A regular expression for directories or files in which .py files should not be scanned for imports to determine if there are dependency issues.
+    Can be used multiple times by specifying the argument multiple times. re.match() is used to match the expressions, which by default checks for a match only at the beginning of a string.
+    For example: `deptry . -e ".*/foo/" -e bar"` Note that this overwrites the defaults.
     """,
     default=DEFAULTS["exclude"],
     show_default=True,
@@ -90,8 +92,9 @@ from deptry.utils import import_importlib_metadata, run_within_dir
     "--extend-exclude",
     "-ee",
     type=click.STRING,
+    multiple=True,
     help="""Like --exclude, but adds additional files and directories on top of the excluded ones instead of overwriting the defaults.
-    (Useful if you simply want to add to the default) `deptry . --extend-exclude foo,bar.py`""",
+    (Useful if you simply want to add to the default) `deptry . -ee ".*/foo/" -ee bar"`""",
     default=DEFAULTS["extend_exclude"],
     show_default=True,
 )
@@ -170,8 +173,8 @@ def deptry(
             ignore_missing=ignore_missing,
             ignore_transitive=ignore_transitive,
             ignore_misplaced_dev=ignore_misplaced_dev,
-            exclude=exclude,
-            extend_exclude=extend_exclude,
+            exclude=list(exclude),
+            extend_exclude=list(extend_exclude),
             ignore_notebooks=ignore_notebooks,
             skip_obsolete=skip_obsolete,
             skip_missing=skip_missing,

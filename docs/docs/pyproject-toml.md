@@ -24,7 +24,7 @@ An example of a configuration section for _deptry_ is given below.
 ```
 [tool.deptry]
 exclude = [
-  'venv','.venv','tests','setup.py','docs'
+  'venv','.venv','tests','setup.py','docs','.*/foo/'
 ]
 ignore_obsolete = [
   'alpha',

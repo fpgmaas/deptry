@@ -1,6 +1,6 @@
 import logging
 import os
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 from deptry.cli_defaults import DEFAULTS
 from deptry.utils import load_pyproject_toml
@@ -35,8 +35,8 @@ class Config:
         self._set_string_to_list_config("ignore_missing", ignore_missing)
         self._set_string_to_list_config("ignore_transitive", ignore_transitive)
         self._set_string_to_list_config("ignore_misplaced_dev", ignore_misplaced_dev)
-        self._set_string_to_list_config("exclude", exclude)
-        self._set_string_to_list_config("extend_exclude", extend_exclude)
+        self._set_list_config("exclude", exclude)
+        self._set_list_config("extend_exclude", extend_exclude)
         self._set_bool_config("skip_obsolete", skip_obsolete)
         self._set_bool_config("skip_missing", skip_missing)
         self._set_bool_config("skip_transitive", skip_transitive)
@@ -53,29 +53,34 @@ class Config:
         self._override_with_toml_argument(attribute)
         self._override_with_cli_argument_string_to_list(attribute, cli_value)
 
+    def _set_list_config(self, attribute: str, cli_value: List):
+        """
+        Set configuration for arguments that are supplied as strings in the CLI, but should be converted to a list.
+        """
+        self._set_default(attribute)
+        self._override_with_toml_argument(attribute)
+        self._override_with_cli_argument(attribute, cli_value)
+
     def _set_bool_config(self, attribute: str, cli_value: str):
         """
         Set configuration for boolean arguments.
         """
-        self._set_default_boolean(attribute)
+        self._set_default(attribute)
         self._override_with_toml_argument(attribute)
-        self._override_with_cli_argument_boolean(attribute, cli_value)
+        self._override_with_cli_argument(attribute, cli_value)
 
     def _set_string_config(self, attribute: str, cli_value: str):
         """
         Set configuration for arguments that are supplied as strings in the CLI, but should be converted to a list.
         """
-        self._set_default_string(attribute)
+        self._set_default(attribute)
         self._override_with_toml_argument(attribute)
-        self._override_with_cli_argument_string(attribute, cli_value)
+        self._override_with_cli_argument(attribute, cli_value)
 
     def _set_default_string_to_list(self, attribute: str):
         setattr(self, attribute, self._comma_separated_string_to_list(DEFAULTS[attribute]))
 
-    def _set_default_boolean(self, attribute: str):
-        setattr(self, attribute, DEFAULTS[attribute])
-
-    def _set_default_string(self, attribute: str):
+    def _set_default(self, attribute: str):
         setattr(self, attribute, DEFAULTS[attribute])
 
     def _override_with_cli_argument_string_to_list(self, attribute, value):
@@ -84,12 +89,7 @@ class Config:
             self._log_changed_by_command_line_argument(attribute, value_as_list)
             setattr(self, attribute, value_as_list)
 
-    def _override_with_cli_argument_string(self, attribute, value):
-        if value and not value == DEFAULTS[attribute]:
-            self._log_changed_by_command_line_argument(attribute, value)
-            setattr(self, attribute, value)
-
-    def _override_with_cli_argument_boolean(self, attribute, value):
+    def _override_with_cli_argument(self, attribute, value):
         if value and not value == DEFAULTS[attribute]:
             self._log_changed_by_command_line_argument(attribute, value)
             setattr(self, attribute, value)
