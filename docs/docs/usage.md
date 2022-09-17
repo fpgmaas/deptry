@@ -30,28 +30,26 @@ _deptry_ can also be configured to look for a `requirements.txt` file with anoth
  
 To determine issues with imported modules and dependencies, _deptry_ will scan the working directory and its subdirectories recursively for `.py` and `.ipynb` files, so it can
 extract the imported modules from those files. Any files solely used for development purposes, such as files used for unit testing, should not be scanned. By default, the directories
-`venv`, `.venv`, `tests` and the file `setup.py` are excluded. 
+`venv`, `.venv`, `tests`,`.git` and the file `setup.py` are excluded.
 
-To ignore other directories and files than the defaults, use the `--exclude` (or `-e`) flag. The argument should be provided as a comma-separated list, and the paths should be specified as paths relative to the directory _deptry_ is running in, without the trailing `./`.
-
-```sh
-deptry . --exclude foo,path/to/bar.py
-```
-
-Note that this overwrites the defaults, the configuration to ignore
-both the defaults and another directory or file looks as follows:
+To ignore other directories and files than the defaults, use the `--exclude` (or `-e`) flag. The argument can either be one long regular expression, or it can be reused multiple times to pass multiple smaller regular expressions. The paths should be specified as paths relative to the directory _deptry_ is running in, without the trailing `./`. An example:
 
 ```sh
-deptry . --exclude venv,.venv,tests,setup.py,foo
+deptry . -e bar -e ".*/foo/"
+deptry . -e "bar|.*/foo/"
 ```
 
-Alternatively, to add directories to the defaults instead of overwriting them, use the `--extend-exclude` (or `-ee`) flag. 
+The two statements above are equivalent, and will both ignore all files in the directory `bar`, and all files within any directory named `foo`.
+
+Note that using the `--exclude` argument overwrites the defaults. To add additional patterns to ignore
+on top of the defaults instead of overwriting them, use the `--extend-exclude` (or `-ee`) flag. 
 
 ```sh
-deptry . --extend-exclude foo,bar
+deptry . -ee bar -ee ".*/foo/"
+deptry . -ee "bar|.*/foo/"
 ```
 
-This will exclude `venv`, `.venv`, `tests`, `setup.py`, `foo` and `bar`.
+This will exclude `venv`, `.venv`, `.git`, `tests`, `setup.py`, `bar`, and any directory named `foo`.
 
 ## Increased verbosity
 

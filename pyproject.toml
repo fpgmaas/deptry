@@ -70,7 +70,7 @@ exclude = [
 
 [tool.deptry]
 exclude = [
-  'venv','.venv','docs','tests', '.git'
+  'venv','.venv','docs','tests'
 ]
 
 [tool.poetry.scripts]

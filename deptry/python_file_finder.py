@@ -28,11 +28,15 @@ class PythonFileFinder:
 
         for root, dirs, files in os.walk(directory, topdown=True):
             root_without_trailing_dotslash = re.sub("^\./", "", root)
-            if ignore_regex.match(root_without_trailing_dotslash):
+            if self.exclude and ignore_regex.match(root_without_trailing_dotslash):
                 dirs[:] = []
                 continue
             files = [Path(root) / Path(file) for file in files]
-            files_to_keep = [file for file in files if py_regex.match(str(file)) and not ignore_regex.match(str(file))]
+
+            files_to_keep = [file for file in files if py_regex.match(str(file))]
+            if self.exclude:
+                files_to_keep = [file for file in files_to_keep if not ignore_regex.match(str(file))]
+
             all_py_files += files_to_keep
 
         nl = "\n"
