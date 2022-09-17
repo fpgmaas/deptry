@@ -52,8 +52,10 @@ exclude = [
 
         config = Config(exclude="")
         assert config.exclude == [".venv", "docs", "tests"]
+
         config = Config()
         assert config.exclude == [".venv", "docs", "tests"]
+
         config = Config(exclude=["foo", "bar"])
         assert config.exclude == ["foo", "bar"]
 

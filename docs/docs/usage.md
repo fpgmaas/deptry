@@ -36,7 +36,7 @@ To ignore other directories and files than the defaults, use the `--exclude` (or
 
 ```sh
 deptry . -e bar -e ".*/foo/"
-deptry . -e "bar|.*/foo/"
+deptry . --exclude "bar|.*/foo/"
 ```
 
 The two statements above are equivalent, and will both ignore all files in the directory `bar`, and all files within any directory named `foo`.
@@ -46,7 +46,7 @@ on top of the defaults instead of overwriting them, use the `--extend-exclude` (
 
 ```sh
 deptry . -ee bar -ee ".*/foo/"
-deptry . -ee "bar|.*/foo/"
+deptry . --extend-exclude "bar|.*/foo/"
 ```
 
 This will exclude `venv`, `.venv`, `.git`, `tests`, `setup.py`, `bar`, and any directory named `foo`.

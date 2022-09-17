@@ -55,9 +55,7 @@ def test_only_matches_start(tmp_path):
 
 
 def test_matches_ipynb(tmp_path):
-    """
-    Test the adding 'subdir' as exclude argument does not also exclude dir/subdir.
-    """
+
     with run_within_dir(tmp_path):
         paths = [
             {"dir": "dir/subdir", "file": "file1.ipynb"},
@@ -72,9 +70,7 @@ def test_matches_ipynb(tmp_path):
 
 
 def test_regex_argument(tmp_path):
-    """
-    Test the adding 'subdir' as exclude argument does not also exclude dir/subdir.
-    """
+
     with run_within_dir(tmp_path):
         paths = [
             {"dir": "dir/subdir", "file": "file1.py"},
@@ -91,9 +87,7 @@ def test_regex_argument(tmp_path):
         assert len(files) == 4
         assert not any(["file1" in str(file) for file in files])
 
-        files = PythonFileFinder(exclude=[".cache", "other.*subdir"], ignore_notebooks=False).get_all_python_files_in(
-            "."
-        )
+        files = PythonFileFinder(exclude=[".cache|other.*subdir"], ignore_notebooks=False).get_all_python_files_in(".")
         assert len(files) == 3
         assert not any(["other_dir" in str(file) for file in files])
         assert not any([".cache" in str(file) for file in files])
