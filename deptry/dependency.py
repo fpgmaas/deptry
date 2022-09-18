@@ -1,4 +1,5 @@
 import logging
+import re
 from typing import List
 
 from deptry.utils import import_importlib_metadata
@@ -30,7 +31,9 @@ class Dependency:
         top_levels = []
 
         if self.found:
-            top_levels += self._get_top_level_module_names_from_metadata()
+            top_levels += self._get_top_level_module_names_from_top_level_txt()
+            if not top_levels:
+                top_levels += self._get_top_level_module_names_from_record_file()
 
         top_levels.append(name.replace("-", "_").lower())
         return set(top_levels)
@@ -66,9 +69,44 @@ class Dependency:
         else:
             return " "
 
-    def _get_top_level_module_names_from_metadata(self):
+    def _get_top_level_module_names_from_top_level_txt(self):
+        """
+        top-level.txt is a metadata file added by setuptools that looks as follows:
+
+        610faff656c4cfcbb4a3__mypyc
+        _black_version
+        black
+        blackd
+        blib2to3
+
+        This function extracts these names, if a top-level.txt file exists.
+        """
         metadata_top_levels = metadata.distribution(self.name).read_text("top_level.txt")
         if metadata_top_levels:
             return [x for x in metadata_top_levels.split("\n") if len(x) > 0]
         else:
             return []
+
+    def _get_top_level_module_names_from_record_file(self):
+        """
+        Get the top-level module names from the RECORD file, whose contents usually look as follows:
+
+            ...
+            black/trans.cpython-39-darwin.so,sha256=<HASH>
+            black/trans.py,sha256=<HASH>
+            blackd/__init__.py,sha256=<HASH>
+            blackd/__main__.py,sha256=<HASH>
+            ...
+
+        So if no file top-level.txt is provided, we can try and extract top-levels from this file, in this case black and blackd.
+        """
+        top_levels = []
+        try:
+            metadata_records = metadata.distribution(self.name).read_text("RECORD").split("\n")
+        except:
+            return []
+        for line in metadata_records:
+            match = re.match("([a-zA-Z0-9-_]+)/", line)
+            if match:
+                top_levels.append(match.group(1))
+        return list(set(top_levels))
