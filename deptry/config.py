@@ -1,6 +1,6 @@
 import logging
 import os
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional, Union
 
 from deptry.cli_defaults import DEFAULTS
 from deptry.utils import load_pyproject_toml
@@ -15,19 +15,19 @@ class Config:
 
     def __init__(
         self,
-        ignore_obsolete: str = None,
-        ignore_missing: str = None,
-        ignore_transitive: str = None,
-        ignore_misplaced_dev: str = None,
-        skip_obsolete: bool = None,
-        skip_missing: bool = None,
-        skip_transitive: bool = None,
-        skip_misplaced_dev: bool = None,
-        exclude: str = None,
-        extend_exclude: str = None,
-        ignore_notebooks: bool = None,
-        requirements_txt: str = None,
-        requirements_txt_dev: str = None,
+        ignore_obsolete: Optional[str] = None,
+        ignore_missing: Optional[str] = None,
+        ignore_transitive: Optional[str] = None,
+        ignore_misplaced_dev: Optional[str] = None,
+        skip_obsolete: Optional[bool] = None,
+        skip_missing: Optional[bool] = None,
+        skip_transitive: Optional[bool] = None,
+        skip_misplaced_dev: Optional[bool] = None,
+        exclude: Optional[List[str]] = None,
+        extend_exclude: Optional[List[str]] = None,
+        ignore_notebooks: Optional[bool] = None,
+        requirements_txt: Optional[str] = None,
+        requirements_txt_dev: Optional[str] = None,
     ) -> None:
 
         self.pyproject_data = self._read_configuration_from_pyproject_toml()
@@ -45,7 +45,7 @@ class Config:
         self._set_string_config("requirements_txt", requirements_txt)
         self._set_string_to_list_config("requirements_txt_dev", requirements_txt_dev)
 
-    def _set_string_to_list_config(self, attribute: str, cli_value: str):
+    def _set_string_to_list_config(self, attribute: str, cli_value: Optional[str]) -> None:
         """
         Set configuration for arguments that are supplied as strings in the CLI, but should be converted to a list.
         """
@@ -53,7 +53,7 @@ class Config:
         self._override_with_toml_argument(attribute)
         self._override_with_cli_argument_string_to_list(attribute, cli_value)
 
-    def _set_list_config(self, attribute: str, cli_value: List):
+    def _set_list_config(self, attribute: str, cli_value: Optional[List[str]]) -> None:
         """
         Set configuration for arguments that are supplied as strings in the CLI, but should be converted to a list.
         """
@@ -61,7 +61,7 @@ class Config:
         self._override_with_toml_argument(attribute)
         self._override_with_cli_argument(attribute, cli_value)
 
-    def _set_bool_config(self, attribute: str, cli_value: str):
+    def _set_bool_config(self, attribute: str, cli_value: Optional[bool]) -> None:
         """
         Set configuration for boolean arguments.
         """
@@ -69,7 +69,7 @@ class Config:
         self._override_with_toml_argument(attribute)
         self._override_with_cli_argument(attribute, cli_value)
 
-    def _set_string_config(self, attribute: str, cli_value: str):
+    def _set_string_config(self, attribute: str, cli_value: Optional[str]) -> None:
         """
         Set configuration for arguments that are supplied as strings in the CLI, but should be converted to a list.
         """
@@ -77,19 +77,19 @@ class Config:
         self._override_with_toml_argument(attribute)
         self._override_with_cli_argument(attribute, cli_value)
 
-    def _set_default_string_to_list(self, attribute: str):
+    def _set_default_string_to_list(self, attribute: str) -> None:
         setattr(self, attribute, self._comma_separated_string_to_list(DEFAULTS[attribute]))
 
-    def _set_default(self, attribute: str):
+    def _set_default(self, attribute: str) -> None:
         setattr(self, attribute, DEFAULTS[attribute])
 
-    def _override_with_cli_argument_string_to_list(self, attribute, value):
+    def _override_with_cli_argument_string_to_list(self, attribute: str, value: Optional[str]) -> None:
         if value and not value == DEFAULTS[attribute]:
             value_as_list = self._comma_separated_string_to_list(value)
             self._log_changed_by_command_line_argument(attribute, value_as_list)
             setattr(self, attribute, value_as_list)
 
-    def _override_with_cli_argument(self, attribute, value):
+    def _override_with_cli_argument(self, attribute: str, value: Union[bool, str, None]) -> None:
         if value and not value == DEFAULTS[attribute]:
             self._log_changed_by_command_line_argument(attribute, value)
             setattr(self, attribute, value)
@@ -103,7 +103,7 @@ class Config:
             setattr(self, argument, value)
             self._log_changed_by_pyproject_toml(argument, value)
 
-    def _read_configuration_from_pyproject_toml(self) -> Dict:
+    def _read_configuration_from_pyproject_toml(self) -> Union[Dict, None]:
         if self._pyproject_toml_exists():
             pyproject_data = load_pyproject_toml()
         else:
@@ -124,7 +124,7 @@ class Config:
         logging.debug(f"Argument {argument} set to {str(value)} by command line argument")
 
     @staticmethod
-    def _comma_separated_string_to_list(string: str):
+    def _comma_separated_string_to_list(string: str) -> List[str]:
         if len(string) > 0:
             return string.split(",")
         else:

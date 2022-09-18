@@ -2,7 +2,7 @@ import logging
 import os
 import sys
 from pathlib import Path
-from typing import List, Set
+from typing import List, Optional, Set
 
 from isort.stdlibs.py37 import stdlib as stdlib37
 from isort.stdlibs.py38 import stdlib as stdlib38
@@ -21,12 +21,12 @@ class Module:
         name: str,
         standard_library: bool = False,
         local_module: bool = False,
-        package: str = None,
-        top_levels: List[str] = None,
-        dev_top_levels: List[str] = None,
-        is_dependency: bool = None,
-        is_dev_dependency: bool = None,
-    ):
+        package: Optional[str] = None,
+        top_levels: Optional[List[str]] = None,
+        dev_top_levels: Optional[List[str]] = None,
+        is_dependency: Optional[bool] = None,
+        is_dev_dependency: Optional[bool] = None,
+    ) -> None:
         self.name = name
         self.standard_library = standard_library
         self.local_module = local_module
@@ -37,7 +37,7 @@ class Module:
         self.is_dev_dependency = is_dev_dependency
         self._log()
 
-    def _log(self):
+    def _log(self) -> None:
         logging.debug("--- MODULE ---")
         logging.debug(self.__str__())
         logging.debug("")
@@ -101,7 +101,7 @@ class ModuleBuilder:
         except PackageNotFoundError:
             pass
 
-    def _get_corresponding_top_levels_from(self, dependencies: List[Dependency]) -> bool:
+    def _get_corresponding_top_levels_from(self, dependencies: List[Dependency]) -> List[str]:
         """
         Not all modules have associated metadata. e.g. `mpl_toolkits` from `matplotlib` has no metadata. However, it is in the
         top-level module names of package matplotlib. This function extracts all dependencies which have this module in their top-level module names.
@@ -113,9 +113,10 @@ class ModuleBuilder:
             if dependency.top_levels and self.name in dependency.top_levels
         ]
 
-    def _in_standard_library(self):
+    def _in_standard_library(self) -> bool:
         if self.name in self._get_stdlib_packages():
             return True
+        return False
 
     def _get_stdlib_packages(self) -> Set[str]:
         incorrect_version_error = ValueError(
@@ -137,7 +138,7 @@ class ModuleBuilder:
         else:
             raise incorrect_version_error
 
-    def _is_local_directory(self):
+    def _is_local_directory(self) -> bool:
         """
         Check if the module is a local directory with an __init__.py file.
         """
@@ -145,14 +146,14 @@ class ModuleBuilder:
         local_modules = [subdir for subdir in directories if "__init__.py" in os.listdir(subdir)]
         return self.name in local_modules
 
-    def _has_matching_dependency(self, package, top_levels):
+    def _has_matching_dependency(self, package: str, top_levels: List[str]) -> bool:
         """
         Check if this module is provided by a listed dependency. This is the case if either the package name that was found in the metadata is
         listed as a dependency, or if the we found a top-level module name match earlier.
         """
         return (package in [dep.name for dep in self.dependencies]) or len(top_levels) > 0
 
-    def _has_matching_dev_dependency(self, package, dev_top_levels):
+    def _has_matching_dev_dependency(self, package: str, dev_top_levels: List[str]) -> bool:
         """
         Same as _has_matching_dependency, but for development dependencies.
         """

@@ -1,7 +1,7 @@
 import logging
 import os
 import re
-from typing import List
+from typing import List, Union
 
 from deptry.dependency import Dependency
 
@@ -24,7 +24,7 @@ class RequirementsTxtDependencyGetter:
         self.requirements_txt = requirements_txt
         self.requirements_txt_dev = requirements_txt_dev
 
-    def get(self):
+    def get(self) -> List[Dependency]:
         if not self.dev:
             dependencies = self._get_dependencies_from_requirements_file(self.requirements_txt)
         else:
@@ -39,7 +39,7 @@ class RequirementsTxtDependencyGetter:
         self._log_dependencies(dependencies=dependencies)
         return dependencies
 
-    def _scan_for_dev_requirements_files(self):
+    def _scan_for_dev_requirements_files(self) -> List[str]:
         """
         Check if any of the files passed as requirements_txt_dev exist, and if so; return them.
         """
@@ -48,7 +48,7 @@ class RequirementsTxtDependencyGetter:
             logging.debug(f"Found files with development requirements! {dev_requirements_files}")
         return dev_requirements_files
 
-    def _get_dependencies_from_requirements_file(self, file_name: str):
+    def _get_dependencies_from_requirements_file(self, file_name: str) -> List[Dependency]:
         logging.debug(f"Scanning {file_name} for {'dev-' if self.dev else ''}dependencies")
         dependencies = []
 
@@ -62,7 +62,7 @@ class RequirementsTxtDependencyGetter:
 
         return dependencies
 
-    def _extract_dependency_from_line(self, line: str) -> Dependency:
+    def _extract_dependency_from_line(self, line: str) -> Union[Dependency, None]:
         """
         Extract a dependency from a single line of a requirements.txt file.
         """
@@ -77,7 +77,7 @@ class RequirementsTxtDependencyGetter:
         else:
             return None
 
-    def _find_dependency_name_in(self, line):
+    def _find_dependency_name_in(self, line: str) -> Union[str, None]:
         """
         Find the dependency name of a dependency specified according to the pip-standards for requirement.txt
         """
@@ -90,19 +90,19 @@ class RequirementsTxtDependencyGetter:
         return None
 
     @staticmethod
-    def _remove_comments_from(line):
+    def _remove_comments_from(line: str) -> str:
         return re.sub(r"\s+#.*", "", line).strip()
 
     @staticmethod
-    def _remove_newlines_from(line):
+    def _remove_newlines_from(line: str) -> str:
         return line.replace("\n", "")
 
     @staticmethod
-    def _check_if_dependency_is_optional(line):
+    def _check_if_dependency_is_optional(line: str) -> bool:
         return True if re.findall(r"\[([a-zA-Z0-9-]+?)\]", line) else False
 
     @staticmethod
-    def _check_if_dependency_is_conditional(line):
+    def _check_if_dependency_is_conditional(line: str) -> bool:
         return True if ";" in line else False
 
     def _log_dependencies(self, dependencies: List[Dependency]) -> None:
@@ -112,11 +112,11 @@ class RequirementsTxtDependencyGetter:
         logging.debug("")
 
     @staticmethod
-    def _line_is_url(line):
+    def _line_is_url(line: str):
         return re.search("^(http|https|git\+https)", line)
 
     @staticmethod
-    def _extract_name_from_url(line):
+    def _extract_name_from_url(line: str) -> Union[str, None]:
 
         # Try to find egg, for url like git+https://github.com/xxxxx/package@xxxxx#egg=package
         match = re.search("egg=([a-zA-Z0-9-_]*)", line)
