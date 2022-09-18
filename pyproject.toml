@@ -25,7 +25,6 @@ mypy = "^0.961"
 pytest = "^7.1.2"
 pytest-cov = "^3.0.0"
 mock = "^4.0.3"
-jupyterlab = "^3.4.6"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
