@@ -51,12 +51,11 @@ requests [security] >= 2.8.1, == 2.8.* ; python_version < "2.7"
 
 def test_parse_requirements_txt_urls(tmp_path):
 
-    fake_requirements_txt = """
-urllib3 @ https://github.com/urllib3/urllib3/archive/refs/tags/1.26.8.zip
+    fake_requirements_txt = """urllib3 @ https://github.com/urllib3/urllib3/archive/refs/tags/1.26.8.zip
 https://github.com/urllib3/urllib3/archive/refs/tags/1.26.8.zip
 git+https://github.com/baz/foo-bar.git@asd#egg=foo-bar
 git+https://github.com/baz/foo-bar.git@asd
-"""
+git+https://github.com/abc123/bar-foo@xyz789#egg=bar-fooo"""
 
     with run_within_dir(tmp_path):
         with open("requirements.txt", "w") as f:
@@ -64,11 +63,12 @@ git+https://github.com/baz/foo-bar.git@asd
 
         dependencies = RequirementsTxtDependencyGetter().get()
 
-        assert len(dependencies) == 4
+        assert len(dependencies) == 5
         assert dependencies[0].name == "urllib3"
         assert dependencies[1].name == "urllib3"
         assert dependencies[2].name == "foo-bar"
         assert dependencies[3].name == "foo-bar"
+        assert dependencies[4].name == "bar-fooo"
 
 
 def test_with_name(tmp_path):
