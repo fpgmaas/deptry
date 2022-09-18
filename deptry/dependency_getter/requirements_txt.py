@@ -91,7 +91,7 @@ class RequirementsTxtDependencyGetter:
 
     @staticmethod
     def _remove_comments_from(line):
-        return re.sub(r"#.*", "", line).strip()
+        return re.sub(r"\s+#.*", "", line).strip()
 
     @staticmethod
     def _remove_newlines_from(line):
@@ -117,6 +117,11 @@ class RequirementsTxtDependencyGetter:
 
     @staticmethod
     def _extract_name_from_url(line):
+
+        # Try to find egg, for url like git+https://github.com/xxxxx/package@xxxxx#egg=package
+        match = re.search("egg=([a-zA-Z0-9-_]*)", line)
+        if match:
+            return match.group(1)
 
         # for url like git+https://github.com/name/python-module.git@0d6dc38d58
         match = re.search("\/((?:(?!\/).)*?)\.git", line)
