@@ -103,7 +103,7 @@ class Dependency:
         top_levels = []
         try:
             metadata_records = metadata.distribution(self.name).read_text("RECORD").split("\n")
-        except:
+        except:  # noqa: E722
             return []
         for line in metadata_records:
             match = re.match("([a-zA-Z0-9-_]+)/", line)
