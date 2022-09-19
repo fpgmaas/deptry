@@ -17,7 +17,7 @@ class DependencySpecificationDetector:
     def __init__(self, requirements_txt: str = "requirements.txt") -> None:
         self.requirements_txt = requirements_txt
 
-    def detect(self):
+    def detect(self) -> str:
         uses_pyproject_toml = self._check_if_project_uses_pyproject_toml_for_dependencies()
         uses_requirements_txt = self._check_if_project_uses_requirements_txt_for_dependencies()
         if uses_pyproject_toml and uses_requirements_txt:
@@ -41,7 +41,7 @@ class DependencySpecificationDetector:
             )
 
     @staticmethod
-    def _check_if_project_uses_pyproject_toml_for_dependencies():
+    def _check_if_project_uses_pyproject_toml_for_dependencies() -> bool:
         if "pyproject.toml" in os.listdir():
             logging.debug("pyproject.toml found!")
             pyproject_toml = load_pyproject_toml()
@@ -56,8 +56,9 @@ class DependencySpecificationDetector:
                     "pyproject.toml does not contain a [tool.poetry.dependencies] section, so it is not used to specify the project's dependencies."
                 )
                 return False
+            return None
 
-    def _check_if_project_uses_requirements_txt_for_dependencies(self):
+    def _check_if_project_uses_requirements_txt_for_dependencies(self) -> bool:
         if os.path.isfile(self.requirements_txt):
             return True
         return False

@@ -47,7 +47,7 @@ class Core:
         self.requirements_txt = requirements_txt
         self.requirements_txt_dev = requirements_txt_dev
 
-    def run(self) -> Dict:
+    def run(self) -> None:
 
         self._log_config()
 
@@ -67,7 +67,7 @@ class Core:
 
     def _find_issues(
         self, imported_modules: List[Module], dependencies: List[Dependency], dev_dependencies: List[Dependency]
-    ):
+    ) -> Dict[str, List[str]]:
         result = {}
         if not self.skip_obsolete:
             result["obsolete"] = ObsoleteDependenciesFinder(
@@ -90,7 +90,7 @@ class Core:
             ).find()
         return result
 
-    def _get_dependencies(self, dependency_management_format: str):
+    def _get_dependencies(self, dependency_management_format: str) -> List[Dependency]:
         if dependency_management_format == "pyproject_toml":
             dependencies = PyprojectTomlDependencyGetter().get()
             dev_dependencies = PyprojectTomlDependencyGetter(dev=True).get()
@@ -105,7 +105,7 @@ class Core:
             )
         return dependencies, dev_dependencies
 
-    def _log_config(self):
+    def _log_config(self) -> None:
         logging.debug("Running with the following configuration:")
         for key, value in vars(self).items():
             logging.debug(f"{key}: {value}")

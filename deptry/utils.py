@@ -1,14 +1,15 @@
 import os
 import sys
+import types
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Dict
+from typing import Dict, Tuple
 
 import toml
 
 
 @contextmanager
-def run_within_dir(path: Path):
+def run_within_dir(path: Path) -> None:
     """
     Utility function to run some code within a directory, and change back to the current directory afterwards.
 
@@ -28,7 +29,7 @@ def run_within_dir(path: Path):
         os.chdir(oldpwd)
 
 
-def import_importlib_metadata():
+def import_importlib_metadata() -> Tuple[types.ModuleType, Exception]:
     """
     importlib.metadata is in the standard library since Python version 3.8
     """

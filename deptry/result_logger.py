@@ -11,7 +11,7 @@ class ResultLogger:
     def __init__(self, issues: Dict[str, List[str]]):
         self.issues = issues
 
-    def log_and_exit(self):
+    def log_and_exit(self) -> None:
         issue_found = False
         if "obsolete" in self.issues and self.issues["obsolete"]:
             issue_found = True
@@ -34,28 +34,28 @@ class ResultLogger:
             logging.info("Success! No obsolete, missing, or transitive dependencies found.")
             sys.exit(0)
 
-    def _log_obsolete_dependencies(self, dependencies: List[str], sep="\n\t") -> None:
+    def _log_obsolete_dependencies(self, dependencies: List[str], sep: str = "\n\t") -> None:
         logging.info("\n-----------------------------------------------------\n")
         logging.info(f"The project contains obsolete dependencies:\n{sep}{sep.join(sorted(dependencies))}\n")
         logging.info(
             """Consider removing them from your project's dependencies. If a package is used for development purposes, you should add it to your development dependencies instead."""
         )
 
-    def _log_missing_dependencies(self, dependencies: List[str], sep="\n\t") -> None:
+    def _log_missing_dependencies(self, dependencies: List[str], sep: str = "\n\t") -> None:
         logging.info("\n-----------------------------------------------------\n")
         logging.info(
             f"There are dependencies missing from the project's list of dependencies:\n{sep}{sep.join(sorted(dependencies))}\n"
         )
         logging.info("""Consider adding them to your project's dependencies. """)
 
-    def _log_transitive_dependencies(self, dependencies: List[str], sep="\n\t") -> None:
+    def _log_transitive_dependencies(self, dependencies: List[str], sep: str = "\n\t") -> None:
         logging.info("\n-----------------------------------------------------\n")
         logging.info(
             f"There are transitive dependencies that should be explicitly defined as dependencies:\n{sep}{sep.join(sorted(dependencies))}\n"
         )
         logging.info("""They are currently imported but not specified directly as your project's dependencies.""")
 
-    def _log_misplaced_develop_dependencies(self, dependencies: List[str], sep="\n\t") -> None:
+    def _log_misplaced_develop_dependencies(self, dependencies: List[str], sep: str = "\n\t") -> None:
         logging.info("\n-----------------------------------------------------\n")
         logging.info(
             f"There are imported modules from development dependencies detected:\n{sep}{sep.join(sorted(dependencies))}\n"
@@ -64,7 +64,7 @@ class ResultLogger:
             """Consider moving them to your project's 'regular' dependencies. If this is not correct and the dependencies listed above are indeed development dependencies, it's likely that files were scanned that are only used for development purposes. Run `deptry -v .` to see a list of scanned files."""
         )
 
-    def _log_additional_info(self):
+    def _log_additional_info(self) -> None:
         logging.info("\n-----------------------------------------------------\n")
         logging.info(
             """Dependencies and directories can be ignored by passing additional command-line arguments. See `deptry --help` for more details.

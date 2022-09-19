@@ -71,7 +71,9 @@ class ImportParser:
         import_nodes = self._get_import_nodes_from(root)
         return self._get_import_modules_from(import_nodes)
 
-    def _get_import_nodes_from(self, root: Union[ast.Module, ast.If]):
+    def _get_import_nodes_from(
+        self, root: Union[ast.AST, ast.If, ast.Try, ast.ExceptHandler, ast.FunctionDef, ast.ClassDef]
+    ) -> List[Union[ast.Import, ast.ImportFrom]]:
         """
         Recursively collect import nodes from a Python module. This is needed to find imports that
         are defined within if/else or try/except statements. In that case, the ast.Import or ast.ImportFrom node
@@ -96,7 +98,7 @@ class ImportParser:
                 if (
                     node.module and node.level == 0
                 ):  # nodes for imports like `from . import foo` do not have a module attribute.
-                    modules.append(node.module.split(".")[0])  # type: ignore
+                    modules.append(node.module.split(".")[0])
         return modules
 
     @staticmethod
@@ -108,7 +110,7 @@ class ImportParser:
         return all_modules
 
     @staticmethod
-    def _filter_exceptions(modules: List[str]):
+    def _filter_exceptions(modules: List[str]) -> List[str]:
         exceptions = [
             "setuptools"
         ]  # setuptools is usually available by default, so often not specified in dependencies.
