@@ -31,9 +31,9 @@ class PythonFileFinder:
             if self.exclude and ignore_regex.match(root_without_trailing_dotslash):
                 dirs[:] = []
                 continue
-            files = [Path(root) / Path(file) for file in files]
+            files_with_path = [Path(root) / Path(file) for file in files]
 
-            files_to_keep = [file for file in files if py_regex.match(str(file))]
+            files_to_keep = [file for file in files_with_path if py_regex.match(str(file))]
             if self.exclude:
                 files_to_keep = [file for file in files_to_keep if not ignore_regex.match(str(file))]
 

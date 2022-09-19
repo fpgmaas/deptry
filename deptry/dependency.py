@@ -1,6 +1,6 @@
 import logging
 import re
-from typing import List
+from typing import List, Set
 
 from deptry.utils import import_importlib_metadata
 
@@ -27,7 +27,7 @@ class Dependency:
         self.found = self.find_metadata(name)
         self.top_levels = self._get_top_levels(name)
 
-    def _get_top_levels(self, name: str) -> List[str]:
+    def _get_top_levels(self, name: str) -> Set[str]:
         top_levels = []
 
         if self.found:
@@ -44,7 +44,7 @@ class Dependency:
     def __str__(self) -> str:
         return f"Dependency '{self.name}'{self._string_for_printing()}with top-levels: {self.top_levels}."
 
-    def find_metadata(self, name):
+    def find_metadata(self, name: str) -> bool:
         try:
             metadata.distribution(name)
             return True
@@ -54,7 +54,7 @@ class Dependency:
             )
             return False
 
-    def _string_for_printing(self):
+    def _string_for_printing(self) -> str:
         """
         Return 'Conditional', 'Optional' or 'Conditional and optional'
         """
@@ -69,7 +69,7 @@ class Dependency:
         else:
             return " "
 
-    def _get_top_level_module_names_from_top_level_txt(self):
+    def _get_top_level_module_names_from_top_level_txt(self) -> List[str]:
         """
         top-level.txt is a metadata file added by setuptools that looks as follows:
 
@@ -87,7 +87,7 @@ class Dependency:
         else:
             return []
 
-    def _get_top_level_module_names_from_record_file(self):
+    def _get_top_level_module_names_from_record_file(self) -> List[str]:
         """
         Get the top-level module names from the RECORD file, whose contents usually look as follows:
 
