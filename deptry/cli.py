@@ -113,7 +113,7 @@ from deptry.utils import import_importlib_metadata, run_within_dir
     "--requirements-txt",
     "-rt",
     type=click.STRING,
-    help="""A .txt files with the project's dependencies. If a file called pyproject.toml with a [tool.poetry.dependencies] section is found, this argument is ignored
+    help="""A .txt file with the project's dependencies. If a file called pyproject.toml with a [tool.poetry.dependencies] section is found, this argument is ignored
     and the dependencies are extracted from the pyproject.toml file instead. Example use: `deptry . --requirements-txt req/prod.txt`""",
     default=DEFAULTS["requirements_txt"],
     show_default=True,

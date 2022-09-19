@@ -1,4 +1,5 @@
 import logging
+import sys
 from pathlib import Path
 from typing import Dict, List
 
@@ -64,6 +65,7 @@ class Core:
 
         issues = self._find_issues(imported_modules, dependencies, dev_dependencies)
         ResultLogger(issues=issues).log_and_exit()
+        self._exit(issues)
 
     def _find_issues(
         self, imported_modules: List[Module], dependencies: List[Dependency], dev_dependencies: List[Dependency]
@@ -110,3 +112,11 @@ class Core:
         for key, value in vars(self).items():
             logging.debug(f"{key}: {value}")
         logging.debug("")
+
+    @staticmethod
+    def _exit(issues):
+        total_issues_found = sum([len(v) for k, v in issues.items()])
+        if total_issues_found > 0:
+            sys.exit(1)
+        else:
+            sys.exit(0)
