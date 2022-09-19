@@ -30,7 +30,7 @@ def run_within_dir(path: Path) -> None:
         os.chdir(oldpwd)
 
 
-def import_importlib_metadata() -> Tuple[types.ModuleType, PackageNotFoundError]:
+def import_importlib_metadata():
     """
     importlib.metadata is in the standard library since Python version 3.8
     """
