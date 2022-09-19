@@ -2,7 +2,6 @@ import os
 import sys
 import types
 from contextlib import contextmanager
-from importlib.metadata import PackageNotFoundError
 from pathlib import Path
 from typing import Dict, Tuple
 
@@ -30,7 +29,7 @@ def run_within_dir(path: Path) -> None:
         os.chdir(oldpwd)
 
 
-def import_importlib_metadata():
+def import_importlib_metadata() -> Tuple[types.ModuleType, Exception]:
     """
     importlib.metadata is in the standard library since Python version 3.8
     """
