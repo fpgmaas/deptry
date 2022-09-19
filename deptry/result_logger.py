@@ -1,5 +1,4 @@
 import logging
-import sys
 from typing import Dict, List
 
 
@@ -12,27 +11,27 @@ class ResultLogger:
         self.issues = issues
 
     def log_and_exit(self) -> None:
-        issue_found = False
+        total_issues_found = sum([len(v) for k, v in self.issues.items()])
+        self._log_total_number_of_issues_found(total_issues_found)
         if "obsolete" in self.issues and self.issues["obsolete"]:
-            issue_found = True
             self._log_obsolete_dependencies(self.issues["obsolete"])
         if "missing" in self.issues and self.issues["missing"]:
-            issue_found = True
             self._log_missing_dependencies(self.issues["missing"])
         if "transitive" in self.issues and self.issues["transitive"]:
-            issue_found = True
             self._log_transitive_dependencies(self.issues["transitive"])
         if "misplaced_dev" in self.issues and self.issues["misplaced_dev"]:
-            issue_found = True
             self._log_misplaced_develop_dependencies(self.issues["misplaced_dev"])
-
-        if issue_found:
+        if total_issues_found > 0:
             self._log_additional_info()
-            sys.exit(1)
+
+    @staticmethod
+    def _log_total_number_of_issues_found(number):
+        if number == 0:
+            logging.info("Success! No dependency issues found.")
+        elif number == 1:
+            logging.info("There was 1 dependency issue found.")
         else:
-            # TODO: adapt message below; e.g. if only checking for obsolete and transitive, display 'No obsolete or transitive dependencies found' etc
-            logging.info("Success! No obsolete, missing, or transitive dependencies found.")
-            sys.exit(0)
+            logging.info(f"There were {number} dependency issues found.")
 
     def _log_obsolete_dependencies(self, dependencies: List[str], sep: str = "\n\t") -> None:
         logging.info("\n-----------------------------------------------------\n")
