@@ -12,7 +12,7 @@ from deptry.utils import import_importlib_metadata, run_within_dir
 
 
 @click.command()
-@click.argument("directory", type=click.Path(exists=True), required=False)
+@click.argument("root", type=click.Path(exists=True), required=False)
 @click.option(
     "--verbose",
     "-v",
@@ -147,8 +147,8 @@ def deptry(
 ) -> None:
     """Find dependency issues in your Python project.
 
-    [DIRECTORY] is the path to the root directory of the project to be scanned.
-    All other arguments should be specified relative to [DIRECTORY].
+    [ROOT] is the path to the root directory of the project to be scanned.
+    All other arguments should be specified relative to [ROOT].
 
     """
 
