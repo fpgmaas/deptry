@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="460" height="300" src="docs/docs/static/deptry_Logo-01.svg">
+  <img width="460" height="300" src="https://raw.githubusercontent.com/fpgmaas/deptry/main/docs/docs/static/deptry_Logo-01.svg">
 </p>
 
 ---
