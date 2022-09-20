@@ -12,7 +12,7 @@ from deptry.utils import import_importlib_metadata, run_within_dir
 
 
 @click.command()
-@click.argument("directory", type=click.Path(exists=True), required=False)
+@click.argument("root", type=click.Path(exists=True), required=False)
 @click.option(
     "--verbose",
     "-v",
@@ -128,7 +128,7 @@ from deptry.utils import import_importlib_metadata, run_within_dir
     show_default=True,
 )
 def deptry(
-    directory: pathlib.Path,
+    root: pathlib.Path,
     verbose: bool,
     ignore_obsolete: List[str],
     ignore_missing: List[str],
@@ -147,8 +147,8 @@ def deptry(
 ) -> None:
     """Find dependency issues in your Python project.
 
-    [DIRECTORY] is the path to the root directory of the project to be scanned.
-    All other arguments should be specified relative to [DIRECTORY].
+    [ROOT] is the path to the root directory of the project to be scanned.
+    All other arguments should be specified relative to [ROOT].
 
     """
 
@@ -159,11 +159,11 @@ def deptry(
         display_deptry_version()
         sys.exit(0)
 
-    if not directory:
-        logging.warning("Missing argument directory. E.g. `deptry .`")
+    if not root:
+        logging.warning("Missing argument ROOT. E.g. `deptry .`")
         sys.exit(1)
 
-    with run_within_dir(directory):
+    with run_within_dir(root):
 
         # Pass the CLI arguments to Config, if they are provided, otherwise pass 'None'.
         # This way, we can distinguish if a argument was actually passed by the user
