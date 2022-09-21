@@ -7,6 +7,8 @@ from typing import Dict, Tuple
 
 import toml
 
+PYPROJECT_TOML_PATH = "./pyproject.toml"
+
 
 @contextmanager
 def run_within_dir(path: Path) -> None:
@@ -45,9 +47,9 @@ def import_importlib_metadata() -> Tuple[types.ModuleType, Exception]:
         return metadata, PackageNotFoundError
 
 
-def load_pyproject_toml() -> Dict:
+def load_pyproject_toml(pyproject_toml_path: str = PYPROJECT_TOML_PATH) -> Dict:
     try:
-        pyproject_text = Path("./pyproject.toml").read_text()
+        pyproject_text = Path(pyproject_toml_path).read_text()
         pyproject_data = toml.loads(pyproject_text)
         return pyproject_data
     except FileNotFoundError:
