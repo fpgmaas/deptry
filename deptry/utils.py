@@ -5,7 +5,10 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Dict, Tuple
 
-import toml
+if sys.version_info >= (3, 11):
+    import tomllib
+else:
+    import tomli as tomllib
 
 PYPROJECT_TOML_PATH = "./pyproject.toml"
 
@@ -49,8 +52,7 @@ def import_importlib_metadata() -> Tuple[types.ModuleType, Exception]:
 
 def load_pyproject_toml(pyproject_toml_path: str = PYPROJECT_TOML_PATH) -> Dict:
     try:
-        pyproject_text = Path(pyproject_toml_path).read_text()
-        pyproject_data = toml.loads(pyproject_text)
-        return pyproject_data
+        with Path(pyproject_toml_path).open("rb") as pyproject_file:
+            return tomllib.load(pyproject_file)
     except FileNotFoundError:
         raise FileNotFoundError(f"No file `pyproject.toml` found in directory {os.getcwd()}")
