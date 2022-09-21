@@ -110,3 +110,17 @@ deptry . \
 ```
 
 Here, the `requirements-txt` takes only a single file as argument, but multiple files can be passed to `requirements-txt-dev` by providing them as a comma-separated list.
+
+## usage in pre-commit
+
+_deptry_ can be added to your [pre-commit](https://pre-commit.com/) rules.  Here is
+an example config:
+
+```
+-   repo: https://github.com/fpgmaas/deptry.git
+    rev: <version>
+    hooks:
+    - id: deptry
+      args:
+        - "--skip-missing"
+```
