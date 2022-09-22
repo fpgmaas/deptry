@@ -1,3 +1,4 @@
+import json
 import logging
 import pathlib
 import sys
@@ -127,6 +128,14 @@ from deptry.utils import import_importlib_metadata, run_within_dir
     default=DEFAULTS["requirements_txt_dev"],
     show_default=True,
 )
+@click.option(
+    "--json-output",
+    "-o",
+    type=click.STRING,
+    help="""If specified, a summary of the dependency issues found will be written to the output location specified. e.g. `deptry . -o deptry.json`""",
+    default=DEFAULTS["json_output"],
+    show_default=True,
+)
 def deptry(
     root: pathlib.Path,
     verbose: bool,
@@ -143,6 +152,7 @@ def deptry(
     ignore_notebooks: bool,
     requirements_txt: str,
     requirements_txt_dev: str,
+    json_output: str,
     version: bool,
 ) -> None:
     """Find dependency issues in your Python project.
@@ -198,6 +208,7 @@ def deptry(
             skip_misplaced_dev=config.skip_misplaced_dev,
             requirements_txt=config.requirements_txt,
             requirements_txt_dev=config.requirements_txt_dev,
+            json_output=json_output,
         ).run()
 
 
