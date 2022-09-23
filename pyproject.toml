@@ -19,8 +19,6 @@ importlib-metadata = { version = "*", python = "<=3.7" }
 chardet = "^5.0.0"
 
 [tool.poetry.dev-dependencies]
-black = "^22.6.0"
-flake8 = "^4.0.1"
 mypy = "^0.961"
 pre-commit = "^2.20.0"
 pytest = "^7.1.2"
