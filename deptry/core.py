@@ -12,6 +12,7 @@ from deptry.issue_finders.misplaced_dev import MisplacedDevDependenciesFinder
 from deptry.issue_finders.missing import MissingDependenciesFinder
 from deptry.issue_finders.obsolete import ObsoleteDependenciesFinder
 from deptry.issue_finders.transitive import TransitiveDependenciesFinder
+from deptry.json_writer import JsonWriter
 from deptry.module import Module, ModuleBuilder
 from deptry.python_file_finder import PythonFileFinder
 from deptry.result_logger import ResultLogger
@@ -33,6 +34,7 @@ class Core:
         ignore_notebooks: bool,
         requirements_txt: str,
         requirements_txt_dev: List[str],
+        json_output: str,
     ) -> None:
         self.ignore_obsolete = ignore_obsolete
         self.ignore_missing = ignore_missing
@@ -47,6 +49,7 @@ class Core:
         self.skip_misplaced_dev = skip_misplaced_dev
         self.requirements_txt = requirements_txt
         self.requirements_txt_dev = requirements_txt_dev
+        self.json_output = json_output
 
     def run(self) -> None:
 
@@ -65,6 +68,10 @@ class Core:
 
         issues = self._find_issues(imported_modules, dependencies, dev_dependencies)
         ResultLogger(issues=issues).log_and_exit()
+
+        if self.json_output:
+            JsonWriter(self.json_output).write(issues=issues)
+
         self._exit(issues)
 
     def _find_issues(

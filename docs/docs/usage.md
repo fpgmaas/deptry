@@ -110,3 +110,24 @@ deptry . \
 ```
 
 Here, the `requirements-txt` takes only a single file as argument, but multiple files can be passed to `requirements-txt-dev` by providing them as a comma-separated list.
+
+## Output as a json file
+
+_deptry_ can be configured to write the detected issues to a json file by specifying the `--json-output` (`-o`) flag. For example:
+
+```
+deptry . -o deptry.json
+```
+
+An example of the contents of the resulting `deptry.json` file is as follows:
+
+```
+{
+    "obsolete": [
+        "foo"
+    ],
+    "missing": [],
+    "transitive": [],
+    "misplaced_dev": []
+}
+```

@@ -1,3 +1,5 @@
+import json
+import pathlib
 import shlex
 import shutil
 import subprocess
@@ -69,6 +71,23 @@ def test_cli_extend_exclude(dir_with_venv_installed):
         )
         assert result.returncode == 1
         assert "The project contains obsolete dependencies:\n\n\tisort\n\trequests\n\ttoml\n\n" in result.stderr
+
+
+def test_cli_with_json_output(dir_with_venv_installed):
+    with run_within_dir(str(dir_with_venv_installed)):
+
+        # assert that there is no json output
+        subprocess.run(shlex.split("poetry run deptry ."), capture_output=True, text=True)
+        assert len(list(pathlib.Path(".").glob("*.json"))) == 0
+
+        # assert that there is json output
+        subprocess.run(shlex.split("poetry run deptry . -o deptry.json"), capture_output=True, text=True)
+        with open("deptry.json", "r") as f:
+            data = json.load(f)
+        assert set(data["obsolete"]) == set(["isort", "requests"])
+        assert set(data["missing"]) == set(["white"])
+        assert set(data["misplaced_dev"]) == set(["black"])
+        assert set(data["transitive"]) == set([])
 
 
 def test_cli_help():
