@@ -12,4 +12,5 @@ DEFAULTS = {
     "skip_misplaced_dev": False,
     "requirements_txt": "requirements.txt",
     "requirements_txt_dev": "dev-requirements.txt,requirements-dev.txt",
+    "json_output": "",
 }
