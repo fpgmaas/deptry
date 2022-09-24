@@ -1,18 +1,16 @@
+name: release-main
+
 on:
   release:
     types: [published]
     branches: [main]
 
-name: release-main
-
 jobs:
-
   quality:
     runs-on: ubuntu-latest
     steps:
-    
       - name: Check out
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up the environment
         uses: ./.github/actions/setup-poetry-env
@@ -28,14 +26,14 @@ jobs:
         python-version: ['3.7', '3.8', '3.9', '3.10']
     steps:
       - name: Check out
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up the environment
         uses: ./.github/actions/setup-poetry-env
-        with: 
+        with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Test with tox 
+      - name: Test with tox
         run: |
           source .venv/bin/activate
           poetry add tox-gh-actions
@@ -46,9 +44,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: quality
     steps:
-      
       - name: Check out
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: check documentation
         uses: ./.github/actions/check-docs
@@ -57,9 +54,8 @@ jobs:
       runs-on: ubuntu-latest
       needs: tox
       steps:
-
         - name: Check out
-          uses: actions/checkout@v2
+          uses: actions/checkout@v3
 
         - name: Set up the environment
           uses: ./.github/actions/setup-poetry-env
@@ -67,13 +63,13 @@ jobs:
         - name: Set output
           id: vars
           run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
-        
+
         - name: Build and publish
           run: |
             source .venv/bin/activate
             poetry version $RELEASE_VERSION
             make build-and-publish
-          env: 
+          env:
             PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
             RELEASE_VERSION: ${{ steps.vars.outputs.tag }}
 
@@ -82,10 +78,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: quality
     steps:
-      
       - name: Check out
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: check documentation
         uses: ./.github/actions/deploy-docs
-
