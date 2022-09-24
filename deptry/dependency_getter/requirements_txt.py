@@ -1,7 +1,7 @@
 import logging
 import os
 import re
-from typing import List, Union
+from typing import List, Tuple, Union
 
 from deptry.dependency import Dependency
 
@@ -17,7 +17,7 @@ class RequirementsTxtDependencyGetter:
     def __init__(
         self,
         requirements_txt: str = "requirements.txt",
-        requirements_txt_dev: List[str] = ["dev-requirements.txt", "requirements-dev.txt"],
+        requirements_txt_dev: Tuple[str, ...] = ("dev-requirements.txt", "requirements-dev.txt"),
         dev: bool = False,
     ) -> None:
         self.dev = dev

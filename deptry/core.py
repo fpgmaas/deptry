@@ -1,7 +1,8 @@
 import logging
 import sys
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Tuple
 
 from deptry.dependency import Dependency
 from deptry.dependency_getter.pyproject_toml import PyprojectTomlDependencyGetter
@@ -18,38 +19,22 @@ from deptry.python_file_finder import PythonFileFinder
 from deptry.result_logger import ResultLogger
 
 
+@dataclass
 class Core:
-    def __init__(
-        self,
-        ignore_obsolete: List[str],
-        ignore_missing: List[str],
-        ignore_transitive: List[str],
-        ignore_misplaced_dev: List[str],
-        skip_obsolete: bool,
-        skip_missing: bool,
-        skip_transitive: bool,
-        skip_misplaced_dev: bool,
-        exclude: List[str],
-        extend_exclude: List[str],
-        ignore_notebooks: bool,
-        requirements_txt: str,
-        requirements_txt_dev: List[str],
-        json_output: str,
-    ) -> None:
-        self.ignore_obsolete = ignore_obsolete
-        self.ignore_missing = ignore_missing
-        self.ignore_transitive = ignore_transitive
-        self.ignore_misplaced_dev = ignore_misplaced_dev
-        self.exclude = exclude
-        self.extend_exclude = extend_exclude
-        self.ignore_notebooks = ignore_notebooks
-        self.skip_obsolete = skip_obsolete
-        self.skip_missing = skip_missing
-        self.skip_transitive = skip_transitive
-        self.skip_misplaced_dev = skip_misplaced_dev
-        self.requirements_txt = requirements_txt
-        self.requirements_txt_dev = requirements_txt_dev
-        self.json_output = json_output
+    ignore_obsolete: Tuple[str, ...]
+    ignore_missing: Tuple[str, ...]
+    ignore_transitive: Tuple[str, ...]
+    ignore_misplaced_dev: Tuple[str, ...]
+    skip_obsolete: bool
+    skip_missing: bool
+    skip_transitive: bool
+    skip_misplaced_dev: bool
+    exclude: Tuple[str, ...]
+    extend_exclude: Tuple[str, ...]
+    ignore_notebooks: bool
+    requirements_txt: str
+    requirements_txt_dev: Tuple[str, ...]
+    json_output: str
 
     def run(self) -> None:
 
@@ -99,7 +84,7 @@ class Core:
             ).find()
         return result
 
-    def _get_dependencies(self, dependency_management_format: str) -> List[Dependency]:
+    def _get_dependencies(self, dependency_management_format: str) -> Tuple[List[Dependency], List[Dependency]]:
         if dependency_management_format == "pyproject_toml":
             dependencies = PyprojectTomlDependencyGetter().get()
             dev_dependencies = PyprojectTomlDependencyGetter(dev=True).get()
