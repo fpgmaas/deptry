@@ -159,6 +159,10 @@ def deptry(
         display_deptry_version()
         sys.exit(0)
 
+
+
+        
+
     if not root:
         logging.warning("Missing argument ROOT. E.g. `deptry .`")
         sys.exit(1)
