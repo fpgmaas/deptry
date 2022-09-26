@@ -2,12 +2,13 @@ coverage:
   range: 70..100
   round: down
   precision: 1
-ignore:
-  - "deptry/cli.py"
-  - "deptry/core.py"
-  - "deptry/utils.py"
   status:
     project:
       default:
         target: 90%
         threshold: .5%
+
+ignore:
+  - "deptry/cli.py"
+  - "deptry/core.py"
+  - "deptry/utils.py"
