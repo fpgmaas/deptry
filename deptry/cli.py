@@ -29,9 +29,11 @@ class CommaSeparatedTupleParamType(click.ParamType):
 
 COMMA_SEPARATED_TUPLE = CommaSeparatedTupleParamType()
 
+
 def configure_logger(ctx: click.Context, _param: click.Parameter, value: bool) -> None:
     log_level = logging.DEBUG if value else logging.INFO
     logging.basicConfig(level=log_level, handlers=[logging.StreamHandler()], format="%(message)s")
+
 
 @click.command()
 @click.argument("root", type=click.Path(exists=True), required=False)
@@ -41,7 +43,7 @@ def configure_logger(ctx: click.Context, _param: click.Parameter, value: bool) -
     is_flag=True,
     help="Boolean flag for verbosity. Using this flag will display more information about files, imports and dependencies while running.",
     is_eager=True,
-    callback=configure_logger
+    callback=configure_logger,
 )
 @click.option(
     "--skip-obsolete",
@@ -221,6 +223,7 @@ def deptry(
             requirements_txt_dev=requirements_txt_dev,
             json_output=json_output,
         ).run()
+
 
 def display_deptry_version() -> None:
     metadata, *_ = import_importlib_metadata()

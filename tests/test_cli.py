@@ -72,18 +72,15 @@ def test_cli_extend_exclude(dir_with_venv_installed):
         assert result.returncode == 1
         assert "The project contains obsolete dependencies:\n\n\tisort\n\trequests\n\ttoml\n\n" in result.stderr
 
+
 def test_cli_verbose(dir_with_venv_installed):
     with run_within_dir(str(dir_with_venv_installed)):
-        result = subprocess.run(
-            shlex.split("poetry run deptry . "), capture_output=True, text=True
-        )
+        result = subprocess.run(shlex.split("poetry run deptry . "), capture_output=True, text=True)
         assert result.returncode == 1
         assert not "The project contains the following dependencies:" in result.stderr
 
     with run_within_dir(str(dir_with_venv_installed)):
-        result = subprocess.run(
-            shlex.split("poetry run deptry . -v "), capture_output=True, text=True
-        )
+        result = subprocess.run(shlex.split("poetry run deptry . -v "), capture_output=True, text=True)
         assert result.returncode == 1
         assert "The project contains the following dependencies:" in result.stderr
 
