@@ -55,8 +55,9 @@ class DependencySpecificationDetector:
                 logging.debug(
                     "pyproject.toml does not contain a [tool.poetry.dependencies] section, so it is not used to specify the project's dependencies."
                 )
-                return False
-            return None
+                pass
+
+        return False
 
     def _check_if_project_uses_requirements_txt_for_dependencies(self) -> bool:
         if os.path.isfile(self.requirements_txt):

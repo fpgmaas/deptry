@@ -55,7 +55,7 @@ class ModuleBuilder:
         Args:
             name: The name of the imported module
             dependencies: A list of the project's dependencies
-            dependencies: A list of the project's development dependencies
+            dev-dependencies: A list of the project's development dependencies
         """
         self.name = name
         self.dependencies = dependencies
@@ -90,14 +90,14 @@ class ModuleBuilder:
             is_dev_dependency=is_dev_dependency,
         )
 
-    def _get_package_name_from_metadata(self) -> str:
+    def _get_package_name_from_metadata(self) -> Optional[str]:
         """
         Most packages simply have a field called "Name" in their metadata. This method extracts that field.
         """
         try:
             return metadata.metadata(self.name)["Name"]
         except PackageNotFoundError:
-            pass
+            return None
 
     def _get_corresponding_top_levels_from(self, dependencies: List[Dependency]) -> List[str]:
         """
@@ -144,15 +144,15 @@ class ModuleBuilder:
         local_modules = [subdir for subdir in directories if "__init__.py" in os.listdir(subdir)]
         return self.name in local_modules
 
-    def _has_matching_dependency(self, package: str, top_levels: List[str]) -> bool:
+    def _has_matching_dependency(self, package: Optional[str], top_levels: List[str]) -> bool:
         """
         Check if this module is provided by a listed dependency. This is the case if either the package name that was found in the metadata is
         listed as a dependency, or if the we found a top-level module name match earlier.
         """
-        return (package in [dep.name for dep in self.dependencies]) or len(top_levels) > 0
+        return package and (package in [dep.name for dep in self.dependencies]) or len(top_levels) > 0
 
-    def _has_matching_dev_dependency(self, package: str, dev_top_levels: List[str]) -> bool:
+    def _has_matching_dev_dependency(self, package: Optional[str], dev_top_levels: List[str]) -> bool:
         """
         Same as _has_matching_dependency, but for development dependencies.
         """
-        return (package in [dep.name for dep in self.dev_dependencies]) or len(dev_top_levels) > 0
+        return package and (package in [dep.name for dep in self.dev_dependencies]) or len(dev_top_levels) > 0

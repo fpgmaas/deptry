@@ -2,7 +2,7 @@ import os
 import sys
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Dict
+from typing import Dict, Generator
 
 if sys.version_info >= (3, 11):
     import tomllib
@@ -13,7 +13,7 @@ PYPROJECT_TOML_PATH = "./pyproject.toml"
 
 
 @contextmanager
-def run_within_dir(path: Path) -> None:
+def run_within_dir(path: Path) -> Generator[None, None, None]:
     """
     Utility function to run some code within a directory, and change back to the current directory afterwards.
 
