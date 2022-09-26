@@ -30,6 +30,11 @@ class CommaSeparatedTupleParamType(click.ParamType):
 COMMA_SEPARATED_TUPLE = CommaSeparatedTupleParamType()
 
 
+def configure_logger(ctx: click.Context, _param: click.Parameter, value: bool) -> None:
+    log_level = logging.DEBUG if value else logging.INFO
+    logging.basicConfig(level=log_level, handlers=[logging.StreamHandler()], format="%(message)s")
+
+
 @click.command()
 @click.argument("root", type=click.Path(exists=True), required=False)
 @click.option(
@@ -37,6 +42,8 @@ COMMA_SEPARATED_TUPLE = CommaSeparatedTupleParamType()
     "-v",
     is_flag=True,
     help="Boolean flag for verbosity. Using this flag will display more information about files, imports and dependencies while running.",
+    is_eager=True,
+    callback=configure_logger,
 )
 @click.option(
     "--skip-obsolete",
@@ -189,9 +196,6 @@ def deptry(
     All other arguments should be specified relative to [ROOT].
 
     """
-
-    log_level = logging.DEBUG if verbose else logging.INFO
-    logging.basicConfig(level=log_level, handlers=[logging.StreamHandler()], format="%(message)s")
 
     if version:
         display_deptry_version()
