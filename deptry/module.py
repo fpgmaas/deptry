@@ -9,10 +9,8 @@ from isort.stdlibs.py38 import stdlib as stdlib38
 from isort.stdlibs.py39 import stdlib as stdlib39
 from isort.stdlibs.py310 import stdlib as stdlib310
 
+from deptry.compat import PackageNotFoundError, metadata
 from deptry.dependency import Dependency
-from deptry.utils import import_importlib_metadata
-
-metadata, PackageNotFoundError = import_importlib_metadata()
 
 
 class Module:

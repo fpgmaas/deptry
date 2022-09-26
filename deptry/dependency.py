@@ -2,9 +2,7 @@ import logging
 import re
 from typing import List, Set
 
-from deptry.utils import import_importlib_metadata
-
-metadata, PackageNotFoundError = import_importlib_metadata()
+from deptry.compat import PackageNotFoundError, metadata
 
 
 class Dependency:

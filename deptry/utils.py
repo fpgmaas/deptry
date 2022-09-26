@@ -1,9 +1,8 @@
 import os
 import sys
-import types
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Dict, Tuple
+from typing import Dict
 
 if sys.version_info >= (3, 11):
     import tomllib
@@ -32,22 +31,6 @@ def run_within_dir(path: Path) -> None:
         yield
     finally:
         os.chdir(oldpwd)
-
-
-def import_importlib_metadata() -> Tuple[types.ModuleType, Exception]:
-    """
-    importlib.metadata is in the standard library since Python version 3.8
-    """
-    if sys.version_info[1] == 7:
-        import importlib_metadata as metadata
-        from importlib_metadata import PackageNotFoundError
-
-        return metadata, PackageNotFoundError
-    else:
-        import importlib.metadata as metadata
-        from importlib.metadata import PackageNotFoundError
-
-        return metadata, PackageNotFoundError
 
 
 def load_pyproject_toml(pyproject_toml_path: str = PYPROJECT_TOML_PATH) -> Dict:

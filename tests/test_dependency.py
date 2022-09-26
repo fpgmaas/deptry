@@ -1,7 +1,6 @@
 from unittest.mock import patch
 
 from deptry.dependency import Dependency
-from deptry.utils import import_importlib_metadata
 
 
 def test_simple_dependency():
