@@ -1,7 +1,5 @@
 import os
-from distutils.command.config import config
 
-from deptry.config import Config
 from deptry.dependency_specification_detector import DependencySpecificationDetector
 from deptry.utils import run_within_dir
 

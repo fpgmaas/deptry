@@ -1,14 +1,33 @@
 import logging
 import pathlib
 import sys
-from typing import List
+from typing import List, Optional, Tuple, Union
 
 import click
 
 from deptry.cli_defaults import DEFAULTS
-from deptry.config import Config
+from deptry.config import read_configuration_from_pyproject_toml
 from deptry.core import Core
-from deptry.utils import import_importlib_metadata, run_within_dir
+from deptry.utils import PYPROJECT_TOML_PATH, import_importlib_metadata, run_within_dir
+
+
+class CommaSeparatedTupleParamType(click.ParamType):
+    name = "tuple"
+
+    def convert(
+        self,
+        value: Union[str, List[str], Tuple[str, ...]],
+        param: Optional[click.Parameter],
+        ctx: Optional[click.Context],
+    ) -> Tuple[str, ...]:
+        if isinstance(value, str):
+            return tuple(value.split(","))
+        if isinstance(value, list):
+            return tuple(value)
+        return value
+
+
+COMMA_SEPARATED_TUPLE = CommaSeparatedTupleParamType()
 
 
 @click.command()
@@ -42,7 +61,7 @@ from deptry.utils import import_importlib_metadata, run_within_dir
 @click.option(
     "--ignore-obsolete",
     "-io",
-    type=click.STRING,
+    type=COMMA_SEPARATED_TUPLE,
     help="""
     Comma-separated list of dependencies that should never be marked as obsolete, even if they are not imported in any of the files scanned.
     For example; `deptry . --ignore-obsolete foo,bar`.
@@ -52,7 +71,7 @@ from deptry.utils import import_importlib_metadata, run_within_dir
 @click.option(
     "--ignore-missing",
     "-im",
-    type=click.STRING,
+    type=COMMA_SEPARATED_TUPLE,
     help="""Comma-separated list of modules that should never be marked as missing dependencies, even if the matching package for the import statement cannot be found.
     For example; `deptry . --ignore-missing foo,bar`.
     """,
@@ -61,7 +80,7 @@ from deptry.utils import import_importlib_metadata, run_within_dir
 @click.option(
     "--ignore-transitive",
     "-it",
-    type=click.STRING,
+    type=COMMA_SEPARATED_TUPLE,
     help="""Comma-separated list of dependencies that should never be marked as an issue due to it being a transitive dependency, even though deptry determines them to be transitive.
     For example; `deptry . --ignore-transitive foo,bar`.
     """,
@@ -70,7 +89,7 @@ from deptry.utils import import_importlib_metadata, run_within_dir
 @click.option(
     "--ignore-misplaced-dev",
     "-id",
-    type=click.STRING,
+    type=COMMA_SEPARATED_TUPLE,
     help="""Comma-separated list of modules that should never be marked as a misplaced development dependency, even though it seems to not be used solely for development purposes.
     For example; `deptry . --ignore-misplaced-dev foo,bar`.
     """,
@@ -121,7 +140,7 @@ from deptry.utils import import_importlib_metadata, run_within_dir
 @click.option(
     "--requirements-txt-dev",
     "-rtd",
-    type=click.STRING,
+    type=COMMA_SEPARATED_TUPLE,
     help=""".txt files to scan for additional development dependencies. If a file called pyproject.toml with a [tool.poetry.dependencies] section is found, this argument is ignored
     and the dependencies are extracted from the pyproject.toml file instead. Can be multiple e.g. `deptry . --requirements-txt-dev req/dev.txt,req/test.txt`""",
     default=DEFAULTS["requirements_txt_dev"],
@@ -135,24 +154,34 @@ from deptry.utils import import_importlib_metadata, run_within_dir
     default=DEFAULTS["json_output"],
     show_default=True,
 )
+@click.option(
+    "--config",
+    type=click.Path(),
+    is_eager=True,
+    callback=read_configuration_from_pyproject_toml,
+    help="Path to the pyproject.toml file to read configuration from.",
+    default=PYPROJECT_TOML_PATH,
+    hidden=True,
+)
 def deptry(
     root: pathlib.Path,
     verbose: bool,
-    ignore_obsolete: List[str],
-    ignore_missing: List[str],
-    ignore_transitive: List[str],
-    ignore_misplaced_dev: List[str],
+    ignore_obsolete: Tuple[str, ...],
+    ignore_missing: Tuple[str, ...],
+    ignore_transitive: Tuple[str, ...],
+    ignore_misplaced_dev: Tuple[str, ...],
     skip_obsolete: bool,
     skip_missing: bool,
     skip_transitive: bool,
     skip_misplaced_dev: bool,
-    exclude: List[str],
-    extend_exclude: List[str],
+    exclude: Tuple[str, ...],
+    extend_exclude: Tuple[str, ...],
     ignore_notebooks: bool,
     requirements_txt: str,
-    requirements_txt_dev: str,
+    requirements_txt_dev: Tuple[str, ...],
     json_output: str,
     version: bool,
+    config: str,
 ) -> None:
     """Find dependency issues in your Python project.
 
@@ -174,16 +203,13 @@ def deptry(
 
     with run_within_dir(root):
 
-        # Pass the CLI arguments to Config, if they are provided, otherwise pass 'None'.
-        # This way, we can distinguish if a argument was actually passed by the user
-        # (e.g. ignore_notebooks is 'False' by default).
-        config = Config(
+        Core(
             ignore_obsolete=ignore_obsolete,
             ignore_missing=ignore_missing,
             ignore_transitive=ignore_transitive,
             ignore_misplaced_dev=ignore_misplaced_dev,
-            exclude=list(exclude),
-            extend_exclude=list(extend_exclude),
+            exclude=exclude,
+            extend_exclude=extend_exclude,
             ignore_notebooks=ignore_notebooks,
             skip_obsolete=skip_obsolete,
             skip_missing=skip_missing,
@@ -191,26 +217,10 @@ def deptry(
             skip_misplaced_dev=skip_misplaced_dev,
             requirements_txt=requirements_txt,
             requirements_txt_dev=requirements_txt_dev,
-        )
-
-        Core(
-            ignore_obsolete=config.ignore_obsolete,
-            ignore_missing=config.ignore_missing,
-            ignore_transitive=config.ignore_transitive,
-            ignore_misplaced_dev=config.ignore_misplaced_dev,
-            exclude=config.exclude,
-            extend_exclude=config.extend_exclude,
-            ignore_notebooks=config.ignore_notebooks,
-            skip_obsolete=config.skip_obsolete,
-            skip_missing=config.skip_missing,
-            skip_transitive=config.skip_transitive,
-            skip_misplaced_dev=config.skip_misplaced_dev,
-            requirements_txt=config.requirements_txt,
-            requirements_txt_dev=config.requirements_txt_dev,
             json_output=json_output,
         ).run()
 
 
-def display_deptry_version():
+def display_deptry_version() -> None:
     metadata, *_ = import_importlib_metadata()
     logging.info(f'deptry {metadata.version("deptry")}')

@@ -1,5 +1,5 @@
 import logging
-from typing import List
+from typing import List, Tuple
 
 from deptry.dependency import Dependency
 from deptry.module import Module
@@ -11,7 +11,7 @@ class MissingDependenciesFinder:
     """
 
     def __init__(
-        self, imported_modules: List[Module], dependencies: List[Dependency], ignore_missing: List[str] = []
+        self, imported_modules: List[Module], dependencies: List[Dependency], ignore_missing: Tuple[str, ...] = ()
     ) -> None:
         self.imported_modules = imported_modules
         self.dependencies = dependencies
