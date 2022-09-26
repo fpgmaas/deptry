@@ -1,152 +1,102 @@
-from distutils.command.config import config
+import logging
 
-from deptry.config import Config
+import click
+
+from deptry.config import read_configuration_from_pyproject_toml
 from deptry.utils import run_within_dir
 
 
-def test_ignore_attributes(tmp_path):
+def test_read_configuration_from_pyproject_toml_exists(tmp_path):
+    click_context = click.Context(
+        click.Command(""),
+        default_map={
+            "exclude": ["bar"],
+            "extend_exclude": ["foo"],
+            "ignore_notebooks": False,
+            "ignore_obsolete": ["baz", "bar"],
+            "ignore_missing": [],
+            "ignore_misplaced_dev": [],
+            "ignore_transitive": [],
+            "skip_obsolete": False,
+            "skip_missing": False,
+            "skip_transitive": False,
+            "skip_misplaced_dev": False,
+            "requirements_txt": "requirements.txt",
+            "requirements_txt_dev": ["requirements-dev.txt"],
+        },
+    )
 
-    fake_pyproject_toml = """[tool.deptry]
-ignore_obsolete = [
-  'foo'
-]
-ignore_missing = [
-  'foo2', 'foo3'
-]
-ignore_transitive = [
-  'foo4'
-]
-ignore_misplaced_dev = [
-  'foo5'
-]"""
-
-    with run_within_dir(tmp_path):
-        with open("pyproject.toml", "w") as f:
-            f.write(fake_pyproject_toml)
-
-        config = Config(ignore_obsolete="", ignore_missing=None)
-
-        assert config.ignore_obsolete == ["foo"]
-        assert config.ignore_missing == ["foo2", "foo3"]
-        assert config.ignore_transitive == ["foo4"]
-        assert config.ignore_misplaced_dev == ["foo5"]
-
-        config = Config(ignore_obsolete="bar,bar2", ignore_misplaced_dev="bar3")
-        assert config.ignore_obsolete == ["bar", "bar2"]
-        assert config.ignore_missing == ["foo2", "foo3"]
-        assert config.ignore_transitive == ["foo4"]
-        assert config.ignore_misplaced_dev == ["bar3"]
-
-
-def test_exclude_attribute(tmp_path):
-
-    fake_pyproject_toml = """[tool.deptry]
-exclude = [
-  '.venv','docs','tests'
-]
-"""
+    pyproject_toml_content = """
+        [tool.deptry]
+        exclude = ["foo", "bar"]
+        extend_exclude = ["bar", "foo"]
+        ignore_notebooks = true
+        ignore_obsolete = ["foo"]
+        ignore_missing = ["baz", "foobar"]
+        ignore_misplaced_dev = ["barfoo"]
+        ignore_transitive = ["foobaz"]
+        skip_obsolete = true
+        skip_missing = true
+        skip_transitive = true
+        skip_misplaced_dev = true
+        requirements_txt = "foo.txt"
+        requirements_txt_dev = ["dev.txt", "tests.txt"]
+    """
 
     with run_within_dir(tmp_path):
         with open("pyproject.toml", "w") as f:
-            f.write(fake_pyproject_toml)
+            f.write(pyproject_toml_content)
 
-        config = Config(exclude="")
-        assert config.exclude == [".venv", "docs", "tests"]
+        assert (
+            read_configuration_from_pyproject_toml(click_context, click.UNPROCESSED, "pyproject.toml")
+            == "pyproject.toml"
+        )
 
-        config = Config()
-        assert config.exclude == [".venv", "docs", "tests"]
-
-        config = Config(exclude=["foo", "bar"])
-        assert config.exclude == ["foo", "bar"]
-
-
-def test_extend_exclude_attribute(tmp_path):
-
-    fake_pyproject_toml = """[tool.deptry]
-exclude = [
-  '.venv','docs','tests'
-]
-extend_exclude = [
-  'foo'
-]
-"""
-
-    with run_within_dir(tmp_path):
-        with open("pyproject.toml", "w") as f:
-            f.write(fake_pyproject_toml)
-
-        config = Config(extend_exclude=[])
-        assert config.extend_exclude == ["foo"]
-        config = Config(extend_exclude=["bar", "barr"])
-        assert config.extend_exclude == ["bar", "barr"]
+    assert click_context.default_map == {
+        "exclude": ["foo", "bar"],
+        "extend_exclude": ["bar", "foo"],
+        "ignore_notebooks": True,
+        "ignore_obsolete": ["foo"],
+        "ignore_missing": ["baz", "foobar"],
+        "ignore_misplaced_dev": ["barfoo"],
+        "ignore_transitive": ["foobaz"],
+        "skip_obsolete": True,
+        "skip_missing": True,
+        "skip_transitive": True,
+        "skip_misplaced_dev": True,
+        "requirements_txt": "foo.txt",
+        "requirements_txt_dev": ["dev.txt", "tests.txt"],
+    }
 
 
-def test_skip_attributes(tmp_path):
+def test_read_configuration_from_pyproject_toml_file_not_found(caplog):
+    with caplog.at_level(logging.DEBUG):
+        assert (
+            read_configuration_from_pyproject_toml(
+                click.Context(click.Command("")), click.UNPROCESSED, "a_non_existent_pyproject.toml"
+            )
+            is None
+        )
 
-    with run_within_dir(tmp_path):
-
-        with open("pyproject.toml", "w") as f:
-            f.write("")
-
-        # empty pyproject.toml, no arguments, so should all be False
-        config = Config()
-        assert not config.skip_obsolete
-        assert not config.skip_transitive
-        assert not config.skip_missing
-        assert not config.skip_misplaced_dev
-
-        # Test that passing attributes works.
-        config = Config(skip_obsolete=True, skip_missing=True, skip_transitive=True, skip_misplaced_dev=True)
-        assert config.skip_obsolete
-        assert config.skip_transitive
-        assert config.skip_missing
-        assert config.skip_misplaced_dev
-
-        fake_pyproject_toml = """[tool.deptry]
-skip_obsolete = true
-skip_missing = true
-skip_transitive = true
-skip_misplaced_dev = true
-"""
-        with open("pyproject.toml", "w") as f:
-            f.write(fake_pyproject_toml)
-
-        # Test that reading from pyproject.toml works
-        config = Config()
-        assert config.skip_obsolete
-        assert config.skip_transitive
-        assert config.skip_missing
-        assert config.skip_misplaced_dev
+    assert "No pyproject.toml file to read configuration from." in caplog.text
 
 
-def test_requirements_txt(tmp_path):
+def test_read_configuration_from_pyproject_toml_file_without_deptry_section(caplog, tmp_path):
+    pyproject_toml_content = """
+        [tool.something]
+        exclude = ["foo", "bar"]
+    """
 
     with run_within_dir(tmp_path):
-
         with open("pyproject.toml", "w") as f:
-            f.write("")
+            f.write(pyproject_toml_content)
 
-        config = Config()
-        assert config.requirements_txt == "requirements.txt"
-        assert len(config.requirements_txt_dev) == 2
-        assert "requirements-dev.txt" in config.requirements_txt_dev
-        assert "dev-requirements.txt" in config.requirements_txt_dev
+        with caplog.at_level(logging.DEBUG):
+            assert (
+                read_configuration_from_pyproject_toml(
+                    click.Context(click.Command("")), click.UNPROCESSED, "pyproject.toml"
+                )
+                is None
+            )
 
-        config = Config(requirements_txt="req.txt", requirements_txt_dev="dev-req.txt,foo.txt")
-        assert config.requirements_txt == "req.txt"
-        assert len(config.requirements_txt_dev) == 2
-        assert "dev-req.txt" in config.requirements_txt_dev
-        assert "foo.txt" in config.requirements_txt_dev
-
-        fake_pyproject_toml = """[tool.deptry]
-requirements_txt = "req.txt"
-requirements_txt_dev=["dev-req.txt", "foo.txt"]
-"""
-        with open("pyproject.toml", "w") as f:
-            f.write(fake_pyproject_toml)
-
-        config = Config()
-        assert config.requirements_txt == "req.txt"
-        assert len(config.requirements_txt_dev) == 2
-        assert "dev-req.txt" in config.requirements_txt_dev
-        assert "foo.txt" in config.requirements_txt_dev
+    assert "No configuration for deptry was found in pyproject.toml." in caplog.text

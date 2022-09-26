@@ -2,7 +2,7 @@ import logging
 import os
 import re
 from pathlib import Path
-from typing import List
+from typing import List, Tuple
 
 
 class PythonFileFinder:
@@ -14,7 +14,7 @@ class PythonFileFinder:
         ignore_notebooks: If ignore_notebooks is set to True, .ipynb files are ignored and only .py files are returned.
     """
 
-    def __init__(self, exclude: List[str], ignore_notebooks: bool = False) -> None:
+    def __init__(self, exclude: Tuple[str, ...], ignore_notebooks: bool = False) -> None:
         self.exclude = exclude
         self.ignore_notebooks = ignore_notebooks
 

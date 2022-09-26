@@ -1,5 +1,5 @@
 import logging
-from typing import List
+from typing import List, Tuple
 
 from deptry.dependency import Dependency
 from deptry.module import Module
@@ -18,7 +18,7 @@ class MisplacedDevDependenciesFinder:
         imported_modules: List[Module],
         dependencies: List[Dependency],
         dev_dependencies: List[Dependency],
-        ignore_misplaced_dev: List[str] = [],
+        ignore_misplaced_dev: Tuple[str, ...] = (),
     ) -> None:
         self.imported_modules = imported_modules
         self.dependencies = dependencies
