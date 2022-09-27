@@ -71,16 +71,30 @@ git+https://github.com/abc123/bar-foo@xyz789#egg=bar-fooo"""
         assert dependencies[4].name == "bar-fooo"
 
 
-def test_with_name(tmp_path):
+def test_single(tmp_path):
 
     with run_within_dir(tmp_path):
         with open("req.txt", "w") as f:
             f.write("click==8.1.3 #123asd\ncolorama==0.4.5")
 
-        dependencies = RequirementsTxtDependencyGetter(requirements_txt="req.txt").get()
+        dependencies = RequirementsTxtDependencyGetter(requirements_txt=("req.txt",)).get()
         assert len(dependencies) == 2
         assert dependencies[0].name == "click"
         assert dependencies[1].name == "colorama"
+
+
+def test_multiple(tmp_path):
+
+    with run_within_dir(tmp_path):
+        with open("foo.txt", "w") as f:
+            f.write("click==8.1.3 #123asd")
+        with open("bar.txt", "w") as f:
+            f.write("bar")
+
+        dependencies = RequirementsTxtDependencyGetter(requirements_txt=("foo.txt", "bar.txt")).get()
+        assert len(dependencies) == 2
+        assert dependencies[0].name == "click"
+        assert dependencies[1].name == "bar"
 
 
 def test_dev_single(tmp_path):
@@ -121,7 +135,7 @@ def test_dev_multiple_with_arguments(tmp_path):
         with open("bar.txt", "w") as f:
             f.write("bar")
 
-        dependencies = RequirementsTxtDependencyGetter(dev=True, requirements_txt_dev=["foo.txt", "bar.txt"]).get()
+        dependencies = RequirementsTxtDependencyGetter(dev=True, requirements_txt_dev=("foo.txt", "bar.txt")).get()
         assert len(dependencies) == 2
         assert dependencies[0].name == "click"
         assert dependencies[1].name == "bar"

@@ -1,5 +1,6 @@
 import logging
 import os
+from typing import Tuple
 
 from deptry.utils import load_pyproject_toml
 
@@ -14,7 +15,7 @@ class DependencySpecificationDetector:
 
     """
 
-    def __init__(self, requirements_txt: str = "requirements.txt") -> None:
+    def __init__(self, requirements_txt: Tuple[str, ...] = ("requirements.txt",)) -> None:
         self.requirements_txt = requirements_txt
 
     def detect(self) -> str:
@@ -22,7 +23,7 @@ class DependencySpecificationDetector:
         uses_requirements_txt = self._check_if_project_uses_requirements_txt_for_dependencies()
         if uses_pyproject_toml and uses_requirements_txt:
             logging.info(
-                f"Found both 'pyproject.toml' with a [tool.poetry.dependencies] section and the file {self.requirements_txt}. Defaulting to 'pyproject.toml'.\n"
+                f"Found both 'pyproject.toml' with a [tool.poetry.dependencies] section and '{', '.join(self.requirements_txt)}' requirements file(s). Defaulting to 'pyproject.toml'.\n"
             )
             return "pyproject_toml"
         elif uses_pyproject_toml:
@@ -32,12 +33,12 @@ class DependencySpecificationDetector:
             return "pyproject_toml"
         elif uses_requirements_txt:
             logging.debug(
-                f"Dependency specification found in {self.requirements_txt}. Will use this to determine the project's dependencies.\n"
+                f"Dependency specification found in '{', '.join(self.requirements_txt)}'. Will use this to determine the project's dependencies.\n"
             )
             return "requirements_txt"
         else:
             raise FileNotFoundError(
-                f"No file called 'pyproject.toml' with a [tool.poetry.dependencies] section or a file called {self.requirements_txt} found. Exiting."
+                f"No file called 'pyproject.toml' with a [tool.poetry.dependencies] section or called '{', '.join(self.requirements_txt)}' found. Exiting."
             )
 
     @staticmethod
@@ -60,6 +61,4 @@ class DependencySpecificationDetector:
         return False
 
     def _check_if_project_uses_requirements_txt_for_dependencies(self) -> bool:
-        if os.path.isfile(self.requirements_txt):
-            return True
-        return False
+        return any(os.path.isfile(requirements_txt) for requirements_txt in self.requirements_txt)
