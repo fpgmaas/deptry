@@ -23,7 +23,7 @@ class ImportParser:
         logging.info(f"Scanning {len(list_of_files)} files...")
         modules_per_file = [self.get_imported_modules_from_file(file) for file in list_of_files]
         all_modules = self._flatten_list(modules_per_file)
-        unique_modules = sorted(list(set(all_modules)))
+        unique_modules = sorted(set(all_modules))
         unique_modules = self._filter_exceptions(unique_modules)
         logging.debug(f"All imported modules: {unique_modules}\n")
         return unique_modules
@@ -34,7 +34,7 @@ class ImportParser:
                 modules = self._get_imported_modules_from_ipynb(path_to_file)
             else:
                 modules = self._get_imported_modules_from_py(path_to_file)
-            modules = sorted(list(set(modules)))
+            modules = sorted(set(modules))
             logging.debug(f"Found the following imports in {str(path_to_file)}: {modules}")
         except AttributeError as e:
             logging.warning(f"Warning: Parsing imports for file {str(path_to_file)} failed.")
