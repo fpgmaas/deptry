@@ -7,7 +7,7 @@ class ResultLogger:
     Display the issues to the user, and return exit-status 0 or 1 depending on if any issues were found.
     """
 
-    def __init__(self, issues: Dict[str, List[str]]):
+    def __init__(self, issues: Dict[str, List[str]]) -> None:
         self.issues = issues
 
     def log_and_exit(self) -> None:
@@ -25,7 +25,7 @@ class ResultLogger:
             self._log_additional_info()
 
     @staticmethod
-    def _log_total_number_of_issues_found(number):
+    def _log_total_number_of_issues_found(number: int) -> None:
         if number == 0:
             logging.info("Success! No dependency issues found.")
         elif number == 1:

@@ -1,5 +1,5 @@
 import logging
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
 from deptry.dependency import Dependency
 from deptry.module import Module
@@ -54,7 +54,7 @@ class MisplacedDevDependenciesFinder:
                 return True
         return False
 
-    def _get_package_name(self, module: Module):
+    def _get_package_name(self, module: Module) -> Optional[str]:
         if module.package:
             return module.package
         if module.dev_top_levels:

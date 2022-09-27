@@ -1,7 +1,7 @@
 import logging
 import os
 import re
-from typing import List, Tuple, Union
+from typing import List, Optional, Tuple, Union
 
 from deptry.dependency import Dependency
 
@@ -112,7 +112,7 @@ class RequirementsTxtDependencyGetter:
         logging.debug("")
 
     @staticmethod
-    def _line_is_url(line: str):
+    def _line_is_url(line: str) -> Optional[re.Match]:
         return re.search("^(http|https|git\+https)", line)
 
     @staticmethod
