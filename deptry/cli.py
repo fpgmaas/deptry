@@ -6,9 +6,10 @@ from typing import List, Optional, Tuple, Union
 import click
 
 from deptry.cli_defaults import DEFAULTS
+from deptry.compat import metadata
 from deptry.config import read_configuration_from_pyproject_toml
 from deptry.core import Core
-from deptry.utils import PYPROJECT_TOML_PATH, import_importlib_metadata, run_within_dir
+from deptry.utils import PYPROJECT_TOML_PATH, run_within_dir
 
 
 class CommaSeparatedTupleParamType(click.ParamType):
@@ -226,5 +227,4 @@ def deptry(
 
 
 def display_deptry_version() -> None:
-    metadata, *_ = import_importlib_metadata()
     logging.info(f'deptry {metadata.version("deptry")}')

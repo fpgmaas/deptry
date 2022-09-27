@@ -13,6 +13,6 @@ class JsonWriter:
     def __init__(self, json_output: str) -> None:
         self.json_output = json_output
 
-    def write(self, issues: Dict):
+    def write(self, issues: Dict) -> None:
         with open(self.json_output, "w", encoding="utf-8") as f:
             json.dump(issues, f, ensure_ascii=False, indent=4)

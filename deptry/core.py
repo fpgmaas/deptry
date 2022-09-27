@@ -47,8 +47,10 @@ class Core:
             exclude=self.exclude + self.extend_exclude, ignore_notebooks=self.ignore_notebooks
         ).get_all_python_files_in(Path("."))
 
-        imported_modules = ImportParser().get_imported_modules_for_list_of_files(all_python_files)
-        imported_modules = [ModuleBuilder(mod, dependencies, dev_dependencies).build() for mod in imported_modules]
+        imported_modules = [
+            ModuleBuilder(mod, dependencies, dev_dependencies).build()
+            for mod in ImportParser().get_imported_modules_for_list_of_files(all_python_files)
+        ]
         imported_modules = [mod for mod in imported_modules if not mod.standard_library]
 
         issues = self._find_issues(imported_modules, dependencies, dev_dependencies)
@@ -106,7 +108,7 @@ class Core:
         logging.debug("")
 
     @staticmethod
-    def _exit(issues):
+    def _exit(issues: Dict[str, List[str]]) -> None:
         total_issues_found = sum([len(v) for k, v in issues.items()])
         if total_issues_found > 0:
             sys.exit(1)
