@@ -84,7 +84,7 @@ class ImportParser:
         for node in ast.iter_child_nodes(root):
             if any([isinstance(node, recursion_type) for recursion_type in RECURSION_TYPES]):
                 imports += self._get_import_nodes_from(node)
-            elif isinstance(node, ast.Import) or isinstance(node, ast.ImportFrom):
+            elif isinstance(node, (ast.Import, ast.ImportFrom)):
                 imports += [node]
         return imports
 
@@ -94,11 +94,9 @@ class ImportParser:
         for node in nodes:
             if isinstance(node, ast.Import):
                 modules += [x.name.split(".")[0] for x in node.names]
-            elif isinstance(node, ast.ImportFrom):
-                if (
-                    node.module and node.level == 0
-                ):  # nodes for imports like `from . import foo` do not have a module attribute.
-                    modules.append(node.module.split(".")[0])
+            # nodes for imports like `from . import foo` do not have a module attribute.
+            elif isinstance(node, ast.ImportFrom) and node.module and node.level == 0:
+                modules.append(node.module.split(".")[0])
         return modules
 
     @staticmethod
@@ -117,10 +115,10 @@ class ImportParser:
         for exception in exceptions:
             if exception in modules:
                 logging.debug(f"Found module {exception} to be imported, omitting from the list of modules.")
-                modules = [module for module in modules if not module == exception]
+                modules = [module for module in modules if module != exception]
         return modules
 
     @staticmethod
     def _get_file_encoding(file_name: Union[str, Path]) -> str:
-        rawdata = open(file_name, "rb").read()
-        return chardet.detect(rawdata)["encoding"]
+        with open(file_name, "rb") as f:
+            return chardet.detect(f.read())["encoding"]

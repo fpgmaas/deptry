@@ -36,9 +36,8 @@ class MisplacedDevDependenciesFinder:
         for module in self.imported_modules:
             logging.debug(f"Scanning module {module.name}...")
             corresponding_package_name = self._get_package_name(module)
-            if corresponding_package_name:
-                if self._is_development_dependency(module, corresponding_package_name):
-                    misplaced_dev_dependencies.append(corresponding_package_name)
+            if corresponding_package_name and self._is_development_dependency(module, corresponding_package_name):
+                misplaced_dev_dependencies.append(corresponding_package_name)
         return misplaced_dev_dependencies
 
     def _is_development_dependency(self, module: Module, corresponding_package_name: str) -> bool:
