@@ -6,6 +6,8 @@ install: ## Install the poetry environment
 check: ## Lint code using pre-commit and check obsolete dependencies using deptry.
 	@echo "🚀 Linting code: Running pre-commit"
 	@pre-commit run -a
+	@echo "🚀 Static type checking: Running mypy"
+	@mypy
 	@echo "🚀 Checking for obsolete dependencies: Running deptry"
 	@deptry .
 
