@@ -7,7 +7,7 @@ check: ## Lint code using pre-commit and check obsolete dependencies using deptr
 	@echo "🚀 Linting code: Running pre-commit"
 	@pre-commit run -a
 	@echo "🚀 Static type checking: Running mypy"
-	@mypy .
+	@mypy
 	@echo "🚀 Checking for obsolete dependencies: Running deptry"
 	@deptry .
 
