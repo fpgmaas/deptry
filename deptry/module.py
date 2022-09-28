@@ -48,7 +48,12 @@ class Module:
 
 
 class ModuleBuilder:
-    def __init__(self, name: str, dependencies: List[Dependency] = [], dev_dependencies: List[Dependency] = []) -> None:
+    def __init__(
+        self,
+        name: str,
+        dependencies: Optional[List[Dependency]] = None,
+        dev_dependencies: Optional[List[Dependency]] = None,
+    ) -> None:
         """
         Create a Module object that represents an imported module.
 
@@ -58,8 +63,8 @@ class ModuleBuilder:
             dev-dependencies: A list of the project's development dependencies
         """
         self.name = name
-        self.dependencies = dependencies
-        self.dev_dependencies = dev_dependencies
+        self.dependencies = dependencies or []
+        self.dev_dependencies = dev_dependencies or []
 
     def build(self) -> Module:
         """

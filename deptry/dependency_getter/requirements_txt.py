@@ -1,7 +1,7 @@
 import logging
 import os
 import re
-from typing import List, Optional, Tuple, Union
+from typing import List, Optional, Tuple
 
 from deptry.dependency import Dependency
 
@@ -62,7 +62,7 @@ class RequirementsTxtDependencyGetter:
 
         return dependencies
 
-    def _extract_dependency_from_line(self, line: str) -> Union[Dependency, None]:
+    def _extract_dependency_from_line(self, line: str) -> Optional[Dependency]:
         """
         Extract a dependency from a single line of a requirements.txt file.
         """
@@ -77,7 +77,7 @@ class RequirementsTxtDependencyGetter:
         else:
             return None
 
-    def _find_dependency_name_in(self, line: str) -> Union[str, None]:
+    def _find_dependency_name_in(self, line: str) -> Optional[str]:
         """
         Find the dependency name of a dependency specified according to the pip-standards for requirement.txt
         """
@@ -99,11 +99,11 @@ class RequirementsTxtDependencyGetter:
 
     @staticmethod
     def _check_if_dependency_is_optional(line: str) -> bool:
-        return True if re.findall(r"\[([a-zA-Z0-9-]+?)\]", line) else False
+        return bool(re.findall(r"\[([a-zA-Z0-9-]+?)\]", line))
 
     @staticmethod
     def _check_if_dependency_is_conditional(line: str) -> bool:
-        return True if ";" in line else False
+        return ";" in line
 
     def _log_dependencies(self, dependencies: List[Dependency]) -> None:
         logging.debug(f"The project contains the following {'dev-' if self.dev else ''}dependencies:")
@@ -116,7 +116,7 @@ class RequirementsTxtDependencyGetter:
         return re.search("^(http|https|git\+https)", line)
 
     @staticmethod
-    def _extract_name_from_url(line: str) -> Union[str, None]:
+    def _extract_name_from_url(line: str) -> Optional[str]:
 
         # Try to find egg, for url like git+https://github.com/xxxxx/package@xxxxx#egg=package
         match = re.search("egg=([a-zA-Z0-9-_]*)", line)
