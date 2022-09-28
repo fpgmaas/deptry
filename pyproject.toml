@@ -52,7 +52,7 @@ exclude = '''
 profile = "black"
 
 [tool.mypy]
-files = ["deptry"]
+exclude = ["venv",".venv","tests"]
 disallow_untyped_defs = true
 disallow_any_unimported = true
 no_implicit_optional = true
