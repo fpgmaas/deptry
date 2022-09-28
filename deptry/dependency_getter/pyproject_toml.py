@@ -1,3 +1,4 @@
+import contextlib
 import logging
 from typing import Any, Dict, List, Union
 
@@ -25,7 +26,7 @@ class PyprojectTomlDependencyGetter:
         dependencies = []
         for dep, spec in pyproject_toml_dependencies.items():
             # dep is the dependency name, spec is the version specification, e.g. "^0.2.2" or {"*", optional = true}
-            if not dep == "python":
+            if dep != "python":
                 optional = self._is_optional(dep, spec)
                 conditional = self._is_conditional(dep, spec)
                 dependencies.append(Dependency(dep, conditional=conditional, optional=optional))
@@ -49,14 +50,13 @@ class PyprojectTomlDependencyGetter:
         """
         dev_dependencies: Dict[str, str] = {}
         pyproject_data = load_pyproject_toml()
-        try:
+
+        with contextlib.suppress(KeyError):
             dev_dependencies = {**pyproject_data["tool"]["poetry"]["dev-dependencies"], **dev_dependencies}
-        except KeyError:
-            pass
-        try:
+
+        with contextlib.suppress(KeyError):
             dev_dependencies = {**pyproject_data["tool"]["poetry"]["group"]["dev"]["dependencies"], **dev_dependencies}
-        except KeyError:
-            pass
+
         return dev_dependencies
 
     def _log_dependencies(self, dependencies: List[Dependency]) -> None:
@@ -68,13 +68,13 @@ class PyprojectTomlDependencyGetter:
     @staticmethod
     def _is_optional(dep: str, spec: Union[str, dict]) -> bool:
         # if of the shape `isodate = {version = "*", optional = true}` mark as optional`
-        if isinstance(spec, dict) and "optional" in spec.keys() and spec["optional"]:
+        if isinstance(spec, dict) and "optional" in spec and spec["optional"]:
             return True
         return False
 
     @staticmethod
     def _is_conditional(dep: str, spec: Union[str, dict]) -> bool:
         # if of the shape `tomli = { version = "^2.0.1", python = "<3.11" }`, mark as conditional.
-        if isinstance(spec, dict) and "python" in spec.keys() and "version" in spec.keys():
+        if isinstance(spec, dict) and "python" in spec and "version" in spec:
             return True
         return False
