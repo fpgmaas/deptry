@@ -13,7 +13,6 @@ packages = [
 [tool.poetry.dependencies]
 python = ">=3.7,<4.0"
 tomli = { version = "^2.0.1", python = "<3.11" }
-isort = "^5.10.1"
 click = "^8.0.0"
 importlib-metadata = { version = "*", python = "<=3.7" }
 chardet = "^5.0.0"
@@ -64,7 +63,7 @@ ignore_missing_imports = true
 
 [tool.deptry]
 exclude = [
-  'venv','.venv','docs','tests'
+  'venv','.venv','docs','tests','scripts'
 ]
 ignore_missing = ["tomllib"]
 
