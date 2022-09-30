@@ -34,19 +34,6 @@ line-length = 120
 include = '\.pyi?$'
 target-version = ['py39']
 fast = true
-exclude = '''
-(
-  /(                        # exclude a few common directories in the
-    \.git                   # root of the project
-    | \.pytest_cache
-    | python-venv
-    | \.venv
-    | venv
-    | build
-    | dist
-    | \.tox
-  ))
-'''
 
 [tool.isort]
 profile = "black"
