@@ -7,8 +7,3 @@ coverage:
       default:
         target: 90%
         threshold: 0.5%
-
-ignore:
-  - "deptry/cli.py"
-  - "deptry/core.py"
-  - "deptry/utils.py"
