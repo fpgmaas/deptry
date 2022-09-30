@@ -6,7 +6,7 @@ coverage:
     project:
       default:
         target: 90%
-        threshold: .5%
+        threshold: 0.5%
 
 ignore:
   - "deptry/cli.py"
