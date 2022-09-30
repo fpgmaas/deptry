@@ -47,7 +47,7 @@ preview = true
 profile = "black"
 
 [tool.mypy]
-files = ["deptry"]
+files = ["deptry", "scripts"]
 disallow_untyped_defs = true
 disallow_any_unimported = true
 no_implicit_optional = true
