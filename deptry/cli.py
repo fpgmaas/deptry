@@ -139,9 +139,9 @@ def configure_logger(ctx: click.Context, _param: click.Parameter, value: bool) -
 @click.option(
     "--requirements-txt",
     "-rt",
-    type=click.STRING,
-    help="""A .txt file with the project's dependencies. If a file called pyproject.toml with a [tool.poetry.dependencies] section is found, this argument is ignored
-    and the dependencies are extracted from the pyproject.toml file instead. Example use: `deptry . --requirements-txt req/prod.txt`""",
+    type=COMMA_SEPARATED_TUPLE,
+    help=""".txt files to scan for dependencies. If a file called pyproject.toml with a [tool.poetry.dependencies] section is found, this argument is ignored
+    and the dependencies are extracted from the pyproject.toml file instead. Can be multiple e.g. `deptry . --requirements-txt req/prod.txt,req/extra.txt`""",
     default=DEFAULTS["requirements_txt"],
     show_default=True,
 )
@@ -185,7 +185,7 @@ def deptry(
     exclude: Tuple[str, ...],
     extend_exclude: Tuple[str, ...],
     ignore_notebooks: bool,
-    requirements_txt: str,
+    requirements_txt: Tuple[str, ...],
     requirements_txt_dev: Tuple[str, ...],
     json_output: str,
     version: bool,

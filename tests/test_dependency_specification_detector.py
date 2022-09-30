@@ -44,15 +44,15 @@ def test_requirements_txt_with_argument(tmp_path):
         with open("req.txt", "w") as f:
             f.write('foo >= "1.0"')
 
-        spec = DependencySpecificationDetector(requirements_txt="req.txt").detect()
+        spec = DependencySpecificationDetector(requirements_txt=("req.txt",)).detect()
         assert spec == "requirements_txt"
 
 
-def test_requirements_txt_with_argument(tmp_path):
+def test_requirements_txt_with_argument_not_root_directory(tmp_path):
     with run_within_dir(tmp_path):
         os.mkdir("req")
         with open("req/req.txt", "w") as f:
             f.write('foo >= "1.0"')
 
-        spec = DependencySpecificationDetector(requirements_txt="req/req.txt").detect()
+        spec = DependencySpecificationDetector(requirements_txt=("req/req.txt",)).detect()
         assert spec == "requirements_txt"

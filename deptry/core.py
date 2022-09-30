@@ -32,7 +32,7 @@ class Core:
     exclude: Tuple[str, ...]
     extend_exclude: Tuple[str, ...]
     ignore_notebooks: bool
-    requirements_txt: str
+    requirements_txt: Tuple[str, ...]
     requirements_txt_dev: Tuple[str, ...]
     json_output: str
 
