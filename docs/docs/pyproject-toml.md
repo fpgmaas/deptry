@@ -15,7 +15,7 @@ _deptry_ can be configured by adding a `[tool.deptry]` section to _pyproject.tom
 - `skip_missing`: `bool`
 - `skip_transitive`: `bool`
 - `skip_misplaced_dev`: `bool`
-- `requirements_txt`: `str`
+- `requirements_txt`: `List[str]`
 - `requirements_txt_dev`: `List[str]`
 
 Note that the command line arguments that should be passed as a string with comma-separated values should simply be passed as a list in _pyproject.toml_.

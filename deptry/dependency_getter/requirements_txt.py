@@ -1,3 +1,4 @@
+import itertools
 import logging
 import os
 import re
@@ -16,7 +17,7 @@ class RequirementsTxtDependencyGetter:
 
     def __init__(
         self,
-        requirements_txt: str = "requirements.txt",
+        requirements_txt: Tuple[str, ...] = ("requirements.txt",),
         requirements_txt_dev: Tuple[str, ...] = ("dev-requirements.txt", "requirements-dev.txt"),
         dev: bool = False,
     ) -> None:
@@ -26,7 +27,11 @@ class RequirementsTxtDependencyGetter:
 
     def get(self) -> List[Dependency]:
         if not self.dev:
-            dependencies = self._get_dependencies_from_requirements_file(self.requirements_txt)
+            dependencies = list(
+                itertools.chain(
+                    *(self._get_dependencies_from_requirements_file(file_name) for file_name in self.requirements_txt)
+                )
+            )
         else:
             dev_requirements_files = self._scan_for_dev_requirements_files()
             if dev_requirements_files:

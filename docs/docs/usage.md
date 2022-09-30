@@ -109,7 +109,7 @@ deptry . \
     --requirements-txt-dev req/dev.txt,req/test.txt
 ```
 
-Here, the `requirements-txt` takes only a single file as argument, but multiple files can be passed to `requirements-txt-dev` by providing them as a comma-separated list.
+Multiple files can be passed to both `requirements-txt` and `requirements-txt-dev` by using a comma-separated list.
 
 ## Output as a json file
 
