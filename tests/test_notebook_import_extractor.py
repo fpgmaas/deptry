@@ -1,9 +1,3 @@
-import os
-from contextlib import contextmanager
-from pathlib import Path
-
-import pytest
-
 from deptry.notebook_import_extractor import NotebookImportExtractor
 
 

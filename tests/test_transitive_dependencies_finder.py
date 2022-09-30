@@ -1,4 +1,3 @@
-from deptry.dependency import Dependency
 from deptry.issue_finders.transitive import TransitiveDependenciesFinder
 from deptry.module import ModuleBuilder
 

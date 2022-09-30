@@ -12,7 +12,7 @@ def test_top_level():
     dependency = Dependency("beautifulsoup4")
     dependency.top_levels = ["bs4"]
     module = ModuleBuilder("bs4", [dependency]).build()
-    assert module.package == None
+    assert module.package is None
 
 
 def test_stdlib():
