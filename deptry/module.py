@@ -4,11 +4,6 @@ import sys
 from pathlib import Path
 from typing import List, Optional, Set
 
-from isort.stdlibs.py37 import stdlib as stdlib37
-from isort.stdlibs.py38 import stdlib as stdlib38
-from isort.stdlibs.py39 import stdlib as stdlib39
-from isort.stdlibs.py310 import stdlib as stdlib310
-
 from deptry.compat import PackageNotFoundError, metadata
 from deptry.dependency import Dependency
 
@@ -123,20 +118,19 @@ class ModuleBuilder:
 
     def _get_stdlib_packages(self) -> Set[str]:
         incorrect_version_error = ValueError(
-            f"Incorrect Python version {'.'.join([str(x) for x in sys.version_info[0:3]])}. Only 3.7, 3.8, 3.9 and 3.10 are currently supported."
+            f"Incorrect Python version {'.'.join([str(x) for x in sys.version_info[0:3]])}. Only 3.7, 3.8, 3.9, and 3.10 are currently supported."
         )
         if sys.version_info[0] == 3:
             if sys.version_info[1] == 7:
-                stdlib = stdlib37
+                from deptry.stdlibs.py37 import stdlib
             elif sys.version_info[1] == 8:
-                stdlib = stdlib38
+                from deptry.stdlibs.py38 import stdlib
             elif sys.version_info[1] == 9:
-                stdlib = stdlib39
+                from deptry.stdlibs.py39 import stdlib
             elif sys.version_info[1] == 10:
-                stdlib = stdlib310
+                from deptry.stdlibs.py310 import stdlib
             else:
                 raise incorrect_version_error
-            stdlib.add("__future__")  # Not sure why this is omitted explicitly in isort's source code.
             return stdlib
         else:
             raise incorrect_version_error
