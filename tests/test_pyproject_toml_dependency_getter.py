@@ -4,7 +4,6 @@ from deptry.utils import run_within_dir
 
 
 def test_dependency_getter(tmp_path):
-
     fake_pyproject_toml = """[tool.poetry.dependencies]
 python = ">=3.7,<4.0"
 toml = "^0.10.2"
@@ -42,7 +41,6 @@ foo-bar =  { version = ">=2.5.1,<4.0.0", optional = true, python = ">3.7" }"""
 
 
 def test_dependency_getter_dev(tmp_path):
-
     fake_pyproject_toml = """[tool.poetry.dev-dependencies]
 toml = "^0.10.2"
 foo =  { version = ">=2.5.1,<4.0.0", optional = true }

@@ -44,7 +44,8 @@ class MisplacedDevDependenciesFinder:
         if module.is_dev_dependency:
             if module.name in self.ignore_misplaced_dev:
                 logging.debug(
-                    f"Module '{corresponding_package_name}' found to be a misplaced development dependency, but ignoring."
+                    f"Module '{corresponding_package_name}' found to be a misplaced development dependency, but"
+                    " ignoring."
                 )
             else:
                 logging.debug(
@@ -59,7 +60,8 @@ class MisplacedDevDependenciesFinder:
         if module.dev_top_levels:
             if len(module.dev_top_levels) > 1:
                 logging.debug(
-                    f"Module {module.name} is found in the top-level module names of multiple development dependencies. Skipping."
+                    f"Module {module.name} is found in the top-level module names of multiple development dependencies."
+                    " Skipping."
                 )
             elif len(module.dev_top_levels) == 0:
                 logging.debug(

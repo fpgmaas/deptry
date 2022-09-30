@@ -48,7 +48,8 @@ class Dependency:
             return True
         except PackageNotFoundError:
             logging.warning(
-                f"Warning: Package '{name}'{self._string_for_printing()}not found in current environment. Assuming its corresponding module name is '{name.replace('-','_').lower()}'."
+                f"Warning: Package '{name}'{self._string_for_printing()}not found in current environment. Assuming its"
+                f" corresponding module name is '{name.replace('-','_').lower()}'."
             )
             return False
 

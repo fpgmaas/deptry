@@ -43,21 +43,24 @@ class ResultLogger:
     def _log_missing_dependencies(self, dependencies: List[str], sep: str = "\n\t") -> None:
         logging.info("\n-----------------------------------------------------\n")
         logging.info(
-            f"There are dependencies missing from the project's list of dependencies:\n{sep}{sep.join(sorted(dependencies))}\n"
+            "There are dependencies missing from the project's list of"
+            f" dependencies:\n{sep}{sep.join(sorted(dependencies))}\n"
         )
         logging.info("""Consider adding them to your project's dependencies. """)
 
     def _log_transitive_dependencies(self, dependencies: List[str], sep: str = "\n\t") -> None:
         logging.info("\n-----------------------------------------------------\n")
         logging.info(
-            f"There are transitive dependencies that should be explicitly defined as dependencies:\n{sep}{sep.join(sorted(dependencies))}\n"
+            "There are transitive dependencies that should be explicitly defined as"
+            f" dependencies:\n{sep}{sep.join(sorted(dependencies))}\n"
         )
         logging.info("""They are currently imported but not specified directly as your project's dependencies.""")
 
     def _log_misplaced_develop_dependencies(self, dependencies: List[str], sep: str = "\n\t") -> None:
         logging.info("\n-----------------------------------------------------\n")
         logging.info(
-            f"There are imported modules from development dependencies detected:\n{sep}{sep.join(sorted(dependencies))}\n"
+            "There are imported modules from development dependencies"
+            f" detected:\n{sep}{sep.join(sorted(dependencies))}\n"
         )
         logging.info(
             """Consider moving them to your project's 'regular' dependencies. If this is not correct and the dependencies listed above are indeed development dependencies, it's likely that files were scanned that are only used for development purposes. Run `deptry -v .` to see a list of scanned files."""

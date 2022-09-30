@@ -4,7 +4,6 @@ from deptry.utils import run_within_dir
 
 
 def test_parse_requirements_txt(tmp_path):
-
     fake_requirements_txt = """click==8.1.3 #123asd
 colorama==0.4.5
 importlib-metadata==4.2.0 ; python_version >= "3.7" and python_version < "3.8"
@@ -50,7 +49,6 @@ requests [security] >= 2.8.1, == 2.8.* ; python_version < "2.7"
 
 
 def test_parse_requirements_txt_urls(tmp_path):
-
     fake_requirements_txt = """urllib3 @ https://github.com/urllib3/urllib3/archive/refs/tags/1.26.8.zip
 https://github.com/urllib3/urllib3/archive/refs/tags/1.26.8.zip
 git+https://github.com/baz/foo-bar.git@asd#egg=foo-bar
@@ -72,7 +70,6 @@ git+https://github.com/abc123/bar-foo@xyz789#egg=bar-fooo"""
 
 
 def test_single(tmp_path):
-
     with run_within_dir(tmp_path):
         with open("req.txt", "w") as f:
             f.write("click==8.1.3 #123asd\ncolorama==0.4.5")
@@ -84,7 +81,6 @@ def test_single(tmp_path):
 
 
 def test_multiple(tmp_path):
-
     with run_within_dir(tmp_path):
         with open("foo.txt", "w") as f:
             f.write("click==8.1.3 #123asd")
@@ -98,7 +94,6 @@ def test_multiple(tmp_path):
 
 
 def test_dev_single(tmp_path):
-
     with run_within_dir(tmp_path):
         with open("requirements-dev.txt", "w") as f:
             f.write("click==8.1.3 #123asd\ncolorama==0.4.5")
@@ -114,7 +109,6 @@ def test_dev_single(tmp_path):
 
 
 def test_dev_multiple(tmp_path):
-
     with run_within_dir(tmp_path):
         with open("requirements-dev.txt", "w") as f:
             f.write("click==8.1.3 #123asd")
@@ -128,7 +122,6 @@ def test_dev_multiple(tmp_path):
 
 
 def test_dev_multiple_with_arguments(tmp_path):
-
     with run_within_dir(tmp_path):
         with open("foo.txt", "w") as f:
             f.write("click==8.1.3 #123asd")
