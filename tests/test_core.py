@@ -1,5 +1,3 @@
-import logging
-
 import pytest
 
 from deptry.core import Core

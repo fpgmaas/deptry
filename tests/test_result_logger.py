@@ -1,7 +1,5 @@
 import logging
 
-import pytest
-
 from deptry.result_logger import ResultLogger
 
 
