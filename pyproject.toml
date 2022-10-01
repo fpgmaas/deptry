@@ -3,11 +3,21 @@ name = "deptry"
 version = "0.0.1"
 description = "A command line utility to check for obsolete, missing and transitive dependencies in a Python project."
 authors = ["Florian Maas <fpgmaas@gmail.com>"]
+maintainers = ["Mathieu Kniewallner <mathieu.kniewallner@gmail.com>"]
 repository = "https://github.com/fpgmaas/deptry"
 documentation = "https://fpgmaas.github.io/deptry/"
 readme = "README.md"
+license = "MIT"
 packages = [
-  {include = "deptry"}
+    { include = "deptry" }
+]
+keywords = ["dependency", "poetry"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Quality Assurance",
 ]
 
 [tool.poetry.dependencies]
@@ -50,7 +60,11 @@ ignore_missing_imports = true
 
 [tool.deptry]
 exclude = [
-  'venv','.venv','docs','tests','scripts'
+    "venv",
+    ".venv",
+    "docs",
+    "tests",
+    "scripts",
 ]
 ignore_missing = ["tomllib"]
 
