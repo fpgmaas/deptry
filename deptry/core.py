@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Dict, List, Tuple
 
 from deptry.dependency import Dependency
-from deptry.dependency_getter.pyproject_toml import PyprojectTomlDependencyGetter
+from deptry.dependency_getter.poetry import PoetryDependencyGetter
 from deptry.dependency_getter.requirements_txt import RequirementsTxtDependencyGetter
 from deptry.dependency_specification_detector import DependencySpecificationDetector
 from deptry.import_parser import ImportParser
@@ -87,8 +87,8 @@ class Core:
 
     def _get_dependencies(self, dependency_management_format: str) -> Tuple[List[Dependency], List[Dependency]]:
         if dependency_management_format == "pyproject_toml":
-            dependencies = PyprojectTomlDependencyGetter().get()
-            dev_dependencies = PyprojectTomlDependencyGetter(dev=True).get()
+            dependencies = PoetryDependencyGetter().get()
+            dev_dependencies = PoetryDependencyGetter(dev=True).get()
         elif dependency_management_format == "requirements_txt":
             dependencies = RequirementsTxtDependencyGetter(requirements_txt=self.requirements_txt).get()
             dev_dependencies = RequirementsTxtDependencyGetter(

@@ -6,9 +6,9 @@ from deptry.dependency import Dependency
 from deptry.utils import load_pyproject_toml
 
 
-class PyprojectTomlDependencyGetter:
+class PoetryDependencyGetter:
     """
-    Class to get a project's list of dependencies from pyproject.toml.
+    Class to get Poetry dependencies from a project's pyproject.toml.
 
     Args:
         dev (bool): Read either the regular, or the dev dependencies, based on this argument.
@@ -19,12 +19,12 @@ class PyprojectTomlDependencyGetter:
 
     def get(self) -> List[Dependency]:
         if self.dev:
-            pyproject_toml_dependencies = self._get_pyproject_toml_dev_dependencies()
+            poetry_dependencies = self._get_dev_dependencies()
         else:
-            pyproject_toml_dependencies = self._get_pyproject_toml_dependencies()
+            poetry_dependencies = self._get_dependencies()
 
         dependencies = []
-        for dep, spec in pyproject_toml_dependencies.items():
+        for dep, spec in poetry_dependencies.items():
             # dep is the dependency name, spec is the version specification, e.g. "^0.2.2" or {"*", optional = true}
             if dep != "python":
                 optional = self._is_optional(spec)
@@ -34,12 +34,12 @@ class PyprojectTomlDependencyGetter:
         self._log_dependencies(dependencies)
         return dependencies
 
-    def _get_pyproject_toml_dependencies(self) -> Dict[str, Any]:
+    def _get_dependencies(self) -> Dict[str, Any]:
         pyproject_data = load_pyproject_toml()
         dependencies: Dict[str, Any] = pyproject_data["tool"]["poetry"]["dependencies"]
         return dependencies
 
-    def _get_pyproject_toml_dev_dependencies(self) -> Dict[str, Any]:
+    def _get_dev_dependencies(self) -> Dict[str, Any]:
         """
         These can be either under;
 
