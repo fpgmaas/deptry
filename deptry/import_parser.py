@@ -49,7 +49,7 @@ class ImportParser:
     def _get_imported_modules_from_py(self, path_to_py_file: Path) -> List[str]:
         try:
             with open(path_to_py_file) as f:
-                root = ast.parse(f.read(), path_to_py_file)  # type: ignore
+                root = ast.parse(f.read(), path_to_py_file)  # type: ignore[call-overload]
             import_nodes = self._get_import_nodes_from(root)
             return self._get_import_modules_from(import_nodes)
         except UnicodeDecodeError:
@@ -58,7 +58,7 @@ class ImportParser:
     def _get_imported_modules_from_py_and_guess_encoding(self, path_to_py_file: Path) -> List[str]:
         try:
             with open(path_to_py_file, encoding=self._get_file_encoding(path_to_py_file)) as f:
-                root = ast.parse(f.read(), path_to_py_file)  # type: ignore
+                root = ast.parse(f.read(), path_to_py_file)  # type: ignore[call-overload]
             import_nodes = self._get_import_nodes_from(root)
             return self._get_import_modules_from(import_nodes)
         except UnicodeDecodeError:
@@ -95,12 +95,12 @@ class ImportParser:
             if isinstance(node, ast.Import):
                 modules += [x.name.split(".")[0] for x in node.names]
             # nodes for imports like `from . import foo` do not have a module attribute.
-            elif isinstance(node, ast.ImportFrom) and node.module and node.level == 0:
+            elif node.module and node.level == 0:
                 modules.append(node.module.split(".")[0])
         return modules
 
     @staticmethod
-    def _flatten_list(modules_per_file: List[List]) -> List:
+    def _flatten_list(modules_per_file: List[List[str]]) -> List[str]:
         all_modules = []
         for modules in modules_per_file:
             if modules:

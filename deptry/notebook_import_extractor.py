@@ -1,7 +1,7 @@
 import json
 import re
 from pathlib import Path
-from typing import List
+from typing import Any, Dict, List
 
 
 class NotebookImportExtractor:
@@ -26,22 +26,22 @@ class NotebookImportExtractor:
         return self._flatten(import_statements)
 
     @staticmethod
-    def _read_ipynb_file(path_to_ipynb: Path) -> dict:
+    def _read_ipynb_file(path_to_ipynb: Path) -> Dict[str, Any]:
         with open(path_to_ipynb, "r") as f:
-            notebook = json.load(f)
+            notebook: Dict[str, Any] = json.load(f)
         return notebook
 
     @staticmethod
-    def _keep_code_cells(notebook: dict) -> List[dict]:
+    def _keep_code_cells(notebook: Dict[str, Any]) -> List[Dict[str, Any]]:
         return [cell for cell in notebook["cells"] if cell["cell_type"] == "code"]
 
     @staticmethod
     def _contains_import_statements(line: str) -> bool:
         return re.search(r"^(?:from\s+(\w+)(?:\.\w+)?\s+)?import\s+([^\s,.]+)(?:\.\w+)?", line) is not None
 
-    def _extract_import_statements_from_cell(self, cell: dict) -> List[str]:
+    def _extract_import_statements_from_cell(self, cell: Dict[str, Any]) -> List[str]:
         return [line for line in cell["source"] if self._contains_import_statements(line)]
 
     @staticmethod
-    def _flatten(list_of_lists: List[List]) -> List:
+    def _flatten(list_of_lists: List[List[str]]) -> List[str]:
         return [item for sublist in list_of_lists for item in sublist]

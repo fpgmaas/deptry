@@ -1,5 +1,5 @@
 import logging
-from typing import List, Optional, Tuple
+from typing import List, Tuple, cast
 
 from deptry.dependency import Dependency
 from deptry.module import Module
@@ -24,13 +24,15 @@ class TransitiveDependenciesFinder:
         self.dependencies = dependencies
         self.ignore_transitive = ignore_transitive
 
-    def find(self) -> List[Optional[str]]:
+    def find(self) -> List[str]:
         logging.debug("\nScanning for transitive dependencies...")
         transitive_dependencies = []
         for module in self.imported_modules:
             logging.debug(f"Scanning module {module.name}...")
             if self._is_transitive(module):
-                transitive_dependencies.append(module.package)
+                # `self._is_transitive` only returns `True` if the package is not None.
+                module_package = cast(str, module.package)
+                transitive_dependencies.append(module_package)
         return transitive_dependencies
 
     def _is_transitive(self, module: Module) -> bool:
