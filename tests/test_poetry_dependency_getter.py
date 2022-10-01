@@ -1,4 +1,4 @@
-from deptry.dependency_getter.pyproject_toml import PyprojectTomlDependencyGetter
+from deptry.dependency_getter.poetry import PoetryDependencyGetter
 from deptry.utils import run_within_dir
 
 
@@ -14,7 +14,7 @@ foo-bar =  { version = ">=2.5.1,<4.0.0", optional = true, python = ">3.7" }"""
         with open("pyproject.toml", "w") as f:
             f.write(fake_pyproject_toml)
 
-        dependencies = PyprojectTomlDependencyGetter().get()
+        dependencies = PoetryDependencyGetter().get()
 
         assert len(dependencies) == 4
 
@@ -49,7 +49,7 @@ foo =  { version = ">=2.5.1,<4.0.0", optional = true }
         with open("pyproject.toml", "w") as f:
             f.write(fake_pyproject_toml)
 
-        dependencies = PyprojectTomlDependencyGetter(dev=True).get()
+        dependencies = PoetryDependencyGetter(dev=True).get()
 
         assert len(dependencies) == 2
 
