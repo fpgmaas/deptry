@@ -42,7 +42,10 @@ def configure_logger(ctx: click.Context, _param: click.Parameter, value: bool) -
     "--verbose",
     "-v",
     is_flag=True,
-    help="Boolean flag for verbosity. Using this flag will display more information about files, imports and dependencies while running.",
+    help=(
+        "Boolean flag for verbosity. Using this flag will display more information about files, imports and"
+        " dependencies while running."
+    ),
     is_eager=True,
     callback=configure_logger,
 )
@@ -64,7 +67,10 @@ def configure_logger(ctx: click.Context, _param: click.Parameter, value: bool) -
 @click.option(
     "--skip-misplaced-dev",
     is_flag=True,
-    help="Boolean flag to specify if deptry should skip scanning the project for development dependencies that should be regular dependencies.",
+    help=(
+        "Boolean flag to specify if deptry should skip scanning the project for development dependencies that should be"
+        " regular dependencies."
+    ),
 )
 @click.option(
     "--ignore-obsolete",
@@ -207,7 +213,6 @@ def deptry(
         sys.exit(1)
 
     with run_within_dir(root):
-
         Core(
             ignore_obsolete=ignore_obsolete,
             ignore_missing=ignore_missing,

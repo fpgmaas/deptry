@@ -55,7 +55,6 @@ def test_only_matches_start(tmp_path):
 
 
 def test_matches_ipynb(tmp_path):
-
     with run_within_dir(tmp_path):
         paths = [
             {"dir": "dir/subdir", "file": "file1.ipynb"},
@@ -70,7 +69,6 @@ def test_matches_ipynb(tmp_path):
 
 
 def test_regex_argument(tmp_path):
-
     with run_within_dir(tmp_path):
         paths = [
             {"dir": "dir/subdir", "file": "file1.py"},

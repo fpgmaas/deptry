@@ -37,7 +37,6 @@ class Core:
     json_output: str
 
     def run(self) -> None:
-
         self._log_config()
 
         dependency_management_format = DependencySpecificationDetector(requirements_txt=self.requirements_txt).detect()

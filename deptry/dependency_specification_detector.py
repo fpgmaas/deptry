@@ -23,22 +23,26 @@ class DependencySpecificationDetector:
         uses_requirements_txt = self._check_if_project_uses_requirements_txt_for_dependencies()
         if uses_pyproject_toml and uses_requirements_txt:
             logging.info(
-                f"Found both 'pyproject.toml' with a [tool.poetry.dependencies] section and '{', '.join(self.requirements_txt)}' requirements file(s). Defaulting to 'pyproject.toml'.\n"
+                "Found both 'pyproject.toml' with a [tool.poetry.dependencies] section and"
+                f" '{', '.join(self.requirements_txt)}' requirements file(s). Defaulting to 'pyproject.toml'.\n"
             )
             return "pyproject_toml"
         elif uses_pyproject_toml:
             logging.debug(
-                "Dependency specification found in 'pyproject.toml'. Will use this to determine the project's dependencies.\n"
+                "Dependency specification found in 'pyproject.toml'. Will use this to determine the project's"
+                " dependencies.\n"
             )
             return "pyproject_toml"
         elif uses_requirements_txt:
             logging.debug(
-                f"Dependency specification found in '{', '.join(self.requirements_txt)}'. Will use this to determine the project's dependencies.\n"
+                f"Dependency specification found in '{', '.join(self.requirements_txt)}'. Will use this to determine"
+                " the project's dependencies.\n"
             )
             return "requirements_txt"
         else:
             raise FileNotFoundError(
-                f"No file called 'pyproject.toml' with a [tool.poetry.dependencies] section or called '{', '.join(self.requirements_txt)}' found. Exiting."
+                "No file called 'pyproject.toml' with a [tool.poetry.dependencies] section or called"
+                f" '{', '.join(self.requirements_txt)}' found. Exiting."
             )
 
     @staticmethod
@@ -49,12 +53,14 @@ class DependencySpecificationDetector:
             try:
                 pyproject_toml["tool"]["poetry"]["dependencies"]
                 logging.debug(
-                    "pyproject.toml contains a [tool.poetry.dependencies] section, so it is used to specify the project's dependencies."
+                    "pyproject.toml contains a [tool.poetry.dependencies] section, so it is used to specify the"
+                    " project's dependencies."
                 )
                 return True
             except KeyError:
                 logging.debug(
-                    "pyproject.toml does not contain a [tool.poetry.dependencies] section, so it is not used to specify the project's dependencies."
+                    "pyproject.toml does not contain a [tool.poetry.dependencies] section, so it is not used to specify"
+                    " the project's dependencies."
                 )
                 pass
 

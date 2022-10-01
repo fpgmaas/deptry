@@ -40,9 +40,8 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.black]
 line-length = 120
-include = '\.pyi?$'
-target-version = ['py39']
-fast = true
+target-version = ["py37"]
+preview = true
 
 [tool.isort]
 profile = "black"

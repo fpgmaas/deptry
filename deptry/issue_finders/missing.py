@@ -27,7 +27,6 @@ class MissingDependenciesFinder:
         return missing_dependencies
 
     def _is_missing(self, module: Module) -> bool:
-
         if (
             module.package is None
             and not module.is_dependency

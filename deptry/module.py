@@ -118,7 +118,8 @@ class ModuleBuilder:
 
     def _get_stdlib_packages(self) -> Set[str]:
         incorrect_version_error = ValueError(
-            f"Incorrect Python version {'.'.join([str(x) for x in sys.version_info[0:3]])}. Only 3.7, 3.8, 3.9, and 3.10 are currently supported."
+            f"Incorrect Python version {'.'.join([str(x) for x in sys.version_info[0:3]])}. Only 3.7, 3.8, 3.9, and"
+            " 3.10 are currently supported."
         )
         if sys.version_info[0] == 3:
             if sys.version_info[1] == 7:
