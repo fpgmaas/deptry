@@ -232,4 +232,4 @@ def deptry(
 
 
 def display_deptry_version() -> None:
-    logging.info(f'deptry {metadata.version("deptry")}')
+    logging.info(f'deptry {metadata.version("deptry")}')  # type: ignore[no-untyped-call]

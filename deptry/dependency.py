@@ -44,7 +44,7 @@ class Dependency:
 
     def find_metadata(self, name: str) -> bool:
         try:
-            metadata.distribution(name)
+            metadata.distribution(name)  # type: ignore[no-untyped-call]
             return True
         except PackageNotFoundError:
             logging.warning(
@@ -80,7 +80,7 @@ class Dependency:
 
         This function extracts these names, if a top-level.txt file exists.
         """
-        metadata_top_levels = metadata.distribution(self.name).read_text("top_level.txt")
+        metadata_top_levels = metadata.distribution(self.name).read_text("top_level.txt")  # type: ignore[no-untyped-call]
         if metadata_top_levels:
             return [x for x in metadata_top_levels.split("\n") if len(x) > 0]
         else:
@@ -101,7 +101,7 @@ class Dependency:
         """
         top_levels = []
         try:
-            metadata_records = metadata.distribution(self.name).read_text("RECORD")
+            metadata_records = metadata.distribution(self.name).read_text("RECORD")  # type: ignore[no-untyped-call]
 
             if not metadata_records:
                 return []
