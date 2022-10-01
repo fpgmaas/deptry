@@ -122,7 +122,6 @@ class RequirementsTxtDependencyGetter:
 
     @staticmethod
     def _extract_name_from_url(line: str) -> Optional[str]:
-
         # Try to find egg, for url like git+https://github.com/xxxxx/package@xxxxx#egg=package
         match = re.search("egg=([a-zA-Z0-9-_]*)", line)
         if match:

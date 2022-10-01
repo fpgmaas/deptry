@@ -89,7 +89,6 @@ def test_import_parser_ignores_setuptools(tmp_path):
 
 
 def test_import_parser_file_encodings(tmp_path):
-
     with run_within_dir(tmp_path):
         with open("file1.py", "w", encoding="utf-8") as f:
             f.write(
@@ -133,7 +132,6 @@ print('嘉大')
 
 
 def test_import_parser_file_encodings_warning(tmp_path, caplog):
-
     with run_within_dir(tmp_path):
         with open("file1.py", "w", encoding="utf-8") as f:
             f.write("print('this is a mock unparseable file')")

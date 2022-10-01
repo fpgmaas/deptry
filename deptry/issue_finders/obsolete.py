@@ -27,7 +27,6 @@ class ObsoleteDependenciesFinder:
         logging.debug("\nScanning for obsolete dependencies...")
         obsolete_dependencies = []
         for dependency in self.dependencies:
-
             logging.debug(f"Scanning module {dependency.name}...")
 
             if self._is_obsolete(dependency):
@@ -36,7 +35,6 @@ class ObsoleteDependenciesFinder:
         return obsolete_dependencies
 
     def _is_obsolete(self, dependency: Dependency) -> bool:
-
         if not self._dependency_found_in_imported_modules(dependency) and not self._any_of_the_top_levels_imported(
             dependency
         ):

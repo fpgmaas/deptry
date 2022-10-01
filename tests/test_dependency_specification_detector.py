@@ -28,7 +28,6 @@ def test_both(tmp_path):
     """
 
     with run_within_dir(tmp_path):
-
         with open("pyproject.toml", "w") as f:
             f.write('[tool.poetry.dependencies]\nfake = "10"')
 
