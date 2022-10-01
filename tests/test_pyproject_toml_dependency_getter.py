@@ -1,4 +1,3 @@
-from deptry.dependency import Dependency
 from deptry.dependency_getter.pyproject_toml import PyprojectTomlDependencyGetter
 from deptry.utils import run_within_dir
 

@@ -1,4 +1,3 @@
-from deptry.dependency import Dependency
 from deptry.dependency_getter.requirements_txt import RequirementsTxtDependencyGetter
 from deptry.utils import run_within_dir
 
