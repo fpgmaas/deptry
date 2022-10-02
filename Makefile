@@ -4,6 +4,8 @@ install: ## Install the poetry environment
 	@poetry shell
 
 check: ## Lint code using pre-commit and check obsolete dependencies using deptry.
+	@echo "🚀 Checking Poetry lock file consistency with 'pyproject.toml': Running poetry lock --check"
+	@poetry lock --check
 	@echo "🚀 Linting code: Running pre-commit"
 	@pre-commit run -a
 	@echo "🚀 Static type checking: Running mypy"
