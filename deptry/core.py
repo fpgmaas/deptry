@@ -99,8 +99,4 @@ class Core:
 
     @staticmethod
     def _exit(issues: Dict[str, List[str]]) -> None:
-        total_issues_found = sum([len(v) for k, v in issues.items()])
-        if total_issues_found > 0:
-            sys.exit(1)
-        else:
-            sys.exit(0)
+        sys.exit(int(any(issues.values())))
