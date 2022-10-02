@@ -34,12 +34,14 @@ class PoetryDependencyGetter:
         self._log_dependencies(dependencies)
         return dependencies
 
-    def _get_dependencies(self) -> Dict[str, Any]:
+    @staticmethod
+    def _get_dependencies() -> Dict[str, Any]:
         pyproject_data = load_pyproject_toml()
         dependencies: Dict[str, Any] = pyproject_data["tool"]["poetry"]["dependencies"]
         return dependencies
 
-    def _get_dev_dependencies(self) -> Dict[str, Any]:
+    @staticmethod
+    def _get_dev_dependencies() -> Dict[str, Any]:
         """
         These can be either under;
 
