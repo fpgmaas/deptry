@@ -36,7 +36,7 @@ class PyprojectTomlDependencyGetter:
 
     def _get_pyproject_toml_dependencies(self) -> Dict[str, Any]:
         pyproject_data = load_pyproject_toml()
-        dependencies = pyproject_data["tool"]["poetry"]["dependencies"]
+        dependencies: Dict[str, Any] = pyproject_data["tool"]["poetry"]["dependencies"]
         return dependencies
 
     def _get_pyproject_toml_dev_dependencies(self) -> Dict[str, Any]:
@@ -66,14 +66,14 @@ class PyprojectTomlDependencyGetter:
         logging.debug("")
 
     @staticmethod
-    def _is_optional(dep: str, spec: Union[str, dict]) -> bool:
+    def _is_optional(dep: str, spec: Union[str, Dict[str, Any]]) -> bool:
         # if of the shape `isodate = {version = "*", optional = true}` mark as optional`
         if isinstance(spec, dict) and "optional" in spec and spec["optional"]:
             return True
         return False
 
     @staticmethod
-    def _is_conditional(dep: str, spec: Union[str, dict]) -> bool:
+    def _is_conditional(dep: str, spec: Union[str, Dict[str, Any]]) -> bool:
         # if of the shape `tomli = { version = "^2.0.1", python = "<3.11" }`, mark as conditional.
         if isinstance(spec, dict) and "python" in spec and "version" in spec:
             return True

@@ -2,7 +2,7 @@ import itertools
 import logging
 import os
 import re
-from typing import List, Optional, Tuple
+from typing import List, Match, Optional, Tuple
 
 from deptry.dependency import Dependency
 
@@ -117,7 +117,7 @@ class RequirementsTxtDependencyGetter:
         logging.debug("")
 
     @staticmethod
-    def _line_is_url(line: str) -> Optional[re.Match]:
+    def _line_is_url(line: str) -> Optional[Match[str]]:
         return re.search("^(http|https|git\+https)", line)
 
     @staticmethod

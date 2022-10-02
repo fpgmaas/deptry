@@ -1,6 +1,6 @@
 import logging
-import pathlib
 import sys
+from pathlib import Path
 from typing import List, Optional, Tuple, Union
 
 import click
@@ -37,7 +37,7 @@ def configure_logger(ctx: click.Context, _param: click.Parameter, value: bool) -
 
 
 @click.command()
-@click.argument("root", type=click.Path(exists=True), required=False)
+@click.argument("root", type=click.Path(exists=True, path_type=Path), required=False)
 @click.option(
     "--verbose",
     "-v",
@@ -178,7 +178,7 @@ def configure_logger(ctx: click.Context, _param: click.Parameter, value: bool) -
     hidden=True,
 )
 def deptry(
-    root: pathlib.Path,
+    root: Optional[Path],
     verbose: bool,
     ignore_obsolete: Tuple[str, ...],
     ignore_missing: Tuple[str, ...],
@@ -232,4 +232,4 @@ def deptry(
 
 
 def display_deptry_version() -> None:
-    logging.info(f'deptry {metadata.version("deptry")}')
+    logging.info(f'deptry {metadata.version("deptry")}')  # type: ignore[no-untyped-call]

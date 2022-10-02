@@ -48,14 +48,26 @@ profile = "black"
 
 [tool.mypy]
 files = ["deptry", "scripts"]
-disallow_untyped_defs = true
 disallow_any_unimported = true
-no_implicit_optional = true
-check_untyped_defs = true
-warn_return_any = false
-warn_unused_ignores = true
+enable_error_code = [
+    "ignore-without-code",
+    "redundant-expr",
+    "truthy-bool",
+]
+strict = true
+warn_unreachable = true
+pretty = true
 show_error_codes = true
-ignore_missing_imports = true
+
+# Ignore warnings for unused ignores because of https://github.com/python/mypy/issues/8823.
+# In some Python versions, we can end up with backport modules being untyped, while they are typed on others.
+[[tool.mypy.overrides]]
+module = [
+    "deptry.cli",
+    "deptry.dependency",
+    "deptry.module",
+]
+warn_unused_ignores = false
 
 [tool.deptry]
 exclude = [

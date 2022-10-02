@@ -2,7 +2,7 @@ import os
 import sys
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Dict, Generator
+from typing import Any, Dict, Generator
 
 if sys.version_info >= (3, 11):
     import tomllib
@@ -33,7 +33,7 @@ def run_within_dir(path: Path) -> Generator[None, None, None]:
         os.chdir(oldpwd)
 
 
-def load_pyproject_toml(pyproject_toml_path: str = PYPROJECT_TOML_PATH) -> Dict:
+def load_pyproject_toml(pyproject_toml_path: str = PYPROJECT_TOML_PATH) -> Dict[str, Any]:
     try:
         with Path(pyproject_toml_path).open("rb") as pyproject_file:
             return tomllib.load(pyproject_file)
