@@ -113,31 +113,27 @@ class ModuleBuilder:
         ]
 
     def _in_standard_library(self) -> bool:
-        if self.name in self._get_stdlib_packages():
-            return True
-        return False
+        return self.name in self._get_stdlib_packages()
 
-    def _get_stdlib_packages(self) -> Set[str]:
-        incorrect_version_error = ValueError(
-            f"Incorrect Python version {'.'.join([str(x) for x in sys.version_info[0:3]])}. Only 3.7, 3.8, 3.9, 3.10"
-            " and 3.11 are currently supported."
-        )
-        if sys.version_info[0] == 3:
-            if sys.version_info[1] == 7:
-                from deptry.stdlibs.py37 import stdlib
-            elif sys.version_info[1] == 8:
-                from deptry.stdlibs.py38 import stdlib
-            elif sys.version_info[1] == 9:
-                from deptry.stdlibs.py39 import stdlib
-            elif sys.version_info[1] == 10:
-                from deptry.stdlibs.py310 import stdlib
-            elif sys.version_info[1] == 11:
-                from deptry.stdlibs.py311 import stdlib
-            else:
-                raise incorrect_version_error
-            return stdlib
+    @staticmethod
+    def _get_stdlib_packages() -> Set[str]:
+        if sys.version_info[:2] == (3, 7):
+            from deptry.stdlibs.py37 import stdlib
+        elif sys.version_info[:2] == (3, 8):
+            from deptry.stdlibs.py38 import stdlib
+        elif sys.version_info[:2] == (3, 9):
+            from deptry.stdlibs.py39 import stdlib
+        elif sys.version_info[:2] == (3, 10):
+            from deptry.stdlibs.py310 import stdlib
+        elif sys.version_info[:2] == (3, 11):
+            from deptry.stdlibs.py311 import stdlib
         else:
-            raise incorrect_version_error
+            raise ValueError(
+                f"Python version {'.'.join([str(x) for x in sys.version_info[0:3]])} is not supported. Only 3.7, 3.8,"
+                " 3.9, 3.10 and 3.11 are currently supported."
+            )
+
+        return stdlib
 
     def _is_local_directory(self) -> bool:
         """
