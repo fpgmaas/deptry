@@ -15,7 +15,7 @@ check: ## Lint code using pre-commit and check obsolete dependencies using deptr
 
 test: ## Test the code with pytest
 	@echo "🚀 Testing code: Running pytest"
-	@pytest --cov=./ --cov-report=xml
+	@pytest --cov --cov-config=pyproject.toml --cov-report=xml
 
 build: clean-build ## Build wheel file using poetry
 	@echo "🚀 Creating wheel file"

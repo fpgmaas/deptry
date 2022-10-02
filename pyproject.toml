@@ -45,6 +45,13 @@ line-length = 120
 target-version = ["py37"]
 preview = true
 
+[tool.coverage.report]
+skip_empty = true
+
+[tool.coverage.run]
+branch = true
+source = ["deptry"]
+
 [tool.isort]
 profile = "black"
 
