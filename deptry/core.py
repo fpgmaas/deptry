@@ -9,10 +9,10 @@ from deptry.dependency_getter.poetry import PoetryDependencyGetter
 from deptry.dependency_getter.requirements_txt import RequirementsTxtDependencyGetter
 from deptry.dependency_specification_detector import DependencySpecificationDetector
 from deptry.import_parser import ImportParser
-from deptry.issue_finders.misplaced_dev import MisplacedDevDependenciesFinder
-from deptry.issue_finders.missing import MissingDependenciesFinder
-from deptry.issue_finders.obsolete import ObsoleteDependenciesFinder
-from deptry.issue_finders.transitive import TransitiveDependenciesFinder
+from deptry.issues_finder.misplaced_dev import MisplacedDevDependenciesFinder
+from deptry.issues_finder.missing import MissingDependenciesFinder
+from deptry.issues_finder.obsolete import ObsoleteDependenciesFinder
+from deptry.issues_finder.transitive import TransitiveDependenciesFinder
 from deptry.json_writer import JsonWriter
 from deptry.module import Module, ModuleBuilder
 from deptry.python_file_finder import PythonFileFinder
@@ -52,7 +52,7 @@ class Core:
         ]
         imported_modules = [mod for mod in imported_modules if not mod.standard_library]
 
-        issues = self._find_issues(imported_modules, dependencies, dev_dependencies)
+        issues = self._find_issues(imported_modules, dependencies)
         ResultLogger(issues=issues).log_and_exit()
 
         if self.json_output:
@@ -60,28 +60,19 @@ class Core:
 
         self._exit(issues)
 
-    def _find_issues(
-        self, imported_modules: List[Module], dependencies: List[Dependency], dev_dependencies: List[Dependency]
-    ) -> Dict[str, List[str]]:
+    def _find_issues(self, imported_modules: List[Module], dependencies: List[Dependency]) -> Dict[str, List[str]]:
         result = {}
         if not self.skip_obsolete:
-            result["obsolete"] = ObsoleteDependenciesFinder(
-                imported_modules=imported_modules, dependencies=dependencies, ignore_obsolete=self.ignore_obsolete
-            ).find()
+            result["obsolete"] = ObsoleteDependenciesFinder(imported_modules, dependencies, self.ignore_obsolete).find()
         if not self.skip_missing:
-            result["missing"] = MissingDependenciesFinder(
-                imported_modules=imported_modules, dependencies=dependencies, ignore_missing=self.ignore_missing
-            ).find()
+            result["missing"] = MissingDependenciesFinder(imported_modules, dependencies, self.ignore_missing).find()
         if not self.skip_transitive:
             result["transitive"] = TransitiveDependenciesFinder(
-                imported_modules=imported_modules, dependencies=dependencies, ignore_transitive=self.ignore_transitive
+                imported_modules, dependencies, self.ignore_transitive
             ).find()
         if not self.skip_misplaced_dev:
             result["misplaced_dev"] = MisplacedDevDependenciesFinder(
-                imported_modules=imported_modules,
-                dependencies=dependencies,
-                dev_dependencies=dev_dependencies,
-                ignore_misplaced_dev=self.ignore_misplaced_dev,
+                imported_modules, dependencies, self.ignore_misplaced_dev
             ).find()
         return result
 

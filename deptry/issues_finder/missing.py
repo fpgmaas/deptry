@@ -1,21 +1,16 @@
 import logging
-from typing import List, Tuple
+from dataclasses import dataclass
+from typing import List
 
-from deptry.dependency import Dependency
+from deptry.issues_finder.base import IssuesFinder
 from deptry.module import Module
 
 
-class MissingDependenciesFinder:
+@dataclass
+class MissingDependenciesFinder(IssuesFinder):
     """
     Given a list of imported modules and a list of project dependencies, determine which ones are missing.
     """
-
-    def __init__(
-        self, imported_modules: List[Module], dependencies: List[Dependency], ignore_missing: Tuple[str, ...] = ()
-    ) -> None:
-        self.imported_modules = imported_modules
-        self.dependencies = dependencies
-        self.ignore_missing = ignore_missing
 
     def find(self) -> List[str]:
         logging.debug("\nScanning for missing dependencies...")
@@ -33,7 +28,7 @@ class MissingDependenciesFinder:
             and not module.is_dev_dependency
             and not module.local_module
         ):
-            if module.name in self.ignore_missing:
+            if module.name in self.ignored_modules:
                 logging.debug(f"Identified module '{module.name}' as a missing dependency, but ignoring.")
             else:
                 logging.debug(

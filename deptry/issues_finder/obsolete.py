@@ -1,11 +1,13 @@
 import logging
-from typing import List, Tuple
+from dataclasses import dataclass
+from typing import List
 
 from deptry.dependency import Dependency
-from deptry.module import Module
+from deptry.issues_finder.base import IssuesFinder
 
 
-class ObsoleteDependenciesFinder:
+@dataclass
+class ObsoleteDependenciesFinder(IssuesFinder):
     """
     Given a list of imported modules and a list of project dependencies, determine which ones are obsolete.
 
@@ -15,13 +17,6 @@ class ObsoleteDependenciesFinder:
     'matplotlib' with top-levels: ['matplotlib', 'mpl_toolkits', 'pylab']. `mpl_toolkits` does not have any associated metadata,
     but if this is imported, the associated dependency `matplotlib` is not obsolete, even if `matplotlib` itself is not imported anywhere.
     """
-
-    def __init__(
-        self, imported_modules: List[Module], dependencies: List[Dependency], ignore_obsolete: Tuple[str, ...] = ()
-    ) -> None:
-        self.imported_modules = imported_modules
-        self.dependencies = dependencies
-        self.ignore_obsolete = ignore_obsolete
 
     def find(self) -> List[str]:
         logging.debug("\nScanning for obsolete dependencies...")
@@ -38,7 +33,7 @@ class ObsoleteDependenciesFinder:
         if not self._dependency_found_in_imported_modules(dependency) and not self._any_of_the_top_levels_imported(
             dependency
         ):
-            if dependency.name in self.ignore_obsolete:
+            if dependency.name in self.ignored_modules:
                 logging.debug(f"Dependency '{dependency.name}' found to be obsolete, but ignoring.")
             else:
                 logging.debug(f"Dependency '{dependency.name}' does not seem to be used.")

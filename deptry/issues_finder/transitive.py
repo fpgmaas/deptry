@@ -1,11 +1,13 @@
 import logging
-from typing import List, Tuple, cast
+from dataclasses import dataclass
+from typing import List, cast
 
-from deptry.dependency import Dependency
+from deptry.issues_finder.base import IssuesFinder
 from deptry.module import Module
 
 
-class TransitiveDependenciesFinder:
+@dataclass
+class TransitiveDependenciesFinder(IssuesFinder):
     """
     Given a list of imported modules and a list of project dependencies, determine which ones are transitive.
     This is done by elimination; if a module uses an installed package but the package is;
@@ -16,13 +18,6 @@ class TransitiveDependenciesFinder:
 
     Then it must be a transitive dependency.
     """
-
-    def __init__(
-        self, imported_modules: List[Module], dependencies: List[Dependency], ignore_transitive: Tuple[str, ...] = ()
-    ) -> None:
-        self.imported_modules = imported_modules
-        self.dependencies = dependencies
-        self.ignore_transitive = ignore_transitive
 
     def find(self) -> List[str]:
         logging.debug("\nScanning for transitive dependencies...")
@@ -42,7 +37,7 @@ class TransitiveDependenciesFinder:
             and not module.is_dev_dependency
             and not module.local_module
         ):
-            if module.name in self.ignore_transitive:
+            if module.name in self.ignored_modules:
                 logging.debug(f"Dependency '{module.package}' found to be a transitive dependency, but ignoring.")
             else:
                 logging.debug(f"Dependency '{module.package}' marked as a transitive dependency.")

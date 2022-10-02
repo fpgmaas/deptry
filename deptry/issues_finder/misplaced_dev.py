@@ -1,29 +1,19 @@
 import logging
-from typing import List, Optional, Tuple
+from dataclasses import dataclass
+from typing import List, Optional
 
-from deptry.dependency import Dependency
+from deptry.issues_finder.base import IssuesFinder
 from deptry.module import Module
 
 
-class MisplacedDevDependenciesFinder:
+@dataclass
+class MisplacedDevDependenciesFinder(IssuesFinder):
     """
     Given a list of imported modules and a list of project dependencies, determine which development dependencies
     should actually be regular dependencies.
 
     This is the case for any development dependency encountered, since files solely used for development purposes should be excluded from scanning.
     """
-
-    def __init__(
-        self,
-        imported_modules: List[Module],
-        dependencies: List[Dependency],
-        dev_dependencies: List[Dependency],
-        ignore_misplaced_dev: Tuple[str, ...] = (),
-    ) -> None:
-        self.imported_modules = imported_modules
-        self.dependencies = dependencies
-        self.dev_dependencies = dev_dependencies
-        self.ignore_misplaced_dev = ignore_misplaced_dev
 
     def find(self) -> List[str]:
         """
@@ -42,7 +32,7 @@ class MisplacedDevDependenciesFinder:
 
     def _is_development_dependency(self, module: Module, corresponding_package_name: str) -> bool:
         if module.is_dev_dependency:
-            if module.name in self.ignore_misplaced_dev:
+            if module.name in self.ignored_modules:
                 logging.debug(
                     f"Module '{corresponding_package_name}' found to be a misplaced development dependency, but"
                     " ignoring."
