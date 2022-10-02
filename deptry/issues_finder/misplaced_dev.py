@@ -31,18 +31,17 @@ class MisplacedDevDependenciesFinder(IssuesFinder):
         return misplaced_dev_dependencies
 
     def _is_development_dependency(self, module: Module, corresponding_package_name: str) -> bool:
-        if module.is_dev_dependency:
-            if module.name in self.ignored_modules:
-                logging.debug(
-                    f"Module '{corresponding_package_name}' found to be a misplaced development dependency, but"
-                    " ignoring."
-                )
-            else:
-                logging.debug(
-                    f"Dependency '{corresponding_package_name}' marked as a misplaced development dependency."
-                )
-                return True
-        return False
+        if not module.is_dev_dependency:
+            return False
+
+        if module.name in self.ignored_modules:
+            logging.debug(
+                f"Module '{corresponding_package_name}' found to be a misplaced development dependency, but ignoring."
+            )
+            return False
+
+        logging.debug(f"Dependency '{corresponding_package_name}' marked as a misplaced development dependency.")
+        return True
 
     def _get_package_name(self, module: Module) -> Optional[str]:
         if module.package:

@@ -22,24 +22,24 @@ class TransitiveDependenciesFinder(IssuesFinder):
     def find(self) -> List[str]:
         logging.debug("\nScanning for transitive dependencies...")
         transitive_dependencies = []
+
         for module in self.imported_modules:
             logging.debug(f"Scanning module {module.name}...")
+
             if self._is_transitive(module):
                 # `self._is_transitive` only returns `True` if the package is not None.
                 module_package = cast(str, module.package)
                 transitive_dependencies.append(module_package)
+
         return transitive_dependencies
 
     def _is_transitive(self, module: Module) -> bool:
-        if (
-            module.package is not None
-            and not module.is_dependency
-            and not module.is_dev_dependency
-            and not module.local_module
-        ):
-            if module.name in self.ignored_modules:
-                logging.debug(f"Dependency '{module.package}' found to be a transitive dependency, but ignoring.")
-            else:
-                logging.debug(f"Dependency '{module.package}' marked as a transitive dependency.")
-                return True
-        return False
+        if any([module.package is None, module.is_dependency, module.is_dev_dependency, module.local_module]):
+            return False
+
+        if module.name in self.ignored_modules:
+            logging.debug(f"Dependency '{module.package}' found to be a transitive dependency, but ignoring.")
+            return False
+
+        logging.debug(f"Dependency '{module.package}' marked as a transitive dependency.")
+        return True

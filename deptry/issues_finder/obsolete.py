@@ -30,28 +30,23 @@ class ObsoleteDependenciesFinder(IssuesFinder):
         return obsolete_dependencies
 
     def _is_obsolete(self, dependency: Dependency) -> bool:
-        if not self._dependency_found_in_imported_modules(dependency) and not self._any_of_the_top_levels_imported(
-            dependency
-        ):
-            if dependency.name in self.ignored_modules:
-                logging.debug(f"Dependency '{dependency.name}' found to be obsolete, but ignoring.")
-            else:
-                logging.debug(f"Dependency '{dependency.name}' does not seem to be used.")
-                return True
-        return False
+        if self._dependency_found_in_imported_modules(dependency) or self._any_of_the_top_levels_imported(dependency):
+            return False
+
+        if dependency.name in self.ignored_modules:
+            logging.debug(f"Dependency '{dependency.name}' found to be obsolete, but ignoring.")
+            return False
+
+        logging.debug(f"Dependency '{dependency.name}' does not seem to be used.")
+        return True
 
     def _dependency_found_in_imported_modules(self, dependency: Dependency) -> bool:
-        for module in self.imported_modules:
-            if module.package == dependency.name:
-                return True
-        else:
-            return False
+        return any(module.package == dependency.name for module in self.imported_modules)
 
     def _any_of_the_top_levels_imported(self, dependency: Dependency) -> bool:
         if not dependency.top_levels:
             return False
-        else:
-            for top_level in dependency.top_levels:
-                if any(module.name == top_level for module in self.imported_modules):
-                    return True
-        return False
+
+        return any(
+            any(module.name == top_level for module in self.imported_modules) for top_level in dependency.top_levels
+        )
