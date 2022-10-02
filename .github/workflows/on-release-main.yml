@@ -19,11 +19,11 @@ jobs:
         uses: ./.github/actions/run-checks
 
   tox:
-    needs: quality
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.7', '3.8', '3.9', '3.10']
+        python-version: ['3.7', '3.8', '3.9', '3.10', '3.11-dev']
+      fail-fast: false
     steps:
       - name: Check out
         uses: actions/checkout@v3
@@ -39,10 +39,8 @@ jobs:
           poetry add tox-gh-actions
           tox
 
-
   check-docs:
     runs-on: ubuntu-latest
-    needs: quality
     steps:
       - name: Check out
         uses: actions/checkout@v3
@@ -51,32 +49,34 @@ jobs:
         uses: ./.github/actions/check-docs
 
   publish:
-      runs-on: ubuntu-latest
-      needs: tox
-      steps:
-        - name: Check out
-          uses: actions/checkout@v3
+    runs-on: ubuntu-latest
+    needs:
+      - quality
+      - tox
+      - check-docs
+    steps:
+      - name: Check out
+        uses: actions/checkout@v3
 
-        - name: Set up the environment
-          uses: ./.github/actions/setup-poetry-env
+      - name: Set up the environment
+        uses: ./.github/actions/setup-poetry-env
 
-        - name: Set output
-          id: vars
-          run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
+      - name: Set output
+        id: vars
+        run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
 
-        - name: Build and publish
-          run: |
-            source .venv/bin/activate
-            poetry version $RELEASE_VERSION
-            make build-and-publish
-          env:
-            PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
-            RELEASE_VERSION: ${{ steps.vars.outputs.tag }}
-
+      - name: Build and publish
+        run: |
+          source .venv/bin/activate
+          poetry version $RELEASE_VERSION
+          make build-and-publish
+        env:
+          PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+          RELEASE_VERSION: ${{ steps.vars.outputs.tag }}
 
   deploy-docs:
     runs-on: ubuntu-latest
-    needs: quality
+    needs: publish
     steps:
       - name: Check out
         uses: actions/checkout@v3

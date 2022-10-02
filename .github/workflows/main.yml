@@ -24,10 +24,10 @@ jobs:
 
   tox:
     runs-on: ubuntu-latest
-    needs: quality
     strategy:
       matrix:
-        python-version: ['3.7', '3.8', '3.9', '3.10']
+        python-version: ['3.7', '3.8', '3.9', '3.10', '3.11-dev']
+      fail-fast: false
     steps:
       - name: Check out
         uses: actions/checkout@v3
@@ -45,7 +45,6 @@ jobs:
 
   check-docs:
     runs-on: ubuntu-latest
-    needs: quality
     steps:
       - name: Check out
         uses: actions/checkout@v3

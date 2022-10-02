@@ -8,7 +8,7 @@ from typing import List, Optional, Tuple
 
 OUTPUT_PATH = "deptry/stdlibs/py{}.py"
 STDLIB_MODULES_URL = "https://docs.python.org/{}/py-modindex.html"
-PYTHON_VERSIONS = (("3", "7"), ("3", "8"), ("3", "9"), ("3", "10"))
+PYTHON_VERSIONS = (("3", "7"), ("3", "8"), ("3", "9"), ("3", "10"), ("3", "11"))
 
 # Modules that are in stdlib, but undocumented.
 EXTRA_STDLIBS_MODULES = ("_ast", "ntpath", "posixpath", "sre", "sre_constants", "sre_compile", "sre_parse")
