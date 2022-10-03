@@ -25,12 +25,12 @@ class DependencySpecificationDetector:
         self.requirements_txt = requirements_txt
 
     def detect(self) -> DependencyManagementFormat:
-        pyproject_toml_found = self._check_if_project_contains_pyproject_toml()
-        if pyproject_toml_found and self._check_if_project_uses_poetry():
+        pyproject_toml_found = self._project_contains_pyproject_toml()
+        if pyproject_toml_found and self._project_uses_poetry():
             return DependencyManagementFormat.POETRY
-        elif pyproject_toml_found and self._check_if_project_uses_pdm():
+        elif pyproject_toml_found and self._project_uses_pdm():
             return DependencyManagementFormat.PDM
-        elif self._check_if_project_uses_requirements_txt():
+        elif self._project_uses_requirements_txt():
             return DependencyManagementFormat.REQUIREMENTS_TXT
         else:
             raise FileNotFoundError(
@@ -39,7 +39,7 @@ class DependencySpecificationDetector:
             )
 
     @staticmethod
-    def _check_if_project_contains_pyproject_toml() -> bool:
+    def _project_contains_pyproject_toml() -> bool:
         if "pyproject.toml" in os.listdir():
             logging.debug("pyproject.toml found!")
             return True
@@ -48,7 +48,7 @@ class DependencySpecificationDetector:
             return False
 
     @staticmethod
-    def _check_if_project_uses_poetry() -> bool:
+    def _project_uses_poetry() -> bool:
         pyproject_toml = load_pyproject_toml()
         try:
             pyproject_toml["tool"]["poetry"]["dependencies"]
@@ -66,7 +66,7 @@ class DependencySpecificationDetector:
         return False
 
     @staticmethod
-    def _check_if_project_uses_pdm() -> bool:
+    def _project_uses_pdm() -> bool:
         pyproject_toml = load_pyproject_toml()
         try:
             pyproject_toml["tool"]["pdm"]
@@ -82,7 +82,7 @@ class DependencySpecificationDetector:
             pass
         return False
 
-    def _check_if_project_uses_requirements_txt(self) -> bool:
+    def _project_uses_requirements_txt(self) -> bool:
         check = any(os.path.isfile(requirements_txt) for requirements_txt in self.requirements_txt)
         if check:
             logging.debug(

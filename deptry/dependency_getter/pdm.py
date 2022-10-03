@@ -9,7 +9,7 @@ from deptry.utils import load_pyproject_toml
 
 class PdmDependencyGetter:
     """
-    Class to get dependencies from a project's pyproject.toml that are specified according to PEP621 and that is managed with PDM.
+    Class to get dependencies that are specified according to PEP 621 from a `pyproject.toml` file for a project that uses PDM for its dependency management.
 
     Args:
         dev (bool): Read either the regular, or the dev dependencies, based on this argument.
