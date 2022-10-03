@@ -86,7 +86,7 @@ class Core:
         return result
 
     def _get_dependencies(self, dependency_management_format: str) -> Tuple[List[Dependency], List[Dependency]]:
-        if dependency_management_format == "pyproject_toml":
+        if dependency_management_format == "poetry":
             dependencies = PoetryDependencyGetter().get()
             dev_dependencies = PoetryDependencyGetter(dev=True).get()
         elif dependency_management_format == "requirements_txt":
@@ -95,9 +95,7 @@ class Core:
                 dev=True, requirements_txt_dev=self.requirements_txt_dev
             ).get()
         else:
-            raise ValueError(
-                "Incorrect dependency manage format. Only pyproject.toml and requirements.txt are supported."
-            )
+            raise ValueError("Incorrect dependency manage format. Only poetry, pdm and requirements.txt are supported.")
         return dependencies, dev_dependencies
 
     def _log_config(self) -> None:

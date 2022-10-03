@@ -1,8 +1,7 @@
 import contextlib
 import logging
-from typing import Any, Dict, List, Union, Optional
-
 import re
+from typing import Dict, List, Optional
 
 from deptry.dependency import Dependency
 from deptry.utils import load_pyproject_toml

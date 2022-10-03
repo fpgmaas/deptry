@@ -10,7 +10,7 @@ def test_pyproject_toml(tmp_path):
             f.write('[tool.poetry.dependencies]\nfake = "10"')
 
         spec = DependencySpecificationDetector().detect()
-        assert spec == "pyproject_toml"
+        assert spec == "poetry"
 
 
 def test_requirements_txt(tmp_path):
@@ -22,9 +22,18 @@ def test_requirements_txt(tmp_path):
         assert spec == "requirements_txt"
 
 
+def test_pdm(tmp_path):
+    with run_within_dir(tmp_path):
+        with open("pyproject.toml", "w") as f:
+            f.write('[project]\ndependencies=["foo"]\n[tool.pdm]\nversion = {source = "scm"}')
+
+        spec = DependencySpecificationDetector().detect()
+        assert spec == "pdm"
+
+
 def test_both(tmp_path):
     """
-    If both are found, result should be 'pyproject_toml'
+    If both are found, result should be 'poetry'
     """
 
     with run_within_dir(tmp_path):
@@ -35,7 +44,7 @@ def test_both(tmp_path):
             f.write('foo >= "1.0"')
 
         spec = DependencySpecificationDetector().detect()
-        assert spec == "pyproject_toml"
+        assert spec == "poetry"
 
 
 def test_requirements_txt_with_argument(tmp_path):

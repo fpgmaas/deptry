@@ -42,6 +42,7 @@ dependencies = [
         assert not dependencies[3].is_optional
         assert "conditional_bar" in dependencies[3].top_levels
 
+
 def test_dev_dependency_getter(tmp_path):
     fake_pyproject_toml = """[project]
 # PEP 621 project metadata
