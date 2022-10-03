@@ -17,6 +17,7 @@ def dir_with_venv_installed(tmp_path_factory):
         assert subprocess.check_call(shlex.split("poetry install --no-interaction --no-root")) == 0
     return tmp_path_proj
 
+
 def test_cli_returns_error(dir_with_venv_installed):
     with run_within_dir(dir_with_venv_installed):
         result = subprocess.run(shlex.split("poetry run deptry ."), capture_output=True, text=True)
@@ -70,6 +71,7 @@ def test_cli_extend_exclude(dir_with_venv_installed):
         )
         assert result.returncode == 1
         assert "The project contains obsolete dependencies:\n\n\tisort\n\trequests\n\ttoml\n\n" in result.stderr
+
 
 def test_cli_verbose(dir_with_venv_installed):
     with run_within_dir(dir_with_venv_installed):

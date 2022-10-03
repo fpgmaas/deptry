@@ -12,12 +12,7 @@ def pdm_dir_with_venv_installed(tmp_path_factory):
     tmp_path_proj = tmp_path_factory.getbasetemp() / "project_with_pdm"
     shutil.copytree("tests/data/project_with_pdm", str(tmp_path_proj))
     with run_within_dir(tmp_path_proj):
-        assert (
-            subprocess.check_call(
-                shlex.split("pip install pdm; pdm install")
-            )
-            == 0
-        )
+        assert subprocess.check_call(shlex.split("pip install pdm; pdm install")) == 0
     return tmp_path_proj
 
 
