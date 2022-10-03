@@ -8,7 +8,10 @@ from deptry.dependency import Dependency
 from deptry.dependency_getter.pdm import PdmDependencyGetter
 from deptry.dependency_getter.poetry import PoetryDependencyGetter
 from deptry.dependency_getter.requirements_txt import RequirementsTxtDependencyGetter
-from deptry.dependency_specification_detector import DependencySpecificationDetector
+from deptry.dependency_specification_detector import (
+    DependencyManagementFormat,
+    DependencySpecificationDetector,
+)
 from deptry.import_parser import ImportParser
 from deptry.issue_finders.misplaced_dev import MisplacedDevDependenciesFinder
 from deptry.issue_finders.missing import MissingDependenciesFinder
@@ -87,13 +90,13 @@ class Core:
         return result
 
     def _get_dependencies(self, dependency_management_format: str) -> Tuple[List[Dependency], List[Dependency]]:
-        if dependency_management_format == "poetry":
+        if dependency_management_format == DependencyManagementFormat.POETRY:
             dependencies = PoetryDependencyGetter().get()
             dev_dependencies = PoetryDependencyGetter(dev=True).get()
-        elif dependency_management_format == "pdm":
+        elif dependency_management_format == DependencyManagementFormat.PDM:
             dependencies = PdmDependencyGetter().get()
             dev_dependencies = PdmDependencyGetter(dev=True).get()
-        elif dependency_management_format == "requirements_txt":
+        elif dependency_management_format == DependencyManagementFormat.REQUIREMENTS_TXT:
             dependencies = RequirementsTxtDependencyGetter(requirements_txt=self.requirements_txt).get()
             dev_dependencies = RequirementsTxtDependencyGetter(
                 dev=True, requirements_txt_dev=self.requirements_txt_dev

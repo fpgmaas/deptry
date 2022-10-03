@@ -1,8 +1,15 @@
 import logging
 import os
+from enum import Enum
 from typing import Tuple
 
 from deptry.utils import load_pyproject_toml
+
+
+class DependencyManagementFormat(Enum):
+    POETRY = 1
+    PDM = 2
+    REQUIREMENTS_TXT = 3
 
 
 class DependencySpecificationDetector:
@@ -17,14 +24,14 @@ class DependencySpecificationDetector:
     def __init__(self, requirements_txt: Tuple[str, ...] = ("requirements.txt",)) -> None:
         self.requirements_txt = requirements_txt
 
-    def detect(self) -> str:
+    def detect(self) -> DependencyManagementFormat:
         pyproject_toml_found = self._check_if_project_contains_pyproject_toml()
         if pyproject_toml_found and self._check_if_project_uses_poetry():
-            return "poetry"
+            return DependencyManagementFormat.POETRY
         elif pyproject_toml_found and self._check_if_project_uses_pdm():
-            return "pdm"
+            return DependencyManagementFormat.PDM
         elif self._check_if_project_uses_requirements_txt():
-            return "requirements_txt"
+            return DependencyManagementFormat.REQUIREMENTS_TXT
         else:
             raise FileNotFoundError(
                 "No file called 'pyproject.toml' with a [tool.poetry.dependencies] or [tool.pdm] section or file(s)"

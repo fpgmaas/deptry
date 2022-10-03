@@ -1,6 +1,9 @@
 import os
 
-from deptry.dependency_specification_detector import DependencySpecificationDetector
+from deptry.dependency_specification_detector import (
+    DependencyManagementFormat,
+    DependencySpecificationDetector,
+)
 from deptry.utils import run_within_dir
 
 
@@ -10,7 +13,7 @@ def test_pyproject_toml(tmp_path):
             f.write('[tool.poetry.dependencies]\nfake = "10"')
 
         spec = DependencySpecificationDetector().detect()
-        assert spec == "poetry"
+        assert spec == DependencyManagementFormat.POETRY
 
 
 def test_requirements_txt(tmp_path):
@@ -19,7 +22,7 @@ def test_requirements_txt(tmp_path):
             f.write('foo >= "1.0"')
 
         spec = DependencySpecificationDetector().detect()
-        assert spec == "requirements_txt"
+        assert spec == DependencyManagementFormat.REQUIREMENTS_TXT
 
 
 def test_pdm(tmp_path):
@@ -28,7 +31,7 @@ def test_pdm(tmp_path):
             f.write('[project]\ndependencies=["foo"]\n[tool.pdm]\nversion = {source = "scm"}')
 
         spec = DependencySpecificationDetector().detect()
-        assert spec == "pdm"
+        assert spec == DependencyManagementFormat.PDM
 
 
 def test_both(tmp_path):
@@ -44,7 +47,7 @@ def test_both(tmp_path):
             f.write('foo >= "1.0"')
 
         spec = DependencySpecificationDetector().detect()
-        assert spec == "poetry"
+        assert spec == DependencyManagementFormat.POETRY
 
 
 def test_requirements_txt_with_argument(tmp_path):
@@ -53,7 +56,7 @@ def test_requirements_txt_with_argument(tmp_path):
             f.write('foo >= "1.0"')
 
         spec = DependencySpecificationDetector(requirements_txt=("req.txt",)).detect()
-        assert spec == "requirements_txt"
+        assert spec == DependencyManagementFormat.REQUIREMENTS_TXT
 
 
 def test_requirements_txt_with_argument_not_root_directory(tmp_path):
@@ -63,4 +66,4 @@ def test_requirements_txt_with_argument_not_root_directory(tmp_path):
             f.write('foo >= "1.0"')
 
         spec = DependencySpecificationDetector(requirements_txt=("req/req.txt",)).detect()
-        assert spec == "requirements_txt"
+        assert spec == DependencyManagementFormat.REQUIREMENTS_TXT
