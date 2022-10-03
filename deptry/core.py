@@ -89,7 +89,9 @@ class Core:
             ).find()
         return result
 
-    def _get_dependencies(self, dependency_management_format: str) -> Tuple[List[Dependency], List[Dependency]]:
+    def _get_dependencies(
+        self, dependency_management_format: DependencyManagementFormat
+    ) -> Tuple[List[Dependency], List[Dependency]]:
         if dependency_management_format == DependencyManagementFormat.POETRY:
             dependencies = PoetryDependencyGetter().get()
             dev_dependencies = PoetryDependencyGetter(dev=True).get()
