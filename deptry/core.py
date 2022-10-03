@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Dict, List, Tuple
 
 from deptry.dependency import Dependency
+from deptry.dependency_getter.pdm import PdmDependencyGetter
 from deptry.dependency_getter.poetry import PoetryDependencyGetter
 from deptry.dependency_getter.requirements_txt import RequirementsTxtDependencyGetter
 from deptry.dependency_specification_detector import DependencySpecificationDetector
@@ -89,6 +90,9 @@ class Core:
         if dependency_management_format == "poetry":
             dependencies = PoetryDependencyGetter().get()
             dev_dependencies = PoetryDependencyGetter(dev=True).get()
+        elif dependency_management_format == "pdm":
+            dependencies = PdmDependencyGetter().get()
+            dev_dependencies = PdmDependencyGetter(dev=True).get()
         elif dependency_management_format == "requirements_txt":
             dependencies = RequirementsTxtDependencyGetter(requirements_txt=self.requirements_txt).get()
             dev_dependencies = RequirementsTxtDependencyGetter(
