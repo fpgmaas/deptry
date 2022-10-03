@@ -2,47 +2,39 @@ import itertools
 import logging
 import os
 import re
+from dataclasses import dataclass
 from typing import List, Match, Optional, Tuple
 
 from deptry.dependency import Dependency
+from deptry.dependency_getter.base import DependenciesExtract, DependencyGetter
 
 
-class RequirementsTxtDependencyGetter:
-    """
-    Extract dependencies from a requirements.txt file.
+@dataclass
+class RequirementsTxtDependencyGetter(DependencyGetter):
+    """Extract dependencies from requirements.txt files."""
 
-    By default, dependencies are extracted from requirements.txt if dev = False, and from ["dev-requirements.txt", "requirements-dev.txt"]
-    if dev = True, if any of these files exists. These defaults are overriden with the arguments requirements_txt and requirements_txt_dev.
-    """
+    requirements_txt: Tuple[str, ...] = ("requirements.txt",)
+    requirements_txt_dev: Tuple[str, ...] = ("dev-requirements.txt", "requirements-dev.txt")
 
-    def __init__(
-        self,
-        requirements_txt: Tuple[str, ...] = ("requirements.txt",),
-        requirements_txt_dev: Tuple[str, ...] = ("dev-requirements.txt", "requirements-dev.txt"),
-        dev: bool = False,
-    ) -> None:
-        self.dev = dev
-        self.requirements_txt = requirements_txt
-        self.requirements_txt_dev = requirements_txt_dev
+    def get(self) -> DependenciesExtract:
+        dependencies = list(
+            itertools.chain(
+                *(self._get_dependencies_from_requirements_file(file_name) for file_name in self.requirements_txt)
+            )
+        )
+        self._log_dependencies(dependencies=dependencies)
 
-    def get(self) -> List[Dependency]:
-        if not self.dev:
-            dependencies = list(
-                itertools.chain(
-                    *(self._get_dependencies_from_requirements_file(file_name) for file_name in self.requirements_txt)
+        dev_dependencies = list(
+            itertools.chain(
+                *(
+                    self._get_dependencies_from_requirements_file(file_name)
+                    for file_name in self._scan_for_dev_requirements_files()
                 )
             )
-        else:
-            dev_requirements_files = self._scan_for_dev_requirements_files()
-            if dev_requirements_files:
-                dependencies = []
-                for file_name in dev_requirements_files:
-                    dependencies += self._get_dependencies_from_requirements_file(file_name)
-            else:
-                return []
+        )
+        self._log_dependencies(dependencies=dev_dependencies, is_dev=True)
 
-        self._log_dependencies(dependencies=dependencies)
-        return dependencies
+        return DependenciesExtract(dependencies, dev_dependencies)
 
     def _scan_for_dev_requirements_files(self) -> List[str]:
         """
@@ -53,8 +45,8 @@ class RequirementsTxtDependencyGetter:
             logging.debug(f"Found files with development requirements! {dev_requirements_files}")
         return dev_requirements_files
 
-    def _get_dependencies_from_requirements_file(self, file_name: str) -> List[Dependency]:
-        logging.debug(f"Scanning {file_name} for {'dev-' if self.dev else ''}dependencies")
+    def _get_dependencies_from_requirements_file(self, file_name: str, is_dev: bool = False) -> List[Dependency]:
+        logging.debug(f"Scanning {file_name} for {'dev ' if is_dev else ''}dependencies")
         dependencies = []
 
         with open(file_name) as f:
@@ -109,12 +101,6 @@ class RequirementsTxtDependencyGetter:
     @staticmethod
     def _check_if_dependency_is_conditional(line: str) -> bool:
         return ";" in line
-
-    def _log_dependencies(self, dependencies: List[Dependency]) -> None:
-        logging.debug(f"The project contains the following {'dev-' if self.dev else ''}dependencies:")
-        for dependency in dependencies:
-            logging.debug(str(dependency))
-        logging.debug("")
 
     @staticmethod
     def _line_is_url(line: str) -> Optional[Match[str]]:
