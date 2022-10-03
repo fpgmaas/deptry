@@ -18,7 +18,7 @@ class PdmDependencyGetter(DependencyGetter):
     def __init__(self, dev: bool = False) -> None:
         self.dev = dev
 
-    def get(self) -> List[Dependency]:
+    def get(self) -> DependenciesExtract:
         dependencies = self._get_pdm_dependencies()
         self._log_dependencies(dependencies)
 
@@ -61,7 +61,7 @@ class PdmDependencyGetter(DependencyGetter):
         return cls._get_dependencies(dev_dependencies)
 
     @classmethod
-    def _get_dependencies(cls, pdm_dependencies=List[str]):
+    def _get_dependencies(cls, pdm_dependencies: List[str]) -> List[Dependency]:
         dependencies = []
         for spec in pdm_dependencies:
             # An example of a spec is `"tomli>=1.1.0; python_version < \"3.11\""`
