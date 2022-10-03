@@ -30,8 +30,8 @@ class PdmDependencyGetter(DependencyGetter):
     @classmethod
     def _get_pdm_dependencies(cls) -> List[Dependency]:
         pyproject_data = load_pyproject_toml()
-        dependencies: List[str] = pyproject_data["project"]["dependencies"]
-        return cls._get_dependencies(dependencies)
+        dependency_strings: List[str] = pyproject_data["project"]["dependencies"]
+        return cls._extract_dependency_objects_from(dependency_strings)
 
     @classmethod
     def _get_pdm_dev_dependencies(cls) -> List[Dependency]:
@@ -50,18 +50,18 @@ class PdmDependencyGetter(DependencyGetter):
         """
         pyproject_data = load_pyproject_toml()
 
-        dev_dependencies: List[str] = []
+        dev_dependency_strings: List[str] = []
         try:
             dev_dependencies_dict: Dict[str, str] = pyproject_data["tool"]["pdm"]["dev-dependencies"]
             for deps in dev_dependencies_dict.values():
-                dev_dependencies += deps
+                dev_dependency_strings += deps
         except KeyError:
             logging.debug("No section [tool.pdm.dev-dependencies] found in pyproject.toml")
 
-        return cls._get_dependencies(dev_dependencies)
+        return cls._extract_dependency_objects_from(dev_dependency_strings)
 
     @classmethod
-    def _get_dependencies(cls, pdm_dependencies: List[str]) -> List[Dependency]:
+    def _extract_dependency_objects_from(cls, pdm_dependencies: List[str]) -> List[Dependency]:
         dependencies = []
         for spec in pdm_dependencies:
             # An example of a spec is `"tomli>=1.1.0; python_version < \"3.11\""`
