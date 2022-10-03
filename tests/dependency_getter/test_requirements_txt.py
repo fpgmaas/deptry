@@ -27,9 +27,11 @@ requests [security] >= 2.8.1, == 2.8.* ; python_version < "2.7"
         with open("requirements.txt", "w") as f:
             f.write(fake_requirements_txt)
 
-        dependencies = RequirementsTxtDependencyGetter().get()
+        dependencies_extract = RequirementsTxtDependencyGetter().get()
+        dependencies = dependencies_extract.dependencies
 
         assert len(dependencies) == 17
+        assert len(dependencies_extract.dev_dependencies) == 0
 
         assert dependencies[1].name == "colorama"
         assert not dependencies[1].is_conditional
@@ -58,9 +60,12 @@ git+https://github.com/abc123/bar-foo@xyz789#egg=bar-fooo"""
         with open("requirements.txt", "w") as f:
             f.write(fake_requirements_txt)
 
-        dependencies = RequirementsTxtDependencyGetter().get()
+        dependencies_extract = RequirementsTxtDependencyGetter().get()
+        dependencies = dependencies_extract.dependencies
 
         assert len(dependencies) == 5
+        assert len(dependencies_extract.dev_dependencies) == 0
+
         assert dependencies[0].name == "urllib3"
         assert dependencies[1].name == "urllib3"
         assert dependencies[2].name == "foo-bar"
@@ -73,8 +78,12 @@ def test_single(tmp_path):
         with open("req.txt", "w") as f:
             f.write("click==8.1.3 #123asd\ncolorama==0.4.5")
 
-        dependencies = RequirementsTxtDependencyGetter(requirements_txt=("req.txt",)).get()
+        dependencies_extract = RequirementsTxtDependencyGetter(requirements_txt=("req.txt",)).get()
+        dependencies = dependencies_extract.dependencies
+
         assert len(dependencies) == 2
+        assert len(dependencies_extract.dev_dependencies) == 0
+
         assert dependencies[0].name == "click"
         assert dependencies[1].name == "colorama"
 
@@ -86,48 +95,68 @@ def test_multiple(tmp_path):
         with open("bar.txt", "w") as f:
             f.write("bar")
 
-        dependencies = RequirementsTxtDependencyGetter(requirements_txt=("foo.txt", "bar.txt")).get()
+        dependencies_extract = RequirementsTxtDependencyGetter(requirements_txt=("foo.txt", "bar.txt")).get()
+        dependencies = dependencies_extract.dependencies
+
         assert len(dependencies) == 2
+        assert len(dependencies_extract.dev_dependencies) == 0
+
         assert dependencies[0].name == "click"
         assert dependencies[1].name == "bar"
 
 
 def test_dev_single(tmp_path):
     with run_within_dir(tmp_path):
+        with open("requirements.txt", "w") as f:
+            f.write("")
         with open("requirements-dev.txt", "w") as f:
             f.write("click==8.1.3 #123asd\ncolorama==0.4.5")
 
-        dependencies = RequirementsTxtDependencyGetter(dev=True).get()
+        dependencies_extract = RequirementsTxtDependencyGetter().get()
+        dev_dependencies = dependencies_extract.dev_dependencies
 
-        assert len(dependencies) == 2
+        assert len(dependencies_extract.dependencies) == 0
+        assert len(dev_dependencies) == 2
 
-        assert dependencies[1].name == "colorama"
-        assert not dependencies[1].is_conditional
-        assert not dependencies[1].is_optional
-        assert "colorama" in dependencies[1].top_levels
+        assert dev_dependencies[1].name == "colorama"
+        assert not dev_dependencies[1].is_conditional
+        assert not dev_dependencies[1].is_optional
+        assert "colorama" in dev_dependencies[1].top_levels
 
 
 def test_dev_multiple(tmp_path):
     with run_within_dir(tmp_path):
+        with open("requirements.txt", "w") as f:
+            f.write("")
         with open("requirements-dev.txt", "w") as f:
             f.write("click==8.1.3 #123asd")
         with open("dev-requirements.txt", "w") as f:
             f.write("bar")
 
-        dependencies = RequirementsTxtDependencyGetter(dev=True).get()
-        assert len(dependencies) == 2
-        assert "click" in [dependencies[0].name, dependencies[1].name]
-        assert "bar" in [dependencies[0].name, dependencies[1].name]
+        dependencies_extract = RequirementsTxtDependencyGetter().get()
+        dev_dependencies = dependencies_extract.dev_dependencies
+
+        assert len(dependencies_extract.dependencies) == 0
+        assert len(dev_dependencies) == 2
+
+        assert "click" in [dev_dependencies[0].name, dev_dependencies[1].name]
+        assert "bar" in [dev_dependencies[0].name, dev_dependencies[1].name]
 
 
 def test_dev_multiple_with_arguments(tmp_path):
     with run_within_dir(tmp_path):
+        with open("requirements.txt", "w") as f:
+            f.write("")
         with open("foo.txt", "w") as f:
             f.write("click==8.1.3 #123asd")
         with open("bar.txt", "w") as f:
             f.write("bar")
 
-        dependencies = RequirementsTxtDependencyGetter(dev=True, requirements_txt_dev=("foo.txt", "bar.txt")).get()
-        assert len(dependencies) == 2
-        assert dependencies[0].name == "click"
-        assert dependencies[1].name == "bar"
+        dependencies_extract = RequirementsTxtDependencyGetter(requirements_txt_dev=("foo.txt", "bar.txt")).get()
+        dev_dependencies = dependencies_extract.dev_dependencies
+
+        assert len(dependencies_extract.dependencies) == 0
+        assert len(dev_dependencies) == 2
+
+        assert dev_dependencies[0].name == "click"
+        assert dev_dependencies[1].name == "bar"

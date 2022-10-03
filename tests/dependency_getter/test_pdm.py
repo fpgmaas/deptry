@@ -18,7 +18,7 @@ dependencies = [
         with open("pyproject.toml", "w") as f:
             f.write(fake_pyproject_toml)
 
-        dependencies = PdmDependencyGetter().get()
+        dependencies = PdmDependencyGetter().get().dependencies
 
         assert len(dependencies) == 4
 
@@ -67,7 +67,7 @@ tox = [
         with open("pyproject.toml", "w") as f:
             f.write(fake_pyproject_toml)
 
-        dev_dependencies = PdmDependencyGetter(dev=True).get()
+        dev_dependencies = PdmDependencyGetter(dev=True).get().dev_dependencies
 
         assert len(dev_dependencies) == 3
 

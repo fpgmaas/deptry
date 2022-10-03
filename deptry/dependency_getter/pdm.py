@@ -1,13 +1,13 @@
-import contextlib
 import logging
 import re
 from typing import Dict, List, Optional
 
 from deptry.dependency import Dependency
+from deptry.dependency_getter.base import DependenciesExtract, DependencyGetter
 from deptry.utils import load_pyproject_toml
 
 
-class PdmDependencyGetter:
+class PdmDependencyGetter(DependencyGetter):
     """
     Class to get dependencies that are specified according to PEP 621 from a `pyproject.toml` file for a project that uses PDM for its dependency management.
 
@@ -19,31 +19,22 @@ class PdmDependencyGetter:
         self.dev = dev
 
     def get(self) -> List[Dependency]:
-        if self.dev:
-            pdm_dependencies = self._get_dev_dependencies()
-        else:
-            pdm_dependencies = self._get_dependencies()
-
-        dependencies = []
-        for spec in pdm_dependencies:
-            # An example of a spec is `"tomli>=1.1.0; python_version < \"3.11\""`
-            name = self._find_dependency_name_in(spec)
-            if name:
-                optional = self._is_optional(spec)
-                conditional = self._is_conditional(spec)
-                dependencies.append(Dependency(name, conditional=conditional, optional=optional))
-
+        dependencies = self._get_pdm_dependencies()
         self._log_dependencies(dependencies)
-        return dependencies
 
-    @staticmethod
-    def _get_dependencies() -> List[str]:
+        dev_dependencies = self._get_pdm_dev_dependencies()
+        self._log_dependencies(dev_dependencies, is_dev=True)
+
+        return DependenciesExtract(dependencies, dev_dependencies)
+
+    @classmethod
+    def _get_pdm_dependencies(cls) -> List[Dependency]:
         pyproject_data = load_pyproject_toml()
         dependencies: List[str] = pyproject_data["project"]["dependencies"]
-        return dependencies
+        return cls._get_dependencies(dependencies)
 
-    @staticmethod
-    def _get_dev_dependencies() -> List[str]:
+    @classmethod
+    def _get_pdm_dev_dependencies(cls) -> List[Dependency]:
         """
         Try to get development dependencies from pyproject.toml, which with PDM are specified as:
 
@@ -57,21 +48,29 @@ class PdmDependencyGetter:
             "tox-pdm>=0.5",
         ]
         """
-        dev_dependencies: List[str] = []
         pyproject_data = load_pyproject_toml()
 
-        with contextlib.suppress(KeyError):
+        dev_dependencies: List[str] = []
+        try:
             dev_dependencies_dict: Dict[str, str] = pyproject_data["tool"]["pdm"]["dev-dependencies"]
             for deps in dev_dependencies_dict.values():
                 dev_dependencies += deps
+        except KeyError:
+            logging.debug("No section [tool.pdm.dev-dependencies] found in pyproject.toml")
 
-        return dev_dependencies
+        return cls._get_dependencies(dev_dependencies)
 
-    def _log_dependencies(self, dependencies: List[Dependency]) -> None:
-        logging.debug(f"The project contains the following {'dev-' if self.dev else ''}dependencies:")
-        for dependency in dependencies:
-            logging.debug(str(dependency))
-        logging.debug("")
+    @classmethod
+    def _get_dependencies(cls, pdm_dependencies=List[str]):
+        dependencies = []
+        for spec in pdm_dependencies:
+            # An example of a spec is `"tomli>=1.1.0; python_version < \"3.11\""`
+            name = cls._find_dependency_name_in(spec)
+            if name:
+                optional = cls._is_optional(spec)
+                conditional = cls._is_conditional(spec)
+                dependencies.append(Dependency(name, conditional=conditional, optional=optional))
+        return dependencies
 
     @staticmethod
     def _is_optional(dependency_specification: str) -> bool:
