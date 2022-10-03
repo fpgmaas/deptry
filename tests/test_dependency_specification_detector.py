@@ -1,5 +1,7 @@
 import os
 
+import pytest
+
 from deptry.dependency_specification_detector import (
     DependencyManagementFormat,
     DependencySpecificationDetector,
@@ -67,3 +69,13 @@ def test_requirements_txt_with_argument_not_root_directory(tmp_path):
 
         spec = DependencySpecificationDetector(requirements_txt=("req/req.txt",)).detect()
         assert spec == DependencyManagementFormat.REQUIREMENTS_TXT
+
+
+def test_raises_filenotfound_error(tmp_path):
+    with run_within_dir(tmp_path):
+        with pytest.raises(FileNotFoundError) as e:
+            DependencySpecificationDetector(requirements_txt=("req/req.txt",)).detect()
+        assert (
+            "No file called 'pyproject.toml' with a [tool.poetry.dependencies] or [tool.pdm] section or file(s)"
+            in str(e)
+        )
