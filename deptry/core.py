@@ -6,7 +6,7 @@ from typing import Dict, List, Tuple
 
 from deptry.dependency import Dependency
 from deptry.dependency_getter.base import DependenciesExtract
-from deptry.dependency_getter.pdm import PdmDependencyGetter
+from deptry.dependency_getter.pdm import PDMDependencyGetter
 from deptry.dependency_getter.poetry import PoetryDependencyGetter
 from deptry.dependency_getter.requirements_txt import RequirementsTxtDependencyGetter
 from deptry.dependency_specification_detector import (
@@ -82,14 +82,13 @@ class Core:
         return result
 
     def _get_dependencies(self, dependency_management_format: DependencyManagementFormat) -> DependenciesExtract:
-        if dependency_management_format == DependencyManagementFormat.POETRY:
+        if dependency_management_format is DependencyManagementFormat.POETRY:
             return PoetryDependencyGetter().get()
-        elif dependency_management_format == DependencyManagementFormat.PDM:
-            return PdmDependencyGetter().get()
-        elif dependency_management_format == DependencyManagementFormat.REQUIREMENTS_TXT:
+        if dependency_management_format is DependencyManagementFormat.PDM:
+            return PDMDependencyGetter().get()
+        if dependency_management_format is DependencyManagementFormat.REQUIREMENTS_TXT:
             return RequirementsTxtDependencyGetter(self.requirements_txt, self.requirements_txt_dev).get()
-        else:
-            raise ValueError("Incorrect dependency manage format. Only poetry, pdm and requirements.txt are supported.")
+        raise ValueError("Incorrect dependency manage format. Only poetry, pdm and requirements.txt are supported.")
 
     def _log_config(self) -> None:
         logging.debug("Running with the following configuration:")
