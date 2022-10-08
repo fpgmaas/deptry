@@ -6,9 +6,13 @@ from typing import Dict, List, Tuple
 
 from deptry.dependency import Dependency
 from deptry.dependency_getter.base import DependenciesExtract
+from deptry.dependency_getter.pdm import PDMDependencyGetter
 from deptry.dependency_getter.poetry import PoetryDependencyGetter
 from deptry.dependency_getter.requirements_txt import RequirementsTxtDependencyGetter
-from deptry.dependency_specification_detector import DependencySpecificationDetector
+from deptry.dependency_specification_detector import (
+    DependencyManagementFormat,
+    DependencySpecificationDetector,
+)
 from deptry.import_parser import ImportParser
 from deptry.issues_finder.misplaced_dev import MisplacedDevDependenciesFinder
 from deptry.issues_finder.missing import MissingDependenciesFinder
@@ -77,12 +81,14 @@ class Core:
             ).find()
         return result
 
-    def _get_dependencies(self, dependency_management_format: str) -> DependenciesExtract:
-        if dependency_management_format == "pyproject_toml":
+    def _get_dependencies(self, dependency_management_format: DependencyManagementFormat) -> DependenciesExtract:
+        if dependency_management_format is DependencyManagementFormat.POETRY:
             return PoetryDependencyGetter().get()
-        if dependency_management_format == "requirements_txt":
+        if dependency_management_format is DependencyManagementFormat.PDM:
+            return PDMDependencyGetter().get()
+        if dependency_management_format is DependencyManagementFormat.REQUIREMENTS_TXT:
             return RequirementsTxtDependencyGetter(self.requirements_txt, self.requirements_txt_dev).get()
-        raise ValueError("Incorrect dependency manage format. Only pyproject.toml and requirements.txt are supported.")
+        raise ValueError("Incorrect dependency manage format. Only poetry, pdm and requirements.txt are supported.")
 
     def _log_config(self) -> None:
         logging.debug("Running with the following configuration:")
