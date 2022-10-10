@@ -18,13 +18,13 @@ Where `.` is the path to the root directory of the project to be scanned. All ot
 
 ## pyproject.toml vs requirements.txt
 
-To determine the project's dependencies, _deptry_ will scan the root directory for a `pyproject.toml` file with a `[tool.poetry.dependencies]` section and for a file called `requirements.txt`.
+To determine the project's dependencies, _deptry_ will scan the root directory for files in the following order:
 
-- If a `pyproject.toml` file with dependency specification is found, _deptry_ will extract both the projects dependencies and its development dependencies from there.
+- If a `pyproject.toml` file with a `[tool.poetry.dependencies]` section is found, _deptry_ will extract both the projects dependencies and its development dependencies from `pyproject.toml`.
+- If a `pyproject.toml` file with a `[tool.pdm]` section is found, _deptry_ will extract the projects dependencies from `dependencies` in the `[project]` section, and the development dependencies from `[tool.pdm.dev-dependencies]`.
 - If a `requirements.txt` file is found, _deptry_ will extract the project's dependencies from there, and additionally it will look for the files `dev-dependencies.txt` and `dependencies-dev.txt` to determine the project's development dependencies.
-- If both a `pyproject.toml` file and `requirements.txt` are found, `pyproject.toml` takes priority, and that file is used to determine the project's dependencies.
 
-_deptry_ can also be configured to look for a `requirements.txt` file with another name or in another directory. See [requirements.txt files](#requirementstxt-files).
+_deptry_ can also be configured to look for `requirements.txt` files with other names or in other directories. See [requirements.txt files](#requirementstxt-files).
 
 ## Excluding files and directories
  
