@@ -146,14 +146,11 @@ an example config for your .pre-commit-config.yaml file:
         - "--skip-missing"
 ```
 
-Replace <tag> with one of the [tags](https://github.com/fpgmaas/deptry/tags) from the
-project or a specific commit.
+Replace `<tag>` with one of the [tags](https://github.com/fpgmaas/deptry/tags) from the
+project or a specific commit hash.
 
-!!! note
+!!! important
 
-    This will only pull in the pre commit hooks config file from the version you have specified.  The
-    actual deptry that will be run will be the first one found in your path, so you will need
-    to add deptry to your local Python virtual environment.
-
-This requirement is due to deptry needing to be running within the same Python virtual environment
-whose dependencies it is analyzing.
+    This will only pull in the pre commit-hooks config file from the version passed to the `rev` agument.  The actual version of deptry that will be run will be the first one found in your path, so you will need to add deptry to your local virtual environment for the pre-commit.
+    
+    For the pre-commit hook to run successfully, it should be run within the virtual environment of the project to be scanned, since it needs access to the metadata of the installed packages.
