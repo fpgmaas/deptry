@@ -131,3 +131,29 @@ An example of the contents of the resulting `deptry.json` file is as follows:
     "misplaced_dev": []
 }
 ```
+
+## usage in pre-commit
+
+_deptry_ can be added to your [pre-commit](https://pre-commit.com/) rules.  Here is
+an example config for your .pre-commit-config.yaml file:
+
+```
+-   repo: https://github.com/fpgmaas/deptry.git
+    rev: <tag>
+    hooks:
+    - id: deptry
+      args:
+        - "--skip-missing"
+```
+
+Replace <tag> with one of the [tags](https://github.com/fpgmaas/deptry/tags) from the
+project or a specific commit.
+
+!!! note
+
+    This will only pull in the pre commit hooks config file from the version you have specified.  The
+    actual deptry that will be run will be the first one found in your path, so you will need
+    to add deptry to your local Python virtual environment.
+
+This requirement is due to deptry needing to be running within the same Python virtual environment
+whose dependencies it is analyzing.
