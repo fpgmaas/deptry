@@ -16,8 +16,7 @@ classifiers = [
     "Development Status :: 3 - Alpha",
     "Environment :: Console",
     "Intended Audience :: Developers",
-    # Remove 3.11 classifier once https://github.com/python-poetry/poetry-core/pull/477 is merged and released.
-    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python",
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: Software Development :: Quality Assurance",
 ]
