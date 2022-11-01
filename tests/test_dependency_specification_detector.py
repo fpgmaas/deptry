@@ -27,13 +27,25 @@ def test_requirements_txt(tmp_path):
         assert spec == DependencyManagementFormat.REQUIREMENTS_TXT
 
 
-def test_pdm(tmp_path):
+def test_pdm_with_dev_dependencies(tmp_path):
+    with run_within_dir(tmp_path):
+        with open("pyproject.toml", "w") as f:
+            f.write(
+                '[project]\ndependencies=["foo"]\n[tool.pdm]\nversion = {source ='
+                ' "scm"}\n[tool.pdm.dev-dependencies]\ngroup=["bar"]'
+            )
+
+        spec = DependencySpecificationDetector().detect()
+        assert spec == DependencyManagementFormat.PDM
+
+
+def test_pdm_without_dev_dependencies(tmp_path):
     with run_within_dir(tmp_path):
         with open("pyproject.toml", "w") as f:
             f.write('[project]\ndependencies=["foo"]\n[tool.pdm]\nversion = {source = "scm"}')
 
         spec = DependencySpecificationDetector().detect()
-        assert spec == DependencyManagementFormat.PDM
+        assert spec == DependencyManagementFormat.PEP_621
 
 
 def test_pep_621(tmp_path):

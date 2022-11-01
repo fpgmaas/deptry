@@ -72,14 +72,15 @@ class DependencySpecificationDetector:
     def _project_uses_pdm() -> bool:
         pyproject_toml = load_pyproject_toml()
         try:
-            pyproject_toml["tool"]["pdm"]
+            pyproject_toml["tool"]["pdm"]["dev-dependencies"]
             logging.debug(
-                "pyproject.toml contains a [tool.pdm] section, so PDM is used to specify the project's dependencies."
+                "pyproject.toml contains a [tool.pdm.dev-dependencies] section, so PDM is used to specify the project's"
+                " dependencies."
             )
             return True
         except KeyError:
             logging.debug(
-                "pyproject.toml does not contain a [tool.pdm] section, so PDM is not used to specify"
+                "pyproject.toml does not contain a [tool.pdm.dev-dependencies] section, so PDM is not used to specify"
                 " the project's dependencies."
             )
             pass
