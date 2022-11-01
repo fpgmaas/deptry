@@ -7,6 +7,7 @@ from typing import Dict, List, Tuple
 from deptry.dependency import Dependency
 from deptry.dependency_getter.base import DependenciesExtract
 from deptry.dependency_getter.pdm import PDMDependencyGetter
+from deptry.dependency_getter.pep_621 import PEP621DependencyGetter
 from deptry.dependency_getter.poetry import PoetryDependencyGetter
 from deptry.dependency_getter.requirements_txt import RequirementsTxtDependencyGetter
 from deptry.dependency_specification_detector import (
@@ -86,6 +87,8 @@ class Core:
             return PoetryDependencyGetter().get()
         if dependency_management_format is DependencyManagementFormat.PDM:
             return PDMDependencyGetter().get()
+        if dependency_management_format is DependencyManagementFormat.PEP_621:
+            return PEP621DependencyGetter().get()
         if dependency_management_format is DependencyManagementFormat.REQUIREMENTS_TXT:
             return RequirementsTxtDependencyGetter(self.requirements_txt, self.requirements_txt_dev).get()
         raise ValueError("Incorrect dependency manage format. Only poetry, pdm and requirements.txt are supported.")

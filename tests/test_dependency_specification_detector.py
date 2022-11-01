@@ -9,7 +9,7 @@ from deptry.dependency_specification_detector import (
 from deptry.utils import run_within_dir
 
 
-def test_pyproject_toml(tmp_path):
+def test_poetry(tmp_path):
     with run_within_dir(tmp_path):
         with open("pyproject.toml", "w") as f:
             f.write('[tool.poetry.dependencies]\nfake = "10"')
@@ -34,6 +34,15 @@ def test_pdm(tmp_path):
 
         spec = DependencySpecificationDetector().detect()
         assert spec == DependencyManagementFormat.PDM
+
+
+def test_pep_621(tmp_path):
+    with run_within_dir(tmp_path):
+        with open("pyproject.toml", "w") as f:
+            f.write('[project]\ndependencies=["foo"]')
+
+        spec = DependencySpecificationDetector().detect()
+        assert spec == DependencyManagementFormat.PEP_621
 
 
 def test_both(tmp_path):
@@ -76,6 +85,7 @@ def test_raises_filenotfound_error(tmp_path):
         with pytest.raises(FileNotFoundError) as e:
             DependencySpecificationDetector(requirements_txt=("req/req.txt",)).detect()
         assert (
-            "No file called 'pyproject.toml' with a [tool.poetry.dependencies] or [tool.pdm] section or file(s)"
+            "No file called 'pyproject.toml' with a [tool.poetry.dependencies], [tool.pdm] or [project] section or"
+            " file(s)"
             in str(e)
         )
