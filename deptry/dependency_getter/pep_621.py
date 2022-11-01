@@ -1,6 +1,7 @@
+import itertools
 import re
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 from deptry.dependency import Dependency
 from deptry.dependency_getter.base import DependenciesExtract, DependencyGetter
@@ -10,7 +11,7 @@ from deptry.utils import load_pyproject_toml
 @dataclass
 class PEP621DependencyGetter(DependencyGetter):
     def get(self) -> DependenciesExtract:
-        dependencies = self._get_dependencies()
+        dependencies = [*self._get_dependencies(), *itertools.chain(*self._get_optional_dependencies().values())]
         self._log_dependencies(dependencies)
 
         return DependenciesExtract(dependencies, [])
@@ -20,6 +21,15 @@ class PEP621DependencyGetter(DependencyGetter):
         pyproject_data = load_pyproject_toml()
         dependency_strings: List[str] = pyproject_data["project"]["dependencies"]
         return cls._extract_pep_508_dependencies(dependency_strings)
+
+    @classmethod
+    def _get_optional_dependencies(cls) -> Dict[str, List[Dependency]]:
+        pyproject_data = load_pyproject_toml()
+
+        return {
+            group: cls._extract_pep_508_dependencies(dependencies)
+            for group, dependencies in pyproject_data["project"].get("optional-dependencies", {}).items()
+        }
 
     @classmethod
     def _extract_pep_508_dependencies(cls, dependencies: List[str]) -> List[Dependency]:

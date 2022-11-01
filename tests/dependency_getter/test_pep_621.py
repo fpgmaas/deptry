@@ -12,6 +12,15 @@ dependencies = [
     "optional-foo[option]>=0.12.11",
     "conditional-bar>=1.1.0; python_version < 3.11",
 ]
+
+[project.optional-dependencies]
+group1 = [
+    "foobar",
+    "barfoo",
+]
+group2 = [
+    "dep",
+]
 """
 
     with run_within_dir(tmp_path):
@@ -20,7 +29,7 @@ dependencies = [
 
         dependencies = PEP621DependencyGetter().get().dependencies
 
-        assert len(dependencies) == 4
+        assert len(dependencies) == 7
 
         assert dependencies[0].name == "foo"
         assert not dependencies[0].is_conditional
@@ -41,3 +50,18 @@ dependencies = [
         assert dependencies[3].is_conditional
         assert not dependencies[3].is_optional
         assert "conditional_bar" in dependencies[3].top_levels
+
+        assert dependencies[4].name == "foobar"
+        assert not dependencies[4].is_conditional
+        assert not dependencies[4].is_optional
+        assert "foobar" in dependencies[4].top_levels
+
+        assert dependencies[5].name == "barfoo"
+        assert not dependencies[5].is_conditional
+        assert not dependencies[5].is_optional
+        assert "barfoo" in dependencies[5].top_levels
+
+        assert dependencies[6].name == "dep"
+        assert not dependencies[6].is_conditional
+        assert not dependencies[6].is_optional
+        assert "dep" in dependencies[6].top_levels
