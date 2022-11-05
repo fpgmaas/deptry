@@ -27,7 +27,7 @@ class NotebookImportExtractor:
 
     @staticmethod
     def _read_ipynb_file(path_to_ipynb: Path) -> Dict[str, Any]:
-        with open(path_to_ipynb, "r") as f:
+        with open(path_to_ipynb) as f:
             notebook: Dict[str, Any] = json.load(f)
         return notebook
 

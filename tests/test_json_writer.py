@@ -8,7 +8,7 @@ def test_simple(tmp_path):
     with run_within_dir(tmp_path):
         JsonWriter(json_output="output.json").write(issues={"one": "two", "three": "four"})
 
-        with open("output.json", "r") as f:
+        with open("output.json") as f:
             data = json.load(f)
 
         assert data["one"] == "two"

@@ -27,7 +27,7 @@ class PythonFileFinder:
         py_regex = re.compile(r".*\.py$") if self.ignore_notebooks else re.compile(r".*\.py$|.*\.ipynb$")
 
         for root, dirs, files in os.walk(directory, topdown=True):
-            root_without_trailing_dotslash = re.sub("^\./", "", root)
+            root_without_trailing_dotslash = re.sub(r"^\./", "", root)
             if self.exclude and ignore_regex.match(root_without_trailing_dotslash):
                 dirs[:] = []
                 continue
