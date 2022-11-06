@@ -61,9 +61,9 @@ jobs:
       - name: Set up the environment
         uses: ./.github/actions/setup-poetry-env
 
-      - name: Set output
+      - name: Export tag
         id: vars
-        run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
+        run: echo tag=${GITHUB_REF#refs/*/} >> $GITHUB_OUTPUT
 
       - name: Build and publish
         run: |
