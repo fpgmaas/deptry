@@ -93,7 +93,7 @@ def test_cli_with_json_output(dir_with_venv_installed):
 
         # assert that there is json output
         subprocess.run(shlex.split("poetry run deptry . -o deptry.json"), capture_output=True, text=True)
-        with open("deptry.json", "r") as f:
+        with open("deptry.json") as f:
             data = json.load(f)
         assert set(data["obsolete"]) == {"isort", "requests"}
         assert set(data["missing"]) == {"white"}

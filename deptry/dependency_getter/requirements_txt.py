@@ -104,7 +104,7 @@ class RequirementsTxtDependencyGetter(DependencyGetter):
 
     @staticmethod
     def _line_is_url(line: str) -> Optional[Match[str]]:
-        return re.search("^(http|https|git\+https)", line)
+        return re.search(r"^(http|https|git\+https)", line)
 
     @staticmethod
     def _extract_name_from_url(line: str) -> Optional[str]:
@@ -114,12 +114,12 @@ class RequirementsTxtDependencyGetter(DependencyGetter):
             return match.group(1)
 
         # for url like git+https://github.com/name/python-module.git@0d6dc38d58
-        match = re.search("\/((?:(?!\/).)*?)\.git", line)
+        match = re.search(r"\/((?:(?!\/).)*?)\.git", line)
         if match:
             return match.group(1)
 
         # for url like https://github.com/urllib3/urllib3/archive/refs/tags/1.26.8.zip
-        match = re.search("\/((?:(?!\/).)*?)\/archive\/", line)
+        match = re.search(r"\/((?:(?!\/).)*?)\/archive\/", line)
         if match:
             return match.group(1)
 
