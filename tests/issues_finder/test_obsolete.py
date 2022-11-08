@@ -5,19 +5,22 @@ from deptry.module import ModuleBuilder
 
 def test_simple():
     dependencies = [Dependency("click"), Dependency("toml")]
-    modules = [ModuleBuilder("click", dependencies).build()]
+    modules = [ModuleBuilder("click", {"foo"}, dependencies).build()]
+
     deps = ObsoleteDependenciesFinder(imported_modules=modules, dependencies=dependencies).find()
-    assert len(deps) == 1
-    assert deps[0] == "toml"
+
+    assert deps == ["toml"]
 
 
 def test_simple_with_ignore():
     dependencies = [Dependency("click"), Dependency("toml")]
-    modules = [ModuleBuilder("toml", dependencies).build()]
+    modules = [ModuleBuilder("toml", {"foo"}, dependencies).build()]
+
     deps = ObsoleteDependenciesFinder(
         imported_modules=modules, dependencies=dependencies, ignored_modules=("click",)
     ).find()
-    assert len(deps) == 0
+
+    assert deps == []
 
 
 def test_top_level():
@@ -26,9 +29,11 @@ def test_top_level():
     blackd is in the top-level of black, so black should not be marked as an obsolete dependency.
     """
     dependencies = [Dependency("black")]
-    modules = [ModuleBuilder("blackd", dependencies).build()]
+    modules = [ModuleBuilder("blackd", {"foo"}, dependencies).build()]
+
     deps = ObsoleteDependenciesFinder(imported_modules=modules, dependencies=dependencies).find()
-    assert len(deps) == 0
+
+    assert deps == []
 
 
 def test_without_top_level():
@@ -36,6 +41,8 @@ def test_without_top_level():
     Test if packages without top-level information are correctly maked as obsolete
     """
     dependencies = [Dependency("isort")]
-    modules = [ModuleBuilder("isort", dependencies).build()]
+    modules = [ModuleBuilder("isort", {"foo"}, dependencies).build()]
+
     deps = ObsoleteDependenciesFinder(imported_modules=modules, dependencies=dependencies).find()
-    assert len(deps) == 0
+
+    assert deps == []

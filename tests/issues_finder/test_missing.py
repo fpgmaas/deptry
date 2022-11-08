@@ -5,19 +5,31 @@ from deptry.module import ModuleBuilder
 
 def test_simple():
     dependencies = []
-    modules = [ModuleBuilder("foobar", dependencies).build()]
+    modules = [ModuleBuilder("foobar", {"foo"}, dependencies).build()]
+
     deps = MissingDependenciesFinder(imported_modules=modules, dependencies=dependencies).find()
-    assert len(deps) == 1
-    assert deps[0] == "foobar"
+
+    assert deps == ["foobar"]
+
+
+def test_local_module():
+    dependencies = []
+    modules = [ModuleBuilder("foobar", {"foo", "foobar"}, dependencies).build()]
+
+    deps = MissingDependenciesFinder(imported_modules=modules, dependencies=dependencies).find()
+
+    assert deps == []
 
 
 def test_simple_with_ignore():
     dependencies = []
-    modules = [ModuleBuilder("foobar", dependencies).build()]
+    modules = [ModuleBuilder("foobar", {"foo", "bar"}, dependencies).build()]
+
     deps = MissingDependenciesFinder(
         imported_modules=modules, dependencies=dependencies, ignored_modules=("foobar",)
     ).find()
-    assert len(deps) == 0
+
+    assert deps == []
 
 
 def test_no_error():
@@ -25,8 +37,9 @@ def test_no_error():
     This should run without an error, even though `foo` is not installed.
     """
 
-    dep = Dependency("foo")
-    module = ModuleBuilder("foo", [dep]).build()
+    dependencies = [Dependency("foo")]
+    module = ModuleBuilder("foo", {"bar"}, dependencies).build()
 
-    deps = MissingDependenciesFinder(imported_modules=[module], dependencies=[dep]).find()
-    assert len(deps) == 0
+    deps = MissingDependenciesFinder(imported_modules=[module], dependencies=dependencies).find()
+
+    assert deps == []
