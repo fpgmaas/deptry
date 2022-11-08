@@ -1,31 +1,24 @@
 import logging
 import sys
+from dataclasses import dataclass
 from typing import List, Optional, Set
 
 from deptry.compat import PackageNotFoundError, metadata
 from deptry.dependency import Dependency
 
 
+@dataclass
 class Module:
-    def __init__(
-        self,
-        name: str,
-        standard_library: bool = False,
-        local_module: bool = False,
-        package: Optional[str] = None,
-        top_levels: Optional[List[str]] = None,
-        dev_top_levels: Optional[List[str]] = None,
-        is_dependency: Optional[bool] = None,
-        is_dev_dependency: Optional[bool] = None,
-    ) -> None:
-        self.name = name
-        self.standard_library = standard_library
-        self.local_module = local_module
-        self.package = package
-        self.top_levels = top_levels
-        self.dev_top_levels = dev_top_levels
-        self.is_dependency = is_dependency
-        self.is_dev_dependency = is_dev_dependency
+    name: str
+    standard_library: bool = False
+    local_module: bool = False
+    package: Optional[str] = None
+    top_levels: Optional[List[str]] = None
+    dev_top_levels: Optional[List[str]] = None
+    is_dependency: Optional[bool] = None
+    is_dev_dependency: Optional[bool] = None
+
+    def __post_init__(self) -> None:
         self._log()
 
     def _log(self) -> None:
