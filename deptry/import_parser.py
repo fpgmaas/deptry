@@ -1,6 +1,5 @@
 import ast
 import logging
-import os
 from pathlib import Path
 from typing import List, Union
 
@@ -42,7 +41,6 @@ class ImportParser:
         except AttributeError as e:
             logging.warning(f"Warning: Parsing imports for file {str(path_to_file)} failed.")
             raise (e)
-        modules = self._remove_local_file_imports(modules)
         return modules
 
     def get_imported_modules_from_str(self, file_str: str) -> List[str]:
@@ -126,30 +124,3 @@ class ImportParser:
     def _get_file_encoding(file_name: Union[str, Path]) -> str:
         with open(file_name, "rb") as f:
             return chardet.detect(f.read())["encoding"]
-
-    @staticmethod
-    def _remove_local_file_imports(modules: List[str]) -> List[str]:
-        """
-        This omits imported modules from .py files in the root directory from the list of modules.
-
-        Considering the following structure:
-        sub_directory
-          foo.py
-          sub_bar.py
-        foo.py
-        bar.py
-
-        In this setup:
-        - 'import bar' from foo.py will be considered as a local import.
-        - 'import sub_bar' from sub_directory/foo.py won't be considered as a local import.
-        - 'import bar' from sub_directory/foo.py will be considered as a local import.
-        """
-        py_files_in_same_dir = [p.stem for p in Path(os.getcwd()).iterdir() if p.is_file() and p.suffix == ".py"]
-        local_files_imported = list(set(modules) & set(py_files_in_same_dir))
-        if len(local_files_imported) > 0:
-            logging.debug(
-                f"Imports {local_files_imported} found to be imports from local .py files. Removing them from the list"
-                " of imported modules."
-            )
-            return [module for module in modules if module not in py_files_in_same_dir]
-        return modules

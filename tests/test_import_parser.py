@@ -1,5 +1,4 @@
 import logging
-import os
 from pathlib import Path
 from unittest.mock import Mock
 
@@ -128,27 +127,6 @@ print('嘉大')
 
         imported_modules = ImportParser().get_imported_modules_from_file(Path("file4.py"))
         assert set(imported_modules) == {"foo"}
-
-
-def test_remove_local_file_imports(tmp_path):
-    with run_within_dir(tmp_path):
-        sub_directory = tmp_path / "sub"
-        os.mkdir(sub_directory)
-
-        with open("foo.py", "w", encoding="utf-8") as f:
-            f.write("import hobbes\nimport bar\nfrom bar import x")
-
-        with open("bar.py", "w", encoding="utf-8") as f:
-            f.write("def x():\tprint('hello')")
-
-        with open(sub_directory / "foo.py", "w", encoding="utf-8") as f:
-            f.write("import hobbes\nimport bar\nimport sub_bar")
-
-        with open(sub_directory / "sub_bar.py", "w", encoding="utf-8") as f:
-            f.write("def x():\tprint('hello')")
-
-        assert ImportParser().get_imported_modules_from_file(Path("foo.py")) == ["hobbes"]
-        assert ImportParser().get_imported_modules_from_file(sub_directory / "foo.py") == ["hobbes", "sub_bar"]
 
 
 def test_import_parser_file_encodings_warning(tmp_path, caplog):
