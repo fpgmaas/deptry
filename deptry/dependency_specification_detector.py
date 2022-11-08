@@ -7,8 +7,9 @@ from deptry.utils import load_pyproject_toml
 
 
 class DependencyManagementFormat(Enum):
-    POETRY = "poetry"
     PDM = "pdm"
+    PEP_621 = "pep_621"
+    POETRY = "poetry"
     REQUIREMENTS_TXT = "requirements_txt"
 
 
@@ -17,6 +18,7 @@ class DependencySpecificationDetector:
     Class to detect how dependencies are specified:
     - Either find a pyproject.toml with a [poetry.tool.dependencies] section
     - Otherwise, find a pyproject.toml with a [tool.pdm] section
+    - Otherwise, find a pyproject.toml with a [project] section
     - Otherwise, find a requirements.txt.
 
     """
@@ -30,11 +32,13 @@ class DependencySpecificationDetector:
             return DependencyManagementFormat.POETRY
         if pyproject_toml_found and self._project_uses_pdm():
             return DependencyManagementFormat.PDM
+        if pyproject_toml_found and self._project_uses_pep_621():
+            return DependencyManagementFormat.PEP_621
         if self._project_uses_requirements_txt():
             return DependencyManagementFormat.REQUIREMENTS_TXT
         raise FileNotFoundError(
-            "No file called 'pyproject.toml' with a [tool.poetry.dependencies] or [tool.pdm] section or file(s)"
-            f" called '{', '.join(self.requirements_txt)}' found. Exiting."
+            "No file called 'pyproject.toml' with a [tool.poetry.dependencies], [tool.pdm] or [project] section or"
+            f" file(s) called '{', '.join(self.requirements_txt)}' found. Exiting."
         )
 
     @staticmethod
@@ -68,15 +72,33 @@ class DependencySpecificationDetector:
     def _project_uses_pdm() -> bool:
         pyproject_toml = load_pyproject_toml()
         try:
-            pyproject_toml["tool"]["pdm"]
+            pyproject_toml["tool"]["pdm"]["dev-dependencies"]
             logging.debug(
-                "pyproject.toml contains a [tool.pdm] section, so PDM is used to specify the project's dependencies."
+                "pyproject.toml contains a [tool.pdm.dev-dependencies] section, so PDM is used to specify the project's"
+                " dependencies."
             )
             return True
         except KeyError:
             logging.debug(
-                "pyproject.toml does not contain a [tool.pdm] section, so PDM is not used to specify"
+                "pyproject.toml does not contain a [tool.pdm.dev-dependencies] section, so PDM is not used to specify"
                 " the project's dependencies."
+            )
+            pass
+        return False
+
+    @staticmethod
+    def _project_uses_pep_621() -> bool:
+        pyproject_toml = load_pyproject_toml()
+        try:
+            pyproject_toml["project"]
+            logging.debug(
+                "pyproject.toml contains a [project] section, so PEP 621 is used to specify the project's dependencies."
+            )
+            return True
+        except KeyError:
+            logging.debug(
+                "pyproject.toml does not contain a [project] section, so PEP 621 is not used to specify the project's"
+                " dependencies."
             )
             pass
         return False

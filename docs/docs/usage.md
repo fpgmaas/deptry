@@ -16,13 +16,21 @@ deptry .
 
 Where `.` is the path to the root directory of the project to be scanned. All other arguments should be specified relative to this directory.
 
-## pyproject.toml vs requirements.txt
+## Dependencies extraction
 
 To determine the project's dependencies, _deptry_ will scan the root directory for files in the following order:
 
-- If a `pyproject.toml` file with a `[tool.poetry.dependencies]` section is found, _deptry_ will extract both the projects dependencies and its development dependencies from `pyproject.toml`.
-- If a `pyproject.toml` file with a `[tool.pdm]` section is found, _deptry_ will extract the projects dependencies from `dependencies` in the `[project]` section, and the development dependencies from `[tool.pdm.dev-dependencies]`.
-- If a `requirements.txt` file is found, _deptry_ will extract the project's dependencies from there, and additionally it will look for the files `dev-dependencies.txt` and `dependencies-dev.txt` to determine the project's development dependencies.
+- If a `pyproject.toml` file with a `[tool.poetry.dependencies]` section is found, _deptry_ will assume it uses Poetry and extract:
+  - dependencies from `[tool.poetry.dependencies]` section
+  - development dependencies from `[tool.poetry.group.dev.dependencies]` or `[tool.poetry.dev-dependencies]` section
+- If a `pyproject.toml` file with a `[tool.pdm.dev-dependencies]` section is found, _deptry_ will assume it uses PDM and extract:
+  - dependencies from `[project.dependencies]` and `[project.optional-dependencies]` sections
+  - development dependencies from `[tool.pdm.dev-dependencies]` section.
+- If a `pyproject.toml` file with a `[project]` section is found, _deptry_ will assume it uses [PEP 621](https://peps.python.org/pep-0621/) for dependency specification and extract:
+  - dependencies from `[project.dependencies]` and `[project.optional-dependencies]` sections
+- If a `requirements.txt` file is found, _deptry_ will extract:
+  - dependencies from it
+  - development dependencies from `dev-dependencies.txt` and `dependencies-dev.txt`, if any exist
 
 _deptry_ can also be configured to look for `requirements.txt` files with other names or in other directories. See [requirements.txt files](#requirementstxt-files).
 

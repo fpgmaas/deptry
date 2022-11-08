@@ -11,12 +11,6 @@ requests
 pkginfo
 ```
 
-dev-dependencies:
-
-```
-black
-```
-
 ## Imports
 
 Imported in .py files are
@@ -49,6 +43,6 @@ So expected output without any additional configuration:
 ```
 obsolete: isort, requests (pkginfo is ignored)
 missing: white
-transitive: None
-dev: black
+transitive: black
+dev: None
 ```
