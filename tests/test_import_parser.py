@@ -129,17 +129,6 @@ print('嘉大')
         assert set(imported_modules) == {"foo"}
 
 
-def test_remove_local_file_imports(tmp_path):
-    with run_within_dir(tmp_path):
-        with open("foo.py", "w", encoding="utf-8") as f:
-            f.write("import hobbes\nimport bar\nfrom bar import x")
-        with open("bar.py", "w", encoding="utf-8") as f:
-            f.write("def x():\tprint('hello')")
-
-        imported_modules = ImportParser().get_imported_modules_from_file(Path("foo.py"))
-        assert imported_modules == ["hobbes"]
-
-
 def test_import_parser_file_encodings_warning(tmp_path, caplog):
     with run_within_dir(tmp_path):
         with open("file1.py", "w", encoding="utf-8") as f:

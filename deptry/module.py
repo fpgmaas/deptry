@@ -1,33 +1,24 @@
 import logging
-import os
 import sys
-from pathlib import Path
+from dataclasses import dataclass
 from typing import List, Optional, Set
 
 from deptry.compat import PackageNotFoundError, metadata
 from deptry.dependency import Dependency
 
 
+@dataclass
 class Module:
-    def __init__(
-        self,
-        name: str,
-        standard_library: bool = False,
-        local_module: bool = False,
-        package: Optional[str] = None,
-        top_levels: Optional[List[str]] = None,
-        dev_top_levels: Optional[List[str]] = None,
-        is_dependency: Optional[bool] = None,
-        is_dev_dependency: Optional[bool] = None,
-    ) -> None:
-        self.name = name
-        self.standard_library = standard_library
-        self.local_module = local_module
-        self.package = package
-        self.top_levels = top_levels
-        self.dev_top_levels = dev_top_levels
-        self.is_dependency = is_dependency
-        self.is_dev_dependency = is_dev_dependency
+    name: str
+    standard_library: bool = False
+    local_module: bool = False
+    package: Optional[str] = None
+    top_levels: Optional[List[str]] = None
+    dev_top_levels: Optional[List[str]] = None
+    is_dependency: Optional[bool] = None
+    is_dev_dependency: Optional[bool] = None
+
+    def __post_init__(self) -> None:
         self._log()
 
     def _log(self) -> None:
@@ -46,6 +37,7 @@ class ModuleBuilder:
     def __init__(
         self,
         name: str,
+        local_modules: Set[str],
         dependencies: Optional[List[Dependency]] = None,
         dev_dependencies: Optional[List[Dependency]] = None,
     ) -> None:
@@ -58,6 +50,7 @@ class ModuleBuilder:
             dev-dependencies: A list of the project's development dependencies
         """
         self.name = name
+        self.local_modules = local_modules
         self.dependencies = dependencies or []
         self.dev_dependencies = dev_dependencies or []
 
@@ -67,12 +60,10 @@ class ModuleBuilder:
         in that case many checks can be omitted.
         """
 
-        standard_library = self._in_standard_library()
-        if standard_library:
+        if self._in_standard_library():
             return Module(self.name, standard_library=True)
 
-        local_module = self._is_local_directory()
-        if local_module:
+        if self._is_local_module():
             return Module(self.name, local_module=True)
 
         package = self._get_package_name_from_metadata()
@@ -135,13 +126,11 @@ class ModuleBuilder:
 
         return stdlib
 
-    def _is_local_directory(self) -> bool:
+    def _is_local_module(self) -> bool:
         """
         Check if the module is a local directory with an __init__.py file.
         """
-        directories = [f for f in os.listdir() if Path(f).is_dir()]
-        local_modules = [subdir for subdir in directories if "__init__.py" in os.listdir(subdir)]
-        return self.name in local_modules
+        return self.name in self.local_modules
 
     def _has_matching_dependency(self, package: Optional[str], top_levels: List[str]) -> bool:
         """

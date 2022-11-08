@@ -1,8 +1,9 @@
 import logging
+import os
 import sys
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Dict, List, Set, Tuple
 
 from deptry.dependency import Dependency
 from deptry.dependency_getter.base import DependenciesExtract
@@ -52,7 +53,9 @@ class Core:
         ).get_all_python_files_in(Path("."))
 
         imported_modules = [
-            ModuleBuilder(mod, dependencies_extract.dependencies, dependencies_extract.dev_dependencies).build()
+            ModuleBuilder(
+                mod, self._get_local_modules(), dependencies_extract.dependencies, dependencies_extract.dev_dependencies
+            ).build()
             for mod in ImportParser().get_imported_modules_for_list_of_files(all_python_files)
         ]
         imported_modules = [mod for mod in imported_modules if not mod.standard_library]
@@ -89,6 +92,11 @@ class Core:
         if dependency_management_format is DependencyManagementFormat.REQUIREMENTS_TXT:
             return RequirementsTxtDependencyGetter(self.requirements_txt, self.requirements_txt_dev).get()
         raise ValueError("Incorrect dependency manage format. Only poetry, pdm and requirements.txt are supported.")
+
+    @staticmethod
+    def _get_local_modules() -> Set[str]:
+        directories = [f for f in os.listdir() if Path(f).is_dir()]
+        return {subdir for subdir in directories if "__init__.py" in os.listdir(subdir)}
 
     def _log_config(self) -> None:
         logging.debug("Running with the following configuration:")
