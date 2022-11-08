@@ -89,3 +89,15 @@ ignore_missing = ["tomllib"]
 
 [tool.poetry.scripts]
 deptry = "deptry.cli:deptry"
+
+[tool.ruff]
+line-length = 120
+
+select = ["E","F","C","B"]
+
+# PEP-8 The following are ignored:
+# E731 do not assign a lambda expression, use a def
+# E501 line too long
+ignore = ["E731", "E501"]
+
+extend-exclude = ["tests/data/*"]
