@@ -15,6 +15,12 @@ repos:
     hooks:
       - id: isort
 
+  # Temporarily run both ruff and flake8, to see if we are satisfied with ruff so it can replace flake8.
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: v0.0.106
+    hooks:
+      - id: ruff
+
   - repo: https://github.com/PyCQA/flake8
     rev: "5.0.4"
     hooks:
