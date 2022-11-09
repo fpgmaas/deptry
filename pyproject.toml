@@ -93,7 +93,7 @@ deptry = "deptry.cli:deptry"
 [tool.ruff]
 line-length = 120
 
-select = ["E","F","C","B"]
+select = ["E", "F", "C", "B"]
 
 # PEP-8 The following are ignored:
 # E731 do not assign a lambda expression, use a def
