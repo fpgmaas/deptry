@@ -29,7 +29,7 @@ importlib-metadata = { version = "*", python = "<=3.7" }
 chardet = "^5.0.0"
 
 [tool.poetry.dev-dependencies]
-mypy = "^0.981"
+mypy = "^0.990"
 pre-commit = "^2.20.0"
 pytest = "^7.1.2"
 pytest-cov = "^4.0.0"
