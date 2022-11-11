@@ -33,13 +33,13 @@ Dependency issues are detected by scanning for imported modules within all Pytho
 
 ### Installation
 
-_deptry_ can be added to your project with 
+_deptry_ can be added to your project with
 
 ```shell
 poetry add --group dev deptry
 ```
 
-or with 
+or with
 
 ```
 pip install deptry
@@ -61,5 +61,5 @@ To scan your project for dependency issues, run
 deptry .
 ```
 
-_deptry_ can be configured by using additional command line arguments, or 
+_deptry_ can be configured by using additional command line arguments, or
 by adding a `[tool.deptry]` section in _pyproject.toml_. For more information, see [Usage and Configuration](./usage.md)
