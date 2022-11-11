@@ -1,0 +1,32 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+
+  // https://docs.renovatebot.com/configuration-options/#extends
+  extends: [
+    // https://docs.renovatebot.com/presets-config/#configbase
+    "config:base",
+    // https://docs.renovatebot.com/presets-default/#enableprecommit
+    ":enablePreCommit",
+    // https://docs.renovatebot.com/presets-default/#maintainlockfilesweekly
+    ":maintainLockFilesWeekly",
+    // https://docs.renovatebot.com/presets-default/#prhourlylimitnone
+    ":prHourlyLimitNone",
+    // https://docs.renovatebot.com/presets-default/#rebasestaleprs
+    ":rebaseStalePrs",
+  ],
+
+  // https://docs.renovatebot.com/configuration-options/#labels
+  labels: ["dependencies"],
+
+  // https://docs.renovatebot.com/configuration-options/#regexmanagers
+  regexManagers: [
+    {
+      description: "Update PEP 440 Python dependencies",
+      fileMatch: ["^\\.pre-commit-config\\.yaml$"],
+      matchStrings: [
+        '"(?<depName>[\\w-]+)(?<currentValue>.+?)",?[[:blank:]]+#[[:blank:]]*renovate: pep440-python-dependency\\s',
+      ],
+      datasourceTemplate: "pypi",
+    },
+  ],
+}
