@@ -39,3 +39,8 @@ repos:
           - flake8-bugbear==22.9.23
           - flake8-comprehensions==3.10.0
           - flake8-simplify==0.19.3
+
+  - repo: https://github.com/pre-commit/pygrep-hooks
+    rev: "v1.9.0"
+    hooks:
+      - id: python-check-blanket-noqa
