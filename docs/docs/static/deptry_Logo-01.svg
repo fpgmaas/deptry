@@ -18,9 +18,9 @@
 	.st12{fill:none;stroke:#FF765C;stroke-width:7;stroke-linecap:round;stroke-linejoin:round;}
 	.st13{fill:none;stroke:#FF765C;stroke-width:7;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:11.0931,11.0931;}
 	.st14{fill:none;stroke:#FF765C;stroke-width:7;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:11.165,11.165;}
-	
+
 		.st15{display:inline;fill:none;stroke:#FF765C;stroke-width:7;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:12,12;}
-	
+
 		.st16{display:inline;fill:none;stroke:#FF765C;stroke-width:7;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:12;}
 	.st17{clip-path:url(#SVGID_00000181055689745988600500000012095025131323958964_);fill:#2ABFD8;}
 	.st18{display:inline;fill:none;stroke:#31CD83;stroke-width:12;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
@@ -307,7 +307,7 @@
 		<clipPath id="SVGID_00000041974856380647297690000005874889157100570800_">
 			<use xlink:href="#SVGID_1_"  style="overflow:visible;"/>
 		</clipPath>
-		<polygon style="clip-path:url(#SVGID_00000041974856380647297690000005874889157100570800_);fill:#2ABFD8;" points="396.5,310.48 
+		<polygon style="clip-path:url(#SVGID_00000041974856380647297690000005874889157100570800_);fill:#2ABFD8;" points="396.5,310.48
 			817.4,368.38 817.4,463.89 378.2,463.89 		"/>
 	</g>
 	<g class="st1">
@@ -362,7 +362,7 @@
 	<g class="st1">
 		<defs>
 			<rect x="-829.58" y="584.32" width="461.6" height="189.73"/>
-			
+
 				<text id="SVGID_00000163787226678235518860000012684524750894619553_" transform="matrix(1 0 0 1 -829.5791 718.792)" class="st9 st10">Deptry</text>
 		</defs>
 		<clipPath id="SVGID_00000102544502888048707190000012266463164629402289_">
