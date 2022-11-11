@@ -35,7 +35,7 @@ To determine the project's dependencies, _deptry_ will scan the root directory f
 _deptry_ can also be configured to look for `requirements.txt` files with other names or in other directories. See [requirements.txt files](#requirementstxt-files).
 
 ## Excluding files and directories
- 
+
 To determine issues with imported modules and dependencies, _deptry_ will scan the working directory and its subdirectories recursively for `.py` and `.ipynb` files, so it can
 extract the imported modules from those files. Any files solely used for development purposes, such as files used for unit testing, should not be scanned. By default, the directories
 `venv`, `.venv`, `tests`,`.git` and the file `setup.py` are excluded.
@@ -50,7 +50,7 @@ deptry . --exclude "bar|.*/foo/"
 The two statements above are equivalent, and will both ignore all files in the directory `bar`, and all files within any directory named `foo`.
 
 Note that using the `--exclude` argument overwrites the defaults. To add additional patterns to ignore
-on top of the defaults instead of overwriting them, use the `--extend-exclude` (or `-ee`) flag. 
+on top of the defaults instead of overwriting them, use the `--extend-exclude` (or `-ee`) flag.
 
 ```sh
 deptry . -ee bar -ee ".*/foo/"
@@ -80,8 +80,8 @@ deptry . --skip-misplaced-dev
 
 ## Ignore dependencies
 
-Sometimes, you might want _deptry_ to ignore certain dependencies in certain checks, for example when you have an module that is used but not imported. 
-Dependencies or modules can be ignored for each check separately with the `--ignore-obsolete`, `--ignore-transitive`, `--ignore-missing` or `--ignore-misplaced-dev` flag, or with their 
+Sometimes, you might want _deptry_ to ignore certain dependencies in certain checks, for example when you have an module that is used but not imported.
+Dependencies or modules can be ignored for each check separately with the `--ignore-obsolete`, `--ignore-transitive`, `--ignore-missing` or `--ignore-misplaced-dev` flag, or with their
 respective abbreviations `-io`, `-it`, `-im` and `-id`. Multiple elements can be passed to the argument by providing a comma-separated list.
 
 For example, the following will ignore dependency foo while checking for obsolete dependencies and
@@ -160,5 +160,5 @@ project or a specific commit hash.
 !!! important
 
     This will only pull in the pre commit-hooks config file from the version passed to the `rev` agument.  The actual version of deptry that will be run will be the first one found in your path, so you will need to add deptry to your local virtual environment for the pre-commit.
-    
+
     For the pre-commit hook to run successfully, it should be run within the virtual environment of the project to be scanned, since it needs access to the metadata of the installed packages.
