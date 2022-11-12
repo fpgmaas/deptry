@@ -17,8 +17,21 @@ theme:
   feature:
     tabs: true
   palette:
-    primary: white
-    accent: blue
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: cyan
+      accent: deep orange
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: cyan
+      accent: deep orange
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
 markdown_extensions:
   - admonition
   - pymdownx.details
