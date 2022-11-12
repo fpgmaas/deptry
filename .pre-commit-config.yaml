@@ -27,7 +27,7 @@ repos:
 
   # Temporarily run both ruff and flake8, to see if we are satisfied with ruff so it can replace flake8.
   - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: v0.0.110
+    rev: v0.0.112
     hooks:
       - id: ruff
 
