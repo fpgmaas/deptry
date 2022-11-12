@@ -1,4 +1,3 @@
-
 # FAQ
 
 ### What kind of issues does _deptry_ detect?
