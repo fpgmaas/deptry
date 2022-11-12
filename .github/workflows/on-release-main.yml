@@ -78,7 +78,6 @@ jobs:
 
       - name: Build and publish
         run: |
-          source .venv/bin/activate
           poetry version $RELEASE_VERSION
           make build-and-publish
         env:

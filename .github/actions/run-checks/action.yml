@@ -7,16 +7,11 @@ runs:
     steps:
 
       - name: Formatting check
-        run: |
-              source .venv/bin/activate
-              ls -al
-              make check
+        run: make check
         shell: bash
 
       - name: Test with pytest
-        run: |
-              source .venv/bin/activate
-              make test
+        run: make test
         shell: bash
 
       - name: Upload coverage reports to Codecov with GitHub Action

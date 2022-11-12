@@ -82,12 +82,11 @@ development. Please note this documentation assumes you already have
 
        pyenv local <x.y.z>
 
-   Then, install and activate the environment with:
+   Then, install the virtual environment with:
 
    .. code-block:: bash
 
         poetry install
-        poetry shell
 
 | 4. Install pre-commit to run linters/formatters at commit time:
 
@@ -118,7 +117,7 @@ development. Please note this documentation assumes you already have
 
         tox
 
-   This requires you to have multiple versions of python installed.
+   This requires you to have multiple versions of Python installed.
    This step is also triggered in the CI/CD pipeline, so you could also choose to skip this
    step locally.
 
