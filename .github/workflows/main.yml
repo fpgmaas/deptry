@@ -17,8 +17,14 @@ jobs:
       - name: Set up the environment
         uses: ./.github/actions/setup-poetry-env
 
-      - name: Run checks
-        uses: ./.github/actions/run-checks
+      - name: Formatting check
+        run: make check
+
+      - name: Test with pytest
+        run: make test
+
+      - name: Upload coverage reports to Codecov with GitHub Action
+        uses: codecov/codecov-action@v3
 
   tox:
     runs-on: ubuntu-latest
