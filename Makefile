@@ -41,11 +41,11 @@ build-and-publish: build publish ## Build and publish.
 
 .PHONY: docs-test
 docs-test: ## Test if documentation can be built without warnings or errors.
-	@( cd docs ; poetry run mkdocs build -s)
+	@poetry run mkdocs build -s
 
 .PHONY: docs
 docs: ## Build and serve the documentation.
-	@( cd docs ; poetry run mkdocs serve )
+	@poetry run mkdocs serve
 
 .PHONY: help
 help: ## Show help for the commands.

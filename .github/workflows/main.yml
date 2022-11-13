@@ -64,5 +64,8 @@ jobs:
       - name: Check out
         uses: actions/checkout@v3
 
-      - name: check documentation
-        uses: ./.github/actions/check-docs
+      - name: Set up the environment
+        uses: ./.github/actions/setup-poetry-env
+
+      - name: Check if documentation can be built
+        run: poetry run mkdocs build -s
