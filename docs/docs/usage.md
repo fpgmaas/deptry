@@ -2,8 +2,8 @@
 
 ## Configuration
 
-_deptry_ can be configured with command line arguments or by adding a `[tool.deptry]` section to _pyproject.toml_. Explanation for the command line arguments can
-be obtained by running `deptry --help`, and examples are given below. For configuration using _pyproject.toml_, see [Configuration with pyproject.toml](./pyproject-toml.md)
+_deptry_ can be configured with command line arguments or by adding a `[tool.deptry]` section to `pyproject.toml`. Explanation for the command line arguments can
+be obtained by running `deptry --help`, and examples are given below. For configuration using `pyproject.toml`, see [Configuration with pyproject.toml](./pyproject-toml.md)
 
 
 ## Basic Usage
@@ -14,23 +14,23 @@ _deptry_ can be run with
 deptry .
 ```
 
-Where `.` is the path to the root directory of the project to be scanned. All other arguments should be specified relative to this directory.
+where `.` is the path to the root directory of the project to be scanned. All other arguments should be specified relative to this directory.
 
 ## Dependencies extraction
 
 To determine the project's dependencies, _deptry_ will scan the root directory for files in the following order:
 
 - If a `pyproject.toml` file with a `[tool.poetry.dependencies]` section is found, _deptry_ will assume it uses Poetry and extract:
-  - dependencies from `[tool.poetry.dependencies]` section
-  - development dependencies from `[tool.poetry.group.dev.dependencies]` or `[tool.poetry.dev-dependencies]` section
+    - dependencies from `[tool.poetry.dependencies]` section
+    - development dependencies from `[tool.poetry.group.dev.dependencies]` or `[tool.poetry.dev-dependencies]` section
 - If a `pyproject.toml` file with a `[tool.pdm.dev-dependencies]` section is found, _deptry_ will assume it uses PDM and extract:
-  - dependencies from `[project.dependencies]` and `[project.optional-dependencies]` sections
-  - development dependencies from `[tool.pdm.dev-dependencies]` section.
+    - dependencies from `[project.dependencies]` and `[project.optional-dependencies]` sections
+    - development dependencies from `[tool.pdm.dev-dependencies]` section.
 - If a `pyproject.toml` file with a `[project]` section is found, _deptry_ will assume it uses [PEP 621](https://peps.python.org/pep-0621/) for dependency specification and extract:
-  - dependencies from `[project.dependencies]` and `[project.optional-dependencies]` sections
+    - dependencies from `[project.dependencies]` and `[project.optional-dependencies]` sections
 - If a `requirements.txt` file is found, _deptry_ will extract:
-  - dependencies from it
-  - development dependencies from `dev-dependencies.txt` and `dependencies-dev.txt`, if any exist
+    - dependencies from it
+    - development dependencies from `dev-dependencies.txt` and `dependencies-dev.txt`, if any exist
 
 _deptry_ can also be configured to look for `requirements.txt` files with other names or in other directories. See [requirements.txt files](#requirementstxt-files).
 
@@ -111,7 +111,7 @@ _deptry_ can be configured to extract dependencies from [pip](https://pip.pypa.i
 it can also be configured to extract development dependencies from other files than `dev-requirements.txt` and `requirements-dev.txt`. For this, use the `--requirements-txt` and
 `--requirements-txt-dev` arguments. For example:
 
-```
+```sh
 deptry . \
     --requirements-txt req/prod.txt \
     --requirements-txt-dev req/dev.txt,req/test.txt
@@ -123,13 +123,13 @@ Multiple files can be passed to both `requirements-txt` and `requirements-txt-de
 
 _deptry_ can be configured to write the detected issues to a json file by specifying the `--json-output` (`-o`) flag. For example:
 
-```
+```sh
 deptry . -o deptry.json
 ```
 
 An example of the contents of the resulting `deptry.json` file is as follows:
 
-```
+```json
 {
     "obsolete": [
         "foo"
@@ -140,12 +140,12 @@ An example of the contents of the resulting `deptry.json` file is as follows:
 }
 ```
 
-## usage in pre-commit
+## Usage in pre-commit
 
-_deptry_ can be added to your [pre-commit](https://pre-commit.com/) rules.  Here is
-an example config for your .pre-commit-config.yaml file:
+_deptry_ can be added to your [pre-commit](https://pre-commit.com/) rules. Here is
+an example config for your `.pre-commit-config.yaml` file:
 
-```
+```yaml
 -   repo: https://github.com/fpgmaas/deptry.git
     rev: <tag>
     hooks:

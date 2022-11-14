@@ -1,24 +1,50 @@
 site_name: deptry
+edit_uri: edit/main/docs/docs/
+repo_name: fpgmaas/deptry
 repo_url: https://github.com/fpgmaas/deptry
 site_url: https://fpgmaas.github.io/deptry
 site_description: A command line tool to check for unused dependencies in a poetry managed python project.
 site_author: Florian Maas
+copyright: Maintained by <a href="https://fpgmaas.com">Florian</a>.
 
 nav:
   - Home: index.md
   - Usage and Configuration: usage.md
   - Configuration with pyproject.toml: pyproject-toml.md
   - FAQ: faq.md
+
 plugins:
   - search
-copyright: Maintained by <a href="https://fpgmaas.com">Florian</a>.
+
 theme:
   name: material
   feature:
     tabs: true
   palette:
-    primary: white
-    accent: blue
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: cyan
+      accent: deep orange
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: cyan
+      accent: deep orange
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  icon:
+    repo: fontawesome/brands/github
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/fpgmaas/deptry
+    - icon: fontawesome/brands/python
+      link: https://pypi.com/project/deptry
+
 markdown_extensions:
   - admonition
   - pymdownx.details
