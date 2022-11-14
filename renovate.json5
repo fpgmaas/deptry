@@ -29,4 +29,8 @@
       datasourceTemplate: "pypi",
     },
   ],
+
+  schedule: [
+    "on saturday"
+  ]
 }
