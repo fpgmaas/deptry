@@ -1,13 +1,17 @@
 import ast
+import itertools
 import logging
 from pathlib import Path
-from typing import List, Union
+from typing import List, Set, Union
 
 import chardet
 
 from deptry.notebook_import_extractor import NotebookImportExtractor
 
 RECURSION_TYPES = [ast.If, ast.Try, ast.ExceptHandler, ast.FunctionDef, ast.ClassDef]
+
+# setuptools is usually available by default, so often not specified in dependencies.
+_FILTERED_OUT_MODULES = {"setuptools"}
 
 
 class ImportParser:
@@ -22,12 +26,15 @@ class ImportParser:
 
     def get_imported_modules_for_list_of_files(self, list_of_files: List[Path]) -> List[str]:
         logging.info(f"Scanning {len(list_of_files)} files...")
-        modules_per_file = [self.get_imported_modules_from_file(file) for file in list_of_files]
-        all_modules = self._flatten_list(modules_per_file)
-        unique_modules = sorted(set(all_modules))
-        unique_modules = self._filter_exceptions(unique_modules)
-        logging.debug(f"All imported modules: {unique_modules}\n")
-        return unique_modules
+
+        unique_modules = set(
+            itertools.chain.from_iterable(self.get_imported_modules_from_file(file) for file in list_of_files)
+        )
+        filtered_modules = sorted(self._filter_out_modules(unique_modules))
+
+        logging.debug(f"All imported modules: {filtered_modules}\n")
+
+        return filtered_modules
 
     def get_imported_modules_from_file(self, path_to_file: Path) -> List[str]:
         logging.debug(f"Scanning {path_to_file}...")
@@ -102,23 +109,12 @@ class ImportParser:
         return modules
 
     @staticmethod
-    def _flatten_list(modules_per_file: List[List[str]]) -> List[str]:
-        all_modules = []
-        for modules in modules_per_file:
-            if modules:
-                all_modules += modules
-        return all_modules
+    def _filter_out_modules(modules: Set[str]) -> Set[str]:
+        for filtered_out_module in _FILTERED_OUT_MODULES:
+            if filtered_out_module in modules:
+                logging.debug(f"Found module {filtered_out_module} to be imported, omitting from the list of modules.")
 
-    @staticmethod
-    def _filter_exceptions(modules: List[str]) -> List[str]:
-        exceptions = [
-            "setuptools"
-        ]  # setuptools is usually available by default, so often not specified in dependencies.
-        for exception in exceptions:
-            if exception in modules:
-                logging.debug(f"Found module {exception} to be imported, omitting from the list of modules.")
-                modules = [module for module in modules if module != exception]
-        return modules
+        return modules - _FILTERED_OUT_MODULES
 
     @staticmethod
     def _get_file_encoding(file_name: Union[str, Path]) -> str:
