@@ -43,7 +43,7 @@ extra:
     - icon: fontawesome/brands/github
       link: https://github.com/fpgmaas/deptry
     - icon: fontawesome/brands/python
-      link: https://pypi.com/project/deptry
+      link: https://pypi.org/project/deptry/
 
 markdown_extensions:
   - admonition
