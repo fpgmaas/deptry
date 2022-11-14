@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - main
-    tags-ignore:
-      - '**'
   pull_request:
     types: [opened, synchronize, reopened]
 
@@ -16,11 +14,22 @@ jobs:
       - name: Check out
         uses: actions/checkout@v3
 
+      - uses: actions/cache@v3
+        with:
+          path: ~/.cache/pre-commit
+          key: pre-commit-${{ hashFiles('.pre-commit-config.yaml') }}
+
       - name: Set up the environment
         uses: ./.github/actions/setup-poetry-env
 
-      - name: Run checks
-        uses: ./.github/actions/run-checks
+      - name: Run pre-commit
+        run: poetry run pre-commit run -a --show-diff-on-failure
+
+      - name: Inspect dependencies
+        run: poetry run deptry .
+
+      - name: Check Poetry lock file consistency
+        run: poetry lock --check
 
   tox:
     runs-on: ubuntu-latest
@@ -32,16 +41,31 @@ jobs:
       - name: Check out
         uses: actions/checkout@v3
 
-      - name: Set up the environment
-        uses: ./.github/actions/setup-poetry-env
+      - name: Set up python
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Test with tox
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+
+      - name: Load cached venv
+        uses: actions/cache@v3
+        with:
+          path: .tox
+          key: venv-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('poetry.lock') }}
+
+      - name: Install tox
         run: |
-          source .venv/bin/activate
-          poetry add tox-gh-actions
-          tox
+          python -m pip install --upgrade pip
+          python -m pip install tox tox-gh-actions
+
+      - name: Test with tox
+        run: tox
+
+      - name: Upload coverage reports to Codecov with GitHub Action on Python 3.11
+        uses: codecov/codecov-action@v3
+        if: ${{ matrix.python-version == '3.11' }}
 
   check-docs:
     runs-on: ubuntu-latest
@@ -49,5 +73,8 @@ jobs:
       - name: Check out
         uses: actions/checkout@v3
 
-      - name: check documentation
-        uses: ./.github/actions/check-docs
+      - name: Set up the environment
+        uses: ./.github/actions/setup-poetry-env
+
+      - name: Check if documentation can be built
+        run: poetry run mkdocs build -s
