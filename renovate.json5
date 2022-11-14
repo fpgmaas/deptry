@@ -30,6 +30,7 @@
     },
   ],
 
+  // https://docs.renovatebot.com/configuration-options/#schedule
   schedule: [
     "on saturday"
   ]
