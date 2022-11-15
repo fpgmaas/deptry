@@ -75,16 +75,17 @@ Alternatively, deptry can be configured through `pyproject.toml`. An example:
     ```
     [tool.deptry]
     ignore_obsolete = [
-    'foo'
+        "foo"
     ]
     ignore_missing = [
-    'bar'
+        "bar"
     ]
     ignore_transitive = [
-    'baz'
+        "baz"
     ]
-    exclude = [
-    'venv','.venv', 'tests', 'setup.py', 'docs'
+    extend_exclude = [
+        ".*/foo/",
+        "bar/baz.py"
     ]
     ```
 

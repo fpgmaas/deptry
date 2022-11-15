@@ -24,13 +24,9 @@ An example of a configuration section for _deptry_ is given below.
 
 ```toml
 [tool.deptry]
-exclude = [
-    "venv",
-    ".venv",
-    "tests",
-    "setup.py",
-    "docs",
+extend_exclude = [
     ".*/foo/",
+    "bar/baz.py"
 ]
 ignore_obsolete = [
     "alpha",
