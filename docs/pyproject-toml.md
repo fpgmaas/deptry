@@ -40,7 +40,7 @@ ignore_transitive = ["gamma"]
 skip_missing = true
 ```
 
-For an explanation of the arguments run `deptry --help` or see [Usage and Configuration](./usage.md).
+For an explanation of the arguments, run `deptry --help` or see [Usage and Configuration](./usage.md).
 
 ## Lookup hierarchy
 

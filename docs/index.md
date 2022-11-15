@@ -50,7 +50,7 @@ pip install deptry
 
 ### Prerequisites
 
-_deptry_ should be run withing the root directory of the project to be scanned, and the project should be running in its own dedicated virtual environment.
+_deptry_ should be run within the root directory of the project to be scanned, and the project should be running in its own dedicated virtual environment.
 
 ### Usage
 
