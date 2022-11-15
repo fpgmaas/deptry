@@ -5,7 +5,7 @@
 ---
 
 [![Release](https://img.shields.io/github/v/release/fpgmaas/deptry)](https://img.shields.io/github/v/release/fpgmaas/deptry)
-[![Build status](https://img.shields.io/github/workflow/status/fpgmaas/deptry/merge-to-main)](https://img.shields.io/github/workflow/status/fpgmaas/deptry/merge-to-main)
+[![Build status](https://img.shields.io/github/workflow/status/fpgmaas/deptry/Main/main)](https://github.com/fpgmaas/deptry/actions/workflows/main.yml?query=branch%3Amain)
 [![Supported Python versions](https://img.shields.io/pypi/pyversions/deptry)](https://pypi.org/project/deptry/)
 [![codecov](https://codecov.io/gh/fpgmaas/deptry/branch/main/graph/badge.svg)](https://codecov.io/gh/fpgmaas/deptry)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/deptry)](https://pypistats.org/packages/deptry)
@@ -21,7 +21,7 @@ Dependency issues are detected by scanning for imported modules within all Pytho
 
 ---
 <p align="center">
-  <a href = "https://fpgmaas.github.io/deptry">Link to the documentation</a>
+  <a href = "https://fpgmaas.github.io/deptry">Link to documentation</a>
 </p>
 
 ---
@@ -48,7 +48,7 @@ pip install deptry
 
 ### Prerequisites
 
-_deptry_ should be run withing the root directory of the project to be scanned, and the project should be running in its own dedicated virtual environment.
+_deptry_ should be run within the root directory of the project to be scanned, and the project should be running in its own dedicated virtual environment.
 
 ### Usage
 

@@ -38,7 +38,7 @@ _deptry_ can also be configured to look for `requirements.txt` files with other 
 
 To determine issues with imported modules and dependencies, _deptry_ will scan the working directory and its subdirectories recursively for `.py` and `.ipynb` files, so it can
 extract the imported modules from those files. Any files solely used for development purposes, such as files used for unit testing, should not be scanned. By default, the directories
-`venv`, `.venv`, `.direnv`, `tests`,`.git` and the file `setup.py` are excluded.
+`venv`, `.venv`, `.direnv`, `tests`, `.git` and the file `setup.py` are excluded.
 
 To ignore other directories and files than the defaults, use the `--exclude` (or `-e`) flag. The argument can either be one long regular expression, or it can be reused multiple times to pass multiple smaller regular expressions. The paths should be specified as paths relative to the directory _deptry_ is running in, without the trailing `./`. An example:
 
@@ -80,7 +80,7 @@ deptry . --skip-misplaced-dev
 
 ## Ignore dependencies
 
-Sometimes, you might want _deptry_ to ignore certain dependencies in certain checks, for example when you have an module that is used but not imported.
+Sometimes, you might want _deptry_ to ignore certain dependencies in certain checks, for example when you have a module that is used but not imported.
 Dependencies or modules can be ignored for each check separately with the `--ignore-obsolete`, `--ignore-transitive`, `--ignore-missing` or `--ignore-misplaced-dev` flag, or with their
 respective abbreviations `-io`, `-it`, `-im` and `-id`. Multiple elements can be passed to the argument by providing a comma-separated list.
 
@@ -107,7 +107,7 @@ deptry . --ignore-notebooks
 
 ## requirements.txt files
 
-_deptry_ can be configured to extract dependencies from [pip](https://pip.pypa.io/en/stable/user_guide/) requirements files other than `requirements.txt`. Similarly
+_deptry_ can be configured to extract dependencies from [pip](https://pip.pypa.io/en/stable/user_guide/) requirements files other than `requirements.txt`. Similarly,
 it can also be configured to extract development dependencies from other files than `dev-requirements.txt` and `requirements-dev.txt`. For this, use the `--requirements-txt` and
 `--requirements-txt-dev` arguments. For example:
 
