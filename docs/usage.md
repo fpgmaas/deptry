@@ -38,7 +38,7 @@ _deptry_ can also be configured to look for `requirements.txt` files with other 
 
 To determine issues with imported modules and dependencies, _deptry_ will scan the working directory and its subdirectories recursively for `.py` and `.ipynb` files, so it can
 extract the imported modules from those files. Any files solely used for development purposes, such as files used for unit testing, should not be scanned. By default, the directories
-`venv`, `.venv`, `tests`, `.git` and the file `setup.py` are excluded.
+`venv`, `.venv`, `.direnv`, `tests`, `.git` and the file `setup.py` are excluded.
 
 To ignore other directories and files than the defaults, use the `--exclude` (or `-e`) flag. The argument can either be one long regular expression, or it can be reused multiple times to pass multiple smaller regular expressions. The paths should be specified as paths relative to the directory _deptry_ is running in, without the trailing `./`. An example:
 
@@ -57,7 +57,7 @@ deptry . -ee bar -ee ".*/foo/"
 deptry . --extend-exclude "bar|.*/foo/"
 ```
 
-This will exclude `venv`, `.venv`, `.git`, `tests`, `setup.py`, `bar`, and any directory named `foo`.
+This will exclude `venv`, `.venv`, `.direnv`, `.git`, `tests`, `setup.py`, `bar`, and any directory named `foo`.
 
 ## Increased verbosity
 
