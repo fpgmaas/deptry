@@ -8,7 +8,22 @@ from deptry.utils import run_within_dir
 
 def test_import_parser_py():
     imported_modules = ImportParser().get_imported_modules_from_file(Path("tests/data/some_imports.py"))
-    assert set(imported_modules) == {"os", "pathlib", "typing", "pandas", "numpy"}
+    assert set(imported_modules) == {
+        "barfoo",
+        "baz",
+        "click",
+        "foobar",
+        "httpx",
+        "module_in_class",
+        "module_in_func",
+        "not_click",
+        "numpy",
+        "os",
+        "pandas",
+        "pathlib",
+        "randomizer",
+        "typing",
+    }
 
 
 def test_import_parser_ipynb():
@@ -16,66 +31,6 @@ def test_import_parser_ipynb():
         Path("tests/data/example_project/src/notebook.ipynb")
     )
     assert set(imported_modules) == {"click", "urllib3", "toml"}
-
-
-def test_import_parser_ifelse():
-    imported_modules = ImportParser().get_imported_modules_from_str(
-        """
-x=1
-import numpy
-if x>0:
-    import pandas
-elif x<0:
-    from typing import List
-else:
-    import logging
-"""
-    )
-    assert set(imported_modules) == {"numpy", "pandas", "typing", "logging"}
-
-
-def test_import_parser_tryexcept():
-    imported_modules = ImportParser().get_imported_modules_from_str(
-        """
-import pandas as pd
-from numpy import random
-try:
-    import click
-except:
-    import logging
-"""
-    )
-    assert set(imported_modules) == {"numpy", "pandas", "click", "logging"}
-
-
-def test_import_parser_func():
-    imported_modules = ImportParser().get_imported_modules_from_str(
-        """
-import pandas as pd
-from numpy import random
-def func():
-    import click
-"""
-    )
-    assert set(imported_modules) == {"numpy", "pandas", "click"}
-
-
-def test_import_parser_class():
-    imported_modules = ImportParser().get_imported_modules_from_str(
-        """
-import pandas as pd
-from numpy import random
-class MyClass:
-    def __init__(self):
-        import click
-"""
-    )
-    assert set(imported_modules) == {"numpy", "pandas", "click"}
-
-
-def test_import_parser_relative():
-    imported_modules = ImportParser().get_imported_modules_from_str("""from . import foo\nfrom .foo import bar""")
-    assert set(imported_modules) == set()
 
 
 def test_import_parser_ignores_setuptools(tmp_path):
