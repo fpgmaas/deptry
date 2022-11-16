@@ -1,6 +1,9 @@
 import logging
+import uuid
 from pathlib import Path
 from unittest.mock import Mock
+
+import pytest
 
 from deptry.import_parser import ImportParser
 from deptry.utils import run_within_dir
@@ -41,46 +44,53 @@ def test_import_parser_ignores_setuptools(tmp_path):
         assert set(imported_modules) == {"foo"}
 
 
-def test_import_parser_file_encodings(tmp_path):
-    with run_within_dir(tmp_path):
-        with open("file1.py", "w", encoding="utf-8") as f:
-            f.write(
-                """#!/usr/bin/python
+@pytest.mark.parametrize(
+    ("file_content", "encoding"),
+    [
+        (
+            """
+#!/usr/bin/python
 # -*- encoding: utf-8 -*-
 import foo
 print('嘉大')
-"""
-            )
-        with open("file2.py", "w", encoding="iso-8859-15") as f:
-            f.write(
-                """
+""",
+            "utf-8",
+        ),
+        (
+            """
 #!/usr/bin/python
 # -*- encoding: iso-8859-15 -*-
 import foo
 print('Æ	Ç')
-"""
-            )
-        with open("file3.py", "w", encoding="utf-16") as f:
-            f.write(
-                """#!/usr/bin/python
+""",
+            "iso-8859-15",
+        ),
+        (
+            """
+#!/usr/bin/python
 # -*- encoding: utf-16 -*-
 import foo
 print('嘉大')
-"""
-            )
-        with open("file4.py", "w") as f:
-            f.write("""my_string = '🐺'\nimport foo""")
+""",
+            "utf-16",
+        ),
+        (
+            """
+my_string = '🐺'
+import foo
+""",
+            None,
+        ),
+    ],
+)
+def test_import_parser_file_encodings(file_content, encoding, tmp_path):
+    random_file_name = f"file_{uuid.uuid4()}.py"
 
-        imported_modules = ImportParser().get_imported_modules_from_file(Path("file1.py"))
-        assert set(imported_modules) == {"foo"}
+    with run_within_dir(tmp_path):
+        with open(random_file_name, "w", encoding=encoding) as f:
+            f.write(file_content)
 
-        imported_modules = ImportParser().get_imported_modules_from_file(Path("file2.py"))
-        assert set(imported_modules) == {"foo"}
-
-        imported_modules = ImportParser().get_imported_modules_from_file(Path("file3.py"))
-        assert set(imported_modules) == {"foo"}
-
-        imported_modules = ImportParser().get_imported_modules_from_file(Path("file4.py"))
+        imported_modules = ImportParser().get_imported_modules_from_file(Path(random_file_name))
         assert set(imported_modules) == {"foo"}
 
 
