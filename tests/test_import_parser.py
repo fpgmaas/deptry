@@ -1,17 +1,21 @@
 import logging
 import uuid
 from pathlib import Path
-from unittest.mock import Mock
+from unittest import mock
 
 import pytest
 
-from deptry.import_parser import ImportParser
+from deptry.import_parser import (
+    get_imported_modules_for_list_of_files,
+    get_imported_modules_from_file,
+)
 from deptry.utils import run_within_dir
 
 
 def test_import_parser_py():
-    imported_modules = ImportParser().get_imported_modules_from_file(Path("tests/data/some_imports.py"))
-    assert set(imported_modules) == {
+    imported_modules = get_imported_modules_from_file(Path("tests/data/some_imports.py"))
+
+    assert imported_modules == {
         "barfoo",
         "baz",
         "click",
@@ -30,18 +34,19 @@ def test_import_parser_py():
 
 
 def test_import_parser_ipynb():
-    imported_modules = ImportParser().get_imported_modules_from_file(
-        Path("tests/data/example_project/src/notebook.ipynb")
-    )
-    assert set(imported_modules) == {"click", "urllib3", "toml"}
+    imported_modules = get_imported_modules_from_file(Path("tests/data/example_project/src/notebook.ipynb"))
+
+    assert imported_modules == {"click", "urllib3", "toml"}
 
 
 def test_import_parser_ignores_setuptools(tmp_path):
     with run_within_dir(tmp_path):
         with open("file.py", "w") as f:
             f.write("import setuptools\nimport foo")
-        imported_modules = ImportParser().get_imported_modules_for_list_of_files([Path("file.py")])
-        assert set(imported_modules) == {"foo"}
+
+        imported_modules = get_imported_modules_for_list_of_files([Path("file.py")])
+
+        assert imported_modules == ["foo"]
 
 
 @pytest.mark.parametrize(
@@ -90,20 +95,18 @@ def test_import_parser_file_encodings(file_content, encoding, tmp_path):
         with open(random_file_name, "w", encoding=encoding) as f:
             f.write(file_content)
 
-        imported_modules = ImportParser().get_imported_modules_from_file(Path(random_file_name))
-        assert set(imported_modules) == {"foo"}
+        assert get_imported_modules_from_file(Path(random_file_name)) == {"foo"}
 
 
-def test_import_parser_file_encodings_warning(tmp_path, caplog):
+@mock.patch(
+    "deptry.imports.extractors.python_import_extractor.ast.parse",
+    side_effect=UnicodeDecodeError("fakecodec", b"\x00\x00", 1, 2, "Fake reason!"),
+)
+def test_import_parser_file_encodings_warning(_, tmp_path, caplog):
     with run_within_dir(tmp_path):
         with open("file1.py", "w", encoding="utf-8") as f:
             f.write("print('this is a mock unparseable file')")
 
-        mockObject = ImportParser
-        mockObject._get_import_modules_from = Mock(
-            side_effect=UnicodeDecodeError("fakecodec", b"\x00\x00", 1, 2, "Fake reason!")
-        )
         with caplog.at_level(logging.WARNING):
-            imported_modules = mockObject().get_imported_modules_from_file(Path("file1.py"))
-            assert set(imported_modules) == set()
+            assert get_imported_modules_from_file(Path("file1.py")) == set()
         assert "Warning: File file1.py could not be decoded. Skipping..." in caplog.text

@@ -15,7 +15,7 @@ from deptry.dependency_specification_detector import (
     DependencyManagementFormat,
     DependencySpecificationDetector,
 )
-from deptry.import_parser import ImportParser
+from deptry.import_parser import get_imported_modules_for_list_of_files
 from deptry.issues_finder.misplaced_dev import MisplacedDevDependenciesFinder
 from deptry.issues_finder.missing import MissingDependenciesFinder
 from deptry.issues_finder.obsolete import ObsoleteDependenciesFinder
@@ -57,7 +57,7 @@ class Core:
             ModuleBuilder(
                 mod, self._get_local_modules(), dependencies_extract.dependencies, dependencies_extract.dev_dependencies
             ).build()
-            for mod in ImportParser().get_imported_modules_for_list_of_files(all_python_files)
+            for mod in get_imported_modules_for_list_of_files(all_python_files)
         ]
         imported_modules = [mod for mod in imported_modules if not mod.standard_library]
 
