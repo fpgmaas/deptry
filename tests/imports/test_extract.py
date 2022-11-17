@@ -5,7 +5,7 @@ from unittest import mock
 
 import pytest
 
-from deptry.import_parser import (
+from deptry.imports.extract import (
     get_imported_modules_for_list_of_files,
     get_imported_modules_from_file,
 )

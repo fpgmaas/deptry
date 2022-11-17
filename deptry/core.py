@@ -15,7 +15,7 @@ from deptry.dependency_specification_detector import (
     DependencyManagementFormat,
     DependencySpecificationDetector,
 )
-from deptry.import_parser import get_imported_modules_for_list_of_files
+from deptry.imports.extract import get_imported_modules_for_list_of_files
 from deptry.issues_finder.misplaced_dev import MisplacedDevDependenciesFinder
 from deptry.issues_finder.missing import MissingDependenciesFinder
 from deptry.issues_finder.obsolete import ObsoleteDependenciesFinder
