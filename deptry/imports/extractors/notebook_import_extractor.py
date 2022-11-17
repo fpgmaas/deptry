@@ -41,7 +41,3 @@ class NotebookImportExtractor(ImportExtractor):
     @classmethod
     def _extract_import_statements_from_cell(cls, cell: dict[str, Any]) -> list[str]:
         return [line for line in cell["source"] if cls._contains_import_statements(line)]
-
-    @staticmethod
-    def _flatten(list_of_lists: list[list[str]]) -> set[str]:
-        return {item for sublist in list_of_lists for item in sublist}
