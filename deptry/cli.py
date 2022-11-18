@@ -5,7 +5,6 @@ from typing import List, Optional, Tuple, Union
 
 import click
 
-from deptry.cli_defaults import DEFAULTS
 from deptry.compat import metadata
 from deptry.config import read_configuration_from_pyproject_toml
 from deptry.core import Core
@@ -80,7 +79,7 @@ def configure_logger(ctx: click.Context, _param: click.Parameter, value: bool) -
     Comma-separated list of dependencies that should never be marked as obsolete, even if they are not imported in any of the files scanned.
     For example; `deptry . --ignore-obsolete foo,bar`.
     """,
-    default=DEFAULTS["ignore_obsolete"],
+    default=(),
 )
 @click.option(
     "--ignore-missing",
@@ -89,7 +88,7 @@ def configure_logger(ctx: click.Context, _param: click.Parameter, value: bool) -
     help="""Comma-separated list of modules that should never be marked as missing dependencies, even if the matching package for the import statement cannot be found.
     For example; `deptry . --ignore-missing foo,bar`.
     """,
-    default=DEFAULTS["ignore_missing"],
+    default=(),
 )
 @click.option(
     "--ignore-transitive",
@@ -98,7 +97,7 @@ def configure_logger(ctx: click.Context, _param: click.Parameter, value: bool) -
     help="""Comma-separated list of dependencies that should never be marked as an issue due to it being a transitive dependency, even though deptry determines them to be transitive.
     For example; `deptry . --ignore-transitive foo,bar`.
     """,
-    default=DEFAULTS["ignore_transitive"],
+    default=(),
 )
 @click.option(
     "--ignore-misplaced-dev",
@@ -107,7 +106,7 @@ def configure_logger(ctx: click.Context, _param: click.Parameter, value: bool) -
     help="""Comma-separated list of modules that should never be marked as a misplaced development dependency, even though it seems to not be used solely for development purposes.
     For example; `deptry . --ignore-misplaced-dev foo,bar`.
     """,
-    default=DEFAULTS["ignore_misplaced_dev"],
+    default=(),
 )
 @click.option(
     "--exclude",
@@ -118,7 +117,7 @@ def configure_logger(ctx: click.Context, _param: click.Parameter, value: bool) -
     Can be used multiple times by specifying the argument multiple times. re.match() is used to match the expressions, which by default checks for a match only at the beginning of a string.
     For example: `deptry . -e ".*/foo/" -e bar"` Note that this overwrites the defaults.
     """,
-    default=DEFAULTS["exclude"],
+    default=("venv", r"\.venv", r"\.direnv", "tests", r"\.git", "setup.py"),
     show_default=True,
 )
 @click.option(
@@ -128,7 +127,7 @@ def configure_logger(ctx: click.Context, _param: click.Parameter, value: bool) -
     multiple=True,
     help="""Like --exclude, but adds additional files and directories on top of the excluded ones instead of overwriting the defaults.
     (Useful if you simply want to add to the default) `deptry . -ee ".*/foo/" -ee bar"`""",
-    default=DEFAULTS["extend_exclude"],
+    default=(),
     show_default=True,
 )
 @click.option(
@@ -148,7 +147,7 @@ def configure_logger(ctx: click.Context, _param: click.Parameter, value: bool) -
     type=COMMA_SEPARATED_TUPLE,
     help=""".txt files to scan for dependencies. If a file called pyproject.toml with a [tool.poetry.dependencies] section is found, this argument is ignored
     and the dependencies are extracted from the pyproject.toml file instead. Can be multiple e.g. `deptry . --requirements-txt req/prod.txt,req/extra.txt`""",
-    default=DEFAULTS["requirements_txt"],
+    default=("requirements.txt",),
     show_default=True,
 )
 @click.option(
@@ -157,7 +156,7 @@ def configure_logger(ctx: click.Context, _param: click.Parameter, value: bool) -
     type=COMMA_SEPARATED_TUPLE,
     help=""".txt files to scan for additional development dependencies. If a file called pyproject.toml with a [tool.poetry.dependencies] section is found, this argument is ignored
     and the dependencies are extracted from the pyproject.toml file instead. Can be multiple e.g. `deptry . --requirements-txt-dev req/dev.txt,req/test.txt`""",
-    default=DEFAULTS["requirements_txt_dev"],
+    default=("dev-requirements.txt", "requirements-dev.txt"),
     show_default=True,
 )
 @click.option(
@@ -165,7 +164,6 @@ def configure_logger(ctx: click.Context, _param: click.Parameter, value: bool) -
     "-o",
     type=click.STRING,
     help="""If specified, a summary of the dependency issues found will be written to the output location specified. e.g. `deptry . -o deptry.json`""",
-    default=DEFAULTS["json_output"],
     show_default=True,
 )
 @click.option(
