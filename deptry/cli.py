@@ -35,6 +35,14 @@ def configure_logger(ctx: click.Context, _param: click.Parameter, value: bool) -
     logging.basicConfig(level=log_level, handlers=[logging.StreamHandler()], format="%(message)s")
 
 
+def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: bool) -> None:
+    if not value or ctx.resilient_parsing:
+        return None
+
+    click.echo(f'deptry {metadata.version("deptry")}')  # type: ignore[no-untyped-call]
+    ctx.exit()
+
+
 @click.command()
 @click.argument("root", type=click.Path(exists=True, path_type=Path), required=False)
 @click.option(
@@ -139,6 +147,9 @@ def configure_logger(ctx: click.Context, _param: click.Parameter, value: bool) -
 @click.option(
     "--version",
     is_flag=True,
+    is_eager=True,
+    expose_value=False,
+    callback=display_deptry_version,
     help="Display the current version and exit.",
 )
 @click.option(
@@ -192,7 +203,6 @@ def deptry(
     requirements_txt: Tuple[str, ...],
     requirements_txt_dev: Tuple[str, ...],
     json_output: str,
-    version: bool,
     config: str,
 ) -> None:
     """Find dependency issues in your Python project.
@@ -201,10 +211,6 @@ def deptry(
     All other arguments should be specified relative to [ROOT].
 
     """
-
-    if version:
-        display_deptry_version()
-        sys.exit(0)
 
     if not root:
         logging.warning("Missing argument ROOT. E.g. `deptry .`")
@@ -227,7 +233,3 @@ def deptry(
             requirements_txt_dev=requirements_txt_dev,
             json_output=json_output,
         ).run()
-
-
-def display_deptry_version() -> None:
-    logging.info(f'deptry {metadata.version("deptry")}')  # type: ignore[no-untyped-call]
