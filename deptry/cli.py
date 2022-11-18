@@ -29,7 +29,7 @@ class CommaSeparatedTupleParamType(click.ParamType):
 COMMA_SEPARATED_TUPLE = CommaSeparatedTupleParamType()
 
 
-def configure_logger(ctx: click.Context, _param: click.Parameter, value: bool) -> None:
+def configure_logger(_ctx: click.Context, _param: click.Parameter, value: bool) -> None:
     log_level = logging.DEBUG if value else logging.INFO
     logging.basicConfig(level=log_level, handlers=[logging.StreamHandler()], format="%(message)s")
 
@@ -52,6 +52,7 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
         "Boolean flag for verbosity. Using this flag will display more information about files, imports and"
         " dependencies while running."
     ),
+    expose_value=False,
     is_eager=True,
     callback=configure_logger,
 )
@@ -183,11 +184,11 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
     callback=read_configuration_from_pyproject_toml,
     help="Path to the pyproject.toml file to read configuration from.",
     default=PYPROJECT_TOML_PATH,
+    expose_value=False,
     hidden=True,
 )
 def deptry(
     root: Path,
-    verbose: bool,
     ignore_obsolete: Tuple[str, ...],
     ignore_missing: Tuple[str, ...],
     ignore_transitive: Tuple[str, ...],
@@ -202,7 +203,6 @@ def deptry(
     requirements_txt: Tuple[str, ...],
     requirements_txt_dev: Tuple[str, ...],
     json_output: str,
-    config: str,
 ) -> None:
     """Find dependency issues in your Python project.
 
