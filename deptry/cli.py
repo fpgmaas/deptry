@@ -1,4 +1,7 @@
 import logging
+import os
+import platform
+import sys
 from pathlib import Path
 from typing import List, Optional, Tuple, Union
 
@@ -7,7 +10,13 @@ import click
 from deptry.compat import metadata
 from deptry.config import read_configuration_from_pyproject_toml
 from deptry.core import Core
-from deptry.utils import PYPROJECT_TOML_PATH, run_within_dir
+from deptry.utils import (
+    PYPROJECT_TOML_PATH,
+    guess_virtualenv_site_packages,
+    in_project_virtualenv,
+    install_distribution_finder,
+    run_within_dir,
+)
 
 
 class CommaSeparatedTupleParamType(click.ParamType):
@@ -210,6 +219,25 @@ def deptry(
     All other arguments should be specified relative to [ROOT].
 
     """
+
+    if version:
+        display_deptry_version()
+        sys.exit(0)
+
+    if not root:
+        logging.warning("Missing argument ROOT. E.g. `deptry .`")
+        sys.exit(1)
+
+    virtual_env = os.environ.get("VIRTUAL_ENV")
+    logging.warning(root.absolute().name)
+    if not in_project_virtualenv(
+        root.absolute().name, prefix=sys.prefix, base_prefix=sys.base_prefix, active_virtual_env=virtual_env
+    ):
+        site_packages = guess_virtualenv_site_packages(root, platform.system(), virtual_env)
+        if site_packages:
+            logging.warning("Assuming project virtualenv %s", site_packages.absolute())
+            logging.warning("Consider explicitly activating before running deptry")
+            install_distribution_finder(site_packages)
 
     with run_within_dir(root):
         Core(
