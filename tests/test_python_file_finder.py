@@ -5,7 +5,7 @@ from deptry.python_file_finder import PythonFileFinder
 from deptry.utils import run_within_dir
 
 
-def create_files_from_list_of_dicts(paths: List[Dict[str, str]]):
+def create_files_from_list_of_dicts(paths: List[Dict[str, str]]) -> None:
     """
     Takes as input an argument paths, which is a list of dicts. Each dict should have two keys;
     'dir' to denote a directory and 'file' to denote the file name. This function creates all files
@@ -17,7 +17,7 @@ def create_files_from_list_of_dicts(paths: List[Dict[str, str]]):
             pass
 
 
-def test_simple(tmp_path):
+def test_simple(tmp_path: Path) -> None:
     with run_within_dir(tmp_path):
         paths = [
             {"dir": "dir/subdir", "file": "file1.py"},
@@ -28,12 +28,12 @@ def test_simple(tmp_path):
         ]
         create_files_from_list_of_dicts(paths)
 
-        files = PythonFileFinder(exclude=[".venv", "other_dir"]).get_all_python_files_in(".")
+        files = PythonFileFinder(exclude=(".venv", "other_dir")).get_all_python_files_in(Path("."))
         assert len(files) == 3
         assert "dir/subdir/file2.py" in [str(file) for file in files]
 
 
-def test_only_matches_start(tmp_path):
+def test_only_matches_start(tmp_path: Path) -> None:
     """
     Test the adding 'subdir' as exclude argument does not also exclude dir/subdir.
     """
@@ -47,26 +47,26 @@ def test_only_matches_start(tmp_path):
         ]
         create_files_from_list_of_dicts(paths)
 
-        files = PythonFileFinder(exclude=["subdir"]).get_all_python_files_in(".")
+        files = PythonFileFinder(exclude=("subdir",)).get_all_python_files_in(Path("."))
         assert len(files) == 3
         assert "dir/subdir/file2.py" in [str(file) for file in files]
 
 
-def test_matches_ipynb(tmp_path):
+def test_matches_ipynb(tmp_path: Path) -> None:
     with run_within_dir(tmp_path):
         paths = [
             {"dir": "dir/subdir", "file": "file1.ipynb"},
         ]
         create_files_from_list_of_dicts(paths)
 
-        files = PythonFileFinder(exclude=[], ignore_notebooks=False).get_all_python_files_in(".")
+        files = PythonFileFinder(exclude=(), ignore_notebooks=False).get_all_python_files_in(Path("."))
         assert len(files) == 1
         assert "dir/subdir/file1.ipynb" in [str(file) for file in files]
-        files = PythonFileFinder(exclude=[], ignore_notebooks=True).get_all_python_files_in(".")
+        files = PythonFileFinder(exclude=(), ignore_notebooks=True).get_all_python_files_in(Path("."))
         assert len(files) == 0
 
 
-def test_regex_argument(tmp_path):
+def test_regex_argument(tmp_path: Path) -> None:
     with run_within_dir(tmp_path):
         paths = [
             {"dir": "dir/subdir", "file": "file1.py"},
@@ -79,17 +79,19 @@ def test_regex_argument(tmp_path):
         ]
         create_files_from_list_of_dicts(paths)
 
-        files = PythonFileFinder(exclude=[".*file1"], ignore_notebooks=False).get_all_python_files_in(".")
+        files = PythonFileFinder(exclude=(".*file1",), ignore_notebooks=False).get_all_python_files_in(Path("."))
         assert len(files) == 4
         assert not any(["file1" in str(file) for file in files])
 
-        files = PythonFileFinder(exclude=[".cache|other.*subdir"], ignore_notebooks=False).get_all_python_files_in(".")
+        files = PythonFileFinder(exclude=(".cache|other.*subdir",), ignore_notebooks=False).get_all_python_files_in(
+            Path(".")
+        )
         assert len(files) == 3
         assert not any(["other_dir" in str(file) for file in files])
         assert not any([".cache" in str(file) for file in files])
         assert "dir/subdir/file2.py" in [str(file) for file in files]
 
-        files = PythonFileFinder(exclude=[".*/subdir/"], ignore_notebooks=False).get_all_python_files_in(".")
+        files = PythonFileFinder(exclude=(".*/subdir/",), ignore_notebooks=False).get_all_python_files_in(Path("."))
         assert len(files) == 2
         assert not any(["subdir" in str(file) for file in files])
         assert ".cache/file2.py" in [str(file) for file in files]

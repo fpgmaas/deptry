@@ -1,14 +1,16 @@
 import shlex
 import shutil
 import subprocess
+from pathlib import Path
 
 import pytest
+from _pytest.tmpdir import TempPathFactory
 
 from deptry.utils import run_within_dir
 
 
 @pytest.fixture(scope="session")
-def requirements_txt_dir_with_venv_installed(tmp_path_factory):
+def requirements_txt_dir_with_venv_installed(tmp_path_factory: TempPathFactory) -> Path:
     tmp_path_proj = tmp_path_factory.getbasetemp() / "project_with_requirements_txt"
     shutil.copytree("tests/data/project_with_requirements_txt", str(tmp_path_proj))
     with run_within_dir(tmp_path_proj):
@@ -24,7 +26,7 @@ def requirements_txt_dir_with_venv_installed(tmp_path_factory):
     return tmp_path_proj
 
 
-def test_cli_single_requirements_txt(requirements_txt_dir_with_venv_installed):
+def test_cli_single_requirements_txt(requirements_txt_dir_with_venv_installed: Path) -> None:
     with run_within_dir(requirements_txt_dir_with_venv_installed):
         result = subprocess.run(
             shlex.split("deptry . --requirements-txt requirements.txt --requirements-txt-dev requirements-dev.txt"),
@@ -46,7 +48,7 @@ def test_cli_single_requirements_txt(requirements_txt_dir_with_venv_installed):
         )
 
 
-def test_cli_multiple_requirements_txt(requirements_txt_dir_with_venv_installed):
+def test_cli_multiple_requirements_txt(requirements_txt_dir_with_venv_installed: Path) -> None:
     with run_within_dir(requirements_txt_dir_with_venv_installed):
         result = subprocess.run(
             shlex.split(

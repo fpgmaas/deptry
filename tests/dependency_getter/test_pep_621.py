@@ -1,8 +1,10 @@
+from pathlib import Path
+
 from deptry.dependency_getter.pep_621 import PEP621DependencyGetter
 from deptry.utils import run_within_dir
 
 
-def test_dependency_getter(tmp_path):
+def test_dependency_getter(tmp_path: Path) -> None:
     fake_pyproject_toml = """[project]
 # PEP 621 project metadata
 # See https://www.python.org/dev/peps/pep-0621/

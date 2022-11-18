@@ -1,9 +1,13 @@
+from __future__ import annotations
+
 import logging
+
+from _pytest.logging import LogCaptureFixture
 
 from deptry.result_logger import ResultLogger
 
 
-def test_logging_number_multiple(caplog):
+def test_logging_number_multiple(caplog: LogCaptureFixture) -> None:
     with caplog.at_level(logging.INFO):
         issues = {
             "missing": ["foo"],
@@ -20,7 +24,7 @@ def test_logging_number_multiple(caplog):
     assert "For more information, see the documentation" in caplog.text
 
 
-def test_logging_number_single(caplog):
+def test_logging_number_single(caplog: LogCaptureFixture) -> None:
     with caplog.at_level(logging.INFO):
         issues = {
             "missing": ["foo"],
@@ -29,9 +33,9 @@ def test_logging_number_single(caplog):
     assert "There was 1 dependency issue found" in caplog.text
 
 
-def test_logging_number_none(caplog):
+def test_logging_number_none(caplog: LogCaptureFixture) -> None:
     with caplog.at_level(logging.INFO):
-        issues = {
+        issues: dict[str, list[str]] = {
             "missing": [],
         }
         ResultLogger(issues).log_and_exit()
