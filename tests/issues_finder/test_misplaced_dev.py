@@ -3,7 +3,7 @@ from deptry.issues_finder.misplaced_dev import MisplacedDevDependenciesFinder
 from deptry.module import Module
 
 
-def test_simple():
+def test_simple() -> None:
     dependencies = [Dependency("bar")]
     modules = [Module("foo", dev_top_levels=["foo"], is_dev_dependency=True)]
 

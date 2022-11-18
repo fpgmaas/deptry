@@ -1,12 +1,14 @@
 import logging
+from pathlib import Path
 
 import click
+from _pytest.logging import LogCaptureFixture
 
 from deptry.config import read_configuration_from_pyproject_toml
 from deptry.utils import run_within_dir
 
 
-def test_read_configuration_from_pyproject_toml_exists(tmp_path):
+def test_read_configuration_from_pyproject_toml_exists(tmp_path: Path) -> None:
     click_context = click.Context(
         click.Command(""),
         default_map={
@@ -48,7 +50,7 @@ def test_read_configuration_from_pyproject_toml_exists(tmp_path):
             f.write(pyproject_toml_content)
 
         assert (
-            read_configuration_from_pyproject_toml(click_context, click.UNPROCESSED, "pyproject.toml")
+            read_configuration_from_pyproject_toml(click_context, click.UNPROCESSED(None), "pyproject.toml")
             == "pyproject.toml"
         )
 
@@ -69,11 +71,11 @@ def test_read_configuration_from_pyproject_toml_exists(tmp_path):
     }
 
 
-def test_read_configuration_from_pyproject_toml_file_not_found(caplog):
+def test_read_configuration_from_pyproject_toml_file_not_found(caplog: LogCaptureFixture) -> None:
     with caplog.at_level(logging.DEBUG):
         assert (
             read_configuration_from_pyproject_toml(
-                click.Context(click.Command("")), click.UNPROCESSED, "a_non_existent_pyproject.toml"
+                click.Context(click.Command("")), click.UNPROCESSED(None), "a_non_existent_pyproject.toml"
             )
             is None
         )
@@ -81,7 +83,9 @@ def test_read_configuration_from_pyproject_toml_file_not_found(caplog):
     assert "No pyproject.toml file to read configuration from." in caplog.text
 
 
-def test_read_configuration_from_pyproject_toml_file_without_deptry_section(caplog, tmp_path):
+def test_read_configuration_from_pyproject_toml_file_without_deptry_section(
+    caplog: LogCaptureFixture, tmp_path: Path
+) -> None:
     pyproject_toml_content = """
         [tool.something]
         exclude = ["foo", "bar"]
@@ -94,7 +98,7 @@ def test_read_configuration_from_pyproject_toml_file_without_deptry_section(capl
         with caplog.at_level(logging.DEBUG):
             assert (
                 read_configuration_from_pyproject_toml(
-                    click.Context(click.Command("")), click.UNPROCESSED, "pyproject.toml"
+                    click.Context(click.Command("")), click.UNPROCESSED(None), "pyproject.toml"
                 )
                 is None
             )

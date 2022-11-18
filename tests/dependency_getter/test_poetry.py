@@ -1,8 +1,10 @@
+from pathlib import Path
+
 from deptry.dependency_getter.poetry import PoetryDependencyGetter
 from deptry.utils import run_within_dir
 
 
-def test_dependency_getter(tmp_path):
+def test_dependency_getter(tmp_path: Path) -> None:
     fake_pyproject_toml = """[tool.poetry.dependencies]
 python = ">=3.7,<4.0"
 bar =  { version = ">=2.5.1,<4.0.0", python = ">3.7" }

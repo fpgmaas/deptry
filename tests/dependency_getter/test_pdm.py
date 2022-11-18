@@ -1,8 +1,10 @@
+from pathlib import Path
+
 from deptry.dependency_getter.pdm import PDMDependencyGetter
 from deptry.utils import run_within_dir
 
 
-def test_dependency_getter(tmp_path):
+def test_dependency_getter(tmp_path: Path) -> None:
     fake_pyproject_toml = """[project]
 # PEP 621 project metadata
 # See https://www.python.org/dev/peps/pep-0621/
@@ -43,7 +45,7 @@ dependencies = [
         assert "conditional_bar" in dependencies[3].top_levels
 
 
-def test_dev_dependency_getter(tmp_path):
+def test_dev_dependency_getter(tmp_path: Path) -> None:
     fake_pyproject_toml = """[project]
 # PEP 621 project metadata
 # See https://www.python.org/dev/peps/pep-0621/

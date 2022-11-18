@@ -1,9 +1,11 @@
+from __future__ import annotations
+
 import pytest
 
 from deptry.core import Core
 
 
-def test_simple():
+def test_simple() -> None:
     issues = {
         "missing": ["foo"],
         "obsolete": ["foo"],
@@ -17,8 +19,8 @@ def test_simple():
     assert e.value.code == 1
 
 
-def test_no_issues():
-    issues = {}
+def test_no_issues() -> None:
+    issues: dict[str, list[str]] = {}
     with pytest.raises(SystemExit) as e:
         Core._exit(issues)
 

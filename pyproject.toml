@@ -60,7 +60,8 @@ source = ["deptry"]
 profile = "black"
 
 [tool.mypy]
-files = ["deptry", "scripts"]
+files = ["deptry", "scripts", "tests"]
+exclude = ["tests/data"]
 disallow_any_unimported = true
 enable_error_code = [
     "ignore-without-code",
