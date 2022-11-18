@@ -120,7 +120,7 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
     "--exclude",
     "-e",
     multiple=True,
-    type=click.STRING,
+    type=str,
     help="""A regular expression for directories or files in which .py files should not be scanned for imports to determine if there are dependency issues.
     Can be used multiple times by specifying the argument multiple times. re.match() is used to match the expressions, which by default checks for a match only at the beginning of a string.
     For example: `deptry . -e ".*/foo/" -e bar"` Note that this overwrites the defaults.
@@ -131,7 +131,7 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
 @click.option(
     "--extend-exclude",
     "-ee",
-    type=click.STRING,
+    type=str,
     multiple=True,
     help="""Like --exclude, but adds additional files and directories on top of the excluded ones instead of overwriting the defaults.
     (Useful if you simply want to add to the default) `deptry . -ee ".*/foo/" -ee bar"`""",
@@ -173,7 +173,7 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
 @click.option(
     "--json-output",
     "-o",
-    type=click.STRING,
+    type=str,
     help="""If specified, a summary of the dependency issues found will be written to the output location specified. e.g. `deptry . -o deptry.json`""",
     show_default=True,
 )
