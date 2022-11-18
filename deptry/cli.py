@@ -1,5 +1,4 @@
 import logging
-import sys
 from pathlib import Path
 from typing import List, Optional, Tuple, Union
 
@@ -44,7 +43,7 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
 
 
 @click.command()
-@click.argument("root", type=click.Path(exists=True, path_type=Path), required=False)
+@click.argument("root", type=click.Path(exists=True, path_type=Path))
 @click.option(
     "--verbose",
     "-v",
@@ -187,7 +186,7 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
     hidden=True,
 )
 def deptry(
-    root: Optional[Path],
+    root: Path,
     verbose: bool,
     ignore_obsolete: Tuple[str, ...],
     ignore_missing: Tuple[str, ...],
@@ -211,10 +210,6 @@ def deptry(
     All other arguments should be specified relative to [ROOT].
 
     """
-
-    if not root:
-        logging.warning("Missing argument ROOT. E.g. `deptry .`")
-        sys.exit(1)
 
     with run_within_dir(root):
         Core(
