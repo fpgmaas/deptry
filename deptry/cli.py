@@ -10,12 +10,11 @@ import click
 from deptry.compat import metadata
 from deptry.config import read_configuration_from_pyproject_toml
 from deptry.core import Core
-from deptry.utils import (
-    PYPROJECT_TOML_PATH,
+from deptry.utils import PYPROJECT_TOML_PATH, run_within_dir
+from deptry.virtualenv_finder import (
     guess_virtualenv_site_packages,
     in_project_virtualenv,
     install_distribution_finder,
-    run_within_dir,
 )
 
 
