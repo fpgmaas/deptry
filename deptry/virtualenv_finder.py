@@ -1,3 +1,5 @@
+import logging
+import os
 import sys
 from itertools import chain
 from pathlib import Path
@@ -19,10 +21,20 @@ def find_site_packages_in(root: Path) -> Optional[Path]:
         return None
 
 
-def in_project_virtualenv(
+def running_in_project_virtualenv(
     project_name: str, *, prefix: str, base_prefix: str, active_virtual_env: Optional[str] = None
 ) -> bool:
-    """Determine if a project virtualenv is active"""
+    """Determine if executed by the interpreter in the project's virtual environment
+
+    If we are executed from virtual environment, the `prefix` argument
+    will be set to the virtual environment's directory, whereas
+    `base_prefix` will point to the global Python installation
+    used to create the virtual environment.
+
+    The `active_virtual_env` arguments holds the value of the
+    VIRTUAL_ENV environment variable, that tells with good reliability
+    that a virtual environment has been activated in the current shell.
+    """
 
     # Gobal installation
     if prefix == base_prefix:
@@ -64,3 +76,25 @@ def install_distribution_finder(site_packages: Path) -> None:
             return super().find_distributions(context)
 
     sys.meta_path.insert(0, VirtualenvDistributionFinder())
+
+
+def maybe_install_finder(project_root: Path) -> None:
+    """If need be, add poject virtualenv site packages to metadata search path"""
+
+    project_name = project_root.absolute().name
+    virtual_env = os.environ.get("VIRTUAL_ENV")
+
+    # If we are likely executed by the python interpreter of the
+    # project's virtual envrionment, nothing to do!
+    if running_in_project_virtualenv(
+        project_name, prefix=sys.prefix, base_prefix=sys.base_prefix, active_virtual_env=virtual_env
+    ):
+        return
+
+    # Try to locate the project's virtual environment site-packages
+    # and add it to the dependency metadata search path.
+    site_packages = guess_virtualenv_site_packages(project_root, virtual_env)
+    if site_packages:
+        logging.warning("Assuming virtual environment for project %s is %s", project_name, site_packages)
+        logging.warning("Consider installing deptry in this environment: <link to docs>")
+        install_distribution_finder(site_packages)

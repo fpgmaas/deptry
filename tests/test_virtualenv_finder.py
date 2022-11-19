@@ -3,7 +3,7 @@ import pytest
 from deptry.virtualenv_finder import (
     find_site_packages_in,
     guess_virtualenv_site_packages,
-    in_project_virtualenv,
+    running_in_project_virtualenv,
 )
 
 
@@ -36,10 +36,10 @@ def test_find_site_packages_in_missing(tmp_path):
         (("theproject", "/usr", "/home/user/theproject/.venv", "/home/user/theproject/.venv"), True),
     ],
 )
-def test_in_project_virtualenv(params, expected):
+def test_running_in_project_virtualenv(params, expected):
     arg_names = ("project_name", "base_prefix", "prefix", "active_virtual_env")
     kwargs = dict(zip(arg_names, params))
-    assert in_project_virtualenv(**kwargs) == expected
+    assert running_in_project_virtualenv(**kwargs) == expected
 
 
 def test_guess_site_packages(tmp_path):
