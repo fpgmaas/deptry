@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import pytest
 
 from deptry.virtualenv_finder import (
@@ -27,17 +29,17 @@ def test_find_site_packages_in_missing(tmp_path):
     "params, expected",
     [
         # Global installation
-        (("theproject", "/usr", "/usr", None), False),
+        ((Path("theproject"), "/usr", "/usr", None), False),
         # Direct invocation with project interpreter
-        (("theproject", "/usr", "/home/user/.virtualenvs/theproject", None), True),
+        ((Path("theproject"), "/usr", "/home/user/.virtualenvs/theproject", None), True),
         # Pipx global install. Project virtualenv active
-        (("theproject", "/usr", "/home/user/.local/pipx/venvs/deptry", "/home/user/theproject/.venv"), False),
+        ((Path("theproject"), "/usr", "/home/user/.local/pipx/venvs/deptry", "/home/user/theproject/.venv"), False),
         # Project virtualenv active and running
-        (("theproject", "/usr", "/home/user/theproject/.venv", "/home/user/theproject/.venv"), True),
+        ((Path("theproject"), "/usr", "/home/user/theproject/.venv", "/home/user/theproject/.venv"), True),
     ],
 )
 def test_running_in_project_virtualenv(params, expected):
-    arg_names = ("project_name", "base_prefix", "prefix", "active_virtual_env")
+    arg_names = ("project_root", "base_prefix", "prefix", "active_virtual_env")
     kwargs = dict(zip(arg_names, params))
     ctx = ExecutionContext(**kwargs)
     assert ctx.running_in_project_virtualenv() == expected

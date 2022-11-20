@@ -11,19 +11,23 @@ from deptry.compat import metadata
 
 @dataclass
 class ExecutionContext:
-    project_name: str
+    project_root: Path
     base_prefix: str
     prefix: str
     active_virtual_env: str = None
 
     @classmethod
-    def from_runtime(cls, project_name):
+    def from_runtime(cls, project_root: Path):
         return cls(
-            project_name=project_name,
+            project_root=project_root,
             base_prefix=sys.base_prefix,
             prefix=sys.prefix,
             active_virtual_env=os.environ.get("VIRTUAL_ENV"),
         )
+
+    @property
+    def project_name(self):
+        return self.project_root.absolute().name
 
     def running_in_project_virtualenv(self) -> bool:
         """Determine if executed by the interpreter in the project's virtual environment
@@ -93,21 +97,13 @@ def install_distribution_finder(site_packages: Path) -> None:
     sys.meta_path.insert(0, VirtualenvDistributionFinder())
 
 
-def maybe_install_finder(project_root: Path) -> None:
-    """If need be, add poject virtualenv site packages to metadata search path"""
+def install_metadata_finder(ctx: ExecutionContext) -> None:
+    """Add poject virtualenv site packages to metadata search path"""
 
-    project_name = project_root.absolute().name
-    ctx = ExecutionContext.from_runtime(project_name)
-
-    # If we are likely executed by the python interpreter of the
-    # project's virtual envrionment, nothing to do!
-    if ctx.running_in_project_virtualenv():
-        return
-
-    # Try to locate the project's virtual environment site-packages
+    # Try to locate the project's virtual environment site packages
     # and add it to the dependency metadata search path.
-    site_packages = guess_virtualenv_site_packages(project_root, ctx.active_virtual_env)
+    site_packages = guess_virtualenv_site_packages(ctx.project_root, ctx.active_virtual_env)
     if site_packages:
-        logging.warning(f"Assuming virtual environment for project {project_name} is {site_packages}")
+        logging.warning(f"Assuming virtual environment for project {ctx.project_name} is {site_packages}")
         logging.warning("Consider installing deptry in this environment.")
-        install_distribution_finder(site_packages)
+    install_distribution_finder(site_packages)

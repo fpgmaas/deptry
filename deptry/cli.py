@@ -9,7 +9,7 @@ from deptry.compat import metadata
 from deptry.config import read_configuration_from_pyproject_toml
 from deptry.core import Core
 from deptry.utils import PYPROJECT_TOML_PATH, run_within_dir
-from deptry.virtualenv_finder import maybe_install_finder
+from deptry.virtualenv_finder import ExecutionContext, install_metadata_finder
 
 
 class CommaSeparatedTupleParamType(click.ParamType):
@@ -221,7 +221,9 @@ def deptry(
         logging.warning("Missing argument ROOT. E.g. `deptry .`")
         sys.exit(1)
 
-    maybe_install_finder(root)
+    ctx = ExecutionContext.from_runtime(root)
+    if not ctx.running_in_project_virtualenv():
+        install_metadata_finder(ctx)
 
     with run_within_dir(root):
         Core(
