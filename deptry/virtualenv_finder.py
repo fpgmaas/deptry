@@ -1,11 +1,55 @@
 import logging
 import os
 import sys
+from dataclasses import dataclass
 from itertools import chain
 from pathlib import Path
 from typing import Optional
 
 from deptry.compat import metadata
+
+
+@dataclass
+class ExecutionContext:
+    project_name: str
+    base_prefix: str
+    prefix: str
+    active_virtual_env: str = None
+
+    @classmethod
+    def from_runtime(cls, project_name):
+        return cls(
+            project_name=project_name,
+            base_prefix=sys.base_prefix,
+            prefix=sys.prefix,
+            active_virtual_env=os.environ.get("VIRTUAL_ENV"),
+        )
+
+    def running_in_project_virtualenv(self) -> bool:
+        """Determine if executed by the interpreter in the project's virtual environment
+
+        If we are executed from virtual environment, the context `prefix`
+        will be set to the virtual environment's directory, whereas
+        `base_prefix` will point to the global Python installation
+        used to create the virtual environment.
+
+        The `active_virtual_env` context field holds the value of the
+        VIRTUAL_ENV environment variable, that tells with good reliability
+        that a virtual environment has been activated in the current shell.
+        """
+
+        # Gobal installation
+        if self.prefix == self.base_prefix:
+            return False
+
+        # No virtualenv has been activated. Unless the project name is in
+        # the interpreter path, assume we are not in the project's virtualenv
+        if not self.active_virtual_env:
+            return self.project_name in self.prefix
+
+        # A virtualenv has been activated. But if `deptry` was installed gloabally using
+        # `pipx`, we could be running in another installation.
+        return self.active_virtual_env == self.prefix
 
 
 def find_site_packages_in(root: Path) -> Optional[Path]:
@@ -19,35 +63,6 @@ def find_site_packages_in(root: Path) -> Optional[Path]:
         return next(search)
     except StopIteration:
         return None
-
-
-def running_in_project_virtualenv(
-    project_name: str, *, prefix: str, base_prefix: str, active_virtual_env: Optional[str] = None
-) -> bool:
-    """Determine if executed by the interpreter in the project's virtual environment
-
-    If we are executed from virtual environment, the `prefix` argument
-    will be set to the virtual environment's directory, whereas
-    `base_prefix` will point to the global Python installation
-    used to create the virtual environment.
-
-    The `active_virtual_env` arguments holds the value of the
-    VIRTUAL_ENV environment variable, that tells with good reliability
-    that a virtual environment has been activated in the current shell.
-    """
-
-    # Gobal installation
-    if prefix == base_prefix:
-        return False
-
-    # No virtualenv has been activated. Unless the project name is in
-    # the interpreter path, assume we are not in the project's virtualenv
-    if not active_virtual_env:
-        return project_name in prefix
-
-    # A virtualenv has been activated. But if `deptry` was installed gloabally using
-    # `pipx`, we could be running in another installation.
-    return active_virtual_env == prefix
 
 
 def guess_virtualenv_site_packages(project_root: Path, active_virtual_env: Optional[str] = None) -> Optional[Path]:
@@ -82,18 +97,16 @@ def maybe_install_finder(project_root: Path) -> None:
     """If need be, add poject virtualenv site packages to metadata search path"""
 
     project_name = project_root.absolute().name
-    virtual_env = os.environ.get("VIRTUAL_ENV")
+    ctx = ExecutionContext.from_runtime(project_name)
 
     # If we are likely executed by the python interpreter of the
     # project's virtual envrionment, nothing to do!
-    if running_in_project_virtualenv(
-        project_name, prefix=sys.prefix, base_prefix=sys.base_prefix, active_virtual_env=virtual_env
-    ):
+    if ctx.running_in_project_virtualenv():
         return
 
     # Try to locate the project's virtual environment site-packages
     # and add it to the dependency metadata search path.
-    site_packages = guess_virtualenv_site_packages(project_root, virtual_env)
+    site_packages = guess_virtualenv_site_packages(project_root, ctx.active_virtual_env)
     if site_packages:
         logging.warning("Assuming virtual environment for project %s is %s", project_name, site_packages)
         logging.warning("Consider installing deptry in this environment: <link to docs>")
