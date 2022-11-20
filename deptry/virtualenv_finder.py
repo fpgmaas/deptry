@@ -108,6 +108,6 @@ def maybe_install_finder(project_root: Path) -> None:
     # and add it to the dependency metadata search path.
     site_packages = guess_virtualenv_site_packages(project_root, ctx.active_virtual_env)
     if site_packages:
-        logging.warning("Assuming virtual environment for project %s is %s", project_name, site_packages)
-        logging.warning("Consider installing deptry in this environment: <link to docs>")
+        logging.warning(f"Assuming virtual environment for project {project_name} is {site_packages}")
+        logging.warning("Consider installing deptry in this environment.")
         install_distribution_finder(site_packages)
