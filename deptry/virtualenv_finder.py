@@ -75,6 +75,7 @@ def guess_virtualenv_site_packages(project_root: Path, active_virtual_env: Optio
     possible_roots = [
         Path("~/.virtualenvs").expanduser() / project_root.name,
         project_root / ".venv",
+        project_root / "venv"
     ]
     if active_virtual_env:
         possible_roots.append(Path(active_virtual_env))

@@ -1,5 +1,4 @@
 import logging
-import sys
 from pathlib import Path
 from typing import List, Optional, Tuple, Union
 
@@ -212,14 +211,6 @@ def deptry(
     All other arguments should be specified relative to [ROOT].
 
     """
-
-    if version:
-        display_deptry_version()
-        sys.exit(0)
-
-    if not root:
-        logging.warning("Missing argument ROOT. E.g. `deptry .`")
-        sys.exit(1)
 
     ctx = ExecutionContext.from_runtime(root)
     if not ctx.running_in_project_virtualenv():
