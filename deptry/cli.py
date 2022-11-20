@@ -1,5 +1,4 @@
 import logging
-import sys
 from pathlib import Path
 from typing import List, Optional, Tuple, Union
 
@@ -30,13 +29,21 @@ class CommaSeparatedTupleParamType(click.ParamType):
 COMMA_SEPARATED_TUPLE = CommaSeparatedTupleParamType()
 
 
-def configure_logger(ctx: click.Context, _param: click.Parameter, value: bool) -> None:
+def configure_logger(_ctx: click.Context, _param: click.Parameter, value: bool) -> None:
     log_level = logging.DEBUG if value else logging.INFO
     logging.basicConfig(level=log_level, handlers=[logging.StreamHandler()], format="%(message)s")
 
 
+def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: bool) -> None:
+    if not value or ctx.resilient_parsing:
+        return None
+
+    click.echo(f'deptry {metadata.version("deptry")}')  # type: ignore[no-untyped-call]
+    ctx.exit()
+
+
 @click.command()
-@click.argument("root", type=click.Path(exists=True, path_type=Path), required=False)
+@click.argument("root", type=click.Path(exists=True, path_type=Path))
 @click.option(
     "--verbose",
     "-v",
@@ -45,6 +52,7 @@ def configure_logger(ctx: click.Context, _param: click.Parameter, value: bool) -
         "Boolean flag for verbosity. Using this flag will display more information about files, imports and"
         " dependencies while running."
     ),
+    expose_value=False,
     is_eager=True,
     callback=configure_logger,
 )
@@ -112,7 +120,7 @@ def configure_logger(ctx: click.Context, _param: click.Parameter, value: bool) -
     "--exclude",
     "-e",
     multiple=True,
-    type=click.STRING,
+    type=str,
     help="""A regular expression for directories or files in which .py files should not be scanned for imports to determine if there are dependency issues.
     Can be used multiple times by specifying the argument multiple times. re.match() is used to match the expressions, which by default checks for a match only at the beginning of a string.
     For example: `deptry . -e ".*/foo/" -e bar"` Note that this overwrites the defaults.
@@ -123,7 +131,7 @@ def configure_logger(ctx: click.Context, _param: click.Parameter, value: bool) -
 @click.option(
     "--extend-exclude",
     "-ee",
-    type=click.STRING,
+    type=str,
     multiple=True,
     help="""Like --exclude, but adds additional files and directories on top of the excluded ones instead of overwriting the defaults.
     (Useful if you simply want to add to the default) `deptry . -ee ".*/foo/" -ee bar"`""",
@@ -139,6 +147,9 @@ def configure_logger(ctx: click.Context, _param: click.Parameter, value: bool) -
 @click.option(
     "--version",
     is_flag=True,
+    is_eager=True,
+    expose_value=False,
+    callback=display_deptry_version,
     help="Display the current version and exit.",
 )
 @click.option(
@@ -162,7 +173,7 @@ def configure_logger(ctx: click.Context, _param: click.Parameter, value: bool) -
 @click.option(
     "--json-output",
     "-o",
-    type=click.STRING,
+    type=str,
     help="""If specified, a summary of the dependency issues found will be written to the output location specified. e.g. `deptry . -o deptry.json`""",
     show_default=True,
 )
@@ -173,11 +184,11 @@ def configure_logger(ctx: click.Context, _param: click.Parameter, value: bool) -
     callback=read_configuration_from_pyproject_toml,
     help="Path to the pyproject.toml file to read configuration from.",
     default=PYPROJECT_TOML_PATH,
+    expose_value=False,
     hidden=True,
 )
 def deptry(
-    root: Optional[Path],
-    verbose: bool,
+    root: Path,
     ignore_obsolete: Tuple[str, ...],
     ignore_missing: Tuple[str, ...],
     ignore_transitive: Tuple[str, ...],
@@ -192,8 +203,6 @@ def deptry(
     requirements_txt: Tuple[str, ...],
     requirements_txt_dev: Tuple[str, ...],
     json_output: str,
-    version: bool,
-    config: str,
 ) -> None:
     """Find dependency issues in your Python project.
 
@@ -201,14 +210,6 @@ def deptry(
     All other arguments should be specified relative to [ROOT].
 
     """
-
-    if version:
-        display_deptry_version()
-        sys.exit(0)
-
-    if not root:
-        logging.warning("Missing argument ROOT. E.g. `deptry .`")
-        sys.exit(1)
 
     with run_within_dir(root):
         Core(
@@ -227,7 +228,3 @@ def deptry(
             requirements_txt_dev=requirements_txt_dev,
             json_output=json_output,
         ).run()
-
-
-def display_deptry_version() -> None:
-    logging.info(f'deptry {metadata.version("deptry")}')  # type: ignore[no-untyped-call]
