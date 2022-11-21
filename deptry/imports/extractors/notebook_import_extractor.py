@@ -3,6 +3,7 @@ from __future__ import annotations
 import ast
 import itertools
 import json
+import logging
 import re
 from dataclasses import dataclass
 from pathlib import Path
@@ -17,17 +18,24 @@ class NotebookImportExtractor(ImportExtractor):
 
     def extract_imports(self) -> set[str]:
         notebook = self._read_ipynb_file(self.file)
-        cells = self._keep_code_cells(notebook)
-        import_statements = [self._extract_import_statements_from_cell(cell) for cell in cells]
+        if notebook:
+            cells = self._keep_code_cells(notebook)
+            import_statements = [self._extract_import_statements_from_cell(cell) for cell in cells]
+            tree = ast.parse("\n".join(itertools.chain.from_iterable(import_statements)), str(self.file))
+            return self._extract_imports_from_ast(tree)
+        return set()
 
-        tree = ast.parse("\n".join(itertools.chain.from_iterable(import_statements)), str(self.file))
-
-        return self._extract_imports_from_ast(tree)
-
-    @staticmethod
-    def _read_ipynb_file(path_to_ipynb: Path) -> dict[str, Any]:
-        with open(path_to_ipynb) as f:
-            notebook: dict[str, Any] = json.load(f)
+    def _read_ipynb_file(self, path_to_ipynb: Path) -> dict[str, Any] | None:
+        try:
+            with open(path_to_ipynb) as ipynb_file:
+                notebook: dict[str, Any] = json.load(ipynb_file)
+        except UnicodeDecodeError:
+            try:
+                with open(path_to_ipynb, encoding=self._get_file_encoding(path_to_ipynb)) as ipynb_file:
+                    notebook = json.load(ipynb_file, strict=False)
+            except UnicodeDecodeError:
+                logging.warning(f"Warning: File {path_to_ipynb} could not be decoded. Skipping...")
+                return None
         return notebook
 
     @staticmethod
