@@ -20,7 +20,7 @@ class NotebookImportExtractor(ImportExtractor):
         notebook = self._read_ipynb_file(self.file)
         if not notebook:
             return set()
-        
+
         cells = self._keep_code_cells(notebook)
         import_statements = [self._extract_import_statements_from_cell(cell) for cell in cells]
         tree = ast.parse("\n".join(itertools.chain.from_iterable(import_statements)), str(self.file))
