@@ -5,6 +5,8 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from pathlib import Path
 
+import chardet
+
 
 @dataclass
 class ImportExtractor(ABC):
@@ -25,3 +27,8 @@ class ImportExtractor(ABC):
                 imported_modules.add(node.module.split(".")[0])
 
         return imported_modules
+
+    @staticmethod
+    def _get_file_encoding(file: Path) -> str:
+        with open(file, "rb") as f:
+            return chardet.detect(f.read())["encoding"]

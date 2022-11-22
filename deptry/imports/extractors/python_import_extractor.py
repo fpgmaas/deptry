@@ -3,9 +3,6 @@ from __future__ import annotations
 import ast
 import logging
 from dataclasses import dataclass
-from pathlib import Path
-
-import chardet
 
 from deptry.imports.extractors.base import ImportExtractor
 
@@ -27,8 +24,3 @@ class PythonImportExtractor(ImportExtractor):
                 return set()
 
         return self._extract_imports_from_ast(tree)
-
-    @staticmethod
-    def _get_file_encoding(file: Path) -> str:
-        with open(file, "rb") as f:
-            return chardet.detect(f.read())["encoding"]
