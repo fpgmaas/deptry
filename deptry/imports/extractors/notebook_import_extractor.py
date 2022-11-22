@@ -26,13 +26,14 @@ class NotebookImportExtractor(ImportExtractor):
         tree = ast.parse("\n".join(itertools.chain.from_iterable(import_statements)), str(self.file))
         return self._extract_imports_from_ast(tree)
 
-    def _read_ipynb_file(self, path_to_ipynb: Path) -> dict[str, Any] | None:
+    @classmethod
+    def _read_ipynb_file(cls, path_to_ipynb: Path) -> dict[str, Any] | None:
         try:
             with open(path_to_ipynb) as ipynb_file:
                 notebook: dict[str, Any] = json.load(ipynb_file)
         except UnicodeDecodeError:
             try:
-                with open(path_to_ipynb, encoding=self._get_file_encoding(path_to_ipynb)) as ipynb_file:
+                with open(path_to_ipynb, encoding=cls._get_file_encoding(path_to_ipynb)) as ipynb_file:
                     notebook = json.load(ipynb_file, strict=False)
             except UnicodeDecodeError:
                 logging.warning(f"Warning: File {path_to_ipynb} could not be decoded. Skipping...")
