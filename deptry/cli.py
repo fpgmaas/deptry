@@ -222,7 +222,7 @@ def deptry(
 
     """
 
-    if site_packages is not None:
+    if site_packages:
         install_metadata_finder(site_packages)
     else:
         warn_if_not_running_in_virtualenv(root)
