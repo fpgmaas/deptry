@@ -7,8 +7,11 @@ import click
 from deptry.compat import metadata
 from deptry.config import read_configuration_from_pyproject_toml
 from deptry.core import Core
+from deptry.metadata_finder import (
+    install_metadata_finder,
+    warn_if_not_running_in_virtualenv,
+)
 from deptry.utils import PYPROJECT_TOML_PATH, run_within_dir
-from deptry.virtualenv_finder import ExecutionContext, install_metadata_finder
 
 
 class CommaSeparatedTupleParamType(click.ParamType):
@@ -188,6 +191,12 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
     expose_value=False,
     hidden=True,
 )
+@click.option(
+    "--python-site-packages",
+    "site_packages",
+    type=click.Path(exists=True, path_type=Path),
+    help="Path to the site-packages directory where dependencies are installed. Required if `deptry` is run globally.",
+)
 def deptry(
     root: Path,
     ignore_obsolete: Tuple[str, ...],
@@ -204,6 +213,7 @@ def deptry(
     requirements_txt: Tuple[str, ...],
     requirements_txt_dev: Tuple[str, ...],
     json_output: str,
+    site_packages: Path,
 ) -> None:
     """Find dependency issues in your Python project.
 
@@ -212,9 +222,10 @@ def deptry(
 
     """
 
-    ctx = ExecutionContext.from_runtime(root)
-    if not ctx.running_in_project_virtualenv():
-        install_metadata_finder(ctx)
+    if site_packages is not None:
+        install_metadata_finder(site_packages)
+    else:
+        warn_if_not_running_in_virtualenv(root)
 
     with run_within_dir(root):
         Core(

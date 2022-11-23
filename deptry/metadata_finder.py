@@ -2,9 +2,7 @@ import logging
 import os
 import sys
 from dataclasses import dataclass
-from itertools import chain
 from pathlib import Path
-from typing import Optional
 
 from deptry.compat import metadata
 
@@ -56,37 +54,8 @@ class ExecutionContext:
         return self.active_virtual_env == self.prefix
 
 
-def find_site_packages_in(root: Path) -> Optional[Path]:
-    """Find site packages directory under a virtual environment root
-
-    Two layouts are tried: `lib/pythonX.X/site-packages` and
-    `Lib/site-packages`, the latter specific to Windows.
-    """
-    search = chain(root.rglob("lib/python*/site-packages"), root.rglob("Lib/site-packages"))
-    try:
-        return next(search)
-    except StopIteration:
-        return None
-
-
-def guess_virtualenv_site_packages(project_root: Path, active_virtual_env: Optional[str] = None) -> Optional[Path]:
-    """Try to locate a project's virtualenv packages using environment and popular locations"""
-    site_packages = None
-    possible_roots = [
-        Path("~/.virtualenvs").expanduser() / project_root.name,
-        project_root / ".venv",
-        project_root / "venv"
-    ]
-    if active_virtual_env:
-        possible_roots.append(Path(active_virtual_env))
-
-    while not site_packages and possible_roots:
-        site_packages = find_site_packages_in(possible_roots.pop())
-
-    return site_packages
-
-
-def install_distribution_finder(site_packages: Path) -> None:
+def install_metadata_finder(site_packages: Path) -> None:
+    """Add poject virtualenv site packages to metadata search path"""
     path = [str(site_packages.absolute()), *sys.path]
 
     class VirtualenvDistributionFinder(metadata.MetadataPathFinder):
@@ -98,13 +67,13 @@ def install_distribution_finder(site_packages: Path) -> None:
     sys.meta_path.insert(0, VirtualenvDistributionFinder())
 
 
-def install_metadata_finder(ctx: ExecutionContext) -> None:
-    """Add poject virtualenv site packages to metadata search path"""
-
-    # Try to locate the project's virtual environment site packages
-    # and add it to the dependency metadata search path.
-    site_packages = guess_virtualenv_site_packages(ctx.project_root, ctx.active_virtual_env)
-    if site_packages:
-        logging.warning(f"Assuming virtual environment for project {ctx.project_name} is {site_packages}")
-        logging.warning("Consider installing deptry in this environment.")
-    install_distribution_finder(site_packages)
+def warn_if_not_running_in_virtualenv(root: Path) -> None:
+    ctx = ExecutionContext.from_runtime(root)
+    if ctx.running_in_project_virtualenv():
+        logging.warn("foo")
+        return
+    log_msg = (
+        f"If deptry is not running within the `{ctx.project_name}` project's virtual environment"
+        " consider using the `--python-site-packages` option to locate package metadata"
+    )
+    logging.warning(log_msg)
