@@ -195,7 +195,7 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
     "--python-site-packages",
     "site_packages",
     type=click.Path(exists=True, path_type=Path),
-    help="Path to the site-packages directory where dependencies are installed. Required if `deptry` is run globally.",
+    help="Path to the site-packages directory where dependencies are installed. Required if `deptry` is run while being installed globally.",
 )
 def deptry(
     root: Path,
