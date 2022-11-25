@@ -1,7 +1,8 @@
+from __future__ import annotations
+
 import itertools
 import logging
 from pathlib import Path
-from typing import List, Set
 
 from deptry.imports.extractors import NotebookImportExtractor, PythonImportExtractor
 
@@ -9,7 +10,7 @@ from deptry.imports.extractors import NotebookImportExtractor, PythonImportExtra
 _FILTERED_OUT_MODULES = {"setuptools"}
 
 
-def get_imported_modules_for_list_of_files(list_of_files: List[Path]) -> List[str]:
+def get_imported_modules_for_list_of_files(list_of_files: list[Path]) -> list[str]:
     logging.info(f"Scanning {len(list_of_files)} files...")
 
     unique_modules = set(itertools.chain.from_iterable(get_imported_modules_from_file(file) for file in list_of_files))
@@ -20,7 +21,7 @@ def get_imported_modules_for_list_of_files(list_of_files: List[Path]) -> List[st
     return filtered_modules
 
 
-def get_imported_modules_from_file(path_to_file: Path) -> Set[str]:
+def get_imported_modules_from_file(path_to_file: Path) -> set[str]:
     logging.debug(f"Scanning {path_to_file}...")
 
     if path_to_file.suffix == ".ipynb":
@@ -33,7 +34,7 @@ def get_imported_modules_from_file(path_to_file: Path) -> Set[str]:
     return modules
 
 
-def _filter_out_modules(modules: Set[str]) -> Set[str]:
+def _filter_out_modules(modules: set[str]) -> set[str]:
     for filtered_out_module in _FILTERED_OUT_MODULES:
         if filtered_out_module in modules:
             logging.debug(f"Found module {filtered_out_module} to be imported, omitting from the list of modules.")

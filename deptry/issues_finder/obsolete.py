@@ -1,6 +1,7 @@
+from __future__ import annotations
+
 import logging
 from dataclasses import dataclass
-from typing import List
 
 from deptry.dependency import Dependency
 from deptry.issues_finder.base import IssuesFinder
@@ -18,7 +19,7 @@ class ObsoleteDependenciesFinder(IssuesFinder):
     but if this is imported, the associated dependency `matplotlib` is not obsolete, even if `matplotlib` itself is not imported anywhere.
     """
 
-    def find(self) -> List[str]:
+    def find(self) -> list[str]:
         logging.debug("\nScanning for obsolete dependencies...")
         obsolete_dependencies = []
         for dependency in self.dependencies:

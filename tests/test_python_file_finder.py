@@ -1,11 +1,12 @@
+from __future__ import annotations
+
 from pathlib import Path
-from typing import Dict, List
 
 from deptry.python_file_finder import PythonFileFinder
 from deptry.utils import run_within_dir
 
 
-def create_files_from_list_of_dicts(paths: List[Dict[str, str]]) -> None:
+def create_files_from_list_of_dicts(paths: list[dict[str, str]]) -> None:
     """
     Takes as input an argument paths, which is a list of dicts. Each dict should have two keys;
     'dir' to denote a directory and 'file' to denote the file name. This function creates all files

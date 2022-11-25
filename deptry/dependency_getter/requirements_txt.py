@@ -1,9 +1,11 @@
+from __future__ import annotations
+
 import itertools
 import logging
 import os
 import re
 from dataclasses import dataclass
-from typing import List, Match, Optional, Tuple
+from typing import Match
 
 from deptry.dependency import Dependency
 from deptry.dependency_getter.base import DependenciesExtract, DependencyGetter
@@ -13,8 +15,8 @@ from deptry.dependency_getter.base import DependenciesExtract, DependencyGetter
 class RequirementsTxtDependencyGetter(DependencyGetter):
     """Extract dependencies from requirements.txt files."""
 
-    requirements_txt: Tuple[str, ...] = ("requirements.txt",)
-    requirements_txt_dev: Tuple[str, ...] = ("dev-requirements.txt", "requirements-dev.txt")
+    requirements_txt: tuple[str, ...] = ("requirements.txt",)
+    requirements_txt_dev: tuple[str, ...] = ("dev-requirements.txt", "requirements-dev.txt")
 
     def get(self) -> DependenciesExtract:
         dependencies = list(
@@ -36,7 +38,7 @@ class RequirementsTxtDependencyGetter(DependencyGetter):
 
         return DependenciesExtract(dependencies, dev_dependencies)
 
-    def _scan_for_dev_requirements_files(self) -> List[str]:
+    def _scan_for_dev_requirements_files(self) -> list[str]:
         """
         Check if any of the files passed as requirements_txt_dev exist, and if so; return them.
         """
@@ -45,7 +47,7 @@ class RequirementsTxtDependencyGetter(DependencyGetter):
             logging.debug(f"Found files with development requirements! {dev_requirements_files}")
         return dev_requirements_files
 
-    def _get_dependencies_from_requirements_file(self, file_name: str, is_dev: bool = False) -> List[Dependency]:
+    def _get_dependencies_from_requirements_file(self, file_name: str, is_dev: bool = False) -> list[Dependency]:
         logging.debug(f"Scanning {file_name} for {'dev ' if is_dev else ''}dependencies")
         dependencies = []
 
@@ -59,7 +61,7 @@ class RequirementsTxtDependencyGetter(DependencyGetter):
 
         return dependencies
 
-    def _extract_dependency_from_line(self, line: str) -> Optional[Dependency]:
+    def _extract_dependency_from_line(self, line: str) -> Dependency | None:
         """
         Extract a dependency from a single line of a requirements.txt file.
         """
@@ -74,7 +76,7 @@ class RequirementsTxtDependencyGetter(DependencyGetter):
         else:
             return None
 
-    def _find_dependency_name_in(self, line: str) -> Optional[str]:
+    def _find_dependency_name_in(self, line: str) -> str | None:
         """
         Find the dependency name of a dependency specified according to the pip-standards for requirement.txt
         """
@@ -103,11 +105,11 @@ class RequirementsTxtDependencyGetter(DependencyGetter):
         return ";" in line
 
     @staticmethod
-    def _line_is_url(line: str) -> Optional[Match[str]]:
+    def _line_is_url(line: str) -> Match[str] | None:
         return re.search(r"^(http|https|git\+https)", line)
 
     @staticmethod
-    def _extract_name_from_url(line: str) -> Optional[str]:
+    def _extract_name_from_url(line: str) -> str | None:
         # Try to find egg, for url like git+https://github.com/xxxxx/package@xxxxx#egg=package
         match = re.search("egg=([a-zA-Z0-9-_]*)", line)
         if match:

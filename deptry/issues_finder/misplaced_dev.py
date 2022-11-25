@@ -1,6 +1,7 @@
+from __future__ import annotations
+
 import logging
 from dataclasses import dataclass
-from typing import List, Optional
 
 from deptry.issues_finder.base import IssuesFinder
 from deptry.module import Module
@@ -15,7 +16,7 @@ class MisplacedDevDependenciesFinder(IssuesFinder):
     This is the case for any development dependency encountered, since files solely used for development purposes should be excluded from scanning.
     """
 
-    def find(self) -> List[str]:
+    def find(self) -> list[str]:
         """
         In this function, we use 'corresponding_package_name' instead of module.package, since it can happen that a
         development dependency is not installed, but it's still found to be used in the codebase, due to simple name matching.
@@ -43,7 +44,7 @@ class MisplacedDevDependenciesFinder(IssuesFinder):
         logging.debug(f"Dependency '{corresponding_package_name}' marked as a misplaced development dependency.")
         return True
 
-    def _get_package_name(self, module: Module) -> Optional[str]:
+    def _get_package_name(self, module: Module) -> str | None:
         if module.package:
             return module.package
         if module.dev_top_levels:

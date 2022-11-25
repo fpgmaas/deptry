@@ -1,7 +1,8 @@
+from __future__ import annotations
+
 import itertools
 import re
 from dataclasses import dataclass
-from typing import Dict, List, Optional
 
 from deptry.dependency import Dependency
 from deptry.dependency_getter.base import DependenciesExtract, DependencyGetter
@@ -17,13 +18,13 @@ class PEP621DependencyGetter(DependencyGetter):
         return DependenciesExtract(dependencies, [])
 
     @classmethod
-    def _get_dependencies(cls) -> List[Dependency]:
+    def _get_dependencies(cls) -> list[Dependency]:
         pyproject_data = load_pyproject_toml()
-        dependency_strings: List[str] = pyproject_data["project"]["dependencies"]
+        dependency_strings: list[str] = pyproject_data["project"]["dependencies"]
         return cls._extract_pep_508_dependencies(dependency_strings)
 
     @classmethod
-    def _get_optional_dependencies(cls) -> Dict[str, List[Dependency]]:
+    def _get_optional_dependencies(cls) -> dict[str, list[Dependency]]:
         pyproject_data = load_pyproject_toml()
 
         return {
@@ -32,7 +33,7 @@ class PEP621DependencyGetter(DependencyGetter):
         }
 
     @classmethod
-    def _extract_pep_508_dependencies(cls, dependencies: List[str]) -> List[Dependency]:
+    def _extract_pep_508_dependencies(cls, dependencies: list[str]) -> list[Dependency]:
         extracted_dependencies = []
 
         for spec in dependencies:
@@ -54,7 +55,7 @@ class PEP621DependencyGetter(DependencyGetter):
         return ";" in dependency_specification
 
     @staticmethod
-    def _find_dependency_name_in(spec: str) -> Optional[str]:
+    def _find_dependency_name_in(spec: str) -> str | None:
         match = re.search("[a-zA-Z0-9-_]+", spec)
         if match:
             return match.group(0)

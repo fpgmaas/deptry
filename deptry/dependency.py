@@ -1,6 +1,7 @@
+from __future__ import annotations
+
 import logging
 import re
-from typing import List, Set
 
 from deptry.compat import PackageNotFoundError, metadata
 
@@ -25,7 +26,7 @@ class Dependency:
         self.found = self.find_metadata(name)
         self.top_levels = self._get_top_levels(name)
 
-    def _get_top_levels(self, name: str) -> Set[str]:
+    def _get_top_levels(self, name: str) -> set[str]:
         top_levels = []
 
         if self.found:
@@ -68,7 +69,7 @@ class Dependency:
         else:
             return " "
 
-    def _get_top_level_module_names_from_top_level_txt(self) -> List[str]:
+    def _get_top_level_module_names_from_top_level_txt(self) -> list[str]:
         """
         top-level.txt is a metadata file added by setuptools that looks as follows:
 
@@ -86,7 +87,7 @@ class Dependency:
         else:
             return []
 
-    def _get_top_level_module_names_from_record_file(self) -> List[str]:
+    def _get_top_level_module_names_from_record_file(self) -> list[str]:
         """
         Get the top-level module names from the RECORD file, whose contents usually look as follows:
 

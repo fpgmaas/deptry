@@ -1,9 +1,10 @@
+from __future__ import annotations
+
 import logging
 import os
 import sys
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List, Set, Tuple
 
 from deptry.dependency import Dependency
 from deptry.dependency_getter.base import DependenciesExtract
@@ -28,19 +29,19 @@ from deptry.result_logger import ResultLogger
 
 @dataclass
 class Core:
-    ignore_obsolete: Tuple[str, ...]
-    ignore_missing: Tuple[str, ...]
-    ignore_transitive: Tuple[str, ...]
-    ignore_misplaced_dev: Tuple[str, ...]
+    ignore_obsolete: tuple[str, ...]
+    ignore_missing: tuple[str, ...]
+    ignore_transitive: tuple[str, ...]
+    ignore_misplaced_dev: tuple[str, ...]
     skip_obsolete: bool
     skip_missing: bool
     skip_transitive: bool
     skip_misplaced_dev: bool
-    exclude: Tuple[str, ...]
-    extend_exclude: Tuple[str, ...]
+    exclude: tuple[str, ...]
+    extend_exclude: tuple[str, ...]
     ignore_notebooks: bool
-    requirements_txt: Tuple[str, ...]
-    requirements_txt_dev: Tuple[str, ...]
+    requirements_txt: tuple[str, ...]
+    requirements_txt_dev: tuple[str, ...]
     json_output: str
 
     def run(self) -> None:
@@ -69,7 +70,7 @@ class Core:
 
         self._exit(issues)
 
-    def _find_issues(self, imported_modules: List[Module], dependencies: List[Dependency]) -> Dict[str, List[str]]:
+    def _find_issues(self, imported_modules: list[Module], dependencies: list[Dependency]) -> dict[str, list[str]]:
         result = {}
         if not self.skip_obsolete:
             result["obsolete"] = ObsoleteDependenciesFinder(imported_modules, dependencies, self.ignore_obsolete).find()
@@ -97,7 +98,7 @@ class Core:
         raise ValueError("Incorrect dependency manage format. Only poetry, pdm and requirements.txt are supported.")
 
     @staticmethod
-    def _get_local_modules() -> Set[str]:
+    def _get_local_modules() -> set[str]:
         directories = [f for f in os.listdir() if Path(f).is_dir()]
         return {subdir for subdir in directories if "__init__.py" in os.listdir(subdir)}
 
@@ -108,5 +109,5 @@ class Core:
         logging.debug("")
 
     @staticmethod
-    def _exit(issues: Dict[str, List[str]]) -> None:
+    def _exit(issues: dict[str, list[str]]) -> None:
         sys.exit(int(any(issues.values())))

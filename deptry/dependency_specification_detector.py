@@ -1,7 +1,8 @@
+from __future__ import annotations
+
 import logging
 import os
 from enum import Enum
-from typing import Tuple
 
 from deptry.utils import load_pyproject_toml
 
@@ -23,7 +24,7 @@ class DependencySpecificationDetector:
 
     """
 
-    def __init__(self, requirements_txt: Tuple[str, ...] = ("requirements.txt",)) -> None:
+    def __init__(self, requirements_txt: tuple[str, ...] = ("requirements.txt",)) -> None:
         self.requirements_txt = requirements_txt
 
     def detect(self) -> DependencyManagementFormat:
