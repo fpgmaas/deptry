@@ -1,6 +1,7 @@
+from __future__ import annotations
+
 import logging
 from dataclasses import dataclass
-from typing import List
 
 from deptry.issues_finder.base import IssuesFinder
 from deptry.module import Module
@@ -12,7 +13,7 @@ class MissingDependenciesFinder(IssuesFinder):
     Given a list of imported modules and a list of project dependencies, determine which ones are missing.
     """
 
-    def find(self) -> List[str]:
+    def find(self) -> list[str]:
         logging.debug("\nScanning for missing dependencies...")
         missing_dependencies = []
 

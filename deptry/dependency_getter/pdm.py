@@ -1,6 +1,7 @@
+from __future__ import annotations
+
 import logging
 from dataclasses import dataclass
-from typing import Dict, List
 
 from deptry.dependency import Dependency
 from deptry.dependency_getter.base import DependenciesExtract
@@ -23,7 +24,7 @@ class PDMDependencyGetter(PEP621DependencyGetter):
         return DependenciesExtract(pep_621_dependencies_extract.dependencies, dev_dependencies)
 
     @classmethod
-    def _get_pdm_dev_dependencies(cls) -> List[Dependency]:
+    def _get_pdm_dev_dependencies(cls) -> list[Dependency]:
         """
         Try to get development dependencies from pyproject.toml, which with PDM are specified as:
 
@@ -39,9 +40,9 @@ class PDMDependencyGetter(PEP621DependencyGetter):
         """
         pyproject_data = load_pyproject_toml()
 
-        dev_dependency_strings: List[str] = []
+        dev_dependency_strings: list[str] = []
         try:
-            dev_dependencies_dict: Dict[str, str] = pyproject_data["tool"]["pdm"]["dev-dependencies"]
+            dev_dependencies_dict: dict[str, str] = pyproject_data["tool"]["pdm"]["dev-dependencies"]
             for deps in dev_dependencies_dict.values():
                 dev_dependency_strings += deps
         except KeyError:

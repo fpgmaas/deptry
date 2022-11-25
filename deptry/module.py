@@ -1,7 +1,8 @@
+from __future__ import annotations
+
 import logging
 import sys
 from dataclasses import dataclass
-from typing import List, Optional, Set
 
 from deptry.compat import PackageNotFoundError, metadata
 from deptry.dependency import Dependency
@@ -12,11 +13,11 @@ class Module:
     name: str
     standard_library: bool = False
     local_module: bool = False
-    package: Optional[str] = None
-    top_levels: Optional[List[str]] = None
-    dev_top_levels: Optional[List[str]] = None
-    is_dependency: Optional[bool] = None
-    is_dev_dependency: Optional[bool] = None
+    package: str | None = None
+    top_levels: list[str] | None = None
+    dev_top_levels: list[str] | None = None
+    is_dependency: bool | None = None
+    is_dev_dependency: bool | None = None
 
     def __post_init__(self) -> None:
         self._log()
@@ -37,9 +38,9 @@ class ModuleBuilder:
     def __init__(
         self,
         name: str,
-        local_modules: Set[str],
-        dependencies: Optional[List[Dependency]] = None,
-        dev_dependencies: Optional[List[Dependency]] = None,
+        local_modules: set[str],
+        dependencies: list[Dependency] | None = None,
+        dev_dependencies: list[Dependency] | None = None,
     ) -> None:
         """
         Create a Module object that represents an imported module.
@@ -81,7 +82,7 @@ class ModuleBuilder:
             is_dev_dependency=is_dev_dependency,
         )
 
-    def _get_package_name_from_metadata(self) -> Optional[str]:
+    def _get_package_name_from_metadata(self) -> str | None:
         """
         Most packages simply have a field called "Name" in their metadata. This method extracts that field.
         """
@@ -91,7 +92,7 @@ class ModuleBuilder:
         except PackageNotFoundError:
             return None
 
-    def _get_corresponding_top_levels_from(self, dependencies: List[Dependency]) -> List[str]:
+    def _get_corresponding_top_levels_from(self, dependencies: list[Dependency]) -> list[str]:
         """
         Not all modules have associated metadata. e.g. `mpl_toolkits` from `matplotlib` has no metadata. However, it is in the
         top-level module names of package matplotlib. This function extracts all dependencies which have this module in their top-level module names.
@@ -107,7 +108,7 @@ class ModuleBuilder:
         return self.name in self._get_stdlib_packages()
 
     @staticmethod
-    def _get_stdlib_packages() -> Set[str]:
+    def _get_stdlib_packages() -> set[str]:
         if sys.version_info[:2] == (3, 7):
             from deptry.stdlibs.py37 import stdlib
         elif sys.version_info[:2] == (3, 8):
@@ -132,14 +133,14 @@ class ModuleBuilder:
         """
         return self.name in self.local_modules
 
-    def _has_matching_dependency(self, package: Optional[str], top_levels: List[str]) -> bool:
+    def _has_matching_dependency(self, package: str | None, top_levels: list[str]) -> bool:
         """
         Check if this module is provided by a listed dependency. This is the case if either the package name that was found in the metadata is
         listed as a dependency, or if the we found a top-level module name match earlier.
         """
         return package and (package in [dep.name for dep in self.dependencies]) or len(top_levels) > 0
 
-    def _has_matching_dev_dependency(self, package: Optional[str], dev_top_levels: List[str]) -> bool:
+    def _has_matching_dev_dependency(self, package: str | None, dev_top_levels: list[str]) -> bool:
         """
         Same as _has_matching_dependency, but for development dependencies.
         """

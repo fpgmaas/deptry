@@ -1,12 +1,14 @@
+from __future__ import annotations
+
 import logging
-from typing import Any, Dict, Optional
+from typing import Any
 
 import click
 
 from deptry.utils import load_pyproject_toml
 
 
-def read_configuration_from_pyproject_toml(ctx: click.Context, _param: click.Parameter, value: str) -> Optional[str]:
+def read_configuration_from_pyproject_toml(ctx: click.Context, _param: click.Parameter, value: str) -> str | None:
     """
     Callback that, given a click context, overrides the default values with configuration options set in a
     pyproject.toml file.
@@ -28,7 +30,7 @@ def read_configuration_from_pyproject_toml(ctx: click.Context, _param: click.Par
         logging.debug("No configuration for deptry was found in pyproject.toml.")
         return None
 
-    click_default_map: Dict[str, Any] = {}
+    click_default_map: dict[str, Any] = {}
 
     if ctx.default_map:
         click_default_map.update(ctx.default_map)

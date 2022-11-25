@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 import logging
 from dataclasses import dataclass
-from typing import List, cast
+from typing import cast
 
 from deptry.issues_finder.base import IssuesFinder
 from deptry.module import Module
@@ -19,7 +21,7 @@ class TransitiveDependenciesFinder(IssuesFinder):
     Then it must be a transitive dependency.
     """
 
-    def find(self) -> List[str]:
+    def find(self) -> list[str]:
         logging.debug("\nScanning for transitive dependencies...")
         transitive_dependencies = []
 

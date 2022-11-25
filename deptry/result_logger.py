@@ -1,5 +1,6 @@
+from __future__ import annotations
+
 import logging
-from typing import Dict, List
 
 
 class ResultLogger:
@@ -7,7 +8,7 @@ class ResultLogger:
     Display the issues to the user, and return exit-status 0 or 1 depending on if any issues were found.
     """
 
-    def __init__(self, issues: Dict[str, List[str]]) -> None:
+    def __init__(self, issues: dict[str, list[str]]) -> None:
         self.issues = issues
 
     def log_and_exit(self) -> None:
@@ -33,14 +34,14 @@ class ResultLogger:
         else:
             logging.info(f"There were {number} dependency issues found.")
 
-    def _log_obsolete_dependencies(self, dependencies: List[str], sep: str = "\n\t") -> None:
+    def _log_obsolete_dependencies(self, dependencies: list[str], sep: str = "\n\t") -> None:
         logging.info("\n-----------------------------------------------------\n")
         logging.info(f"The project contains obsolete dependencies:\n{sep}{sep.join(sorted(dependencies))}\n")
         logging.info(
             """Consider removing them from your project's dependencies. If a package is used for development purposes, you should add it to your development dependencies instead."""
         )
 
-    def _log_missing_dependencies(self, dependencies: List[str], sep: str = "\n\t") -> None:
+    def _log_missing_dependencies(self, dependencies: list[str], sep: str = "\n\t") -> None:
         logging.info("\n-----------------------------------------------------\n")
         logging.info(
             "There are dependencies missing from the project's list of"
@@ -48,7 +49,7 @@ class ResultLogger:
         )
         logging.info("""Consider adding them to your project's dependencies. """)
 
-    def _log_transitive_dependencies(self, dependencies: List[str], sep: str = "\n\t") -> None:
+    def _log_transitive_dependencies(self, dependencies: list[str], sep: str = "\n\t") -> None:
         logging.info("\n-----------------------------------------------------\n")
         logging.info(
             "There are transitive dependencies that should be explicitly defined as"
@@ -56,7 +57,7 @@ class ResultLogger:
         )
         logging.info("""They are currently imported but not specified directly as your project's dependencies.""")
 
-    def _log_misplaced_develop_dependencies(self, dependencies: List[str], sep: str = "\n\t") -> None:
+    def _log_misplaced_develop_dependencies(self, dependencies: list[str], sep: str = "\n\t") -> None:
         logging.info("\n-----------------------------------------------------\n")
         logging.info(
             "There are imported modules from development dependencies"

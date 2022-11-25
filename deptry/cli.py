@@ -1,6 +1,7 @@
+from __future__ import annotations
+
 import logging
 from pathlib import Path
-from typing import List, Optional, Tuple, Union
 
 import click
 
@@ -15,10 +16,10 @@ class CommaSeparatedTupleParamType(click.ParamType):
 
     def convert(
         self,
-        value: Union[str, List[str], Tuple[str, ...]],
-        param: Optional[click.Parameter],
-        ctx: Optional[click.Context],
-    ) -> Tuple[str, ...]:
+        value: str | list[str] | tuple[str, ...],
+        param: click.Parameter | None,
+        ctx: click.Context | None,
+    ) -> tuple[str, ...]:
         if isinstance(value, str):
             return tuple(value.split(","))
         if isinstance(value, list):
@@ -189,19 +190,19 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
 )
 def deptry(
     root: Path,
-    ignore_obsolete: Tuple[str, ...],
-    ignore_missing: Tuple[str, ...],
-    ignore_transitive: Tuple[str, ...],
-    ignore_misplaced_dev: Tuple[str, ...],
+    ignore_obsolete: tuple[str, ...],
+    ignore_missing: tuple[str, ...],
+    ignore_transitive: tuple[str, ...],
+    ignore_misplaced_dev: tuple[str, ...],
     skip_obsolete: bool,
     skip_missing: bool,
     skip_transitive: bool,
     skip_misplaced_dev: bool,
-    exclude: Tuple[str, ...],
-    extend_exclude: Tuple[str, ...],
+    exclude: tuple[str, ...],
+    extend_exclude: tuple[str, ...],
     ignore_notebooks: bool,
-    requirements_txt: Tuple[str, ...],
-    requirements_txt_dev: Tuple[str, ...],
+    requirements_txt: tuple[str, ...],
+    requirements_txt_dev: tuple[str, ...],
     json_output: str,
 ) -> None:
     """Find dependency issues in your Python project.
