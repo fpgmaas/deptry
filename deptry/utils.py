@@ -40,4 +40,4 @@ def load_pyproject_toml(pyproject_toml_path: str = PYPROJECT_TOML_PATH) -> dict[
         with Path(pyproject_toml_path).open("rb") as pyproject_file:
             return tomllib.load(pyproject_file)
     except FileNotFoundError:
-        raise FileNotFoundError(f"No file `pyproject.toml` found in directory {os.getcwd()}")
+        raise FileNotFoundError(f"No file `pyproject.toml` found in directory {os.getcwd()}") from None
