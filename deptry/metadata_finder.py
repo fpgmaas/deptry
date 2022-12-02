@@ -69,11 +69,11 @@ def install_metadata_finder(site_packages: Path) -> None:
 
 def warn_if_not_running_in_virtualenv(root: Path) -> None:
     ctx = ExecutionContext.from_runtime(root)
-    if ctx.running_in_project_virtualenv():
-        logging.warn("foo")
-        return
-    log_msg = (
-        f"If deptry is not running within the `{ctx.project_name}` project's virtual environment"
-        " consider using the `--python-site-packages` option to locate package metadata"
-    )
-    logging.warning(log_msg)
+    if not ctx.running_in_project_virtualenv():
+        log_msg = (
+            f"If deptry is not installed within the `{ctx.project_name}` project's virtual environment, it does not "
+            "have access to the metadata of dependencies installed within the virtual environment. This can be "
+            "solved by installing deptry in the virtual environment, or by passing the path to your virtual "
+            "environment's site-packages directory as the `--python-site-packages` argument."
+        )
+        logging.warn(log_msg)
