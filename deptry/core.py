@@ -12,10 +12,7 @@ from deptry.dependency_getter.pdm import PDMDependencyGetter
 from deptry.dependency_getter.pep_621 import PEP621DependencyGetter
 from deptry.dependency_getter.poetry import PoetryDependencyGetter
 from deptry.dependency_getter.requirements_txt import RequirementsTxtDependencyGetter
-from deptry.dependency_specification_detector import (
-    DependencyManagementFormat,
-    DependencySpecificationDetector,
-)
+from deptry.dependency_specification_detector import DependencyManagementFormat, DependencySpecificationDetector
 from deptry.imports.extract import get_imported_modules_for_list_of_files
 from deptry.issues_finder.misplaced_dev import MisplacedDevDependenciesFinder
 from deptry.issues_finder.missing import MissingDependenciesFinder
