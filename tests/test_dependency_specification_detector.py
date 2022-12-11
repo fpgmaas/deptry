@@ -3,10 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from deptry.dependency_specification_detector import (
-    DependencyManagementFormat,
-    DependencySpecificationDetector,
-)
+from deptry.dependency_specification_detector import DependencyManagementFormat, DependencySpecificationDetector
 from deptry.utils import run_within_dir
 
 

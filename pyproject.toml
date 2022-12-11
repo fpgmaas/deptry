@@ -56,9 +56,6 @@ skip_empty = true
 branch = true
 source = ["deptry"]
 
-[tool.isort]
-profile = "black"
-
 [tool.mypy]
 files = ["deptry", "scripts", "tests"]
 exclude = ["tests/data"]
@@ -97,13 +94,29 @@ ignore_missing = ["tomllib"]
 deptry = "deptry.cli:deptry"
 
 [tool.ruff]
+target-version = "py37"
 line-length = 120
-
-select = ["E", "F", "C", "B"]
-
-# PEP-8 The following are ignored:
-# E731 do not assign a lambda expression, use a def
-# E501 line too long
-ignore = ["E731", "E501"]
-
+fix = true
+select = [
+    # pycodestyle
+    "E", "W",
+    # pyflakes
+    "F",
+    # mccabe
+    "C90",
+    # flake8-comprehensions
+    "C4",
+    # isort
+    "I",
+    # flake8-bugbear
+    "B",
+    # ruff
+    "RUF",
+]
+ignore = [
+    # LineTooLong
+    "E501",
+    # DoNotAssignLambda
+    "E731",
+]
 extend-exclude = ["tests/data/*"]
