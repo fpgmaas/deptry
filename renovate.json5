@@ -7,8 +7,6 @@
     "config:base",
     // https://docs.renovatebot.com/presets-default/#enableprecommit
     ":enablePreCommit",
-    // https://docs.renovatebot.com/presets-default/#maintainlockfilesweekly
-    ":maintainLockFilesWeekly",
     // https://docs.renovatebot.com/presets-default/#prhourlylimitnone
     ":prHourlyLimitNone",
     // https://docs.renovatebot.com/presets-default/#rebasestaleprs
@@ -17,6 +15,15 @@
 
   // https://docs.renovatebot.com/configuration-options/#labels
   labels: ["dependencies"],
+
+  // https://docs.renovatebot.com/configuration-options/#schedule
+  schedule: ["on saturday"],
+
+  // https://docs.renovatebot.com/configuration-options/#lockfilemaintenance
+  lockFileMaintenance: {
+    enabled: true,
+    schedule: ["on saturday"],
+  },
 
   // https://docs.renovatebot.com/configuration-options/#regexmanagers
   regexManagers: [
@@ -29,9 +36,4 @@
       datasourceTemplate: "pypi",
     },
   ],
-
-  // https://docs.renovatebot.com/configuration-options/#schedule
-  schedule: [
-    "on saturday"
-  ]
 }
