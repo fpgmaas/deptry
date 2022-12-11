@@ -98,7 +98,7 @@ target-version = "py37"
 line-length = 120
 select = [
     # pycodestyle
-    "E",
+    "E", "W",
     # pyflakes
     "F",
     # mccabe
@@ -107,6 +107,10 @@ select = [
     "C4",
     # isort
     "I",
+    # flake8-bugbear
+    "B",
+    # ruff
+    "RUF",
 ]
 ignore = [
     # LineTooLong
