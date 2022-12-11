@@ -44,8 +44,3 @@ repos:
     rev: "v1.9.0"
     hooks:
       - id: python-check-blanket-noqa
-
-  - repo: https://github.com/renovatebot/pre-commit-hooks
-    rev: "34.54.0"
-    hooks:
-      - id: renovate-config-validator

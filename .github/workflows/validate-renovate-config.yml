@@ -1,0 +1,17 @@
+name: validate-renovate-config
+
+on:
+  pull_request:
+    paths: [renovate.json5]
+  push:
+    branches: [main]
+
+jobs:
+  validate-renovate-config:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "18" # renovate: datasource=node depName=node versioning=node
+      - run: npx -p renovate renovate-config-validator
