@@ -21,11 +21,11 @@ repos:
       - id: black
 
   - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: "v0.0.184"
+    rev: "v0.0.192"
     hooks:
       - id: ruff
-        # Required because of https://github.com/charliermarsh/ruff/issues/1220
-        exclude: ^tests/data/
+        # Respect `exclude` and `extend-exclude` settings.
+        args: ["--force-exclude"]
 
   - repo: https://github.com/PyCQA/flake8
     rev: "6.0.0"
