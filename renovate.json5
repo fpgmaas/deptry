@@ -29,7 +29,7 @@
   regexManagers: [
     {
       description: "Update PEP 440 Python dependencies",
-      fileMatch: ["^\\.pre-commit-config\\.yaml$"],
+      fileMatch: ["^.+\\.ya?ml$"],
       matchStrings: [
         '"(?<depName>[\\w-]+)(?<currentValue>.+?)",?[[:blank:]]+#[[:blank:]]*renovate: pep440-python-dependency\\s',
       ],
