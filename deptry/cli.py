@@ -186,7 +186,6 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
     help="Path to the pyproject.toml file to read configuration from.",
     default=PYPROJECT_TOML_PATH,
     expose_value=False,
-    hidden=True,
 )
 def deptry(
     root: Path,
