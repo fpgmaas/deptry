@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 
 from deptry.json_writer import JsonWriter
-from deptry.utils import run_within_dir
+from tests.utils import run_within_dir
 
 
 def test_simple(tmp_path: Path) -> None:

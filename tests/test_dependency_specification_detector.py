@@ -4,7 +4,7 @@ from pathlib import Path
 import pytest
 
 from deptry.dependency_specification_detector import DependencyManagementFormat, DependencySpecificationDetector
-from deptry.utils import run_within_dir
+from tests.utils import run_within_dir
 
 
 def test_poetry(tmp_path: Path) -> None:

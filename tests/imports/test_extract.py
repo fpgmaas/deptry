@@ -9,7 +9,7 @@ import pytest
 from _pytest.logging import LogCaptureFixture
 
 from deptry.imports.extract import get_imported_modules_for_list_of_files, get_imported_modules_from_file
-from deptry.utils import run_within_dir
+from tests.utils import run_within_dir
 
 
 def test_import_parser_py() -> None:

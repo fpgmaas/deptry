@@ -3,7 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from deptry.python_file_finder import PythonFileFinder
-from deptry.utils import run_within_dir
+from tests.utils import run_within_dir
 
 
 def create_files_from_list_of_dicts(paths: list[dict[str, str]]) -> None:

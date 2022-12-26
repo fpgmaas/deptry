@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 from _pytest.tmpdir import TempPathFactory
 
-from deptry.utils import run_within_dir
+from tests.utils import run_within_dir
 
 
 @pytest.fixture(scope="session")
