@@ -51,9 +51,11 @@ class Core:
             exclude=self.exclude + self.extend_exclude, ignore_notebooks=self.ignore_notebooks
         ).get_all_python_files_in(Path("."))
 
+        local_modules = self._get_local_modules()
+
         imported_modules = [
             ModuleBuilder(
-                mod, self._get_local_modules(), dependencies_extract.dependencies, dependencies_extract.dev_dependencies
+                mod, local_modules, dependencies_extract.dependencies, dependencies_extract.dev_dependencies
             ).build()
             for mod in get_imported_modules_for_list_of_files(all_python_files)
         ]
