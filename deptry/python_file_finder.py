@@ -27,12 +27,14 @@ class PythonFileFinder:
         ignore_regex = re.compile("|".join(self.exclude))
         file_lookup_suffixes = {".py"} if self.ignore_notebooks else {".py", ".ipynb"}
 
-        for root, dirs, files in os.walk(directory, topdown=True):
-            root_without_trailing_dotslash = re.sub(r"^\./", "", root)
-            if self.exclude and ignore_regex.match(root_without_trailing_dotslash):
+        for root_str, dirs, files in os.walk(directory, topdown=True):
+            root = Path(root_str)
+
+            if self.exclude and ignore_regex.match(str(root)):
                 dirs[:] = []
                 continue
-            files_with_path = [Path(root) / Path(file) for file in files]
+
+            files_with_path = [root / file for file in files]
 
             files_to_keep = [file for file in files_with_path if file.suffix in file_lookup_suffixes]
             if self.exclude:
