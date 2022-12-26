@@ -26,6 +26,7 @@ from deptry.result_logger import ResultLogger
 
 @dataclass
 class Core:
+    root: Path
     ignore_obsolete: tuple[str, ...]
     ignore_missing: tuple[str, ...]
     ignore_transitive: tuple[str, ...]
@@ -49,7 +50,7 @@ class Core:
 
         all_python_files = PythonFileFinder(
             exclude=self.exclude + self.extend_exclude, ignore_notebooks=self.ignore_notebooks
-        ).get_all_python_files_in(Path("."))
+        ).get_all_python_files_in(self.root)
 
         local_modules = self._get_local_modules()
 
@@ -96,10 +97,9 @@ class Core:
             return RequirementsTxtDependencyGetter(self.requirements_txt, self.requirements_txt_dev).get()
         raise ValueError("Incorrect dependency manage format. Only poetry, pdm and requirements.txt are supported.")
 
-    @staticmethod
-    def _get_local_modules() -> set[str]:
-        directories = [f for f in os.listdir() if Path(f).is_dir()]
-        return {subdir for subdir in directories if "__init__.py" in os.listdir(subdir)}
+    def _get_local_modules(self) -> set[str]:
+        directories = [f for f in os.scandir(self.root) if f.is_dir()]
+        return {subdirectory.name for subdirectory in directories if "__init__.py" in os.listdir(subdirectory)}
 
     def _log_config(self) -> None:
         logging.debug("Running with the following configuration:")
