@@ -39,7 +39,6 @@ class PythonFileFinder:
                 if file.suffix in file_lookup_suffixes and (not self.exclude or not ignore_regex.match(str(file))):
                     source_files.append(file)
 
-        nl = "\n"
-        logging.debug(f"Python files to scan for imports:\n{nl.join([str(x) for x in source_files])}\n")
+        logging.debug("Python files to scan for imports:\n%s\n", "\n".join([str(file) for file in source_files]))
 
         return source_files
