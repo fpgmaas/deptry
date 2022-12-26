@@ -22,7 +22,7 @@ class PythonFileFinder:
     def get_all_python_files_in(self, directory: Path) -> list[Path]:
         logging.debug("Collecting Python files to scan...")
 
-        all_py_files = []
+        source_files = []
 
         ignore_regex = re.compile("|".join(self.exclude))
         file_lookup_suffixes = {".py"} if self.ignore_notebooks else {".py", ".ipynb"}
@@ -34,14 +34,12 @@ class PythonFileFinder:
                 dirs[:] = []
                 continue
 
-            files_with_path = [root / file for file in files]
-
-            files_to_keep = [file for file in files_with_path if file.suffix in file_lookup_suffixes]
-            if self.exclude:
-                files_to_keep = [file for file in files_to_keep if not ignore_regex.match(str(file))]
-
-            all_py_files += files_to_keep
+            for file_str in files:
+                file = root / file_str
+                if file.suffix in file_lookup_suffixes and (not self.exclude or not ignore_regex.match(str(file))):
+                    source_files.append(file)
 
         nl = "\n"
-        logging.debug(f"Python files to scan for imports:\n{nl.join([str(x) for x in all_py_files])}\n")
-        return all_py_files
+        logging.debug(f"Python files to scan for imports:\n{nl.join([str(x) for x in source_files])}\n")
+
+        return source_files
