@@ -5,7 +5,6 @@
 _deptry_ can be configured with command line arguments or by adding a `[tool.deptry]` section to `pyproject.toml`. Explanation for the command line arguments can
 be obtained by running `deptry --help`, and examples are given below. For configuration using `pyproject.toml`, see [Configuration with pyproject.toml](./pyproject-toml.md)
 
-
 ## Basic Usage
 
 _deptry_ can be run with
@@ -16,9 +15,11 @@ deptry .
 
 where `.` is the path to the root directory of the project to be scanned. All other arguments should be specified relative to this directory.
 
+If you want to configure _deptry_ using `pyproject.toml`, or if your dependencies are stored in `pyproject.toml`, but it is located in another location than the one _deptry_ is run from, you can specify the location to it by using `--config <path_to_pyproject.toml>` argument.
+
 ## Dependencies extraction
 
-To determine the project's dependencies, _deptry_ will scan the root directory for files in the following order:
+To determine the project's dependencies, _deptry_ will scan the directory it is run from for files in the following order:
 
 - If a `pyproject.toml` file with a `[tool.poetry.dependencies]` section is found, _deptry_ will assume it uses Poetry and extract:
     - dependencies from `[tool.poetry.dependencies]` section
