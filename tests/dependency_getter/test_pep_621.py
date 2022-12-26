@@ -29,7 +29,7 @@ group2 = [
         with open("pyproject.toml", "w") as f:
             f.write(fake_pyproject_toml)
 
-        dependencies = PEP621DependencyGetter().get().dependencies
+        dependencies = PEP621DependencyGetter(Path("pyproject.toml")).get().dependencies
 
         assert len(dependencies) == 7
 

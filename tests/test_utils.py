@@ -1,8 +1,10 @@
+from pathlib import Path
+
 from deptry.utils import load_pyproject_toml
 
 
 def test_load_pyproject_toml() -> None:
-    assert load_pyproject_toml("tests/data/example_project/pyproject.toml") == {
+    assert load_pyproject_toml(Path("tests/data/example_project/pyproject.toml")) == {
         "tool": {
             "deptry": {"ignore_obsolete": ["pkginfo"]},
             "poetry": {

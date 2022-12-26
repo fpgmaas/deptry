@@ -8,7 +8,6 @@ import click
 from deptry.compat import metadata
 from deptry.config import read_configuration_from_pyproject_toml
 from deptry.core import Core
-from deptry.utils import PYPROJECT_TOML_PATH
 
 
 class CommaSeparatedTupleParamType(click.ParamType):
@@ -56,6 +55,14 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
     expose_value=False,
     is_eager=True,
     callback=configure_logger,
+)
+@click.option(
+    "--config",
+    type=click.Path(path_type=Path),
+    is_eager=True,
+    callback=read_configuration_from_pyproject_toml,
+    help="Path to the pyproject.toml file to read configuration from.",
+    default="pyproject.toml",
 )
 @click.option(
     "--skip-obsolete",
@@ -178,17 +185,9 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
     help="""If specified, a summary of the dependency issues found will be written to the output location specified. e.g. `deptry . -o deptry.json`""",
     show_default=True,
 )
-@click.option(
-    "--config",
-    type=click.Path(),
-    is_eager=True,
-    callback=read_configuration_from_pyproject_toml,
-    help="Path to the pyproject.toml file to read configuration from.",
-    default=PYPROJECT_TOML_PATH,
-    expose_value=False,
-)
 def deptry(
     root: Path,
+    config: Path,
     ignore_obsolete: tuple[str, ...],
     ignore_missing: tuple[str, ...],
     ignore_transitive: tuple[str, ...],
@@ -213,6 +212,7 @@ def deptry(
 
     Core(
         root=root,
+        config=config,
         ignore_obsolete=ignore_obsolete,
         ignore_missing=ignore_missing,
         ignore_transitive=ignore_transitive,

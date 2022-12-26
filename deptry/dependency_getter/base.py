@@ -3,6 +3,7 @@ from __future__ import annotations
 import logging
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+from pathlib import Path
 
 from deptry.dependency import Dependency
 
@@ -16,6 +17,8 @@ class DependenciesExtract:
 @dataclass
 class DependencyGetter(ABC):
     """Base class for all dependency getter."""
+
+    config: Path
 
     @abstractmethod
     def get(self) -> DependenciesExtract:

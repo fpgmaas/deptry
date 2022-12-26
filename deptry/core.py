@@ -27,6 +27,7 @@ from deptry.result_logger import ResultLogger
 @dataclass
 class Core:
     root: Path
+    config: Path
     ignore_obsolete: tuple[str, ...]
     ignore_missing: tuple[str, ...]
     ignore_transitive: tuple[str, ...]
@@ -45,7 +46,9 @@ class Core:
     def run(self) -> None:
         self._log_config()
 
-        dependency_management_format = DependencySpecificationDetector(requirements_txt=self.requirements_txt).detect()
+        dependency_management_format = DependencySpecificationDetector(
+            self.config, requirements_txt=self.requirements_txt
+        ).detect()
         dependencies_extract = self._get_dependencies(dependency_management_format)
 
         all_python_files = PythonFileFinder(
@@ -88,13 +91,13 @@ class Core:
 
     def _get_dependencies(self, dependency_management_format: DependencyManagementFormat) -> DependenciesExtract:
         if dependency_management_format is DependencyManagementFormat.POETRY:
-            return PoetryDependencyGetter().get()
+            return PoetryDependencyGetter(self.config).get()
         if dependency_management_format is DependencyManagementFormat.PDM:
-            return PDMDependencyGetter().get()
+            return PDMDependencyGetter(self.config).get()
         if dependency_management_format is DependencyManagementFormat.PEP_621:
-            return PEP621DependencyGetter().get()
+            return PEP621DependencyGetter(self.config).get()
         if dependency_management_format is DependencyManagementFormat.REQUIREMENTS_TXT:
-            return RequirementsTxtDependencyGetter(self.requirements_txt, self.requirements_txt_dev).get()
+            return RequirementsTxtDependencyGetter(self.config, self.requirements_txt, self.requirements_txt_dev).get()
         raise ValueError("Incorrect dependency manage format. Only poetry, pdm and requirements.txt are supported.")
 
     def _get_local_modules(self) -> set[str]:

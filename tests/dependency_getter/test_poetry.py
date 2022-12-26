@@ -18,7 +18,7 @@ foo =  { version = ">=2.5.1,<4.0.0", optional = true }"""
         with open("pyproject.toml", "w") as f:
             f.write(fake_pyproject_toml)
 
-        dependencies_extract = PoetryDependencyGetter().get()
+        dependencies_extract = PoetryDependencyGetter(Path("pyproject.toml")).get()
         dependencies = dependencies_extract.dependencies
         dev_dependencies = dependencies_extract.dev_dependencies
 

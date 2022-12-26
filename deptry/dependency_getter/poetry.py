@@ -22,14 +22,12 @@ class PoetryDependencyGetter(DependencyGetter):
 
         return DependenciesExtract(dependencies, dev_dependencies)
 
-    @classmethod
-    def _get_poetry_dependencies(cls) -> list[Dependency]:
-        pyproject_data = load_pyproject_toml()
+    def _get_poetry_dependencies(self) -> list[Dependency]:
+        pyproject_data = load_pyproject_toml(self.config)
         dependencies: dict[str, Any] = pyproject_data["tool"]["poetry"]["dependencies"]
-        return cls._get_dependencies(dependencies)
+        return self._get_dependencies(dependencies)
 
-    @classmethod
-    def _get_poetry_dev_dependencies(cls) -> list[Dependency]:
+    def _get_poetry_dev_dependencies(self) -> list[Dependency]:
         """
         These can be either under;
 
@@ -39,7 +37,7 @@ class PoetryDependencyGetter(DependencyGetter):
         or both.
         """
         dependencies: dict[str, str] = {}
-        pyproject_data = load_pyproject_toml()
+        pyproject_data = load_pyproject_toml(self.config)
 
         with contextlib.suppress(KeyError):
             dependencies = {**pyproject_data["tool"]["poetry"]["dev-dependencies"], **dependencies}
@@ -47,7 +45,7 @@ class PoetryDependencyGetter(DependencyGetter):
         with contextlib.suppress(KeyError):
             dependencies = {**pyproject_data["tool"]["poetry"]["group"]["dev"]["dependencies"], **dependencies}
 
-        return cls._get_dependencies(dependencies)
+        return self._get_dependencies(dependencies)
 
     @classmethod
     def _get_dependencies(cls, poetry_dependencies: dict[str, Any]) -> list[Dependency]:

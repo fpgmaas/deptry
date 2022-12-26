@@ -49,10 +49,9 @@ def test_read_configuration_from_pyproject_toml_exists(tmp_path: Path) -> None:
         with open("pyproject.toml", "w") as f:
             f.write(pyproject_toml_content)
 
-        assert (
-            read_configuration_from_pyproject_toml(click_context, click.UNPROCESSED(None), "pyproject.toml")
-            == "pyproject.toml"
-        )
+        assert read_configuration_from_pyproject_toml(
+            click_context, click.UNPROCESSED(None), Path("pyproject.toml")
+        ) == Path("pyproject.toml")
 
     assert click_context.default_map == {
         "exclude": ["foo", "bar"],
@@ -73,12 +72,9 @@ def test_read_configuration_from_pyproject_toml_exists(tmp_path: Path) -> None:
 
 def test_read_configuration_from_pyproject_toml_file_not_found(caplog: LogCaptureFixture) -> None:
     with caplog.at_level(logging.DEBUG):
-        assert (
-            read_configuration_from_pyproject_toml(
-                click.Context(click.Command("")), click.UNPROCESSED(None), "a_non_existent_pyproject.toml"
-            )
-            is None
-        )
+        assert read_configuration_from_pyproject_toml(
+            click.Context(click.Command("")), click.UNPROCESSED(None), Path("a_non_existent_pyproject.toml")
+        ) == Path("a_non_existent_pyproject.toml")
 
     assert "No pyproject.toml file to read configuration from." in caplog.text
 
@@ -96,11 +92,8 @@ def test_read_configuration_from_pyproject_toml_file_without_deptry_section(
             f.write(pyproject_toml_content)
 
         with caplog.at_level(logging.DEBUG):
-            assert (
-                read_configuration_from_pyproject_toml(
-                    click.Context(click.Command("")), click.UNPROCESSED(None), "pyproject.toml"
-                )
-                is None
-            )
+            assert read_configuration_from_pyproject_toml(
+                click.Context(click.Command("")), click.UNPROCESSED(None), Path("pyproject.toml")
+            ) == Path("pyproject.toml")
 
     assert "No configuration for deptry was found in pyproject.toml." in caplog.text
