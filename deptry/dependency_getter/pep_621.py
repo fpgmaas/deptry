@@ -17,18 +17,16 @@ class PEP621DependencyGetter(DependencyGetter):
 
         return DependenciesExtract(dependencies, [])
 
-    @classmethod
-    def _get_dependencies(cls) -> list[Dependency]:
-        pyproject_data = load_pyproject_toml()
+    def _get_dependencies(self) -> list[Dependency]:
+        pyproject_data = load_pyproject_toml(self.config)
         dependency_strings: list[str] = pyproject_data["project"]["dependencies"]
-        return cls._extract_pep_508_dependencies(dependency_strings)
+        return self._extract_pep_508_dependencies(dependency_strings)
 
-    @classmethod
-    def _get_optional_dependencies(cls) -> dict[str, list[Dependency]]:
-        pyproject_data = load_pyproject_toml()
+    def _get_optional_dependencies(self) -> dict[str, list[Dependency]]:
+        pyproject_data = load_pyproject_toml(self.config)
 
         return {
-            group: cls._extract_pep_508_dependencies(dependencies)
+            group: self._extract_pep_508_dependencies(dependencies)
             for group, dependencies in pyproject_data["project"].get("optional-dependencies", {}).items()
         }
 

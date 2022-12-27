@@ -23,8 +23,7 @@ class PDMDependencyGetter(PEP621DependencyGetter):
 
         return DependenciesExtract(pep_621_dependencies_extract.dependencies, dev_dependencies)
 
-    @classmethod
-    def _get_pdm_dev_dependencies(cls) -> list[Dependency]:
+    def _get_pdm_dev_dependencies(self) -> list[Dependency]:
         """
         Try to get development dependencies from pyproject.toml, which with PDM are specified as:
 
@@ -38,7 +37,7 @@ class PDMDependencyGetter(PEP621DependencyGetter):
             "tox-pdm>=0.5",
         ]
         """
-        pyproject_data = load_pyproject_toml()
+        pyproject_data = load_pyproject_toml(self.config)
 
         dev_dependency_strings: list[str] = []
         try:
@@ -48,4 +47,4 @@ class PDMDependencyGetter(PEP621DependencyGetter):
         except KeyError:
             logging.debug("No section [tool.pdm.dev-dependencies] found in pyproject.toml")
 
-        return cls._extract_pep_508_dependencies(dev_dependency_strings)
+        return self._extract_pep_508_dependencies(dev_dependency_strings)

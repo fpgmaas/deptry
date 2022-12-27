@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+from pathlib import Path
 from typing import Any
 
 import click
@@ -8,7 +9,7 @@ import click
 from deptry.utils import load_pyproject_toml
 
 
-def read_configuration_from_pyproject_toml(ctx: click.Context, _param: click.Parameter, value: str) -> str | None:
+def read_configuration_from_pyproject_toml(ctx: click.Context, _param: click.Parameter, value: Path) -> Path | None:
     """
     Callback that, given a click context, overrides the default values with configuration options set in a
     pyproject.toml file.
@@ -22,13 +23,13 @@ def read_configuration_from_pyproject_toml(ctx: click.Context, _param: click.Par
         pyproject_data = load_pyproject_toml(value)
     except FileNotFoundError:
         logging.debug("No pyproject.toml file to read configuration from.")
-        return None
+        return value
 
     try:
         deptry_toml_config = pyproject_data["tool"]["deptry"]
     except KeyError:
         logging.debug("No configuration for deptry was found in pyproject.toml.")
-        return None
+        return value
 
     click_default_map: dict[str, Any] = {}
 

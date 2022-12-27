@@ -29,7 +29,7 @@ requests [security] >= 2.8.1, == 2.8.* ; python_version < "2.7"
         with open("requirements.txt", "w") as f:
             f.write(fake_requirements_txt)
 
-        dependencies_extract = RequirementsTxtDependencyGetter().get()
+        dependencies_extract = RequirementsTxtDependencyGetter(Path("pyproject.toml")).get()
         dependencies = dependencies_extract.dependencies
 
         assert len(dependencies) == 17
@@ -62,7 +62,7 @@ git+https://github.com/abc123/bar-foo@xyz789#egg=bar-fooo"""
         with open("requirements.txt", "w") as f:
             f.write(fake_requirements_txt)
 
-        dependencies_extract = RequirementsTxtDependencyGetter().get()
+        dependencies_extract = RequirementsTxtDependencyGetter(Path("pyproject.toml")).get()
         dependencies = dependencies_extract.dependencies
 
         assert len(dependencies) == 5
@@ -80,7 +80,9 @@ def test_single(tmp_path: Path) -> None:
         with open("req.txt", "w") as f:
             f.write("click==8.1.3 #123asd\ncolorama==0.4.5")
 
-        dependencies_extract = RequirementsTxtDependencyGetter(requirements_txt=("req.txt",)).get()
+        dependencies_extract = RequirementsTxtDependencyGetter(
+            Path("pyproject.toml"), requirements_txt=("req.txt",)
+        ).get()
         dependencies = dependencies_extract.dependencies
 
         assert len(dependencies) == 2
@@ -97,7 +99,9 @@ def test_multiple(tmp_path: Path) -> None:
         with open("bar.txt", "w") as f:
             f.write("bar")
 
-        dependencies_extract = RequirementsTxtDependencyGetter(requirements_txt=("foo.txt", "bar.txt")).get()
+        dependencies_extract = RequirementsTxtDependencyGetter(
+            Path("pyproject.toml"), requirements_txt=("foo.txt", "bar.txt")
+        ).get()
         dependencies = dependencies_extract.dependencies
 
         assert len(dependencies) == 2
@@ -114,7 +118,7 @@ def test_dev_single(tmp_path: Path) -> None:
         with open("requirements-dev.txt", "w") as f:
             f.write("click==8.1.3 #123asd\ncolorama==0.4.5")
 
-        dependencies_extract = RequirementsTxtDependencyGetter().get()
+        dependencies_extract = RequirementsTxtDependencyGetter(Path("pyproject.toml")).get()
         dev_dependencies = dependencies_extract.dev_dependencies
 
         assert len(dependencies_extract.dependencies) == 0
@@ -135,7 +139,7 @@ def test_dev_multiple(tmp_path: Path) -> None:
         with open("dev-requirements.txt", "w") as f:
             f.write("bar")
 
-        dependencies_extract = RequirementsTxtDependencyGetter().get()
+        dependencies_extract = RequirementsTxtDependencyGetter(Path("pyproject.toml")).get()
         dev_dependencies = dependencies_extract.dev_dependencies
 
         assert len(dependencies_extract.dependencies) == 0
@@ -154,7 +158,9 @@ def test_dev_multiple_with_arguments(tmp_path: Path) -> None:
         with open("bar.txt", "w") as f:
             f.write("bar")
 
-        dependencies_extract = RequirementsTxtDependencyGetter(requirements_txt_dev=("foo.txt", "bar.txt")).get()
+        dependencies_extract = RequirementsTxtDependencyGetter(
+            Path("pyproject.toml"), requirements_txt_dev=("foo.txt", "bar.txt")
+        ).get()
         dev_dependencies = dependencies_extract.dev_dependencies
 
         assert len(dependencies_extract.dependencies) == 0

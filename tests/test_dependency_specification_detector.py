@@ -12,7 +12,7 @@ def test_poetry(tmp_path: Path) -> None:
         with open("pyproject.toml", "w") as f:
             f.write('[tool.poetry.dependencies]\nfake = "10"')
 
-        spec = DependencySpecificationDetector().detect()
+        spec = DependencySpecificationDetector(Path("pyproject.toml")).detect()
         assert spec == DependencyManagementFormat.POETRY
 
 
@@ -21,7 +21,7 @@ def test_requirements_txt(tmp_path: Path) -> None:
         with open("requirements.txt", "w") as f:
             f.write('foo >= "1.0"')
 
-        spec = DependencySpecificationDetector().detect()
+        spec = DependencySpecificationDetector(Path("pyproject.toml")).detect()
         assert spec == DependencyManagementFormat.REQUIREMENTS_TXT
 
 
@@ -33,7 +33,7 @@ def test_pdm_with_dev_dependencies(tmp_path: Path) -> None:
                 ' "scm"}\n[tool.pdm.dev-dependencies]\ngroup=["bar"]'
             )
 
-        spec = DependencySpecificationDetector().detect()
+        spec = DependencySpecificationDetector(Path("pyproject.toml")).detect()
         assert spec == DependencyManagementFormat.PDM
 
 
@@ -42,7 +42,7 @@ def test_pdm_without_dev_dependencies(tmp_path: Path) -> None:
         with open("pyproject.toml", "w") as f:
             f.write('[project]\ndependencies=["foo"]\n[tool.pdm]\nversion = {source = "scm"}')
 
-        spec = DependencySpecificationDetector().detect()
+        spec = DependencySpecificationDetector(Path("pyproject.toml")).detect()
         assert spec == DependencyManagementFormat.PEP_621
 
 
@@ -51,7 +51,7 @@ def test_pep_621(tmp_path: Path) -> None:
         with open("pyproject.toml", "w") as f:
             f.write('[project]\ndependencies=["foo"]')
 
-        spec = DependencySpecificationDetector().detect()
+        spec = DependencySpecificationDetector(Path("pyproject.toml")).detect()
         assert spec == DependencyManagementFormat.PEP_621
 
 
@@ -67,7 +67,7 @@ def test_both(tmp_path: Path) -> None:
         with open("requirements.txt", "w") as f:
             f.write('foo >= "1.0"')
 
-        spec = DependencySpecificationDetector().detect()
+        spec = DependencySpecificationDetector(Path("pyproject.toml")).detect()
         assert spec == DependencyManagementFormat.POETRY
 
 
@@ -76,7 +76,7 @@ def test_requirements_txt_with_argument(tmp_path: Path) -> None:
         with open("req.txt", "w") as f:
             f.write('foo >= "1.0"')
 
-        spec = DependencySpecificationDetector(requirements_txt=("req.txt",)).detect()
+        spec = DependencySpecificationDetector(Path("pyproject.toml"), requirements_txt=("req.txt",)).detect()
         assert spec == DependencyManagementFormat.REQUIREMENTS_TXT
 
 
@@ -86,14 +86,14 @@ def test_requirements_txt_with_argument_not_root_directory(tmp_path: Path) -> No
         with open("req/req.txt", "w") as f:
             f.write('foo >= "1.0"')
 
-        spec = DependencySpecificationDetector(requirements_txt=("req/req.txt",)).detect()
+        spec = DependencySpecificationDetector(Path("pyproject.toml"), requirements_txt=("req/req.txt",)).detect()
         assert spec == DependencyManagementFormat.REQUIREMENTS_TXT
 
 
 def test_raises_filenotfound_error(tmp_path: Path) -> None:
     with run_within_dir(tmp_path):
         with pytest.raises(FileNotFoundError) as e:
-            DependencySpecificationDetector(requirements_txt=("req/req.txt",)).detect()
+            DependencySpecificationDetector(Path("pyproject.toml"), requirements_txt=("req/req.txt",)).detect()
         assert (
             "No file called 'pyproject.toml' with a [tool.poetry.dependencies], [tool.pdm] or [project] section or"
             " file(s)"

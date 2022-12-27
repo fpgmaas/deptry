@@ -3,6 +3,7 @@ from __future__ import annotations
 import logging
 import os
 from enum import Enum
+from pathlib import Path
 
 from deptry.utils import load_pyproject_toml
 
@@ -24,7 +25,8 @@ class DependencySpecificationDetector:
 
     """
 
-    def __init__(self, requirements_txt: tuple[str, ...] = ("requirements.txt",)) -> None:
+    def __init__(self, config: Path, requirements_txt: tuple[str, ...] = ("requirements.txt",)) -> None:
+        self.config = config
         self.requirements_txt = requirements_txt
 
     def detect(self) -> DependencyManagementFormat:
@@ -42,18 +44,16 @@ class DependencySpecificationDetector:
             f" file(s) called '{', '.join(self.requirements_txt)}' found. Exiting."
         )
 
-    @staticmethod
-    def _project_contains_pyproject_toml() -> bool:
-        if "pyproject.toml" in os.listdir():
+    def _project_contains_pyproject_toml(self) -> bool:
+        if self.config.exists():
             logging.debug("pyproject.toml found!")
             return True
         else:
             logging.debug("No pyproject.toml found.")
             return False
 
-    @staticmethod
-    def _project_uses_poetry() -> bool:
-        pyproject_toml = load_pyproject_toml()
+    def _project_uses_poetry(self) -> bool:
+        pyproject_toml = load_pyproject_toml(self.config)
         try:
             pyproject_toml["tool"]["poetry"]["dependencies"]
             logging.debug(
@@ -69,9 +69,8 @@ class DependencySpecificationDetector:
             pass
         return False
 
-    @staticmethod
-    def _project_uses_pdm() -> bool:
-        pyproject_toml = load_pyproject_toml()
+    def _project_uses_pdm(self) -> bool:
+        pyproject_toml = load_pyproject_toml(self.config)
         try:
             pyproject_toml["tool"]["pdm"]["dev-dependencies"]
             logging.debug(
@@ -87,9 +86,8 @@ class DependencySpecificationDetector:
             pass
         return False
 
-    @staticmethod
-    def _project_uses_pep_621() -> bool:
-        pyproject_toml = load_pyproject_toml()
+    def _project_uses_pep_621(self) -> bool:
+        pyproject_toml = load_pyproject_toml(self.config)
         try:
             pyproject_toml["project"]
             logging.debug(
