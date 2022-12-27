@@ -22,24 +22,23 @@ class PythonFileFinder:
     def get_all_python_files_in(self, directory: Path) -> list[Path]:
         logging.debug("Collecting Python files to scan...")
 
-        all_py_files = []
+        source_files = []
 
         ignore_regex = re.compile("|".join(self.exclude))
-        py_regex = re.compile(r".*\.py$") if self.ignore_notebooks else re.compile(r".*\.py$|.*\.ipynb$")
+        file_lookup_suffixes = {".py"} if self.ignore_notebooks else {".py", ".ipynb"}
 
-        for root, dirs, files in os.walk(directory, topdown=True):
-            root_without_trailing_dotslash = re.sub(r"^\./", "", root)
-            if self.exclude and ignore_regex.match(root_without_trailing_dotslash):
+        for root_str, dirs, files in os.walk(directory, topdown=True):
+            root = Path(root_str)
+
+            if self.exclude and ignore_regex.match(str(root)):
                 dirs[:] = []
                 continue
-            files_with_path = [Path(root) / Path(file) for file in files]
 
-            files_to_keep = [file for file in files_with_path if py_regex.match(str(file))]
-            if self.exclude:
-                files_to_keep = [file for file in files_to_keep if not ignore_regex.match(str(file))]
+            for file_str in files:
+                file = root / file_str
+                if file.suffix in file_lookup_suffixes and (not self.exclude or not ignore_regex.match(str(file))):
+                    source_files.append(file)
 
-            all_py_files += files_to_keep
+        logging.debug("Python files to scan for imports:\n%s\n", "\n".join([str(file) for file in source_files]))
 
-        nl = "\n"
-        logging.debug(f"Python files to scan for imports:\n{nl.join([str(x) for x in all_py_files])}\n")
-        return all_py_files
+        return source_files
