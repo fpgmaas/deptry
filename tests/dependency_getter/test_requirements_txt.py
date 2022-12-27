@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from deptry.dependency_getter.requirements_txt import RequirementsTxtDependencyGetter
-from deptry.utils import run_within_dir
+from tests.utils import run_within_dir
 
 
 def test_parse_requirements_txt(tmp_path: Path) -> None:

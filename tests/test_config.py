@@ -5,7 +5,7 @@ import click
 from _pytest.logging import LogCaptureFixture
 
 from deptry.config import read_configuration_from_pyproject_toml
-from deptry.utils import run_within_dir
+from tests.utils import run_within_dir
 
 
 def test_read_configuration_from_pyproject_toml_exists(tmp_path: Path) -> None:

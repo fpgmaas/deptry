@@ -8,7 +8,7 @@ import click
 from deptry.compat import metadata
 from deptry.config import read_configuration_from_pyproject_toml
 from deptry.core import Core
-from deptry.utils import PYPROJECT_TOML_PATH, run_within_dir
+from deptry.utils import PYPROJECT_TOML_PATH
 
 
 class CommaSeparatedTupleParamType(click.ParamType):
@@ -186,7 +186,6 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
     help="Path to the pyproject.toml file to read configuration from.",
     default=PYPROJECT_TOML_PATH,
     expose_value=False,
-    hidden=True,
 )
 def deptry(
     root: Path,
@@ -212,20 +211,20 @@ def deptry(
 
     """
 
-    with run_within_dir(root):
-        Core(
-            ignore_obsolete=ignore_obsolete,
-            ignore_missing=ignore_missing,
-            ignore_transitive=ignore_transitive,
-            ignore_misplaced_dev=ignore_misplaced_dev,
-            exclude=exclude,
-            extend_exclude=extend_exclude,
-            ignore_notebooks=ignore_notebooks,
-            skip_obsolete=skip_obsolete,
-            skip_missing=skip_missing,
-            skip_transitive=skip_transitive,
-            skip_misplaced_dev=skip_misplaced_dev,
-            requirements_txt=requirements_txt,
-            requirements_txt_dev=requirements_txt_dev,
-            json_output=json_output,
-        ).run()
+    Core(
+        root=root,
+        ignore_obsolete=ignore_obsolete,
+        ignore_missing=ignore_missing,
+        ignore_transitive=ignore_transitive,
+        ignore_misplaced_dev=ignore_misplaced_dev,
+        exclude=exclude,
+        extend_exclude=extend_exclude,
+        ignore_notebooks=ignore_notebooks,
+        skip_obsolete=skip_obsolete,
+        skip_missing=skip_missing,
+        skip_transitive=skip_transitive,
+        skip_misplaced_dev=skip_misplaced_dev,
+        requirements_txt=requirements_txt,
+        requirements_txt_dev=requirements_txt_dev,
+        json_output=json_output,
+    ).run()

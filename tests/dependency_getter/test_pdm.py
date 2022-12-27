@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from deptry.dependency_getter.pdm import PDMDependencyGetter
-from deptry.utils import run_within_dir
+from tests.utils import run_within_dir
 
 
 def test_dependency_getter(tmp_path: Path) -> None:
