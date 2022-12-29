@@ -3,9 +3,11 @@ from __future__ import annotations
 import logging
 import os
 import re
+from dataclasses import dataclass
 from pathlib import Path
 
 
+@dataclass
 class PythonFileFinder:
     """
     Get a list of all .py and .ipynb files recursively within a directory.
@@ -15,9 +17,8 @@ class PythonFileFinder:
         ignore_notebooks: If ignore_notebooks is set to True, .ipynb files are ignored and only .py files are returned.
     """
 
-    def __init__(self, exclude: tuple[str, ...], ignore_notebooks: bool = False) -> None:
-        self.exclude = exclude
-        self.ignore_notebooks = ignore_notebooks
+    exclude: tuple[str, ...]
+    ignore_notebooks: bool = False
 
     def get_all_python_files_in(self, directory: Path) -> list[Path]:
         logging.debug("Collecting Python files to scan...")
