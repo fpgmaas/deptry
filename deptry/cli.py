@@ -180,6 +180,15 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
     show_default=True,
 )
 @click.option(
+    "--known-first-party",
+    "-kf",
+    type=str,
+    multiple=True,
+    help="Modules to consider as first party ones.",
+    default=(),
+    show_default=True,
+)
+@click.option(
     "--json-output",
     "-o",
     type=str,
@@ -202,6 +211,7 @@ def deptry(
     ignore_notebooks: bool,
     requirements_txt: tuple[str, ...],
     requirements_txt_dev: tuple[str, ...],
+    known_first_party: tuple[str, ...],
     json_output: str,
 ) -> None:
     """Find dependency issues in your Python project.
@@ -228,5 +238,6 @@ def deptry(
         skip_misplaced_dev=skip_misplaced_dev,
         requirements_txt=requirements_txt,
         requirements_txt_dev=requirements_txt_dev,
+        known_first_party=known_first_party,
         json_output=json_output,
     ).run()
