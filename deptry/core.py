@@ -52,7 +52,7 @@ class Core:
         dependencies_extract = self._get_dependencies(dependency_management_format)
 
         all_python_files = PythonFileFinder(
-            exclude=self.exclude + self.extend_exclude, ignore_notebooks=self.ignore_notebooks
+            self.exclude, self.extend_exclude, self.ignore_notebooks
         ).get_all_python_files_in(self.root)
 
         local_modules = self._get_local_modules()

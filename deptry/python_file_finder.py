@@ -13,12 +13,13 @@ class PythonFileFinder:
     """
     Get a list of all .py and .ipynb files recursively within a directory.
     Args:
-        exclude: A list of regex patterns of paths to ignore. Matching is done by re.match(), so it checks for a match at the beginning
-            of the string.
+        exclude: A list of regex patterns of paths to ignore.
+        extend_exclude: An additional list of regex patterns of paths to ignore.
         ignore_notebooks: If ignore_notebooks is set to True, .ipynb files are ignored and only .py files are returned.
     """
 
     exclude: tuple[str, ...]
+    extend_exclude: tuple[str, ...]
     ignore_notebooks: bool = False
 
     def get_all_python_files_in(self, directory: Path) -> list[Path]:
@@ -26,7 +27,7 @@ class PythonFileFinder:
 
         source_files = []
 
-        ignore_regex = re.compile("|".join(self.exclude))
+        ignore_regex = re.compile("|".join(self.exclude + self.extend_exclude))
         file_lookup_suffixes = {".py"} if self.ignore_notebooks else {".py", ".ipynb"}
 
         for root_str, dirs, files in os.walk(directory, topdown=True):
@@ -46,7 +47,10 @@ class PythonFileFinder:
         return source_files
 
     def _is_directory_ignored(self, directory: Path, ignore_regex: Pattern[str]) -> bool:
-        return bool(self.exclude and ignore_regex.match(str(directory)))
+        return bool((self.exclude + self.extend_exclude) and ignore_regex.match(str(directory)))
 
     def _is_file_ignored(self, file: Path, file_lookup_suffixes: set[str], ignore_regex: Pattern[str]) -> bool:
-        return bool(file.suffix not in file_lookup_suffixes or (self.exclude and ignore_regex.match(str(file))))
+        return bool(
+            file.suffix not in file_lookup_suffixes
+            or ((self.exclude + self.extend_exclude) and ignore_regex.match(str(file)))
+        )

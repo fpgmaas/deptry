@@ -29,7 +29,7 @@ def test_simple(tmp_path: Path) -> None:
         ]
         create_files_from_list_of_dicts(paths)
 
-        files = PythonFileFinder(exclude=(".venv", "other_dir")).get_all_python_files_in(Path("."))
+        files = PythonFileFinder(exclude=(".venv",), extend_exclude=("other_dir",)).get_all_python_files_in(Path("."))
         assert len(files) == 3
         assert "dir/subdir/file2.py" in [str(file) for file in files]
 
@@ -48,7 +48,7 @@ def test_only_matches_start(tmp_path: Path) -> None:
         ]
         create_files_from_list_of_dicts(paths)
 
-        files = PythonFileFinder(exclude=("subdir",)).get_all_python_files_in(Path("."))
+        files = PythonFileFinder(exclude=("subdir",), extend_exclude=()).get_all_python_files_in(Path("."))
         assert len(files) == 3
         assert "dir/subdir/file2.py" in [str(file) for file in files]
 
@@ -60,10 +60,14 @@ def test_matches_ipynb(tmp_path: Path) -> None:
         ]
         create_files_from_list_of_dicts(paths)
 
-        files = PythonFileFinder(exclude=(), ignore_notebooks=False).get_all_python_files_in(Path("."))
+        files = PythonFileFinder(exclude=(), extend_exclude=(), ignore_notebooks=False).get_all_python_files_in(
+            Path(".")
+        )
         assert len(files) == 1
         assert "dir/subdir/file1.ipynb" in [str(file) for file in files]
-        files = PythonFileFinder(exclude=(), ignore_notebooks=True).get_all_python_files_in(Path("."))
+        files = PythonFileFinder(exclude=(), extend_exclude=(), ignore_notebooks=True).get_all_python_files_in(
+            Path(".")
+        )
         assert len(files) == 0
 
 
@@ -80,19 +84,23 @@ def test_regex_argument(tmp_path: Path) -> None:
         ]
         create_files_from_list_of_dicts(paths)
 
-        files = PythonFileFinder(exclude=(".*file1",), ignore_notebooks=False).get_all_python_files_in(Path("."))
+        files = PythonFileFinder(
+            exclude=(".*file1",), extend_exclude=(), ignore_notebooks=False
+        ).get_all_python_files_in(Path("."))
         assert len(files) == 4
         assert not any(["file1" in str(file) for file in files])
 
-        files = PythonFileFinder(exclude=(".cache|other.*subdir",), ignore_notebooks=False).get_all_python_files_in(
-            Path(".")
-        )
+        files = PythonFileFinder(
+            exclude=(".cache|other.*subdir",), extend_exclude=(), ignore_notebooks=False
+        ).get_all_python_files_in(Path("."))
         assert len(files) == 3
         assert not any(["other_dir" in str(file) for file in files])
         assert not any([".cache" in str(file) for file in files])
         assert "dir/subdir/file2.py" in [str(file) for file in files]
 
-        files = PythonFileFinder(exclude=(".*/subdir/",), ignore_notebooks=False).get_all_python_files_in(Path("."))
+        files = PythonFileFinder(
+            exclude=(".*/subdir/",), extend_exclude=(), ignore_notebooks=False
+        ).get_all_python_files_in(Path("."))
         assert len(files) == 2
         assert not any(["subdir" in str(file) for file in files])
         assert ".cache/file2.py" in [str(file) for file in files]
