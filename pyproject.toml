@@ -82,9 +82,7 @@ module = [
 warn_unused_ignores = false
 
 [tool.deptry]
-exclude = [
-    "venv",
-    ".venv",
+extend_exclude = [
     "docs",
     "tests",
     "scripts",
