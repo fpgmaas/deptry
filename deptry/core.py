@@ -38,6 +38,7 @@ class Core:
     skip_misplaced_dev: bool
     exclude: tuple[str, ...]
     extend_exclude: tuple[str, ...]
+    using_default_exclude: bool
     ignore_notebooks: bool
     requirements_txt: tuple[str, ...]
     requirements_txt_dev: tuple[str, ...]
@@ -52,7 +53,7 @@ class Core:
         dependencies_extract = self._get_dependencies(dependency_management_format)
 
         all_python_files = PythonFileFinder(
-            self.exclude, self.extend_exclude, self.ignore_notebooks
+            self.exclude, self.extend_exclude, self.using_default_exclude, self.ignore_notebooks
         ).get_all_python_files_in(self.root)
 
         local_modules = self._get_local_modules()

@@ -15,11 +15,13 @@ class PythonFileFinder:
     Args:
         exclude: A list of regex patterns of paths to ignore.
         extend_exclude: An additional list of regex patterns of paths to ignore.
+        using_default_exclude: Whether the exclude list was explicitly set, or the default was used.
         ignore_notebooks: If ignore_notebooks is set to True, .ipynb files are ignored and only .py files are returned.
     """
 
     exclude: tuple[str, ...]
     extend_exclude: tuple[str, ...]
+    using_default_exclude: bool
     ignore_notebooks: bool = False
 
     def get_all_python_files_in(self, directory: Path) -> list[Path]:
