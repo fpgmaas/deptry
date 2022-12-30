@@ -22,7 +22,6 @@ def test_cli_with_pep_621(pep_621_dir_with_venv_installed: Path) -> None:
     with run_within_dir(pep_621_dir_with_venv_installed):
         result = subprocess.run(shlex.split("deptry ."), capture_output=True, text=True)
         assert result.returncode == 1
-        print(result.stderr)
         assert (
             "The project contains obsolete dependencies:\n\n\tisort\n\tmypy\n\tpytest\n\trequests\n\n" in result.stderr
         )

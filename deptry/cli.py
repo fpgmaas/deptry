@@ -9,6 +9,8 @@ from deptry.compat import metadata
 from deptry.config import read_configuration_from_pyproject_toml
 from deptry.core import Core
 
+DEFAULT_EXCLUDE = ("venv", r"\.venv", r"\.direnv", "tests", r"\.git", "setup.py")
+
 
 class CommaSeparatedTupleParamType(click.ParamType):
     name = "tuple"
@@ -129,12 +131,11 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
     "-e",
     multiple=True,
     type=str,
-    help="""A regular expression for directories or files in which .py files should not be scanned for imports to determine if there are dependency issues.
+    help=f"""A regular expression for directories or files in which .py files should not be scanned for imports to determine if there are dependency issues.
     Can be used multiple times by specifying the argument multiple times. re.match() is used to match the expressions, which by default checks for a match only at the beginning of a string.
     For example: `deptry . -e ".*/foo/" -e bar"` Note that this overwrites the defaults.
+    [default: {", ".join(DEFAULT_EXCLUDE)}
     """,
-    default=("venv", r"\.venv", r"\.direnv", "tests", r"\.git", "setup.py"),
-    show_default=True,
 )
 @click.option(
     "--extend-exclude",
@@ -217,8 +218,9 @@ def deptry(
         ignore_missing=ignore_missing,
         ignore_transitive=ignore_transitive,
         ignore_misplaced_dev=ignore_misplaced_dev,
-        exclude=exclude,
+        exclude=exclude or DEFAULT_EXCLUDE,
         extend_exclude=extend_exclude,
+        using_default_exclude=not exclude,
         ignore_notebooks=ignore_notebooks,
         skip_obsolete=skip_obsolete,
         skip_missing=skip_missing,

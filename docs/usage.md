@@ -38,8 +38,11 @@ _deptry_ can also be configured to look for `requirements.txt` files with other 
 ## Excluding files and directories
 
 To determine issues with imported modules and dependencies, _deptry_ will scan the working directory and its subdirectories recursively for `.py` and `.ipynb` files, so it can
-extract the imported modules from those files. Any files solely used for development purposes, such as files used for unit testing, should not be scanned. By default, the directories
+extract the imported modules from those files. Any file solely used for development purposes, such as a file used for unit testing, should not be scanned. By default, the directories
 `venv`, `.venv`, `.direnv`, `tests`, `.git` and the file `setup.py` are excluded.
+
+By default, _deptry_ also reads entries in `.gitignore` file, to ignore any pattern present in the file, similarly to
+what `git` does.
 
 To ignore other directories and files than the defaults, use the `--exclude` (or `-e`) flag. The argument can either be one long regular expression, or it can be reused multiple times to pass multiple smaller regular expressions. The paths should be specified as paths relative to the directory _deptry_ is running in, without the trailing `./`. An example:
 
@@ -50,15 +53,18 @@ deptry . --exclude "bar|.*/foo/"
 
 The two statements above are equivalent, and will both ignore all files in the directory `bar`, and all files within any directory named `foo`.
 
-Note that using the `--exclude` argument overwrites the defaults. To add additional patterns to ignore
-on top of the defaults instead of overwriting them, use the `--extend-exclude` (or `-ee`) flag.
+Note that using the `--exclude` argument overwrites the defaults, and will prevent _deptry_ from considering entries in
+`.gitignore`.
+To add additional patterns to ignore on top of the defaults instead of overwriting them, or to make sure that _deptry_
+still considers `.gitignore`, use the `--extend-exclude` (or `-ee`) flag.
 
 ```sh
 deptry . -ee bar -ee ".*/foo/"
 deptry . --extend-exclude "bar|.*/foo/"
 ```
 
-This will exclude `venv`, `.venv`, `.direnv`, `.git`, `tests`, `setup.py`, `bar`, and any directory named `foo`.
+This will exclude `venv`, `.venv`, `.direnv`, `.git`, `tests`, `setup.py`, `bar`, and any directory named `foo`, as well
+as entries in `.gitignore`, if there are some.
 
 ## Increased verbosity
 
