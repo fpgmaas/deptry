@@ -10,8 +10,7 @@ copyright: Maintained by <a href="https://fpgmaas.com">Florian</a>.
 nav:
   - Home: index.md
   - Usage and Configuration: usage.md
-  - Configuration with pyproject.toml: pyproject-toml.md
-  - FAQ: faq.md
+  - Issues detection: issues-detection.md
 
 plugins:
   - search
@@ -47,6 +46,8 @@ extra:
 
 markdown_extensions:
   - admonition
+  - attr_list
+  - md_in_html
   - pymdownx.details
   - pymdownx.superfences
   - toc:
