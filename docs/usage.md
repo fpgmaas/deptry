@@ -1,15 +1,10 @@
 # Usage & Configuration
 
-## Configuration
-
-_deptry_ can be configured with command line arguments or by adding a `[tool.deptry]` section to `pyproject.toml`. Explanation for the command line arguments can
-be obtained by running `deptry --help`, and examples are given below. For configuration using `pyproject.toml`, see [Configuration with pyproject.toml](./pyproject-toml.md)
-
 ## Basic Usage
 
-_deptry_ can be run with
+_deptry_ can be run with:
 
-```sh
+```shell
 deptry .
 ```
 
@@ -21,19 +16,20 @@ If you want to configure _deptry_ using `pyproject.toml`, or if your dependencie
 
 To determine the project's dependencies, _deptry_ will scan the directory it is run from for files in the following order:
 
-- If a `pyproject.toml` file with a `[tool.poetry.dependencies]` section is found, _deptry_ will assume it uses Poetry and extract:
+1. If a `pyproject.toml` file with a `[tool.poetry.dependencies]` section is found, _deptry_ will assume it uses Poetry and extract:
     - dependencies from `[tool.poetry.dependencies]` section
     - development dependencies from `[tool.poetry.group.dev.dependencies]` or `[tool.poetry.dev-dependencies]` section
-- If a `pyproject.toml` file with a `[tool.pdm.dev-dependencies]` section is found, _deptry_ will assume it uses PDM and extract:
+2. If a `pyproject.toml` file with a `[tool.pdm.dev-dependencies]` section is found, _deptry_ will assume it uses PDM and extract:
     - dependencies from `[project.dependencies]` and `[project.optional-dependencies]` sections
     - development dependencies from `[tool.pdm.dev-dependencies]` section.
-- If a `pyproject.toml` file with a `[project]` section is found, _deptry_ will assume it uses [PEP 621](https://peps.python.org/pep-0621/) for dependency specification and extract:
+3. If a `pyproject.toml` file with a `[project]` section is found, _deptry_ will assume it uses [PEP 621](https://peps.python.org/pep-0621/) for dependency specification and extract:
     - dependencies from `[project.dependencies]` and `[project.optional-dependencies]` sections
-- If a `requirements.txt` file is found, _deptry_ will extract:
+4. If a `requirements.txt` file is found, _deptry_ will extract:
     - dependencies from it
     - development dependencies from `dev-dependencies.txt` and `dependencies-dev.txt`, if any exist
 
-_deptry_ can also be configured to look for `requirements.txt` files with other names or in other directories. See [requirements.txt files](#requirementstxt-files).
+_deptry_ can be configured to look for `pip` requirements files with other names or in other directories.
+See [Requirements txt](#requirements-txt) and [Requirements txt dev](#requirements-txt-dev).
 
 ## Excluding files and directories
 
@@ -41,13 +37,12 @@ To determine issues with imported modules and dependencies, _deptry_ will scan t
 extract the imported modules from those files. Any file solely used for development purposes, such as a file used for unit testing, should not be scanned. By default, the directories
 `venv`, `.venv`, `.direnv`, `tests`, `.git` and the file `setup.py` are excluded.
 
-By default, _deptry_ also reads entries in `.gitignore` file, to ignore any pattern present in the file, similarly to
-what `git` does.
+_deptry_ also reads entries in `.gitignore` file, to ignore any pattern present in the file, similarly to what `git` does.
 
-To ignore other directories and files than the defaults, use the `--exclude` (or `-e`) flag. The argument can either be one long regular expression, or it can be reused multiple times to pass multiple smaller regular expressions. The paths should be specified as paths relative to the directory _deptry_ is running in, without the trailing `./`. An example:
+To ignore other directories and files than the defaults, use the `--exclude` (short `-e`) flag. The argument can either be one long regular expression, or it can be reused multiple times to pass multiple smaller regular expressions. The paths should be specified as paths relative to the directory _deptry_ is running in, without the trailing `./`. An example:
 
-```sh
-deptry . -e bar -e ".*/foo/"
+```shell
+deptry . --exclude bar --exclude ".*/foo/"
 deptry . --exclude "bar|.*/foo/"
 ```
 
@@ -56,96 +51,15 @@ The two statements above are equivalent, and will both ignore all files in the d
 Note that using the `--exclude` argument overwrites the defaults, and will prevent _deptry_ from considering entries in
 `.gitignore`.
 To add additional patterns to ignore on top of the defaults instead of overwriting them, or to make sure that _deptry_
-still considers `.gitignore`, use the `--extend-exclude` (or `-ee`) flag.
+still considers `.gitignore`, use the `--extend-exclude` (short `-ee`) flag.
 
-```sh
-deptry . -ee bar -ee ".*/foo/"
+```shell
+deptry . --extend-exclude bar --extend-exclude ".*/foo/"
 deptry . --extend-exclude "bar|.*/foo/"
 ```
 
 This will exclude `venv`, `.venv`, `.direnv`, `.git`, `tests`, `setup.py`, `bar`, and any directory named `foo`, as well
 as entries in `.gitignore`, if there are some.
-
-## Increased verbosity
-
-To show more details about the scanned python files, the imported modules found, and how deptry determined which dependencies are obsolete, add the `-v` flag:
-
-```sh
-deptry . -v
-```
-
-## Skip checks for obsolete, transitive or misplaced development dependencies.
-
-Checks for obsolete, transitive, missing, or misplaced development dependencies can be skipped by using the corresponding flags:
-
-```sh
-deptry . --skip-obsolete
-deptry . --skip-transitive
-deptry . --skip-missing
-deptry . --skip-misplaced-dev
-```
-
-## Ignore dependencies
-
-Sometimes, you might want _deptry_ to ignore certain dependencies in certain checks, for example when you have a module that is used but not imported.
-Dependencies or modules can be ignored for each check separately with the `--ignore-obsolete`, `--ignore-transitive`, `--ignore-missing` or `--ignore-misplaced-dev` flag, or with their
-respective abbreviations `-io`, `-it`, `-im` and `-id`. Multiple elements can be passed to the argument by providing a comma-separated list.
-
-For example, the following will ignore dependency foo while checking for obsolete dependencies and
-will ignore module bar while checking for missing dependencies
-
-```sh
-deptry . --ignore-obsolete foo --ignore-missing bar
-```
-
-The following  will ignore both foo and bar while checking for obsolete dependencies
-
-```sh
-deptry . --ignore-obsolete foo,bar
-```
-
-## Ignore notebooks
-
-By default, _deptry_ scans the working directory for `.py` and `.ipynb` files to check for import statements. To ignore `.ipynb` files, use the `--ignore-notebooks` flag:
-
-```sh
-deptry . --ignore-notebooks
-```
-
-## requirements.txt files
-
-_deptry_ can be configured to extract dependencies from [pip](https://pip.pypa.io/en/stable/user_guide/) requirements files other than `requirements.txt`. Similarly,
-it can also be configured to extract development dependencies from other files than `dev-requirements.txt` and `requirements-dev.txt`. For this, use the `--requirements-txt` and
-`--requirements-txt-dev` arguments. For example:
-
-```sh
-deptry . \
-    --requirements-txt req/prod.txt \
-    --requirements-txt-dev req/dev.txt,req/test.txt
-```
-
-Multiple files can be passed to both `requirements-txt` and `requirements-txt-dev` by using a comma-separated list.
-
-## Output as a json file
-
-_deptry_ can be configured to write the detected issues to a json file by specifying the `--json-output` (`-o`) flag. For example:
-
-```sh
-deptry . -o deptry.json
-```
-
-An example of the contents of the resulting `deptry.json` file is as follows:
-
-```json
-{
-    "obsolete": [
-        "foo"
-    ],
-    "missing": [],
-    "transitive": [],
-    "misplaced_dev": []
-}
-```
 
 ## Usage in pre-commit
 
@@ -153,12 +67,11 @@ _deptry_ can be added to your [pre-commit](https://pre-commit.com/) rules. Here 
 an example config for your `.pre-commit-config.yaml` file:
 
 ```yaml
--   repo: https://github.com/fpgmaas/deptry.git
-    rev: <tag>
-    hooks:
+- repo: https://github.com/fpgmaas/deptry.git
+  rev: "<tag>"
+  hooks:
     - id: deptry
-      args:
-        - "--skip-missing"
+      args: ["--skip-missing"]
 ```
 
 Replace `<tag>` with one of the [tags](https://github.com/fpgmaas/deptry/tags) from the
@@ -166,6 +79,302 @@ project or a specific commit hash.
 
 !!! important
 
-    This will only pull in the pre commit-hooks config file from the version passed to the `rev` agument.  The actual version of deptry that will be run will be the first one found in your path, so you will need to add deptry to your local virtual environment for the pre-commit.
+    This will only pull in the pre commit-hooks config file from the version passed to the `rev` agument. The actual version of _deptry_ that will be run will be the first one found in your path, so you will need to add _deptry_ to your local virtual environment.
 
     For the pre-commit hook to run successfully, it should be run within the virtual environment of the project to be scanned, since it needs access to the metadata of the installed packages.
+
+## Increasing verbosity
+
+To show more details about the scanned Python files, the imported modules found, and how _deptry_ determines issues in dependencies, add the `--verbose` (short `-v`) flag:
+
+```shell
+deptry . --verbose
+```
+
+## Configuration
+
+_deptry_ can be configured with command line arguments or by adding a `[tool.deptry]` section to `pyproject.toml`.
+
+### Lookup hierarchy
+
+The lookup hierarchy for each configuration option is as follows:
+
+1. Default value is used
+2. If set, value in `[tool.deptry]` section of `pyproject.toml` is used, overriding the default
+3. If set, value passed through the CLI is used, overriding both the default and `pyproject.toml` values
+
+### Options
+
+#### Config
+
+Path to the `pyproject.toml` file that holds _deptry_'s configuration and dependencies definition (if any).
+
+- Type: `Path`
+- Default: `pyproject.toml`
+- CLI option name: `--config`
+- CLI example:
+```shell
+deptry . --config sub_directory/pyproject.toml
+```
+
+#### Exclude
+
+List of patterns to exclude when searching for source files.
+
+- Type: `List[str]`
+- Default: `["venv", "\.venv", "\.direnv", "tests", "\.git", "setup\.py"]`
+- `pyproject.toml` option name: `exclude`
+- CLI option name: `--exclude` (short: `-e`)
+- `pyproject.toml` example:
+```toml
+[tool.deptry]
+exclude = ["a_directory", "a_python_file\\.py", "a_pattern/.*"]
+```
+- CLI example:
+```shell
+deptry . --exclude "a_directory|a_python_file\.py|a_pattern/.*"
+```
+
+#### Extend exclude
+
+Additional list of patterns to exclude when searching for source files.
+This extends the patterns set in [Exclude](#exclude), to allow defining patterns while keeping the default list.
+
+- Type: `List[str]`
+- Default: `[]`
+- `pyproject.toml` option name: `extend_exclude`
+- CLI option name: `--exclude` (short: `-ee`)
+- `pyproject.toml` example:
+```toml
+[tool.deptry]
+extend_exclude = ["a_directory", "a_python_file\\.py", "a_pattern/.*"]
+```
+- CLI example:
+```shell
+deptry . --extend-exclude "a_directory|a_python_file\.py|a_pattern/.*"
+```
+
+#### Ignore obsolete
+
+List of packages to ignore when running the check for [obsolete dependencies](issues-detection.md#obsolete-dependencies).
+
+- Type: `List[str]`
+- Default: `[]`
+- `pyproject.toml` option name: `ignore_obsolete`
+- CLI option name: `--ignore-obsolete` (short: `-io`)
+- `pyproject.toml` example:
+```toml
+[tool.deptry]
+ignore_obsolete = ["uvicorn", "uvloop"]
+```
+- CLI example:
+```shell
+deptry . --ignore-obsolete "uvicorn,uvloop"
+```
+
+#### Ignore missing
+
+List of Python modules to ignore when running the check for [missing dependencies](issues-detection.md#missing-dependencies).
+
+- Type: `List[str]`
+- Default: `[]`
+- `pyproject.toml` option name: `ignore_missing`
+- CLI option name: `--ignore-missing` (short: `-im`)
+- `pyproject.toml` example:
+```toml
+[tool.deptry]
+ignore_missing = ["pip", "tomllib"]
+```
+- CLI example:
+```shell
+deptry . --ignore-missing "pip,tomllib"
+```
+
+#### Ignore transitive
+
+List of Python modules to ignore when running the check for [transitive dependencies](issues-detection.md#transitive-dependencies).
+
+- Type: `List[str]`
+- Default: `[]`
+- `pyproject.toml` option name: `ignore_transitive`
+- CLI option name: `--ignore-transitive` (short: `-it`)
+- `pyproject.toml` example:
+```toml
+[tool.deptry]
+ignore_transitive = ["httpx", "pip"]
+```
+- CLI example:
+```shell
+deptry . --ignore-transitive "httpx,pip"
+```
+
+#### Ignore misplaced dev
+
+List of Python modules to ignore when running the check for [misplaced development dependencies](issues-detection.md#misplaced-development-dependencies).
+
+- Type: `List[str]`
+- Default: `[]`
+- `pyproject.toml` option name: `ignore_misplaced_dev`
+- CLI option name: `--ignore-misplaced-dev` (short: `-id`)
+- `pyproject.toml` example:
+```toml
+[tool.deptry]
+ignore_misplaced_dev = ["black", "isort"]
+```
+- CLI example:
+```shell
+deptry . --ignore-misplaced-dev "black,isort"
+```
+
+#### Ignore notebooks
+
+Disable searching for notebooks (`*.ipynb`) files when looking for imports.
+
+- Type: `bool`
+- Default: `False`
+- `pyproject.toml` option name: `ignore_notebooks`
+- CLI option name: `--ignore-notebooks` (short: `-nb`)
+- `pyproject.toml` example:
+```toml
+[tool.deptry]
+ignore_notebooks = true
+```
+- CLI example:
+```shell
+deptry . --ignore-notebooks
+```
+
+#### Skip obsolete
+
+Disable the check for [obsolete dependencies](issues-detection.md#obsolete-dependencies).
+
+- Type: `bool`
+- Default: `False`
+- `pyproject.toml` option name: `skip_obsolete`
+- CLI option name: `--skip-obsolete`
+- `pyproject.toml` example:
+```toml
+[tool.deptry]
+skip_obsolete = true
+```
+- CLI example:
+```shell
+deptry . --skip-obsolete
+```
+
+#### Skip missing
+
+Disable the check for [missing dependencies](issues-detection.md#missing-dependencies).
+
+- Type: `bool`
+- Default: `False`
+- `pyproject.toml` option name: `skip_missing`
+- CLI option name: `--skip-missing`
+- `pyproject.toml` example:
+```toml
+[tool.deptry]
+skip_missing = true
+```
+- CLI example:
+```shell
+deptry . --skip-missing
+```
+
+#### Skip transitive
+
+Disable the check for [transitive dependencies](issues-detection.md#transitive-dependencies).
+
+- Type: `bool`
+- Default: `False`
+- `pyproject.toml` option name: `skip_transitive`
+- CLI option name: `--skip-transitive`
+- `pyproject.toml` example:
+```toml
+[tool.deptry]
+skip_transitive = true
+```
+- CLI example:
+```shell
+deptry . --skip-transitive
+```
+
+#### Skip misplaced dev
+
+Disable the check for [misplaced development dependencies](issues-detection.md#misplaced-development-dependencies).
+
+- Type: `bool`
+- Default: `False`
+- `pyproject.toml` option name: `skip_misplaced_dev`
+- CLI option name: `--skip-misplaced-dev`
+- `pyproject.toml` example:
+```toml
+[tool.deptry]
+skip_misplaced_dev = true
+```
+- CLI example:
+```shell
+deptry . --skip-misplaced-dev
+```
+
+#### Requirements txt
+
+List of [`pip` requirements files](https://pip.pypa.io/en/stable/user_guide/#requirements-files) that contain the source dependencies.
+
+- Type: `List[str]`
+- Default: `["requirements.txt"]`
+- `pyproject.toml` option name: `requirements_txt`
+- CLI option name: `--requirements-txt` (short: `-rt`)
+- `pyproject.toml` example:
+```toml
+[tool.deptry]
+requirements_txt = ["requirements.txt", "requirements-private.txt"]
+```
+- CLI example:
+```shell
+deptry . --requirements-txt requirements.txt,requirements-private.txt
+```
+
+#### Requirements txt dev
+
+List of [`pip` requirements files](https://pip.pypa.io/en/stable/user_guide/#requirements-files) that contain the source development dependencies.
+
+- Type: `List[str]`
+- Default: `["dev-requirements.txt", "requirements-dev.txt"]`
+- `pyproject.toml` option name: `requirements_txt_dev`
+- CLI option name: `--requirements-txt-dev` (short: `-rtd`)
+- `pyproject.toml` example:
+```toml
+[tool.deptry]
+requirements_txt_dev = ["requirements-dev.txt", "requirements-tests.txt"]
+```
+- CLI example:
+```shell
+deptry . --requirements-txt-dev requirements-dev.txt,requirements-tests.txt
+```
+
+#### JSON output
+
+Write the detected issues to a JSON file. This will write the following kind of output:
+
+```json
+{
+    "obsolete": ["uvicorn", "uvloop"],
+    "missing": [],
+    "transitive": ["httpx"],
+    "misplaced_dev": ["black"]
+}
+```
+
+- Type: `Path`
+- Default: `None`
+- `pyproject.toml` option name: `json_output`
+- CLI option name: `--json-output` (short: `-o`)
+- `pyproject.toml` example:
+```toml
+[tool.deptry]
+json_output = "deptry_report.txt"
+```
+- CLI example:
+```shell
+deptry . --json-output deptry_report.txt
+```

@@ -1,17 +1,17 @@
-<p align="center">
-  <img width="460" height="300" src="static/deptry_Logo-01.svg">
-</p>
 <style>
-  .md-typeset h1,
-  .md-content__button {
+  .md-typeset h1 {
     display: none;
   }
 </style>
 
+<figure markdown>
+  ![Image title](static/deptry_Logo-01.svg){ width="460" }
+</figure>
+
 ---
 
-[![Release](https://img.shields.io/github/v/release/fpgmaas/deptry)](https://img.shields.io/github/v/release/fpgmaas/deptry)
-[![Build status](https://img.shields.io/github/actions/workflow/status/fpgmaas/deptry/main.yml?branch=main)](https://github.com/fpgmaas/deptry/actions/workflows/main.yml?query=branch%3Amain)
+[![Release](https://img.shields.io/github/v/release/fpgmaas/deptry)](https://pypi.org/project/deptry/)
+[![Build status](https://github.com/fpgmaas/deptry/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/fpgmaas/deptry/actions/workflows/main.yml)
 [![Supported Python versions](https://img.shields.io/pypi/pyversions/deptry)](https://pypi.org/project/deptry/)
 [![codecov](https://codecov.io/gh/fpgmaas/deptry/branch/main/graph/badge.svg)](https://codecov.io/gh/fpgmaas/deptry)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/deptry)](https://pypistats.org/packages/deptry)
@@ -32,15 +32,15 @@ Dependency issues are detected by scanning for imported modules within all Pytho
 
 ### Installation
 
-_deptry_ can be added to your project with
+_deptry_ can be added to your project with:
 
-```sh
+```shell
 poetry add --group dev deptry
 ```
 
-or with
+or with:
 
-```sh
+```shell
 pip install deptry
 ```
 
@@ -56,7 +56,7 @@ _deptry_ should be run within the root directory of the project to be scanned, a
 
 To scan your project for dependency issues, run
 
-```sh
+```shell
 deptry .
 ```
 

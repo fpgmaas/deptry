@@ -9,7 +9,7 @@ from deptry.compat import metadata
 from deptry.config import read_configuration_from_pyproject_toml
 from deptry.core import Core
 
-DEFAULT_EXCLUDE = ("venv", r"\.venv", r"\.direnv", "tests", r"\.git", "setup.py")
+DEFAULT_EXCLUDE = ("venv", r"\.venv", r"\.direnv", "tests", r"\.git", r"setup\.py")
 
 
 class CommaSeparatedTupleParamType(click.ParamType):
