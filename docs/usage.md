@@ -352,6 +352,24 @@ requirements_txt_dev = ["requirements-dev.txt", "requirements-tests.txt"]
 deptry . --requirements-txt-dev requirements-dev.txt,requirements-tests.txt
 ```
 
+#### Known first party
+
+List of Python modules that should be considered as first party ones. This is useful in case _deptry_ is not able to automatically detect modules that should be considered as local ones.
+
+- Type: `List[str]`
+- Default: `[]`
+- `pyproject.toml` option name: `known_first_party`
+- CLI option name: `--known-first-party` (short: `-kf`)
+- `pyproject.toml` example:
+```toml
+[tool.deptry]
+known_first_party = ["bar", "foo"]
+```
+- CLI example:
+```shell
+deptry . --known-first-party bar --known-first-party foo
+```
+
 #### JSON output
 
 Write the detected issues to a JSON file. This will write the following kind of output:
