@@ -6,7 +6,7 @@ from pathlib import Path
 import pytest
 from _pytest.tmpdir import TempPathFactory
 
-from tests.utils import run_within_dir
+from tests.utils import get_issues_report, run_within_dir
 
 
 @pytest.fixture(scope="session")
@@ -20,9 +20,12 @@ def pep_621_dir_with_venv_installed(tmp_path_factory: TempPathFactory) -> Path:
 
 def test_cli_with_pep_621(pep_621_dir_with_venv_installed: Path) -> None:
     with run_within_dir(pep_621_dir_with_venv_installed):
-        result = subprocess.run(shlex.split("deptry ."), capture_output=True, text=True)
+        result = subprocess.run(shlex.split("deptry . -o report.json"), capture_output=True, text=True)
+
         assert result.returncode == 1
-        assert (
-            "The project contains obsolete dependencies:\n\n\tisort\n\tmypy\n\tpytest\n\trequests\n\n" in result.stderr
-        )
-        assert "There are dependencies missing from the project's list of dependencies:\n\n\twhite\n\n" in result.stderr
+        assert get_issues_report() == {
+            "misplaced_dev": [],
+            "missing": ["white"],
+            "obsolete": ["isort", "requests", "mypy", "pytest"],
+            "transitive": [],
+        }
