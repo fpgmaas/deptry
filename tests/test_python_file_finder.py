@@ -6,19 +6,7 @@ from pathspec import PathSpec
 from pathspec.patterns.gitwildmatch import GitWildMatchPattern
 
 from deptry.python_file_finder import PythonFileFinder
-from tests.utils import run_within_dir
-
-
-def create_files_from_list_of_dicts(paths: list[dict[str, str]]) -> None:
-    """
-    Takes as input an argument paths, which is a list of dicts. Each dict should have two keys;
-    'dir' to denote a directory and 'file' to denote the file name. This function creates all files
-    within their corresponding directories.
-    """
-    for path in paths:
-        Path(path["dir"]).mkdir(parents=True, exist_ok=True)
-        with open(Path(path["dir"]) / Path(path["file"]), "w"):
-            pass
+from tests.utils import create_files_from_list_of_dicts, run_within_dir
 
 
 def test_simple(tmp_path: Path) -> None:
