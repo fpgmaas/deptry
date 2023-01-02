@@ -6,7 +6,7 @@ from pathlib import Path
 import pytest
 from _pytest.tmpdir import TempPathFactory
 
-from tests.utils import run_within_dir
+from tests.utils import get_issues_report, run_within_dir
 
 
 @pytest.fixture(scope="session")
@@ -29,23 +29,21 @@ def requirements_txt_dir_with_venv_installed(tmp_path_factory: TempPathFactory) 
 def test_cli_single_requirements_txt(requirements_txt_dir_with_venv_installed: Path) -> None:
     with run_within_dir(requirements_txt_dir_with_venv_installed):
         result = subprocess.run(
-            shlex.split("deptry . --requirements-txt requirements.txt --requirements-txt-dev requirements-dev.txt"),
+            shlex.split(
+                "deptry . --requirements-txt requirements.txt --requirements-txt-dev requirements-dev.txt -o"
+                " report.json"
+            ),
             capture_output=True,
             text=True,
         )
+
         assert result.returncode == 1
-        assert (
-            "The project contains obsolete dependencies:\n\n\tisort\n\trequests\n\nConsider removing them from your"
-            " project's dependencies. If a package is used for development purposes, you should add it to your"
-            " development dependencies instead.\n\n-----------------------------------------------------\n\nThere are"
-            " dependencies missing from the project's list of dependencies:\n\n\twhite\n\nConsider adding them to your"
-            " project's dependencies. \n\n-----------------------------------------------------\n\nThere are transitive"
-            " dependencies that should be explicitly defined as dependencies:\n\n\turllib3\n\nThey are currently"
-            " imported but not specified directly as your project's"
-            " dependencies.\n\n-----------------------------------------------------\n\nThere are imported modules from"
-            " development dependencies detected:\n\n\tblack\n\n"
-            in result.stderr
-        )
+        assert get_issues_report() == {
+            "misplaced_dev": ["black"],
+            "missing": ["white"],
+            "obsolete": ["isort", "requests"],
+            "transitive": ["urllib3"],
+        }
 
 
 def test_cli_multiple_requirements_txt(requirements_txt_dir_with_venv_installed: Path) -> None:
@@ -53,18 +51,16 @@ def test_cli_multiple_requirements_txt(requirements_txt_dir_with_venv_installed:
         result = subprocess.run(
             shlex.split(
                 "deptry . --requirements-txt requirements.txt,requirements-2.txt --requirements-txt-dev"
-                " requirements-dev.txt,requirements-typing.txt"
+                " requirements-dev.txt,requirements-typing.txt -o report.json"
             ),
             capture_output=True,
             text=True,
         )
+
         assert result.returncode == 1
-        assert (
-            "The project contains obsolete dependencies:\n\n\tisort\n\trequests\n\nConsider removing them from your"
-            " project's dependencies. If a package is used for development purposes, you should add it to your"
-            " development dependencies instead.\n\n-----------------------------------------------------\n\nThere are"
-            " dependencies missing from the project's list of dependencies:\n\n\twhite\n\nConsider adding them to your"
-            " project's dependencies. \n\n-----------------------------------------------------\n\nThere are imported"
-            " modules from development dependencies detected:\n\n\tblack\n\n"
-            in result.stderr
-        )
+        assert get_issues_report() == {
+            "misplaced_dev": ["black"],
+            "missing": ["white"],
+            "obsolete": ["isort", "requests"],
+            "transitive": [],
+        }
