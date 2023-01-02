@@ -42,6 +42,7 @@ class Core:
     ignore_notebooks: bool
     requirements_txt: tuple[str, ...]
     requirements_txt_dev: tuple[str, ...]
+    known_first_party: tuple[str, ...]
     json_output: str
 
     def run(self) -> None:
@@ -103,7 +104,11 @@ class Core:
 
     def _get_local_modules(self) -> set[str]:
         directories = [f for f in os.scandir(self.root) if f.is_dir()]
-        return {subdirectory.name for subdirectory in directories if "__init__.py" in os.listdir(subdirectory)}
+        guessed_local_modules = {
+            subdirectory.name for subdirectory in directories if "__init__.py" in os.listdir(subdirectory)
+        }
+
+        return guessed_local_modules | set(self.known_first_party)
 
     def _log_config(self) -> None:
         logging.debug("Running with the following configuration:")

@@ -101,6 +101,21 @@ def test_cli_extend_exclude(dir_with_venv_installed: Path) -> None:
         }
 
 
+def test_cli_known_first_party(dir_with_venv_installed: Path) -> None:
+    with run_within_dir(dir_with_venv_installed):
+        result = subprocess.run(
+            shlex.split("poetry run deptry . --known-first-party white -o report.json"), capture_output=True, text=True
+        )
+
+        assert result.returncode == 1
+        assert get_issues_report() == {
+            "misplaced_dev": ["black"],
+            "missing": [],
+            "obsolete": ["isort", "requests"],
+            "transitive": [],
+        }
+
+
 def test_cli_not_verbose(dir_with_venv_installed: Path) -> None:
     with run_within_dir(dir_with_venv_installed):
         result = subprocess.run(shlex.split("poetry run deptry . -o report.json"), capture_output=True, text=True)
