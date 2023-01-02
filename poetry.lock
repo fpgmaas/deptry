@@ -415,22 +415,6 @@ i18n = ["babel (>=2.9.0)"]
 min-versions = ["babel (==2.9.0)", "click (==7.0)", "colorama (==0.4)", "ghp-import (==1.0)", "importlib-metadata (==4.3)", "jinja2 (==2.11.1)", "markdown (==3.2.1)", "markupsafe (==2.0.1)", "mergedeep (==1.3.4)", "packaging (==20.5)", "pyyaml (==5.1)", "pyyaml-env-tag (==0.1)", "typing-extensions (==3.10)", "watchdog (==2.0)"]
 
 [[package]]
-name = "mkdocs-autorefs"
-version = "0.4.1"
-description = "Automatically link across pages in MkDocs."
-category = "dev"
-optional = false
-python-versions = ">=3.7"
-files = [
-    {file = "mkdocs-autorefs-0.4.1.tar.gz", hash = "sha256:70748a7bd025f9ecd6d6feeba8ba63f8e891a1af55f48e366d6d6e78493aba84"},
-    {file = "mkdocs_autorefs-0.4.1-py3-none-any.whl", hash = "sha256:a2248a9501b29dc0cc8ba4c09f4f47ff121945f6ce33d760f145d6f89d313f5b"},
-]
-
-[package.dependencies]
-Markdown = ">=3.3"
-mkdocs = ">=1.1"
-
-[[package]]
 name = "mkdocs-material"
 version = "9.0.0"
 description = "Documentation that simply works"
@@ -465,31 +449,6 @@ files = [
     {file = "mkdocs_material_extensions-1.1.1-py3-none-any.whl", hash = "sha256:e41d9f38e4798b6617ad98ca8f7f1157b1e4385ac1459ca1e4ea219b556df945"},
     {file = "mkdocs_material_extensions-1.1.1.tar.gz", hash = "sha256:9c003da71e2cc2493d910237448c672e00cefc800d3d6ae93d2fc69979e3bd93"},
 ]
-
-[[package]]
-name = "mkdocstrings"
-version = "0.19.1"
-description = "Automatic documentation from sources, for MkDocs."
-category = "dev"
-optional = false
-python-versions = ">=3.7"
-files = [
-    {file = "mkdocstrings-0.19.1-py3-none-any.whl", hash = "sha256:32a38d88f67f65b264184ea71290f9332db750d189dea4200cbbe408d304c261"},
-    {file = "mkdocstrings-0.19.1.tar.gz", hash = "sha256:d1037cacb4b522c1e8c164ed5d00d724a82e49dcee0af80db8fb67b384faeef9"},
-]
-
-[package.dependencies]
-Jinja2 = ">=2.11.1"
-Markdown = ">=3.3"
-MarkupSafe = ">=1.1"
-mkdocs = ">=1.2"
-mkdocs-autorefs = ">=0.3.1"
-pymdown-extensions = ">=6.3"
-
-[package.extras]
-crystal = ["mkdocstrings-crystal (>=0.3.4)"]
-python = ["mkdocstrings-python (>=0.5.2)"]
-python-legacy = ["mkdocstrings-python-legacy (>=0.2.1)"]
 
 [[package]]
 name = "mypy"
@@ -1140,4 +1099,4 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.7,<4.0"
-content-hash = "4fcf4af13ae56aa91f9e265d162624c5145295ef6f7344fab67a466c403942ed"
+content-hash = "fe41300d4423d121109f971f95823ead49ca673cdf50d0c7fecf68c3babe50bb"
