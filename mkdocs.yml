@@ -17,8 +17,10 @@ plugins:
 
 theme:
   name: material
-  feature:
-    tabs: true
+  features:
+    - content.action.edit
+    - content.code.copy
+    - navigation.footer
   palette:
     - media: "(prefers-color-scheme: light)"
       scheme: default
