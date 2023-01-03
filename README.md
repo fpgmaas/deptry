@@ -1,4 +1,4 @@
-<p>
+<p align="center">
   <img alt="deptry logo" width="460" height="300" src="https://raw.githubusercontent.com/fpgmaas/deptry/main/docs/static/deptry_Logo-01.svg">
 </p>
 
@@ -19,7 +19,7 @@ Dependency issues are detected by scanning for imported modules within all Pytho
 
 ---
 <p align="center">
-  <a href = "https://fpgmaas.github.io/deptry">Link to documentation</a>
+  <a href="https://fpgmaas.github.io/deptry">Documentation</a> - <a href="https://fpgmaas.github.io/deptry/contributing/">Contributing</a>
 </p>
 
 ---
@@ -34,15 +34,14 @@ _deptry_ can be added to your project with
 poetry add --group dev deptry
 ```
 
-or with
+or with:
 
-```
+```shell
 <activate virtual environment>
 pip install deptry
 ```
 
-> **Warning**
-> When using pip to install _deptry_, make sure you install it within the virtual environment of your project. Installing _deptry_ globally will not work, since it needs to have access to the metadata of the packages in the virtual environment.
+> **Warning**: When using pip to install _deptry_, make sure you install it within the virtual environment of your project. Installing _deptry_ globally will not work, since it needs to have access to the metadata of the packages in the virtual environment.
 
 ### Prerequisites
 
@@ -50,14 +49,13 @@ _deptry_ should be run within the root directory of the project to be scanned, a
 
 ### Usage
 
-To scan your project for dependency issues, run
+To scan your project for dependency issues, run:
 
-```sh
+```shell
 deptry .
 ```
 
-_deptry_ can be configured by using additional command line arguments, or
-by adding a `[tool.deptry]` section in _pyproject.toml_.
+_deptry_ can be configured by using additional command line arguments, or by adding a `[tool.deptry]` section in _pyproject.toml_.
 
 For more information, see the [documentation](https://fpgmaas.github.io/deptry/).
 
