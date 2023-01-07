@@ -17,12 +17,12 @@
   labels: ["dependencies"],
 
   // https://docs.renovatebot.com/configuration-options/#schedule
-  schedule: ["on saturday"],
+  schedule: ["before 3am on saturday"],
 
   // https://docs.renovatebot.com/configuration-options/#lockfilemaintenance
   lockFileMaintenance: {
     enabled: true,
-    schedule: ["on saturday"],
+    schedule: ["before 5am on saturday"],
   },
 
   // https://docs.renovatebot.com/configuration-options/#regexmanagers
