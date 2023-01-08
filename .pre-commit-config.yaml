@@ -15,17 +15,17 @@ repos:
       - id: pyupgrade
         args: ["--py37-plus"]
 
-  - repo: https://github.com/psf/black
-    rev: "22.12.0"
-    hooks:
-      - id: black
-
   - repo: https://github.com/charliermarsh/ruff-pre-commit
     rev: "v0.0.215"
     hooks:
       - id: ruff
         # Respect `exclude` and `extend-exclude` settings.
         args: ["--force-exclude"]
+
+  - repo: https://github.com/psf/black
+    rev: "22.12.0"
+    hooks:
+      - id: black
 
   - repo: https://github.com/pre-commit/pygrep-hooks
     rev: "v1.9.0"
