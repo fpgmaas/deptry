@@ -27,15 +27,6 @@ repos:
         # Respect `exclude` and `extend-exclude` settings.
         args: ["--force-exclude"]
 
-  - repo: https://github.com/PyCQA/flake8
-    rev: "6.0.0"
-    hooks:
-      - id: flake8
-        additional_dependencies:
-          - "flake8-bugbear==22.12.6" # renovate: pep440-python-dependency
-          - "flake8-comprehensions==3.10.1" # renovate: pep440-python-dependency
-          - "flake8-simplify==0.19.3" # renovate: pep440-python-dependency
-
   - repo: https://github.com/pre-commit/pygrep-hooks
     rev: "v1.9.0"
     hooks:
