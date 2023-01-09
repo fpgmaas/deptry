@@ -8,7 +8,7 @@ from unittest import mock
 import pytest
 from _pytest.logging import LogCaptureFixture
 
-from deptry.imports.extract import get_imported_modules_for_list_of_files, get_imported_modules_from_file
+from deptry.imports.extract import get_imported_modules_from_file
 from tests.utils import run_within_dir
 
 
@@ -37,16 +37,6 @@ def test_import_parser_ipynb() -> None:
     imported_modules = get_imported_modules_from_file(Path("tests/data/example_project/src/notebook.ipynb"))
 
     assert imported_modules == {"click", "urllib3", "toml"}
-
-
-def test_import_parser_ignores_setuptools(tmp_path: Path) -> None:
-    with run_within_dir(tmp_path):
-        with open("file.py", "w") as f:
-            f.write("import setuptools\nimport foo")
-
-        imported_modules = get_imported_modules_for_list_of_files([Path("file.py")])
-
-        assert imported_modules == ["foo"]
 
 
 @pytest.mark.parametrize(
