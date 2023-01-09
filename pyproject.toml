@@ -102,12 +102,16 @@ select = [
     "F",
     # mccabe
     "C90",
+    # flake8-builtins
+    "A",
     # flake8-comprehensions
     "C4",
     # isort
     "I",
     # flake8-bugbear
     "B",
+    # flake8-simplify
+    "SIM",
     # ruff
     "RUF",
 ]
