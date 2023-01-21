@@ -11,6 +11,8 @@
     ":prHourlyLimitNone",
     // https://docs.renovatebot.com/presets-default/#rebasestaleprs
     ":rebaseStalePrs",
+    // https://docs.renovatebot.com/presets-regexManagers/#regexmanagersgithubactionsversions
+    "regexManagers:githubActionsVersions",
   ],
 
   // https://docs.renovatebot.com/configuration-options/#labels
