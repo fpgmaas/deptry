@@ -58,6 +58,7 @@ source = ["deptry"]
 
 [tool.mypy]
 files = ["deptry", "scripts", "tests"]
+explicit_package_bases = true
 exclude = ["tests/data"]
 disallow_any_unimported = true
 enable_error_code = [
