@@ -60,14 +60,14 @@ class DependencySpecificationDetector:
                 "pyproject.toml contains a [tool.poetry.dependencies] section, so Poetry is used to specify the"
                 " project's dependencies."
             )
-            return True
         except KeyError:
             logging.debug(
                 "pyproject.toml does not contain a [tool.poetry.dependencies] section, so PDM is not used to specify"
                 " the project's dependencies."
             )
-            pass
-        return False
+            return False
+        else:
+            return True
 
     def _project_uses_pdm(self) -> bool:
         pyproject_toml = load_pyproject_toml(self.config)
@@ -77,14 +77,14 @@ class DependencySpecificationDetector:
                 "pyproject.toml contains a [tool.pdm.dev-dependencies] section, so PDM is used to specify the project's"
                 " dependencies."
             )
-            return True
         except KeyError:
             logging.debug(
                 "pyproject.toml does not contain a [tool.pdm.dev-dependencies] section, so PDM is not used to specify"
                 " the project's dependencies."
             )
-            pass
-        return False
+            return False
+        else:
+            return True
 
     def _project_uses_pep_621(self) -> bool:
         pyproject_toml = load_pyproject_toml(self.config)
@@ -93,14 +93,14 @@ class DependencySpecificationDetector:
             logging.debug(
                 "pyproject.toml contains a [project] section, so PEP 621 is used to specify the project's dependencies."
             )
-            return True
         except KeyError:
             logging.debug(
                 "pyproject.toml does not contain a [project] section, so PEP 621 is not used to specify the project's"
                 " dependencies."
             )
-            pass
-        return False
+            return False
+        else:
+            return True
 
     def _project_uses_requirements_txt(self) -> bool:
         check = any(os.path.isfile(requirements_txt) for requirements_txt in self.requirements_txt)
