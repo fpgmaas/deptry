@@ -96,30 +96,30 @@ target-version = "py37"
 line-length = 120
 fix = true
 select = [
-    # pycodestyle
-    "E", "W",
-    # pyflakes
-    "F",
-    # mccabe
-    "C90",
-    # flake8-builtins
-    "A",
-    # flake8-comprehensions
-    "C4",
-    # isort
-    "I",
     # flake8-2020
     "YTT",
     # flake8-bandit
     "S",
     # flake8-bugbear
     "B",
+    # flake8-builtins
+    "A",
+    # flake8-comprehensions
+    "C4",
     # flake8-debugger
     "T10",
     # flake8-print
     "T20",
     # flake8-simplify
     "SIM",
+    # isort
+    "I",
+    # mccabe
+    "C90",
+    # pycodestyle
+    "E", "W",
+    # pyflakes
+    "F",
     # pygrep-hooks
     "PGH",
     # pyupgrade
