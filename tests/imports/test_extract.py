@@ -125,7 +125,6 @@ def test_import_parser_file_encodings_ipynb(code_cell_content: list[str], encodi
   }}
   ]}}"""
             f.write(file_content)
-            print(file_content)
 
         assert get_imported_modules_from_file(Path(random_file_name)) == {"foo"}
 
