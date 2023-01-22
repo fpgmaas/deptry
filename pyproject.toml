@@ -79,6 +79,7 @@ module = [
     "deptry.dependency",
     "deptry.module",
     "scripts.generate_stdlibs",
+    "tests.test_core",
 ]
 warn_unused_ignores = false
 

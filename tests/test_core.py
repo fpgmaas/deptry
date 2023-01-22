@@ -1,11 +1,13 @@
 from __future__ import annotations
 
+import sys
 from pathlib import Path
 from unittest import mock
 
 import pytest
 
 from deptry.core import Core
+from deptry.stdlibs import STDLIBS_PYTHON
 from tests.utils import create_files_from_list_of_dicts, run_within_dir
 
 
@@ -72,27 +74,32 @@ def test__get_local_modules(
         )
 
 
+@pytest.mark.skipif(sys.version_info >= (3, 10), reason="mapping is only used for Python < 3.10")
+def test__get_stdlib_packages_without_stdlib_module_names() -> None:
+    assert Core._get_stdlib_modules() == STDLIBS_PYTHON[f"{sys.version_info[0]}{sys.version_info[1]}"]
+
+
+@pytest.mark.skipif(sys.version_info < (3, 10), reason="only Python >= 3.10 has sys.stdlib_module_names")
+def test__get_stdlib_packages_with_stdlib_module_names() -> None:
+    assert Core._get_stdlib_modules() == sys.stdlib_module_names  # type: ignore[attr-defined]
+
+
 @pytest.mark.parametrize(
     "version_info",
     [
-        (3, 7, 0),
-        (3, 7, 13),
-        (3, 8, 4),
-        (3, 9, 3),
-        (3, 10, 2),
-        (3, 11, 0),
-        (3, 11, 1),
-        (3, 11, 0, "beta", 1),
-        (3, 11, 0, "candidate", 1),
-        (3, 12, 0),
-        (3, 12, 0, "candidate", 1),
-        (4, 0, 0),
+        (sys.version_info[0], sys.version_info[1] + 1, 0),
+        (sys.version_info[0], sys.version_info[1] + 1, 13),
+        (sys.version_info[0] + 1, sys.version_info[1], 0),
+        (sys.version_info[0], sys.version_info[1] + 1, 0),
+        (sys.version_info[0], sys.version_info[1] + 1, 0, "beta", 1),
+        (sys.version_info[0], sys.version_info[1] + 1, 0, "candidate", 1),
     ],
 )
-def test__get_stdlib_packages_supported(version_info: tuple[int | str, ...]) -> None:
-    """It should not raise any error when Python version is supported."""
-    with mock.patch("sys.version_info", version_info):
-        assert isinstance(Core._get_stdlib_modules(), frozenset)
+@pytest.mark.skipif(sys.version_info < (3, 10), reason="only Python >= 3.10 has sys.stdlib_module_names")
+def test__get_stdlib_packages_with_stdlib_module_names_future_version(version_info: tuple[int | str, ...]) -> None:
+    """Test that future versions of Python not yet tested on the CI will also work."""
+    with mock.patch("sys.version_info", (sys.version_info[0], sys.version_info[1] + 1, 0)):
+        assert Core._get_stdlib_modules() == sys.stdlib_module_names  # type: ignore[attr-defined]
 
 
 @pytest.mark.parametrize(
