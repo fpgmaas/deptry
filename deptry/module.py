@@ -1,12 +1,10 @@
 from __future__ import annotations
 
 import logging
-import sys
 from dataclasses import dataclass
 
 from deptry.compat import PackageNotFoundError, metadata
 from deptry.dependency import Dependency
-from deptry.stdlibs import STDLIBS_PYTHON
 
 
 @dataclass
@@ -40,6 +38,7 @@ class ModuleBuilder:
         self,
         name: str,
         local_modules: set[str],
+        stdlib_modules: frozenset[str],
         dependencies: list[Dependency] | None = None,
         dev_dependencies: list[Dependency] | None = None,
     ) -> None:
@@ -48,11 +47,14 @@ class ModuleBuilder:
 
         Args:
             name: The name of the imported module
+            local_modules: The list of local modules
+            stdlib_modules: The list of Python stdlib modules
             dependencies: A list of the project's dependencies
             dev-dependencies: A list of the project's development dependencies
         """
         self.name = name
         self.local_modules = local_modules
+        self.stdlib_modules = stdlib_modules
         self.dependencies = dependencies or []
         self.dev_dependencies = dev_dependencies or []
 
@@ -96,9 +98,11 @@ class ModuleBuilder:
 
     def _get_corresponding_top_levels_from(self, dependencies: list[Dependency]) -> list[str]:
         """
-        Not all modules have associated metadata. e.g. `mpl_toolkits` from `matplotlib` has no metadata. However, it is in the
-        top-level module names of package matplotlib. This function extracts all dependencies which have this module in their top-level module names.
-        This can be multiple. e.g. `google-cloud-api` and `google-cloud-bigquery` both have `google` in their top-level module names.
+        Not all modules have associated metadata. e.g. `mpl_toolkits` from `matplotlib` has no metadata. However, it is
+        in the top-level module names of package matplotlib. This function extracts all dependencies which have this
+        module in their top-level module names.
+        This can be multiple, e.g. `google-cloud-api` and `google-cloud-bigquery` both have `google` in their top-level
+        module names.
         """
         return [
             dependency.name
@@ -107,7 +111,7 @@ class ModuleBuilder:
         ]
 
     def _in_standard_library(self) -> bool:
-        return self.name in _get_stdlib_packages()
+        return self.name in self.stdlib_modules
 
     def _is_local_module(self) -> bool:
         """
@@ -117,8 +121,8 @@ class ModuleBuilder:
 
     def _has_matching_dependency(self, package: str | None, top_levels: list[str]) -> bool:
         """
-        Check if this module is provided by a listed dependency. This is the case if either the package name that was found in the metadata is
-        listed as a dependency, or if the we found a top-level module name match earlier.
+        Check if this module is provided by a listed dependency. This is the case if either the package name that was
+        found in the metadata is listed as a dependency, or if we found a top-level module name match earlier.
         """
         return package and (package in [dep.name for dep in self.dependencies]) or len(top_levels) > 0
 
@@ -127,16 +131,3 @@ class ModuleBuilder:
         Same as _has_matching_dependency, but for development dependencies.
         """
         return package and (package in [dep.name for dep in self.dev_dependencies]) or len(dev_top_levels) > 0
-
-
-def _get_stdlib_packages() -> frozenset[str]:
-    if sys.version_info[:2] >= (3, 10):
-        return sys.stdlib_module_names
-
-    try:  # type: ignore[unreachable]
-        return STDLIBS_PYTHON[f"{sys.version_info[0]}{sys.version_info[1]}"]
-    except KeyError as e:
-        raise ValueError(
-            f"Python version {sys.version_info[0]}.{sys.version_info[1]} is not supported. Only versions >= 3.7 are"
-            " supported."
-        ) from e

@@ -1,15 +1,11 @@
 from __future__ import annotations
 
-from unittest import mock
-
-import pytest
-
 from deptry.dependency import Dependency
-from deptry.module import ModuleBuilder, _get_stdlib_packages
+from deptry.module import ModuleBuilder
 
 
 def test_simple_import() -> None:
-    module = ModuleBuilder("click", {"foo", "bar"}).build()
+    module = ModuleBuilder("click", {"foo", "bar"}, frozenset()).build()
     assert module.package == "click"
     assert module.standard_library is False
     assert module.local_module is False
@@ -19,61 +15,21 @@ def test_top_level() -> None:
     # Test if no error is raised, argument is accepted.
     dependency = Dependency("beautifulsoup4")
     dependency.top_levels = {"bs4"}
-    module = ModuleBuilder("bs4", {"foo", "bar"}, [dependency]).build()
+    module = ModuleBuilder("bs4", {"foo", "bar"}, frozenset(), [dependency]).build()
     assert module.package is None
     assert module.standard_library is False
     assert module.local_module is False
 
 
 def test_stdlib() -> None:
-    module = ModuleBuilder("sys", {"foo", "bar"}).build()
+    module = ModuleBuilder("sys", {"foo", "bar"}, frozenset({"sys"})).build()
     assert module.package is None
     assert module.standard_library is True
     assert module.local_module is False
 
 
 def test_local_module() -> None:
-    module = ModuleBuilder("click", {"foo", "click"}).build()
+    module = ModuleBuilder("click", {"foo", "click"}, frozenset()).build()
     assert module.package is None
     assert module.standard_library is False
     assert module.local_module is True
-
-
-@pytest.mark.parametrize(
-    "version_info",
-    [
-        (3, 7, 0),
-        (3, 7, 13),
-        (3, 8, 4),
-        (3, 9, 3),
-        (3, 10, 2),
-        (3, 11, 0),
-        (3, 11, 1),
-        (3, 11, 0, "beta", 1),
-        (3, 11, 0, "candidate", 1),
-        (3, 12, 0),
-        (3, 12, 0, "candidate", 1),
-        (4, 0, 0),
-    ],
-)
-def test__get_stdlib_packages_supported(version_info: tuple[int | str, ...]) -> None:
-    """It should not raise any error when Python version is supported."""
-    with mock.patch("sys.version_info", version_info):
-        assert isinstance(_get_stdlib_packages(), frozenset)
-
-
-@pytest.mark.parametrize(
-    "version_info",
-    [
-        (2, 1, 0),
-        (2, 7, 0),
-        (2, 7, 15),
-        (3, 6, 0),
-        (3, 6, 7),
-        (3, 6, 7, "candidate", 1),
-    ],
-)
-def test__get_stdlib_packages_unsupported(version_info: tuple[int | str, ...]) -> None:
-    """It should raise an error when Python version is unsupported."""
-    with mock.patch("sys.version_info", version_info), pytest.raises(ValueError):
-        _get_stdlib_packages()

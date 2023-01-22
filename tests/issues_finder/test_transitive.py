@@ -10,7 +10,7 @@ def test_simple() -> None:
     black is in testing environment which requires platformdirs, so platformdirs should be found as transitive.
     """
     dependencies: list[Dependency] = []
-    modules = [ModuleBuilder("platformdirs", {"foo"}, dependencies).build()]
+    modules = [ModuleBuilder("platformdirs", {"foo"}, frozenset(), dependencies).build()]
 
     deps = TransitiveDependenciesFinder(imported_modules=modules, dependencies=dependencies).find()
 
@@ -19,7 +19,7 @@ def test_simple() -> None:
 
 def test_simple_with_ignore() -> None:
     dependencies: list[Dependency] = []
-    modules = [ModuleBuilder("foobar", {"foo"}, dependencies).build()]
+    modules = [ModuleBuilder("foobar", {"foo"}, frozenset(), dependencies).build()]
 
     deps = TransitiveDependenciesFinder(
         imported_modules=modules, dependencies=dependencies, ignored_modules=("foobar",)
