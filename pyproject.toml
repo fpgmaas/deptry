@@ -112,6 +112,8 @@ select = [
     "B",
     # flake8-simplify
     "SIM",
+    # pyupgrade
+    "UP",
     # ruff
     "RUF",
 ]
