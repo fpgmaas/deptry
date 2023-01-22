@@ -5,7 +5,7 @@ from unittest import mock
 import pytest
 
 from deptry.dependency import Dependency
-from deptry.module import ModuleBuilder
+from deptry.module import ModuleBuilder, _get_stdlib_packages
 
 
 def test_simple_import() -> None:
@@ -51,12 +51,15 @@ def test_local_module() -> None:
         (3, 11, 1),
         (3, 11, 0, "beta", 1),
         (3, 11, 0, "candidate", 1),
+        (3, 12, 0),
+        (3, 12, 0, "candidate", 1),
+        (4, 0, 0),
     ],
 )
 def test__get_stdlib_packages_supported(version_info: tuple[int | str, ...]) -> None:
     """It should not raise any error when Python version is supported."""
     with mock.patch("sys.version_info", version_info):
-        assert isinstance(ModuleBuilder("", set())._get_stdlib_packages(), set)
+        assert isinstance(_get_stdlib_packages(), frozenset)
 
 
 @pytest.mark.parametrize(
@@ -67,12 +70,10 @@ def test__get_stdlib_packages_supported(version_info: tuple[int | str, ...]) -> 
         (2, 7, 15),
         (3, 6, 0),
         (3, 6, 7),
-        (3, 12, 0),
-        (3, 12, 0, "candidate", 1),
-        (4, 0, 0),
+        (3, 6, 7, "candidate", 1),
     ],
 )
 def test__get_stdlib_packages_unsupported(version_info: tuple[int | str, ...]) -> None:
     """It should raise an error when Python version is unsupported."""
     with mock.patch("sys.version_info", version_info), pytest.raises(ValueError):
-        assert ModuleBuilder("", set())._get_stdlib_packages()
+        _get_stdlib_packages()

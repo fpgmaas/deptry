@@ -6,6 +6,7 @@ from dataclasses import dataclass
 
 from deptry.compat import PackageNotFoundError, metadata
 from deptry.dependency import Dependency
+from deptry.stdlibs import STDLIBS_PYTHON
 
 
 @dataclass
@@ -106,27 +107,7 @@ class ModuleBuilder:
         ]
 
     def _in_standard_library(self) -> bool:
-        return self.name in self._get_stdlib_packages()
-
-    @staticmethod
-    def _get_stdlib_packages() -> set[str]:
-        if sys.version_info[:2] == (3, 7):
-            from deptry.stdlibs.py37 import stdlib
-        elif sys.version_info[:2] == (3, 8):
-            from deptry.stdlibs.py38 import stdlib
-        elif sys.version_info[:2] == (3, 9):
-            from deptry.stdlibs.py39 import stdlib
-        elif sys.version_info[:2] == (3, 10):
-            from deptry.stdlibs.py310 import stdlib
-        elif sys.version_info[:2] == (3, 11):
-            from deptry.stdlibs.py311 import stdlib
-        else:
-            raise ValueError(
-                f"Python version {'.'.join([str(x) for x in sys.version_info[0:3]])} is not supported. Only 3.7, 3.8,"
-                " 3.9, 3.10 and 3.11 are currently supported."
-            )
-
-        return stdlib
+        return self.name in _get_stdlib_packages()
 
     def _is_local_module(self) -> bool:
         """
@@ -146,3 +127,16 @@ class ModuleBuilder:
         Same as _has_matching_dependency, but for development dependencies.
         """
         return package and (package in [dep.name for dep in self.dev_dependencies]) or len(dev_top_levels) > 0
+
+
+def _get_stdlib_packages() -> frozenset[str]:
+    if sys.version_info[:2] >= (3, 10):
+        return sys.stdlib_module_names
+
+    try:  # type: ignore[unreachable]
+        return STDLIBS_PYTHON[f"{sys.version_info[0]}{sys.version_info[1]}"]
+    except KeyError as e:
+        raise ValueError(
+            f"Python version {sys.version_info[0]}.{sys.version_info[1]} is not supported. Only versions >= 3.7 are"
+            " supported."
+        ) from e
