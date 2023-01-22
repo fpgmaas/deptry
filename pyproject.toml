@@ -108,8 +108,16 @@ select = [
     "C4",
     # isort
     "I",
+    # flake8-2020
+    "YTT",
+    # flake8-bandit
+    "S",
     # flake8-bugbear
     "B",
+    # flake8-debugger
+    "T10",
+    # flake8-print
+    "T20",
     # flake8-simplify
     "SIM",
     # pygrep-hooks
@@ -118,6 +126,8 @@ select = [
     "UP",
     # ruff
     "RUF",
+    # tryceratops
+    "TRY",
 ]
 ignore = [
     # LineTooLong
@@ -126,3 +136,6 @@ ignore = [
     "E731",
 ]
 extend-exclude = ["tests/data/*"]
+
+[tool.ruff.per-file-ignores]
+"tests/*" = ["S101"]
