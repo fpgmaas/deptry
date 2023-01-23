@@ -88,9 +88,10 @@ class ModuleBuilder:
         """
         try:
             name: str = metadata.metadata(self.name)["Name"]  # type: ignore[no-untyped-call]
-            return name
         except PackageNotFoundError:
             return None
+        else:
+            return name
 
     def _get_corresponding_top_levels_from(self, dependencies: list[Dependency]) -> list[str]:
         """

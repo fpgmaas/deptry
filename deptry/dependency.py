@@ -46,13 +46,14 @@ class Dependency:
     def find_metadata(self, name: str) -> bool:
         try:
             metadata.distribution(name)  # type: ignore[no-untyped-call]
-            return True
         except PackageNotFoundError:
             logging.warning(
                 f"Warning: Package '{name}'{self._string_for_printing()}not found in current environment. Assuming its"
                 f" corresponding module name is '{name.replace('-','_').lower()}'."
             )
             return False
+        else:
+            return True
 
     def _string_for_printing(self) -> str:
         """
