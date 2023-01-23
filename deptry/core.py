@@ -22,6 +22,7 @@ from deptry.json_writer import JsonWriter
 from deptry.module import Module, ModuleBuilder
 from deptry.python_file_finder import PythonFileFinder
 from deptry.result_logger import ResultLogger
+from deptry.stdlibs import STDLIBS_PYTHON
 
 
 @dataclass
@@ -58,10 +59,15 @@ class Core:
         ).get_all_python_files_in(self.root)
 
         local_modules = self._get_local_modules()
+        stdlib_modules = self._get_stdlib_modules()
 
         imported_modules = [
             ModuleBuilder(
-                mod, local_modules, dependencies_extract.dependencies, dependencies_extract.dev_dependencies
+                mod,
+                local_modules,
+                stdlib_modules,
+                dependencies_extract.dependencies,
+                dependencies_extract.dev_dependencies,
             ).build()
             for mod in get_imported_modules_for_list_of_files(all_python_files)
         ]
@@ -109,6 +115,19 @@ class Core:
         }
 
         return guessed_local_modules | set(self.known_first_party)
+
+    @staticmethod
+    def _get_stdlib_modules() -> frozenset[str]:
+        if sys.version_info[:2] >= (3, 10):
+            return sys.stdlib_module_names
+
+        try:  # type: ignore[unreachable]
+            return STDLIBS_PYTHON[f"{sys.version_info[0]}{sys.version_info[1]}"]
+        except KeyError as e:
+            raise ValueError(
+                f"Python version {sys.version_info[0]}.{sys.version_info[1]} is not supported. Only versions >= 3.7 are"
+                " supported."
+            ) from e
 
     def _log_config(self) -> None:
         logging.debug("Running with the following configuration:")

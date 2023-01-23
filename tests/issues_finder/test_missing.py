@@ -7,7 +7,7 @@ from deptry.module import ModuleBuilder
 
 def test_simple() -> None:
     dependencies: list[Dependency] = []
-    modules = [ModuleBuilder("foobar", {"foo"}, dependencies).build()]
+    modules = [ModuleBuilder("foobar", {"foo"}, frozenset(), dependencies).build()]
 
     deps = MissingDependenciesFinder(imported_modules=modules, dependencies=dependencies).find()
 
@@ -16,7 +16,7 @@ def test_simple() -> None:
 
 def test_local_module() -> None:
     dependencies: list[Dependency] = []
-    modules = [ModuleBuilder("foobar", {"foo", "foobar"}, dependencies).build()]
+    modules = [ModuleBuilder("foobar", {"foo", "foobar"}, frozenset(), dependencies).build()]
 
     deps = MissingDependenciesFinder(imported_modules=modules, dependencies=dependencies).find()
 
@@ -25,7 +25,7 @@ def test_local_module() -> None:
 
 def test_simple_with_ignore() -> None:
     dependencies: list[Dependency] = []
-    modules = [ModuleBuilder("foobar", {"foo", "bar"}, dependencies).build()]
+    modules = [ModuleBuilder("foobar", {"foo", "bar"}, frozenset(), dependencies).build()]
 
     deps = MissingDependenciesFinder(
         imported_modules=modules, dependencies=dependencies, ignored_modules=("foobar",)
@@ -40,7 +40,7 @@ def test_no_error() -> None:
     """
 
     dependencies = [Dependency("foo")]
-    module = ModuleBuilder("foo", {"bar"}, dependencies).build()
+    module = ModuleBuilder("foo", {"bar"}, frozenset(), dependencies).build()
 
     deps = MissingDependenciesFinder(imported_modules=[module], dependencies=dependencies).find()
 
