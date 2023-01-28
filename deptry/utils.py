@@ -5,6 +5,8 @@ import sys
 from pathlib import Path
 from typing import Any
 
+from deptry.exceptions import PyprojectFileNotFoundError
+
 if sys.version_info >= (3, 11):
     import tomllib
 else:
@@ -16,4 +18,4 @@ def load_pyproject_toml(config: Path) -> dict[str, Any]:
         with config.open("rb") as pyproject_file:
             return tomllib.load(pyproject_file)
     except FileNotFoundError:
-        raise FileNotFoundError(f"No file `pyproject.toml` found in directory {os.getcwd()}") from None
+        raise PyprojectFileNotFoundError(os.getcwd()) from None

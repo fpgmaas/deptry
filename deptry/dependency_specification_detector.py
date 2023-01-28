@@ -5,6 +5,7 @@ import os
 from enum import Enum
 from pathlib import Path
 
+from deptry.exceptions import DependencySpecificationNotFoundError
 from deptry.utils import load_pyproject_toml
 
 
@@ -39,10 +40,8 @@ class DependencySpecificationDetector:
             return DependencyManagementFormat.PEP_621
         if self._project_uses_requirements_txt():
             return DependencyManagementFormat.REQUIREMENTS_TXT
-        raise FileNotFoundError(
-            "No file called 'pyproject.toml' with a [tool.poetry.dependencies], [tool.pdm] or [project] section or"
-            f" file(s) called '{', '.join(self.requirements_txt)}' found. Exiting."
-        )
+
+        raise DependencySpecificationNotFoundError(self.requirements_txt)
 
     def _project_contains_pyproject_toml(self) -> bool:
         if self.config.exists():

@@ -1,9 +1,11 @@
 import os
+import re
 from pathlib import Path
 
 import pytest
 
 from deptry.dependency_specification_detector import DependencyManagementFormat, DependencySpecificationDetector
+from deptry.exceptions import DependencySpecificationNotFoundError
 from tests.utils import run_within_dir
 
 
@@ -90,12 +92,12 @@ def test_requirements_txt_with_argument_not_root_directory(tmp_path: Path) -> No
         assert spec == DependencyManagementFormat.REQUIREMENTS_TXT
 
 
-def test_raises_filenotfound_error(tmp_path: Path) -> None:
-    with run_within_dir(tmp_path):
-        with pytest.raises(FileNotFoundError) as e:
-            DependencySpecificationDetector(Path("pyproject.toml"), requirements_txt=("req/req.txt",)).detect()
-        assert (
+def test_dependency_specification_not_found_raises_exception(tmp_path: Path) -> None:
+    with run_within_dir(tmp_path), pytest.raises(
+        DependencySpecificationNotFoundError,
+        match=re.escape(
             "No file called 'pyproject.toml' with a [tool.poetry.dependencies], [tool.pdm] or [project] section or"
-            " file(s)"
-            in str(e)
-        )
+            " file(s) called 'req/req.txt' found. Exiting."
+        ),
+    ):
+        DependencySpecificationDetector(Path("pyproject.toml"), requirements_txt=("req/req.txt",)).detect()

@@ -13,6 +13,7 @@ from deptry.dependency_getter.pep_621 import PEP621DependencyGetter
 from deptry.dependency_getter.poetry import PoetryDependencyGetter
 from deptry.dependency_getter.requirements_txt import RequirementsTxtDependencyGetter
 from deptry.dependency_specification_detector import DependencyManagementFormat, DependencySpecificationDetector
+from deptry.exceptions import IncorrectDependencyFormatError, UnsupportedPythonVersionError
 from deptry.imports.extract import get_imported_modules_for_list_of_files
 from deptry.issues_finder.misplaced_dev import MisplacedDevDependenciesFinder
 from deptry.issues_finder.missing import MissingDependenciesFinder
@@ -106,7 +107,7 @@ class Core:
             return PEP621DependencyGetter(self.config).get()
         if dependency_management_format is DependencyManagementFormat.REQUIREMENTS_TXT:
             return RequirementsTxtDependencyGetter(self.config, self.requirements_txt, self.requirements_txt_dev).get()
-        raise ValueError("Incorrect dependency manage format. Only poetry, pdm and requirements.txt are supported.")
+        raise IncorrectDependencyFormatError
 
     def _get_local_modules(self) -> set[str]:
         directories = [f for f in os.scandir(self.root) if f.is_dir()]
@@ -124,10 +125,7 @@ class Core:
         try:  # type: ignore[unreachable]
             return STDLIBS_PYTHON[f"{sys.version_info[0]}{sys.version_info[1]}"]
         except KeyError as e:
-            raise ValueError(
-                f"Python version {sys.version_info[0]}.{sys.version_info[1]} is not supported. Only versions >= 3.7 are"
-                " supported."
-            ) from e
+            raise UnsupportedPythonVersionError((sys.version_info[0], sys.version_info[1])) from e
 
     def _log_config(self) -> None:
         logging.debug("Running with the following configuration:")
