@@ -13,6 +13,12 @@ DEFAULT_EXCLUDE = ("venv", r"\.venv", r"\.direnv", "tests", r"\.git", r"setup\.p
 
 
 class CommaSeparatedTupleParamType(click.ParamType):
+    """
+    This class is used to uniformly handle configuration parameters that can be either passed as a comma-separated string,
+    as a list of strings, or as a tuple of strings. For example, the value for a parameter can be a comma-separated string
+    when passed as a command line argument, or as a list of strings when passed through pyproject.toml.
+    """
+
     name = "tuple"
 
     def convert(

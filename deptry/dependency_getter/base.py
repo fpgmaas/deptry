@@ -16,7 +16,11 @@ class DependenciesExtract:
 
 @dataclass
 class DependencyGetter(ABC):
-    """Base class for all dependency getter."""
+    """Base class for all classes that extract a list of project's dependencies from a file.
+
+    Args:
+        config: The path to a configuration file that contains the project's dependencies.
+    """
 
     config: Path
 

@@ -29,7 +29,7 @@ class PoetryDependencyGetter(DependencyGetter):
 
     def _get_poetry_dev_dependencies(self) -> list[Dependency]:
         """
-        These can be either under;
+        Poetry's development dependencies can be specified under either of the following:
 
         [tool.poetry.dev-dependencies]
         [tool.poetry.group.dev.dependencies]
@@ -61,10 +61,14 @@ class PoetryDependencyGetter(DependencyGetter):
 
     @staticmethod
     def _is_optional(spec: str | dict[str, Any]) -> bool:
-        # if of the shape `isodate = {version = "*", optional = true}` mark as optional`
+        """
+        If a dependency specification is of the shape `isodate = {version = "*", optional = true}`, mark it as optional.
+        """
         return bool(isinstance(spec, dict) and spec.get("optional"))
 
     @staticmethod
     def _is_conditional(spec: str | dict[str, Any]) -> bool:
-        # if of the shape `tomli = { version = "^2.0.1", python = "<3.11" }`, mark as conditional.
+        """
+        If a dependency specification is of the shape `tomli = { version = "^2.0.1", python = "<3.11" }`, mark it as conditional.
+        """
         return isinstance(spec, dict) and "python" in spec and "version" in spec
