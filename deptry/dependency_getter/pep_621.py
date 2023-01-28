@@ -17,16 +17,16 @@ class PEP621DependencyGetter(DependencyGetter):
         [project]
         ...
         dependencies = [
-        "httpx",
-        "gidgethub[httpx]>4.0.0",
-        "django>2.1; os_name != 'nt'",
-        "django>2.0; os_name == 'nt'"
+            "httpx",
+            "gidgethub[httpx]>4.0.0",
+            "django>2.1; os_name != 'nt'",
+            "django>2.0; os_name == 'nt'"
         ]
 
         [project.optional-dependencies]
         test = [
-        "pytest < 5.0.0",
-        "pytest-cov[all]"
+            "pytest < 5.0.0",
+            "pytest-cov[all]"
         ]
 
     Note that both dependencies and optional-dependencies are extracted as regular dependencies. Since PEP-621 does not specify
