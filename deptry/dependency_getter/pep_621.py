@@ -12,7 +12,7 @@ from deptry.utils import load_pyproject_toml
 @dataclass
 class PEP621DependencyGetter(DependencyGetter):
     """
-    Class to extract dependencies from a pyproject.toml file in which dependencies are specified according to to PEP-621. For example:
+    Class to extract dependencies from a pyproject.toml file in which dependencies are specified according to PEP 621. For example:
 
         [project]
         ...
