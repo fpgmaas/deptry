@@ -29,7 +29,7 @@ class PoetryDependencyGetter(DependencyGetter):
 
     def _get_poetry_dev_dependencies(self) -> list[Dependency]:
         """
-        Poetry's development dependencies can be specified under either of the following;
+        Poetry's development dependencies can be specified under either of the following:
 
         [tool.poetry.dev-dependencies]
         [tool.poetry.group.dev.dependencies]
