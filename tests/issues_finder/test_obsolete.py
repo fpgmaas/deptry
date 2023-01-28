@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from deptry.dependency import Dependency
 from deptry.issues_finder.obsolete import ObsoleteDependenciesFinder
 from deptry.module import ModuleBuilder

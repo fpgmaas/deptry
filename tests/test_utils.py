@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from pathlib import Path
 
 from deptry.utils import load_pyproject_toml
