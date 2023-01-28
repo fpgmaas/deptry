@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 import sys
 from pathlib import Path
 from unittest import mock
@@ -7,6 +8,7 @@ from unittest import mock
 import pytest
 
 from deptry.core import Core
+from deptry.exceptions import UnsupportedPythonVersionError
 from deptry.stdlibs import STDLIBS_PYTHON
 from tests.utils import create_files_from_list_of_dicts, run_within_dir
 
@@ -115,7 +117,12 @@ def test__get_stdlib_packages_with_stdlib_module_names_future_version(version_in
 )
 def test__get_stdlib_packages_unsupported(version_info: tuple[int | str, ...]) -> None:
     """It should raise an error when Python version is unsupported."""
-    with mock.patch("sys.version_info", version_info), pytest.raises(ValueError):
+    with mock.patch("sys.version_info", version_info), pytest.raises(
+        UnsupportedPythonVersionError,
+        match=re.escape(
+            f"Python version {version_info[0]}.{version_info[1]} is not supported. Only versions >= 3.7 are supported."
+        ),
+    ):
         Core._get_stdlib_modules()
 
 
