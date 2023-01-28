@@ -3,10 +3,13 @@ from __future__ import annotations
 import logging
 import os
 from enum import Enum
-from pathlib import Path
+from typing import TYPE_CHECKING
 
 from deptry.exceptions import DependencySpecificationNotFoundError
 from deptry.utils import load_pyproject_toml
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 
 class DependencyManagementFormat(Enum):

@@ -6,10 +6,12 @@ import json
 import logging
 import re
 from dataclasses import dataclass
-from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from deptry.imports.extractors.base import ImportExtractor
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 
 @dataclass

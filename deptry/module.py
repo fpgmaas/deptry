@@ -2,9 +2,12 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 
 from deptry.compat import PackageNotFoundError, metadata
-from deptry.dependency import Dependency
+
+if TYPE_CHECKING:
+    from deptry.dependency import Dependency
 
 
 @dataclass

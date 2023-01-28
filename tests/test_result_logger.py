@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 import logging
-
-from _pytest.logging import LogCaptureFixture
+from typing import TYPE_CHECKING
 
 from deptry.result_logger import ResultLogger
+
+if TYPE_CHECKING:
+    from _pytest.logging import LogCaptureFixture
 
 
 def test_logging_number_multiple(caplog: LogCaptureFixture) -> None:

@@ -2,12 +2,15 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 import click
-from _pytest.logging import LogCaptureFixture
 
 from deptry.config import read_configuration_from_pyproject_toml
 from tests.utils import run_within_dir
+
+if TYPE_CHECKING:
+    from _pytest.logging import LogCaptureFixture
 
 
 def test_read_configuration_from_pyproject_toml_exists(tmp_path: Path) -> None:

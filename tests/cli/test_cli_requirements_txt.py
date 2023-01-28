@@ -3,12 +3,16 @@ from __future__ import annotations
 import shlex
 import shutil
 import subprocess
-from pathlib import Path
+from typing import TYPE_CHECKING
 
 import pytest
-from _pytest.tmpdir import TempPathFactory
 
 from tests.utils import get_issues_report, run_within_dir
+
+if TYPE_CHECKING:
+    from pathlib import Path
+
+    from _pytest.tmpdir import TempPathFactory
 
 
 @pytest.fixture(scope="session")

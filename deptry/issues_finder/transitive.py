@@ -2,10 +2,12 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from typing import cast
+from typing import TYPE_CHECKING, cast
 
 from deptry.issues_finder.base import IssuesFinder
-from deptry.module import Module
+
+if TYPE_CHECKING:
+    from deptry.module import Module
 
 
 @dataclass

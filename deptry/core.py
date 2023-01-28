@@ -4,10 +4,8 @@ import logging
 import os
 import sys
 from dataclasses import dataclass
-from pathlib import Path
+from typing import TYPE_CHECKING
 
-from deptry.dependency import Dependency
-from deptry.dependency_getter.base import DependenciesExtract
 from deptry.dependency_getter.pdm import PDMDependencyGetter
 from deptry.dependency_getter.pep_621 import PEP621DependencyGetter
 from deptry.dependency_getter.poetry import PoetryDependencyGetter
@@ -20,10 +18,17 @@ from deptry.issues_finder.missing import MissingDependenciesFinder
 from deptry.issues_finder.obsolete import ObsoleteDependenciesFinder
 from deptry.issues_finder.transitive import TransitiveDependenciesFinder
 from deptry.json_writer import JsonWriter
-from deptry.module import Module, ModuleBuilder
+from deptry.module import ModuleBuilder
 from deptry.python_file_finder import PythonFileFinder
 from deptry.result_logger import ResultLogger
 from deptry.stdlibs import STDLIBS_PYTHON
+
+if TYPE_CHECKING:
+    from pathlib import Path
+
+    from deptry.dependency import Dependency
+    from deptry.dependency_getter.base import DependenciesExtract
+    from deptry.module import Module
 
 
 @dataclass

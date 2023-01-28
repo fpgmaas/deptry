@@ -2,10 +2,14 @@ from __future__ import annotations
 
 import itertools
 import logging
-from pathlib import Path
+from typing import TYPE_CHECKING
 
 from deptry.imports.extractors import NotebookImportExtractor, PythonImportExtractor
-from deptry.imports.extractors.base import ImportExtractor
+
+if TYPE_CHECKING:
+    from pathlib import Path
+
+    from deptry.imports.extractors.base import ImportExtractor
 
 
 def get_imported_modules_for_list_of_files(list_of_files: list[Path]) -> list[str]:
