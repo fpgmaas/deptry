@@ -11,6 +11,28 @@ from deptry.utils import load_pyproject_toml
 
 @dataclass
 class PEP621DependencyGetter(DependencyGetter):
+    """
+    Class to extract dependencies from a pyproject.toml file in which dependencies are specified according to to PEP-621. For example:
+
+        [project]
+        ...
+        dependencies = [
+        "httpx",
+        "gidgethub[httpx]>4.0.0",
+        "django>2.1; os_name != 'nt'",
+        "django>2.0; os_name == 'nt'"
+        ]
+
+        [project.optional-dependencies]
+        test = [
+        "pytest < 5.0.0",
+        "pytest-cov[all]"
+        ]
+
+    Note that both dependencies and optional-dependencies are extracted as regular dependencies. Since PEP-621 does not specify
+    a recommended way to extract development dependencies, we do not attempt to extract any from the pyproject.toml file.
+    """
+
     def get(self) -> DependenciesExtract:
         dependencies = [*self._get_dependencies(), *itertools.chain(*self._get_optional_dependencies().values())]
         self._log_dependencies(dependencies)
@@ -32,6 +54,9 @@ class PEP621DependencyGetter(DependencyGetter):
 
     @classmethod
     def _extract_pep_508_dependencies(cls, dependencies: list[str]) -> list[Dependency]:
+        """
+        Given a list of dependency specifications (e.g. "django>2.1; os_name != 'nt'"), convert them to Dependency objects.
+        """
         extracted_dependencies = []
 
         for spec in dependencies:

@@ -10,6 +10,10 @@ import chardet
 
 @dataclass
 class ImportExtractor(ABC):
+    """
+    Base class for other classes that can be used to extract the imported modules from a file.
+    """
+
     file: Path
 
     @abstractmethod
@@ -18,6 +22,15 @@ class ImportExtractor(ABC):
 
     @staticmethod
     def _extract_imports_from_ast(tree: ast.AST) -> set[str]:
+        """
+        Given an Abstract Syntax Tree, find the imported top-level modules.
+        For example, given the source tree of a file with contents:
+
+            from pandas.tools import scatter_matrix
+
+        Will return the set {"pandas"}.
+        """
+
         imported_modules: set[str] = set()
 
         for node in ast.walk(tree):

@@ -17,6 +17,7 @@ class NotebookImportExtractor(ImportExtractor):
     """Extract import statements from a Jupyter notebook."""
 
     def extract_imports(self) -> set[str]:
+        """Extract the imported top-level modules from all code cells in the Jupyter Notebook."""
         notebook = self._read_ipynb_file(self.file)
         if not notebook:
             return set()

@@ -12,6 +12,7 @@ class PythonImportExtractor(ImportExtractor):
     """Extract import statements from a Python module."""
 
     def extract_imports(self) -> set[str]:
+        """Extract all imported top-level modules from the Python file."""
         try:
             with open(self.file) as python_file:
                 tree = ast.parse(python_file.read(), str(self.file))
