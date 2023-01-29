@@ -19,22 +19,17 @@ from tests.utils import create_files_from_list_of_dicts, run_within_dir
         (
             (),
             "",
-            {"module_with_init"},
-        ),
-        (
-            ("module_without_init",),
-            "",
-            {"module_with_init", "module_without_init"},
+            {"module_with_init", "module_without_init", "local_file"},
         ),
         (
             ("module_with_init", "module_without_init"),
             "",
-            {"module_with_init", "module_without_init"},
+            {"module_with_init", "module_without_init", "local_file"},
         ),
         (
             ("module_without_init",),
             "module_with_init",
-            {"module_without_init", "subdirectory"},
+            {"foo", "module_without_init", "subdirectory"},
         ),
     ],
 )
@@ -47,7 +42,8 @@ def test__get_local_modules(
             {"dir": "module_with_init", "file": "foo.py"},
             {"dir": "module_with_init/subdirectory", "file": "__init__.py"},
             {"dir": "module_with_init/subdirectory", "file": "foo.py"},
-            {"dir": "module_without_init", "file": "foo.py"},
+            {"dir": "module_without_init", "file": "bar.py"},
+            {"dir": ".", "file": "local_file.py"},
         ]
         create_files_from_list_of_dicts(paths)
 
