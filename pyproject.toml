@@ -31,7 +31,8 @@ tomli = { version = "^2.0.1", python = "<3.11" }
 
 [tool.poetry.group.dev.dependencies]
 mypy = "^0.991"
-pre-commit = "^3.0.0"
+# pre-commit 3.x dropped support for Python 3.7.
+pre-commit = { version = "^3.0.0", python = ">=3.8" }
 pytest = "^7.1.2"
 pytest-cov = "^4.0.0"
 types-chardet = "^5.0.4"
