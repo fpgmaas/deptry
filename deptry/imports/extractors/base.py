@@ -3,9 +3,12 @@ from __future__ import annotations
 import ast
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from pathlib import Path
+from typing import TYPE_CHECKING
 
 import chardet
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 
 @dataclass

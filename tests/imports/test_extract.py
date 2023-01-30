@@ -3,13 +3,16 @@ from __future__ import annotations
 import logging
 import uuid
 from pathlib import Path
+from typing import TYPE_CHECKING
 from unittest import mock
 
 import pytest
-from _pytest.logging import LogCaptureFixture
 
 from deptry.imports.extract import get_imported_modules_from_file
 from tests.utils import run_within_dir
+
+if TYPE_CHECKING:
+    from _pytest.logging import LogCaptureFixture
 
 
 def test_import_parser_py() -> None:

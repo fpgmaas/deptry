@@ -1,8 +1,12 @@
 from __future__ import annotations
 
-from deptry.dependency import Dependency
+from typing import TYPE_CHECKING
+
 from deptry.issues_finder.transitive import TransitiveDependenciesFinder
 from deptry.module import ModuleBuilder
+
+if TYPE_CHECKING:
+    from deptry.dependency import Dependency
 
 
 def test_simple() -> None:

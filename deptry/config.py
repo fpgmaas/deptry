@@ -1,12 +1,14 @@
 from __future__ import annotations
 
 import logging
-from pathlib import Path
-from typing import Any
-
-import click
+from typing import TYPE_CHECKING, Any
 
 from deptry.utils import load_pyproject_toml
+
+if TYPE_CHECKING:
+    from pathlib import Path
+
+    import click
 
 
 def read_configuration_from_pyproject_toml(ctx: click.Context, _param: click.Parameter, value: Path) -> Path | None:
