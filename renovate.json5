@@ -19,7 +19,7 @@
   labels: ["dependencies"],
 
   // https://docs.renovatebot.com/configuration-options/#schedule
-  schedule: ["before 3am on saturday"],
+  schedule: ["before 5am on saturday"],
 
   // https://docs.renovatebot.com/configuration-options/#lockfilemaintenance
   lockFileMaintenance: {
