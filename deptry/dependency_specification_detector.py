@@ -64,7 +64,7 @@ class DependencySpecificationDetector:
             )
         except KeyError:
             logging.debug(
-                "pyproject.toml does not contain a [tool.poetry.dependencies] section, so PDM is not used to specify"
+                "pyproject.toml does not contain a [tool.poetry.dependencies] section, so Poetry is not used to specify"
                 " the project's dependencies."
             )
             return False
