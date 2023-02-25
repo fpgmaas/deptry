@@ -27,6 +27,13 @@
     schedule: ["before 5am on saturday"],
   },
 
+  packageRules: [
+    {
+      matchPackageNames: ["charliermarsh/ruff-pre-commit"],
+      customChangelogUrl: "https://github.com/charliermarsh/ruff",
+    },
+  ],
+
   // https://docs.renovatebot.com/configuration-options/#regexmanagers
   regexManagers: [
     {
