@@ -33,7 +33,7 @@ class Module:
         return f"Module '{self.name}'"
 
     def __str__(self) -> str:
-        return "\n".join("%s: %s" % item for item in vars(self).items())
+        return "\n".join("{}: {}".format(*item) for item in vars(self).items())
 
 
 class ModuleBuilder:

@@ -46,7 +46,9 @@ class PythonStdlibHTMLParser(HTMLParser):
 
 
 def get_stdlib_modules_for_python_version(python_version: tuple[int, int]) -> list[str]:
-    with urllib.request.urlopen(STDLIB_MODULES_URL.format(python_version[0], python_version[1])) as response:
+    with urllib.request.urlopen(  # noqa: S310
+        STDLIB_MODULES_URL.format(python_version[0], python_version[1])
+    ) as response:
         html_content = response.read().decode()
 
     parser = PythonStdlibHTMLParser()
