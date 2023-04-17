@@ -24,6 +24,7 @@ from deptry.result_logger import ResultLogger
 from deptry.stdlibs import STDLIBS_PYTHON
 
 if TYPE_CHECKING:
+    from collections.abc import Mapping
     from pathlib import Path
 
     from deptry.dependency import Dependency
@@ -51,6 +52,7 @@ class Core:
     requirements_txt_dev: tuple[str, ...]
     known_first_party: tuple[str, ...]
     json_output: str
+    package_module_name_map: Mapping[str, tuple[str, ...]]
 
     def run(self) -> None:
         self._log_config()
@@ -105,13 +107,15 @@ class Core:
 
     def _get_dependencies(self, dependency_management_format: DependencyManagementFormat) -> DependenciesExtract:
         if dependency_management_format is DependencyManagementFormat.POETRY:
-            return PoetryDependencyGetter(self.config).get()
+            return PoetryDependencyGetter(self.config, self.package_module_name_map).get()
         if dependency_management_format is DependencyManagementFormat.PDM:
-            return PDMDependencyGetter(self.config).get()
+            return PDMDependencyGetter(self.config, self.package_module_name_map).get()
         if dependency_management_format is DependencyManagementFormat.PEP_621:
-            return PEP621DependencyGetter(self.config).get()
+            return PEP621DependencyGetter(self.config, self.package_module_name_map).get()
         if dependency_management_format is DependencyManagementFormat.REQUIREMENTS_TXT:
-            return RequirementsTxtDependencyGetter(self.config, self.requirements_txt, self.requirements_txt_dev).get()
+            return RequirementsTxtDependencyGetter(
+                self.config, self.package_module_name_map, self.requirements_txt, self.requirements_txt_dev
+            ).get()
         raise IncorrectDependencyFormatError
 
     def _get_local_modules(self) -> set[str]:

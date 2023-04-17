@@ -14,7 +14,9 @@ class Dependency:
     By default, we also add the dependency's name with '-' replaced by '_' to the top-level modules.
     """
 
-    def __init__(self, name: str, conditional: bool = False, optional: bool = False) -> None:
+    def __init__(
+        self, name: str, conditional: bool = False, optional: bool = False, module_names: tuple[str, ...] | None = None
+    ) -> None:
         """
         Args:
             name: Name of the dependency, as shown in pyproject.toml
@@ -24,12 +26,14 @@ class Dependency:
         self.is_conditional = conditional
         self.is_optional = optional
         self.found = self.find_metadata(name)
-        self.top_levels = self._get_top_levels(name)
+        self.top_levels = self._get_top_levels(name, module_names)
 
-    def _get_top_levels(self, name: str) -> set[str]:
-        top_levels = []
+    def _get_top_levels(self, name: str, module_names: tuple[str, ...] | None) -> set[str]:
+        top_levels: list[str] = []
 
-        if self.found:
+        if module_names is not None:
+            top_levels += module_names
+        elif self.found:
             top_levels += self._get_top_level_module_names_from_top_level_txt()
             if not top_levels:
                 top_levels += self._get_top_level_module_names_from_record_file()

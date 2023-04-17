@@ -71,6 +71,7 @@ def test__get_local_modules(
                 requirements_txt_dev=(),
                 known_first_party=known_first_party,
                 json_output="",
+                package_module_name_map={},
             )._get_local_modules()
             == expected
         )

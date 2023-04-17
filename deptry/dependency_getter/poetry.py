@@ -2,11 +2,14 @@ from __future__ import annotations
 
 import contextlib
 from dataclasses import dataclass
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from deptry.dependency import Dependency
 from deptry.dependency_getter.base import DependenciesExtract, DependencyGetter
 from deptry.utils import load_pyproject_toml
+
+if TYPE_CHECKING:
+    from collections.abc import Mapping
 
 
 @dataclass
@@ -25,7 +28,7 @@ class PoetryDependencyGetter(DependencyGetter):
     def _get_poetry_dependencies(self) -> list[Dependency]:
         pyproject_data = load_pyproject_toml(self.config)
         dependencies: dict[str, Any] = pyproject_data["tool"]["poetry"]["dependencies"]
-        return self._get_dependencies(dependencies)
+        return self._get_dependencies(dependencies, self.package_module_name_map)
 
     def _get_poetry_dev_dependencies(self) -> list[Dependency]:
         """
@@ -45,17 +48,23 @@ class PoetryDependencyGetter(DependencyGetter):
         with contextlib.suppress(KeyError):
             dependencies = {**pyproject_data["tool"]["poetry"]["group"]["dev"]["dependencies"], **dependencies}
 
-        return self._get_dependencies(dependencies)
+        return self._get_dependencies(dependencies, self.package_module_name_map)
 
     @classmethod
-    def _get_dependencies(cls, poetry_dependencies: dict[str, Any]) -> list[Dependency]:
+    def _get_dependencies(
+        cls, poetry_dependencies: dict[str, Any], package_module_name_map: Mapping[str, tuple[str, ...]]
+    ) -> list[Dependency]:
         dependencies = []
         for dep, spec in poetry_dependencies.items():
             # dep is the dependency name, spec is the version specification, e.g. "^0.2.2" or {"*", optional = true}
             if dep != "python":
                 optional = cls._is_optional(spec)
                 conditional = cls._is_conditional(spec)
-                dependencies.append(Dependency(dep, conditional=conditional, optional=optional))
+                dependencies.append(
+                    Dependency(
+                        dep, conditional=conditional, optional=optional, module_names=package_module_name_map.get(dep)
+                    )
+                )
 
         return dependencies
 

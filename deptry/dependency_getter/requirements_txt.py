@@ -72,7 +72,12 @@ class RequirementsTxtDependencyGetter(DependencyGetter):
             line = line.replace(name, "")
             optional = self._check_if_dependency_is_optional(line)
             conditional = self._check_if_dependency_is_conditional(line)
-            return Dependency(name=name, optional=optional, conditional=conditional)
+            return Dependency(
+                name=name,
+                optional=optional,
+                conditional=conditional,
+                module_names=self.package_module_name_map.get(name),
+            )
         else:
             return None
 
