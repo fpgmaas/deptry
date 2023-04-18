@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+from collections import defaultdict
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -11,7 +12,7 @@ from deptry.config import read_configuration_from_pyproject_toml
 from deptry.core import Core
 
 if TYPE_CHECKING:
-    from collections.abc import Mapping
+    from collections.abc import Mapping, Sequence
 
 DEFAULT_EXCLUDE = ("venv", r"\.venv", r"\.direnv", "tests", r"\.git", r"setup\.py")
 
@@ -54,26 +55,28 @@ class CommaSeparatedMappingParamType(click.ParamType):
 
     def convert(
         self,
-        value: str | Mapping[str, tuple[str, ...]],
+        # In the mapping value below, although a str is a Sequence[str] itself,
+        # they are treated differently from other sequences of str.
+        value: str | Mapping[str, Sequence[str] | str],
         param: click.Parameter | None,
         ctx: click.Context | None,
-    ) -> Mapping[str, tuple[str, ...]]:
-        converted: Mapping[str, tuple[str, ...]]
+    ) -> dict[str, tuple[str, ...]]:
+        converted: dict[str, tuple[str, ...]]
         if isinstance(value, str):
-            map_: dict[str, tuple[str, ...]] = {}
+            map_: defaultdict[str, list[str]] = defaultdict(list)
             for item in value.split(","):
                 pair = tuple(item.split("=", 1))
                 if len(pair) != 2:
-                    error_text = (
+                    error_msg = (
                         f"package name and module names pairs should be concatenated with an equal sign (=): {item}"
                     )
-                    raise ValueError(error_text)
+                    raise ValueError(error_msg)
                 package_name = pair[0]
-                module_names = tuple(pair[1].split("|"))
-                map_[package_name] = module_names
-            converted = map_
+                module_names = pair[1].split("|")
+                map_[package_name].extend(module_names)
+            converted = {k: tuple(v) for k, v in map_.items()}
         else:
-            converted = value
+            converted = {k: (v,) if isinstance(v, str) else tuple(v) for k, v in value.items()}
 
         return converted
 
@@ -271,7 +274,7 @@ def deptry(
     requirements_txt_dev: tuple[str, ...],
     known_first_party: tuple[str, ...],
     json_output: str,
-    package_module_name_map: Mapping[str, tuple[str, ...]],
+    package_module_name_map: Mapping[str, Sequence[str]],
 ) -> None:
     """Find dependency issues in your Python project.
 

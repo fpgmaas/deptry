@@ -32,8 +32,9 @@ def test_read_top_level_from_top_level_txt() -> None:
     with patch("deptry.dependency.metadata.distribution") as mock:
         mock.return_value = MockDistribution()
         dependency = Dependency("Foo-bar")
-        assert dependency.name == "Foo-bar"
-        assert dependency.top_levels == {"foo_bar", "foo", "bar"}
+
+    assert dependency.name == "Foo-bar"
+    assert dependency.top_levels == {"foo_bar", "foo", "bar"}
 
 
 def test_read_top_level_from_record() -> None:
@@ -58,5 +59,19 @@ blackd/__main__.py,sha256=<HASH>
     with patch("deptry.dependency.metadata.distribution") as mock:
         mock.return_value = MockDistribution()
         dependency = Dependency("Foo-bar")
-        assert dependency.name == "Foo-bar"
-        assert dependency.top_levels == {"foo_bar", "black", "blackd"}
+
+    assert dependency.name == "Foo-bar"
+    assert dependency.top_levels == {"foo_bar", "black", "blackd"}
+
+
+def test_read_top_level_from_predefined() -> None:
+    """
+    Verify that if there are predefined top-level module names it takes
+    precedence over other lookup methods.
+    """
+    with patch("deptry.dependency.metadata.distribution") as mock:
+        dependency = Dependency("Foo-bar", module_names=["foo"])
+
+    assert dependency.name == "Foo-bar"
+    assert dependency.top_levels == {"foo_bar", "foo"}
+    mock.return_value.read_text.assert_not_called()

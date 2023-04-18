@@ -9,7 +9,7 @@ from deptry.dependency_getter.base import DependenciesExtract, DependencyGetter
 from deptry.utils import load_pyproject_toml
 
 if TYPE_CHECKING:
-    from collections.abc import Mapping
+    from collections.abc import Mapping, Sequence
 
 
 @dataclass
@@ -52,7 +52,7 @@ class PoetryDependencyGetter(DependencyGetter):
 
     @classmethod
     def _get_dependencies(
-        cls, poetry_dependencies: dict[str, Any], package_module_name_map: Mapping[str, tuple[str, ...]]
+        cls, poetry_dependencies: dict[str, Any], package_module_name_map: Mapping[str, Sequence[str]]
     ) -> list[Dependency]:
         dependencies = []
         for dep, spec in poetry_dependencies.items():

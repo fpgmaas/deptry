@@ -10,7 +10,7 @@ from deptry.dependency_getter.base import DependenciesExtract, DependencyGetter
 from deptry.utils import load_pyproject_toml
 
 if TYPE_CHECKING:
-    from collections.abc import Mapping
+    from collections.abc import Mapping, Sequence
 
 
 @dataclass
@@ -58,7 +58,7 @@ class PEP621DependencyGetter(DependencyGetter):
 
     @classmethod
     def _extract_pep_508_dependencies(
-        cls, dependencies: list[str], package_module_name_map: Mapping[str, tuple[str, ...]]
+        cls, dependencies: list[str], package_module_name_map: Mapping[str, Sequence[str]]
     ) -> list[Dependency]:
         """
         Given a list of dependency specifications (e.g. "django>2.1; os_name != 'nt'"), convert them to Dependency objects.

@@ -15,6 +15,7 @@ dependencies = [
     "bar>=20.9",
     "optional-foo[option]>=0.12.11",
     "conditional-bar>=1.1.0; python_version < 3.11",
+    "fox-python",  # top level module is called "fox"
 ]
 
 [project.optional-dependencies]
@@ -31,9 +32,13 @@ group2 = [
         with open("pyproject.toml", "w") as f:
             f.write(fake_pyproject_toml)
 
-        dependencies = PEP621DependencyGetter(Path("pyproject.toml")).get().dependencies
+        getter = PEP621DependencyGetter(
+            config=Path("pyproject.toml"),
+            package_module_name_map={"fox-python": ("fox",)},
+        )
+        dependencies = getter.get().dependencies
 
-        assert len(dependencies) == 7
+        assert len(dependencies) == 8
 
         assert dependencies[0].name == "foo"
         assert not dependencies[0].is_conditional
@@ -55,17 +60,23 @@ group2 = [
         assert not dependencies[3].is_optional
         assert "conditional_bar" in dependencies[3].top_levels
 
-        assert dependencies[4].name == "foobar"
+        assert dependencies[4].name == "fox-python"
         assert not dependencies[4].is_conditional
         assert not dependencies[4].is_optional
-        assert "foobar" in dependencies[4].top_levels
+        assert "fox_python" in dependencies[4].top_levels
+        assert "fox" in dependencies[4].top_levels
 
-        assert dependencies[5].name == "barfoo"
+        assert dependencies[5].name == "foobar"
         assert not dependencies[5].is_conditional
         assert not dependencies[5].is_optional
-        assert "barfoo" in dependencies[5].top_levels
+        assert "foobar" in dependencies[5].top_levels
 
-        assert dependencies[6].name == "dep"
+        assert dependencies[6].name == "barfoo"
         assert not dependencies[6].is_conditional
         assert not dependencies[6].is_optional
-        assert "dep" in dependencies[6].top_levels
+        assert "barfoo" in dependencies[6].top_levels
+
+        assert dependencies[7].name == "dep"
+        assert not dependencies[7].is_conditional
+        assert not dependencies[7].is_optional
+        assert "dep" in dependencies[7].top_levels

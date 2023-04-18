@@ -24,7 +24,7 @@ from deptry.result_logger import ResultLogger
 from deptry.stdlibs import STDLIBS_PYTHON
 
 if TYPE_CHECKING:
-    from collections.abc import Mapping
+    from collections.abc import Mapping, Sequence
     from pathlib import Path
 
     from deptry.dependency import Dependency
@@ -52,7 +52,7 @@ class Core:
     requirements_txt_dev: tuple[str, ...]
     known_first_party: tuple[str, ...]
     json_output: str
-    package_module_name_map: Mapping[str, tuple[str, ...]]
+    package_module_name_map: Mapping[str, Sequence[str]]
 
     def run(self) -> None:
         self._log_config()

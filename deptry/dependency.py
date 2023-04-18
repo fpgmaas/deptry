@@ -1,10 +1,14 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
 import logging
 import re
 
 from deptry.compat import PackageNotFoundError, metadata
 
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
 
 class Dependency:
     """
@@ -15,7 +19,7 @@ class Dependency:
     """
 
     def __init__(
-        self, name: str, conditional: bool = False, optional: bool = False, module_names: tuple[str, ...] | None = None
+        self, name: str, conditional: bool = False, optional: bool = False, module_names: Sequence[str] | None = None
     ) -> None:
         """
         Args:
@@ -28,18 +32,18 @@ class Dependency:
         self.found = self.find_metadata(name)
         self.top_levels = self._get_top_levels(name, module_names)
 
-    def _get_top_levels(self, name: str, module_names: tuple[str, ...] | None) -> set[str]:
-        top_levels: list[str] = []
+    def _get_top_levels(self, name: str, module_names: Sequence[str] | None) -> set[str]:
+        top_levels: set[str] = set()
 
         if module_names is not None:
-            top_levels += module_names
+            top_levels.update(module_names)
         elif self.found:
-            top_levels += self._get_top_level_module_names_from_top_level_txt()
+            top_levels.update(self._get_top_level_module_names_from_top_level_txt())
             if not top_levels:
-                top_levels += self._get_top_level_module_names_from_record_file()
+                top_levels.update(self._get_top_level_module_names_from_record_file())
 
-        top_levels.append(name.replace("-", "_").lower())
-        return set(top_levels)
+        top_levels.add(name.replace("-", "_").lower())
+        return top_levels
 
     def __repr__(self) -> str:
         return f"Dependency '{self.name}'"

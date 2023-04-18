@@ -11,6 +11,7 @@ def test_dependency_getter(tmp_path: Path) -> None:
 python = ">=3.7,<4.0"
 bar =  { version = ">=2.5.1,<4.0.0", python = ">3.7" }
 foo-bar =  { version = ">=2.5.1,<4.0.0", optional = true, python = ">3.7" }
+fox-python = "*"  # top level module is called "fox"
 
 [tool.poetry.dev-dependencies]
 toml = "^0.10.2"
@@ -20,11 +21,15 @@ foo =  { version = ">=2.5.1,<4.0.0", optional = true }"""
         with open("pyproject.toml", "w") as f:
             f.write(fake_pyproject_toml)
 
-        dependencies_extract = PoetryDependencyGetter(Path("pyproject.toml")).get()
+        getter = PoetryDependencyGetter(
+            config=Path("pyproject.toml"),
+            package_module_name_map={"fox-python": ("fox",)},
+        )
+        dependencies_extract = getter.get()
         dependencies = dependencies_extract.dependencies
         dev_dependencies = dependencies_extract.dev_dependencies
 
-        assert len(dependencies) == 2
+        assert len(dependencies) == 3
         assert len(dev_dependencies) == 2
 
         assert dependencies[0].name == "bar"
@@ -36,6 +41,12 @@ foo =  { version = ">=2.5.1,<4.0.0", optional = true }"""
         assert dependencies[1].is_conditional
         assert dependencies[1].is_optional
         assert "foo_bar" in dependencies[1].top_levels
+
+        assert dependencies[2].name == "fox-python"
+        assert not dependencies[2].is_conditional
+        assert not dependencies[2].is_optional
+        assert "fox_python" in dependencies[2].top_levels
+        assert "fox" in dependencies[2].top_levels
 
         assert dev_dependencies[0].name == "toml"
         assert not dev_dependencies[0].is_conditional

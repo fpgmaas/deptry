@@ -7,7 +7,8 @@ from tests.utils import run_within_dir
 
 
 def test_dependency_getter(tmp_path: Path) -> None:
-    fake_pyproject_toml = """[project]
+    fake_pyproject_toml = """\
+[project]
 # PEP 621 project metadata
 # See https://www.python.org/dev/peps/pep-0621/
 dependencies = [
@@ -15,6 +16,7 @@ dependencies = [
     "bar>=20.9",
     "optional-foo[option]>=0.12.11",
     "conditional-bar>=1.1.0; python_version < 3.11",
+    "fox-python",  # top level module is called "fox"
 ]
 """
 
@@ -22,9 +24,13 @@ dependencies = [
         with open("pyproject.toml", "w") as f:
             f.write(fake_pyproject_toml)
 
-        dependencies = PDMDependencyGetter(Path("pyproject.toml")).get().dependencies
+        getter = PDMDependencyGetter(
+            config=Path("pyproject.toml"),
+            package_module_name_map={"fox-python": ("fox",)},
+        )
+        dependencies = getter.get().dependencies
 
-        assert len(dependencies) == 4
+        assert len(dependencies) == 5
 
         assert dependencies[0].name == "foo"
         assert not dependencies[0].is_conditional
@@ -46,9 +52,16 @@ dependencies = [
         assert not dependencies[3].is_optional
         assert "conditional_bar" in dependencies[3].top_levels
 
+        assert dependencies[4].name == "fox-python"
+        assert not dependencies[4].is_conditional
+        assert not dependencies[4].is_optional
+        assert "fox_python" in dependencies[4].top_levels
+        assert "fox" in dependencies[4].top_levels
+
 
 def test_dev_dependency_getter(tmp_path: Path) -> None:
-    fake_pyproject_toml = """[project]
+    fake_pyproject_toml = """\
+[project]
 # PEP 621 project metadata
 # See https://www.python.org/dev/peps/pep-0621/
 dependencies = [
