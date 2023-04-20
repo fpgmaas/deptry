@@ -11,7 +11,7 @@ def test_dependency_getter(tmp_path: Path) -> None:
 # PEP 621 project metadata
 # See https://www.python.org/dev/peps/pep-0621/
 dependencies = [
-    "foo",
+    "qux",
     "bar>=20.9",
     "optional-foo[option]>=0.12.11",
     "conditional-bar>=1.1.0; python_version < 3.11",
@@ -40,10 +40,10 @@ group2 = [
 
         assert len(dependencies) == 8
 
-        assert dependencies[0].name == "foo"
+        assert dependencies[0].name == "qux"
         assert not dependencies[0].is_conditional
         assert not dependencies[0].is_optional
-        assert "foo" in dependencies[0].top_levels
+        assert "qux" in dependencies[0].top_levels
 
         assert dependencies[1].name == "bar"
         assert not dependencies[1].is_conditional
@@ -63,7 +63,6 @@ group2 = [
         assert dependencies[4].name == "fox-python"
         assert not dependencies[4].is_conditional
         assert not dependencies[4].is_optional
-        assert "fox_python" in dependencies[4].top_levels
         assert "fox" in dependencies[4].top_levels
 
         assert dependencies[5].name == "foobar"

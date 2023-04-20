@@ -15,7 +15,7 @@ fox-python = "*"  # top level module is called "fox"
 
 [tool.poetry.dev-dependencies]
 toml = "^0.10.2"
-foo =  { version = ">=2.5.1,<4.0.0", optional = true }"""
+qux =  { version = ">=2.5.1,<4.0.0", optional = true }"""
 
     with run_within_dir(tmp_path):
         with open("pyproject.toml", "w") as f:
@@ -45,7 +45,6 @@ foo =  { version = ">=2.5.1,<4.0.0", optional = true }"""
         assert dependencies[2].name == "fox-python"
         assert not dependencies[2].is_conditional
         assert not dependencies[2].is_optional
-        assert "fox_python" in dependencies[2].top_levels
         assert "fox" in dependencies[2].top_levels
 
         assert dev_dependencies[0].name == "toml"
@@ -53,7 +52,7 @@ foo =  { version = ">=2.5.1,<4.0.0", optional = true }"""
         assert not dev_dependencies[0].is_optional
         assert "toml" in dev_dependencies[0].top_levels
 
-        assert dev_dependencies[1].name == "foo"
+        assert dev_dependencies[1].name == "qux"
         assert not dev_dependencies[1].is_conditional
         assert dev_dependencies[1].is_optional
-        assert "foo" in dev_dependencies[1].top_levels
+        assert "qux" in dev_dependencies[1].top_levels

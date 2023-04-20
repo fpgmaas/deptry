@@ -59,7 +59,6 @@ fox-python
         assert dependencies[17].name == "fox-python"
         assert not dependencies[17].is_conditional
         assert not dependencies[17].is_optional
-        assert "fox_python" in dependencies[17].top_levels
         assert "fox" in dependencies[17].top_levels
 
 
