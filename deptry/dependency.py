@@ -1,14 +1,14 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
 import logging
 import re
+from typing import TYPE_CHECKING
 
 from deptry.compat import PackageNotFoundError, metadata
 
-
 if TYPE_CHECKING:
     from collections.abc import Sequence
+
 
 class Dependency:
     """

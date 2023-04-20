@@ -1,14 +1,17 @@
 from __future__ import annotations
 
 import re
-from collections.abc import Sequence, Mapping
-from re import Pattern
+from typing import TYPE_CHECKING
+from unittest import mock
 
 import click
 import pytest
-from unittest import mock
 
 from deptry.cli import CommaSeparatedMappingParamType, CommaSeparatedTupleParamType
+
+if TYPE_CHECKING:
+    from collections.abc import Mapping, Sequence
+    from re import Pattern
 
 
 @pytest.mark.parametrize(

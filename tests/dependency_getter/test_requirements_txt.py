@@ -33,7 +33,7 @@ fox-python
 
         getter = RequirementsTxtDependencyGetter(
             config=Path("pyproject.toml"),
-            package_module_name_map={"fox-python":("fox",)},
+            package_module_name_map={"fox-python": ("fox",)},
         )
         dependencies_extract = getter.get()
         dependencies = dependencies_extract.dependencies
