@@ -52,6 +52,25 @@ preview = true
 
 [tool.coverage.report]
 skip_empty = true
+exclude_lines = [
+    # a more strict default pragma
+    "# pragma: no cover\\b",
+
+    # allow defensive code
+    "^\\s*raise AssertionError\\b",
+    "^\\s*raise NotImplementedError\\b",
+    "^\\s*return NotImplemented\\b",
+    "^\\s*raise$",
+
+    # typing-related code
+    "^\\s*if (False|TYPE_CHECKING):",
+    ": \\.\\.\\.(\\s*#.*)?$",
+    "^ +\\.\\.\\.$",
+    "-> ['\"]?NoReturn['\"]?:",
+
+    # non-runnable code
+    "if __name__ == ['\"]__main__['\"]:$",
+]
 
 [tool.coverage.run]
 branch = true
