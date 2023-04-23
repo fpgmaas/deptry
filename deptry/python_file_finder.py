@@ -60,7 +60,7 @@ class PythonFileFinder:
     ) -> bool:
         return bool(
             file.suffix not in file_lookup_suffixes
-            or ((self.exclude + self.extend_exclude) and ignore_regex.match(str(file)))
+            or ((self.exclude + self.extend_exclude) and ignore_regex.match(file.as_posix()))
             or (gitignore_spec and gitignore_spec.match_file(file))
         )
 
