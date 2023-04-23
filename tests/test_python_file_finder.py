@@ -83,21 +83,21 @@ def test_regex_argument(tmp_path: Path) -> None:
             exclude=(".*file1",), extend_exclude=(), using_default_exclude=False, ignore_notebooks=False
         ).get_all_python_files_in(Path("."))
         assert len(files) == 4
-        assert not any(["file1" in str(file) for file in files])
+        assert not any("file1" in str(file) for file in files)
 
         files = PythonFileFinder(
             exclude=(".cache|other.*subdir",), extend_exclude=(), using_default_exclude=False, ignore_notebooks=False
         ).get_all_python_files_in(Path("."))
         assert len(files) == 3
-        assert not any(["other_dir" in str(file) for file in files])
-        assert not any([".cache" in str(file) for file in files])
+        assert not any("other_dir" in str(file) for file in files)
+        assert not any(".cache" in str(file) for file in files)
         assert "dir/subdir/file2.py" in [str(file) for file in files]
 
         files = PythonFileFinder(
             exclude=(".*/subdir/",), extend_exclude=(), using_default_exclude=False, ignore_notebooks=False
         ).get_all_python_files_in(Path("."))
         assert len(files) == 2
-        assert not any(["subdir" in str(file) for file in files])
+        assert not any("subdir" in str(file) for file in files)
         assert ".cache/file2.py" in [str(file) for file in files]
 
 
