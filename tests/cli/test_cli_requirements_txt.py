@@ -25,7 +25,7 @@ def requirements_txt_dir_with_venv_installed(tmp_path_factory: TempPathFactory) 
         assert (
             subprocess.check_call(
                 shlex.split(
-                    "pip install -r requirements.txt -r requirements-dev.txt -r requirements-2.txt -r"
+                    "python -m pip install -r requirements.txt -r requirements-dev.txt -r requirements-2.txt -r"
                     " requirements-typing.txt"
                 )
             )
