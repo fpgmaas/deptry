@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import logging
-import os
 import sys
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
@@ -115,12 +114,24 @@ class Core:
         raise IncorrectDependencyFormatError
 
     def _get_local_modules(self) -> set[str]:
-        directories = [f for f in os.scandir(self.root) if f.is_dir()]
-        guessed_local_modules = {
-            subdirectory.name for subdirectory in directories if "__init__.py" in os.listdir(subdirectory)
-        }
+        """
+        Get all local Python modules from the root directory and `known_first_party` list.
+        A module is considered a local Python module if it matches at least one of those conditions:
+        - it is a directory that contains at least one Python file
+        - it is a Python file that is not named `__init__.py` (since it is a special case)
+        - it is set in the `known_first_party` list
+        """
+        guessed_local_modules = {path.stem for path in self.root.iterdir() if self._is_local_module(path)}
 
         return guessed_local_modules | set(self.known_first_party)
+
+    @staticmethod
+    def _is_local_module(path: Path) -> bool:
+        """Guess if a module is a local Python module."""
+        return bool(
+            (path.is_file() and path.name != "__init__.py" and path.suffix == ".py")
+            or (path.is_dir() and list(path.glob("*.py")))
+        )
 
     @staticmethod
     def _get_stdlib_modules() -> frozenset[str]:

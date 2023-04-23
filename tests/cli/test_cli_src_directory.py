@@ -31,7 +31,7 @@ def test_cli_with_src_directory(pep_621_dir_with_src_directory: Path) -> None:
         assert result.returncode == 1
         assert get_issues_report() == {
             "misplaced_dev": [],
-            "missing": ["white"],
+            "missing": ["httpx", "white"],
             "obsolete": ["isort", "requests", "mypy", "pytest"],
             "transitive": [],
         }
