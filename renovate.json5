@@ -21,12 +21,16 @@
   // https://docs.renovatebot.com/configuration-options/#schedule
   schedule: ["before 5am on saturday"],
 
+  // https://docs.renovatebot.com/configuration-options/#rangestrategy
+  rangeStrategy: "replace",
+
   // https://docs.renovatebot.com/configuration-options/#lockfilemaintenance
   lockFileMaintenance: {
     enabled: true,
     schedule: ["before 5am on saturday"],
   },
 
+  // https://docs.renovatebot.com/configuration-options/#packagerules
   packageRules: [
     {
       matchPackageNames: ["charliermarsh/ruff-pre-commit"],
