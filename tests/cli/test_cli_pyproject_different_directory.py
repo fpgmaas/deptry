@@ -6,7 +6,9 @@ import subprocess
 from typing import TYPE_CHECKING
 
 import pytest
+from click.testing import CliRunner
 
+from deptry.cli import deptry
 from tests.utils import get_issues_report, run_within_dir
 
 if TYPE_CHECKING:
@@ -26,13 +28,9 @@ def pep_621_dir_with_pyproject_different_directory(tmp_path_factory: TempPathFac
 
 def test_cli_with_pyproject_different_directory(pep_621_dir_with_pyproject_different_directory: Path) -> None:
     with run_within_dir(pep_621_dir_with_pyproject_different_directory):
-        result = subprocess.run(
-            shlex.split("deptry --config a_sub_directory/pyproject.toml src -o report.json"),
-            capture_output=True,
-            text=True,
-        )
+        result = CliRunner().invoke(deptry, "src --config a_sub_directory/pyproject.toml -o report.json")
 
-        assert result.returncode == 1
+        assert result.exit_code == 1
         assert get_issues_report() == {
             "misplaced_dev": [],
             "missing": ["white"],

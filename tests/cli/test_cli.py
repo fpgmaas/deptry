@@ -8,7 +8,9 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 import pytest
+from click.testing import CliRunner
 
+from deptry.cli import deptry
 from tests.utils import get_issues_report, run_within_dir
 
 if TYPE_CHECKING:
@@ -26,9 +28,9 @@ def dir_with_venv_installed(tmp_path_factory: TempPathFactory) -> Path:
 
 def test_cli_returns_error(dir_with_venv_installed: Path) -> None:
     with run_within_dir(dir_with_venv_installed):
-        result = subprocess.run(shlex.split("poetry run deptry . -o report.json"), capture_output=True, text=True)
+        result = CliRunner().invoke(deptry, ". -o report.json")
 
-        assert result.returncode == 1
+        assert result.exit_code == 1
         assert get_issues_report() == {
             "misplaced_dev": ["black"],
             "missing": ["white"],
@@ -39,11 +41,9 @@ def test_cli_returns_error(dir_with_venv_installed: Path) -> None:
 
 def test_cli_ignore_notebooks(dir_with_venv_installed: Path) -> None:
     with run_within_dir(dir_with_venv_installed):
-        result = subprocess.run(
-            shlex.split("poetry run deptry . --ignore-notebooks -o report.json"), capture_output=True, text=True
-        )
+        result = CliRunner().invoke(deptry, ". --ignore-notebooks -o report.json")
 
-        assert result.returncode == 1
+        assert result.exit_code == 1
         assert get_issues_report() == {
             "misplaced_dev": ["black"],
             "missing": ["white"],
@@ -54,35 +54,23 @@ def test_cli_ignore_notebooks(dir_with_venv_installed: Path) -> None:
 
 def test_cli_ignore_flags(dir_with_venv_installed: Path) -> None:
     with run_within_dir(dir_with_venv_installed):
-        result = subprocess.run(
-            shlex.split("poetry run deptry . --ignore-obsolete isort,pkginfo,requests -im white -id black"),
-            capture_output=True,
-            text=True,
-        )
+        result = CliRunner().invoke(deptry, ". --ignore-obsolete isort,pkginfo,requests -im white -id black")
 
-        assert result.returncode == 0
+        assert result.exit_code == 0
 
 
 def test_cli_skip_flags(dir_with_venv_installed: Path) -> None:
     with run_within_dir(dir_with_venv_installed):
-        result = subprocess.run(
-            shlex.split("poetry run deptry . --skip-obsolete --skip-missing --skip-misplaced-dev --skip-transitive"),
-            capture_output=True,
-            text=True,
-        )
+        result = CliRunner().invoke(deptry, ". --skip-obsolete --skip-missing --skip-misplaced-dev --skip-transitive")
 
-        assert result.returncode == 0
+        assert result.exit_code == 0
 
 
 def test_cli_exclude(dir_with_venv_installed: Path) -> None:
     with run_within_dir(dir_with_venv_installed):
-        result = subprocess.run(
-            shlex.split("poetry run deptry . --exclude src/notebook.ipynb -o report.json"),
-            capture_output=True,
-            text=True,
-        )
+        result = CliRunner().invoke(deptry, ". --exclude src/notebook.ipynb -o report.json")
 
-        assert result.returncode == 1
+        assert result.exit_code == 1
         assert get_issues_report() == {
             "misplaced_dev": ["black"],
             "missing": ["white"],
@@ -93,11 +81,9 @@ def test_cli_exclude(dir_with_venv_installed: Path) -> None:
 
 def test_cli_extend_exclude(dir_with_venv_installed: Path) -> None:
     with run_within_dir(dir_with_venv_installed):
-        result = subprocess.run(
-            shlex.split("poetry run deptry . -ee src/notebook.ipynb -o report.json"), capture_output=True, text=True
-        )
+        result = CliRunner().invoke(deptry, ". -ee src/notebook.ipynb -o report.json")
 
-        assert result.returncode == 1
+        assert result.exit_code == 1
         assert get_issues_report() == {
             "misplaced_dev": ["black"],
             "missing": ["white"],
@@ -108,11 +94,9 @@ def test_cli_extend_exclude(dir_with_venv_installed: Path) -> None:
 
 def test_cli_known_first_party(dir_with_venv_installed: Path) -> None:
     with run_within_dir(dir_with_venv_installed):
-        result = subprocess.run(
-            shlex.split("poetry run deptry . --known-first-party white -o report.json"), capture_output=True, text=True
-        )
+        result = CliRunner().invoke(deptry, ". --known-first-party white -o report.json")
 
-        assert result.returncode == 1
+        assert result.exit_code == 1
         assert get_issues_report() == {
             "misplaced_dev": ["black"],
             "missing": [],
@@ -158,6 +142,7 @@ def test_cli_with_not_json_output(dir_with_venv_installed: Path) -> None:
 
         result = subprocess.run(shlex.split("poetry run deptry ."), capture_output=True, text=True)
 
+        assert result.returncode == 1
         assert len(list(Path(".").glob("*.json"))) == 0
         assert (
             "The project contains obsolete dependencies:\n\n\tisort\n\trequests\n\nConsider removing them from your"
@@ -193,4 +178,6 @@ def test_cli_with_json_output(dir_with_venv_installed: Path) -> None:
 
 
 def test_cli_help() -> None:
-    assert subprocess.check_call(shlex.split("deptry --help")) == 0
+    result = CliRunner().invoke(deptry, "--help")
+
+    assert result.exit_code == 0

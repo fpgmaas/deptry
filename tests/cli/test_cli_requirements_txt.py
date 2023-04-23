@@ -6,7 +6,9 @@ import subprocess
 from typing import TYPE_CHECKING
 
 import pytest
+from click.testing import CliRunner
 
+from deptry.cli import deptry
 from tests.utils import get_issues_report, run_within_dir
 
 if TYPE_CHECKING:
@@ -34,16 +36,12 @@ def requirements_txt_dir_with_venv_installed(tmp_path_factory: TempPathFactory) 
 
 def test_cli_single_requirements_txt(requirements_txt_dir_with_venv_installed: Path) -> None:
     with run_within_dir(requirements_txt_dir_with_venv_installed):
-        result = subprocess.run(
-            shlex.split(
-                "deptry . --requirements-txt requirements.txt --requirements-txt-dev requirements-dev.txt -o"
-                " report.json"
-            ),
-            capture_output=True,
-            text=True,
+        result = CliRunner().invoke(
+            deptry,
+            ". --requirements-txt requirements.txt --requirements-txt-dev requirements-dev.txt -o report.json",
         )
 
-        assert result.returncode == 1
+        assert result.exit_code == 1
         assert get_issues_report() == {
             "misplaced_dev": ["black"],
             "missing": ["white"],
@@ -54,16 +52,15 @@ def test_cli_single_requirements_txt(requirements_txt_dir_with_venv_installed: P
 
 def test_cli_multiple_requirements_txt(requirements_txt_dir_with_venv_installed: Path) -> None:
     with run_within_dir(requirements_txt_dir_with_venv_installed):
-        result = subprocess.run(
-            shlex.split(
-                "deptry . --requirements-txt requirements.txt,requirements-2.txt --requirements-txt-dev"
-                " requirements-dev.txt,requirements-typing.txt -o report.json"
+        result = CliRunner().invoke(
+            deptry,
+            (
+                ". --requirements-txt requirements.txt,requirements-2.txt --requirements-txt-dev requirements-dev.txt"
+                " -o report.json"
             ),
-            capture_output=True,
-            text=True,
         )
 
-        assert result.returncode == 1
+        assert result.exit_code == 1
         assert get_issues_report() == {
             "misplaced_dev": ["black"],
             "missing": ["white"],
