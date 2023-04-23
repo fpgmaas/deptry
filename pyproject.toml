@@ -52,6 +52,7 @@ preview = true
 
 [tool.coverage.report]
 skip_empty = true
+# Subset of rules from https://pypi.org/project/covdefaults/
 exclude_lines = [
     # a more strict default pragma
     "# pragma: no cover\\b",
