@@ -10,7 +10,7 @@ import pytest
 from deptry.core import Core
 from deptry.exceptions import UnsupportedPythonVersionError
 from deptry.stdlibs import STDLIBS_PYTHON
-from tests.utils import create_files_from_list_of_dicts, run_within_dir
+from tests.utils import create_files, run_within_dir
 
 
 @pytest.mark.parametrize(
@@ -37,15 +37,16 @@ def test__get_local_modules(
     tmp_path: Path, known_first_party: tuple[str, ...], root_suffix: str, expected: set[str]
 ) -> None:
     with run_within_dir(tmp_path):
-        paths = [
-            {"dir": "module_with_init", "file": "__init__.py"},
-            {"dir": "module_with_init", "file": "foo.py"},
-            {"dir": "module_with_init/subdirectory", "file": "__init__.py"},
-            {"dir": "module_with_init/subdirectory", "file": "foo.py"},
-            {"dir": "module_without_init", "file": "bar.py"},
-            {"dir": ".", "file": "local_file.py"},
-        ]
-        create_files_from_list_of_dicts(paths)
+        create_files(
+            [
+                Path("module_with_init/__init__.py"),
+                Path("module_with_init/foo.py"),
+                Path("module_with_init/subdirectory/__init__.py"),
+                Path("module_with_init/subdirectory/foo.py"),
+                Path("module_without_init/bar.py"),
+                Path("local_file.py"),
+            ]
+        )
 
         assert (
             Core(

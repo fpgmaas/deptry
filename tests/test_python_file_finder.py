@@ -6,19 +6,20 @@ from pathspec import PathSpec
 from pathspec.patterns.gitwildmatch import GitWildMatchPattern
 
 from deptry.python_file_finder import PythonFileFinder
-from tests.utils import create_files_from_list_of_dicts, run_within_dir
+from tests.utils import create_files, run_within_dir
 
 
 def test_simple(tmp_path: Path) -> None:
     with run_within_dir(tmp_path):
-        paths = [
-            {"dir": "dir/subdir", "file": "file1.py"},
-            {"dir": "dir/subdir", "file": "file2.py"},
-            {"dir": "dir/subdir", "file": "file3.py"},
-            {"dir": "other_dir/subdir", "file": "file1.py"},
-            {"dir": "other_dir/subdir", "file": "file2.py"},
-        ]
-        create_files_from_list_of_dicts(paths)
+        create_files(
+            [
+                Path("dir/subdir/file1.py"),
+                Path("dir/subdir/file2.py"),
+                Path("dir/subdir/file3.py"),
+                Path("other_dir/subdir/file1.py"),
+                Path("other_dir/subdir/file2.py"),
+            ]
+        )
 
         files = PythonFileFinder(
             exclude=(".venv",), extend_exclude=("other_dir",), using_default_exclude=False
@@ -32,14 +33,15 @@ def test_only_matches_start(tmp_path: Path) -> None:
     Test the adding 'subdir' as exclude argument does not also exclude dir/subdir.
     """
     with run_within_dir(tmp_path):
-        paths = [
-            {"dir": "dir/subdir", "file": "file1.py"},
-            {"dir": "dir/subdir", "file": "file2.py"},
-            {"dir": "dir/subdir", "file": "file3.py"},
-            {"dir": "subdir", "file": "file1.py"},
-            {"dir": "subdir", "file": "file2.py"},
-        ]
-        create_files_from_list_of_dicts(paths)
+        create_files(
+            [
+                Path("dir/subdir/file1.py"),
+                Path("dir/subdir/file2.py"),
+                Path("dir/subdir/file3.py"),
+                Path("subdir/file1.py"),
+                Path("subdir/file2.py"),
+            ]
+        )
 
         files = PythonFileFinder(
             exclude=("subdir",), extend_exclude=(), using_default_exclude=False
@@ -50,10 +52,7 @@ def test_only_matches_start(tmp_path: Path) -> None:
 
 def test_matches_ipynb(tmp_path: Path) -> None:
     with run_within_dir(tmp_path):
-        paths = [
-            {"dir": "dir/subdir", "file": "file1.ipynb"},
-        ]
-        create_files_from_list_of_dicts(paths)
+        create_files([Path("dir/subdir/file1.ipynb")])
 
         files = PythonFileFinder(
             exclude=(), extend_exclude=(), using_default_exclude=False, ignore_notebooks=False
@@ -68,16 +67,17 @@ def test_matches_ipynb(tmp_path: Path) -> None:
 
 def test_regex_argument(tmp_path: Path) -> None:
     with run_within_dir(tmp_path):
-        paths = [
-            {"dir": "dir/subdir", "file": "file1.py"},
-            {"dir": "dir/subdir", "file": "file2.py"},
-            {"dir": "dir/subdir", "file": "file3.py"},
-            {"dir": "other_dir/subdir", "file": "file1.py"},
-            {"dir": "other_dir/subdir", "file": "file2.py"},
-            {"dir": ".cache", "file": "file1.py"},
-            {"dir": ".cache", "file": "file2.py"},
-        ]
-        create_files_from_list_of_dicts(paths)
+        create_files(
+            [
+                Path("dir/subdir/file1.py"),
+                Path("dir/subdir/file2.py"),
+                Path("dir/subdir/file3.py"),
+                Path("other_dir/subdir/file1.py"),
+                Path("other_dir/subdir/file2.py"),
+                Path(".cache/file1.py"),
+                Path(".cache/file2.py"),
+            ]
+        )
 
         files = PythonFileFinder(
             exclude=(".*file1",), extend_exclude=(), using_default_exclude=False, ignore_notebooks=False
