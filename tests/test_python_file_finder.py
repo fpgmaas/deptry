@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import pytest
 from pathspec import PathSpec
 from pathspec.patterns.gitwildmatch import GitWildMatchPattern
 
@@ -24,13 +25,17 @@ def test_simple(tmp_path: Path) -> None:
         files = PythonFileFinder(
             exclude=(".venv",), extend_exclude=("other_dir",), using_default_exclude=False
         ).get_all_python_files_in(Path("."))
-        assert len(files) == 3
-        assert "dir/subdir/file2.py" in [str(file) for file in files]
+
+        assert sorted(files) == [
+            Path("dir/subdir/file1.py"),
+            Path("dir/subdir/file2.py"),
+            Path("dir/subdir/file3.py"),
+        ]
 
 
 def test_only_matches_start(tmp_path: Path) -> None:
     """
-    Test the adding 'subdir' as exclude argument does not also exclude dir/subdir.
+    Test that adding 'subdir' as exclude argument does not also exclude dir/subdir.
     """
     with run_within_dir(tmp_path):
         create_files(
@@ -46,59 +51,86 @@ def test_only_matches_start(tmp_path: Path) -> None:
         files = PythonFileFinder(
             exclude=("subdir",), extend_exclude=(), using_default_exclude=False
         ).get_all_python_files_in(Path("."))
-        assert len(files) == 3
-        assert "dir/subdir/file2.py" in [str(file) for file in files]
+
+        assert sorted(files) == [
+            Path("dir/subdir/file1.py"),
+            Path("dir/subdir/file2.py"),
+            Path("dir/subdir/file3.py"),
+        ]
 
 
-def test_matches_ipynb(tmp_path: Path) -> None:
+@pytest.mark.parametrize(
+    ("ignore_notebooks", "expected"),
+    [
+        (
+            False,
+            [Path("dir/subdir/file1.ipynb")],
+        ),
+        (
+            True,
+            [],
+        ),
+    ],
+)
+def test_matches_ipynb(ignore_notebooks: bool, expected: list[Path], tmp_path: Path) -> None:
     with run_within_dir(tmp_path):
         create_files([Path("dir/subdir/file1.ipynb")])
 
         files = PythonFileFinder(
-            exclude=(), extend_exclude=(), using_default_exclude=False, ignore_notebooks=False
+            exclude=(), extend_exclude=(), using_default_exclude=False, ignore_notebooks=ignore_notebooks
         ).get_all_python_files_in(Path("."))
-        assert len(files) == 1
-        assert "dir/subdir/file1.ipynb" in [str(file) for file in files]
-        files = PythonFileFinder(
-            exclude=(), extend_exclude=(), using_default_exclude=False, ignore_notebooks=True
-        ).get_all_python_files_in(Path("."))
-        assert len(files) == 0
+
+        assert sorted(files) == expected
 
 
-def test_regex_argument(tmp_path: Path) -> None:
+@pytest.mark.parametrize(
+    ("exclude", "expected"),
+    [
+        (
+            (".*file1",),
+            [
+                Path(".cache/file2.py"),
+                Path("dir/subdir/file2.py"),
+                Path("dir/subdir/file3.py"),
+                Path("other_dir/subdir/file2.py"),
+            ],
+        ),
+        (
+            (".cache|other.*subdir",),
+            [
+                Path("dir/subdir/file1.py"),
+                Path("dir/subdir/file2.py"),
+                Path("dir/subdir/file3.py"),
+            ],
+        ),
+        (
+            (".*/subdir/",),
+            [
+                Path(".cache/file1.py"),
+                Path(".cache/file2.py"),
+            ],
+        ),
+    ],
+)
+def test_regex_argument(exclude: tuple[str], expected: list[Path], tmp_path: Path) -> None:
     with run_within_dir(tmp_path):
         create_files(
             [
+                Path(".cache/file1.py"),
+                Path(".cache/file2.py"),
                 Path("dir/subdir/file1.py"),
                 Path("dir/subdir/file2.py"),
                 Path("dir/subdir/file3.py"),
                 Path("other_dir/subdir/file1.py"),
                 Path("other_dir/subdir/file2.py"),
-                Path(".cache/file1.py"),
-                Path(".cache/file2.py"),
             ]
         )
 
         files = PythonFileFinder(
-            exclude=(".*file1",), extend_exclude=(), using_default_exclude=False, ignore_notebooks=False
+            exclude=exclude, extend_exclude=(), using_default_exclude=False
         ).get_all_python_files_in(Path("."))
-        assert len(files) == 4
-        assert not any("file1" in str(file) for file in files)
 
-        files = PythonFileFinder(
-            exclude=(".cache|other.*subdir",), extend_exclude=(), using_default_exclude=False, ignore_notebooks=False
-        ).get_all_python_files_in(Path("."))
-        assert len(files) == 3
-        assert not any("other_dir" in str(file) for file in files)
-        assert not any(".cache" in str(file) for file in files)
-        assert "dir/subdir/file2.py" in [str(file) for file in files]
-
-        files = PythonFileFinder(
-            exclude=(".*/subdir/",), extend_exclude=(), using_default_exclude=False, ignore_notebooks=False
-        ).get_all_python_files_in(Path("."))
-        assert len(files) == 2
-        assert not any("subdir" in str(file) for file in files)
-        assert ".cache/file2.py" in [str(file) for file in files]
+        assert sorted(files) == expected
 
 
 def test__generate_gitignore_pathspec_with_non_default_exclude(tmp_path: Path) -> None:
