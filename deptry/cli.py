@@ -1,13 +1,18 @@
 from __future__ import annotations
 
 import logging
+from collections import defaultdict
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 import click
 
 from deptry.compat import metadata
 from deptry.config import read_configuration_from_pyproject_toml
 from deptry.core import Core
+
+if TYPE_CHECKING:
+    from collections.abc import Mapping, Sequence
 
 DEFAULT_EXCLUDE = ("venv", r"\.venv", r"\.direnv", "tests", r"\.git", r"setup\.py")
 
@@ -35,6 +40,48 @@ class CommaSeparatedTupleParamType(click.ParamType):
 
 
 COMMA_SEPARATED_TUPLE = CommaSeparatedTupleParamType()
+
+
+class CommaSeparatedMappingParamType(click.ParamType):
+    """
+    This class is used to uniformly handle configuration parameters that can be either passed as a comma-separated pair
+    string, or as a Mapping of strings to tuples of strings. Items in a pair string are separated by an equal sign,
+    where multiple values are separated by a pipe: key1=value1,key2=value2|value3.
+    For example, the value for a parameter can be a comma-separated pair string when passed as a command line argument,
+    or as a mapping of string to tuples of strings when passed through pyproject.toml.
+    """
+
+    name = "mapping"
+
+    def convert(
+        self,
+        # In the mapping value below, although a str is a Sequence[str] itself,
+        # they are treated differently from other sequences of str.
+        value: str | Mapping[str, Sequence[str] | str],
+        param: click.Parameter | None,
+        ctx: click.Context | None,
+    ) -> dict[str, tuple[str, ...]]:
+        converted: dict[str, tuple[str, ...]]
+        if isinstance(value, str):
+            map_: defaultdict[str, list[str]] = defaultdict(list)
+            for item in value.split(","):
+                pair = tuple(item.split("=", 1))
+                if len(pair) != 2:
+                    error_msg = (
+                        f"package name and module names pairs should be concatenated with an equal sign (=): {item}"
+                    )
+                    raise ValueError(error_msg)
+                package_name = pair[0]
+                module_names = pair[1].split("|")
+                map_[package_name].extend(module_names)
+            converted = {k: tuple(v) for k, v in map_.items()}
+        else:
+            converted = {k: (v,) if isinstance(v, str) else tuple(v) for k, v in value.items()}
+
+        return converted
+
+
+COMMA_SEPARATED_MAPPING = CommaSeparatedMappingParamType()
 
 
 def configure_logger(_ctx: click.Context, _param: click.Parameter, value: bool) -> None:
@@ -201,6 +248,14 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
     help="""If specified, a summary of the dependency issues found will be written to the output location specified. e.g. `deptry . -o deptry.json`""",
     show_default=True,
 )
+@click.option(
+    "--package-module-name-map",
+    "-pmnm",
+    type=COMMA_SEPARATED_MAPPING,
+    help="""Manually defined module names belonging to packages. For example; `deptry . --package-module-name-map package_1=module_a,package_2=module_b|module_c`.""",
+    default={},
+    show_default=False,
+)
 def deptry(
     root: Path,
     config: Path,
@@ -219,6 +274,7 @@ def deptry(
     requirements_txt_dev: tuple[str, ...],
     known_first_party: tuple[str, ...],
     json_output: str,
+    package_module_name_map: Mapping[str, Sequence[str]],
 ) -> None:
     """Find dependency issues in your Python project.
 
@@ -246,4 +302,5 @@ def deptry(
         requirements_txt_dev=requirements_txt_dev,
         known_first_party=known_first_party,
         json_output=json_output,
+        package_module_name_map=package_module_name_map,
     ).run()

@@ -2,8 +2,12 @@ from __future__ import annotations
 
 import logging
 import re
+from typing import TYPE_CHECKING
 
 from deptry.compat import PackageNotFoundError, metadata
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
 
 
 class Dependency:
@@ -14,7 +18,9 @@ class Dependency:
     By default, we also add the dependency's name with '-' replaced by '_' to the top-level modules.
     """
 
-    def __init__(self, name: str, conditional: bool = False, optional: bool = False) -> None:
+    def __init__(
+        self, name: str, conditional: bool = False, optional: bool = False, module_names: Sequence[str] | None = None
+    ) -> None:
         """
         Args:
             name: Name of the dependency, as shown in pyproject.toml
@@ -24,18 +30,20 @@ class Dependency:
         self.is_conditional = conditional
         self.is_optional = optional
         self.found = self.find_metadata(name)
-        self.top_levels = self._get_top_levels(name)
+        self.top_levels = self._get_top_levels(name, module_names)
 
-    def _get_top_levels(self, name: str) -> set[str]:
-        top_levels = []
+    def _get_top_levels(self, name: str, module_names: Sequence[str] | None) -> set[str]:
+        top_levels: set[str] = set()
 
-        if self.found:
-            top_levels += self._get_top_level_module_names_from_top_level_txt()
+        if module_names is not None:
+            top_levels.update(module_names)
+        elif self.found:
+            top_levels.update(self._get_top_level_module_names_from_top_level_txt())
             if not top_levels:
-                top_levels += self._get_top_level_module_names_from_record_file()
+                top_levels.update(self._get_top_level_module_names_from_record_file())
 
-        top_levels.append(name.replace("-", "_").lower())
-        return set(top_levels)
+        top_levels.add(name.replace("-", "_").lower())
+        return top_levels
 
     def __repr__(self) -> str:
         return f"Dependency '{self.name}'"

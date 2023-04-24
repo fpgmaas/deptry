@@ -2,10 +2,11 @@ from __future__ import annotations
 
 import logging
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
+    from collections.abc import Mapping, Sequence
     from pathlib import Path
 
     from deptry.dependency import Dependency
@@ -26,6 +27,7 @@ class DependencyGetter(ABC):
     """
 
     config: Path
+    package_module_name_map: Mapping[str, Sequence[str]] = field(default_factory=dict)
 
     @abstractmethod
     def get(self) -> DependenciesExtract:

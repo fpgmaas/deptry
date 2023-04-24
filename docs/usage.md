@@ -396,3 +396,51 @@ json_output = "deptry_report.txt"
 ```shell
 deptry . --json-output deptry_report.txt
 ```
+
+#### Manually map Package Names to Top Level Module Names
+
+Deptry will automatically detect top level modules names that belong to a
+module in two ways.
+The first is by inspecting the installed packages. The second is by translating
+the package name to a module name (`foo-bar` translates to `foo_bar`).
+
+This however is not always sufficient. A situation may occur where a package is
+not installed because it is optional and unused in the current installation.
+Then when the package name doesn't directly translate to the top level module
+name, or there are more top level modules names, Deptry may report both
+obsolete packages, and missing packages. A concrete example is deptry reporting obsolete (optional) dependency
+`foo-python`, and missing package `foo`, while package `foo-python` would
+install top level module `foo`, if it were installed.
+
+A solution is to pre-define a mapping between the pacakge name and the top
+level module name(s).
+
+* Type `dict[str, list[str] | str]`
+* Default: `{}`
+* `pyproject.toml` option name: `package_module_name_map`
+* CLI option name: `--package-module-name-map` (short: `-pmnm`)
+* `pyproject.toml` examples:
+```toml
+[tool.deptry.package_module_name_map]
+foo-python = "foo"
+```
+Or for multiple top level module names:
+```toml
+[tool.deptry.package_module_name_map]
+foo-python = [
+    "foo",
+    "bar",
+]
+```
+* CLI examples:
+```shell
+deptry . --package-module-name-map 'foo-python=foo'
+```
+Multiple module names are joined by a pipe (`|`):
+```shell
+deptry . --package-module-name-map 'foo-python=foo|bar'
+```
+Multiple package name to module name mappings are joined by a comma (`,`):
+```shell
+deptry . --package-module-name-map 'foo-python=foo,bar-python=bar'
+```

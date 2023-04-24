@@ -25,16 +25,20 @@ pytest-cov
 beautifulsoup4
 docopt == 0.6.1
 requests [security] >= 2.8.1, == 2.8.* ; python_version < "2.7"
+fox-python
 """
-
     with run_within_dir(tmp_path):
         with open("requirements.txt", "w") as f:
             f.write(fake_requirements_txt)
 
-        dependencies_extract = RequirementsTxtDependencyGetter(Path("pyproject.toml")).get()
+        getter = RequirementsTxtDependencyGetter(
+            config=Path("pyproject.toml"),
+            package_module_name_map={"fox-python": ("fox",)},
+        )
+        dependencies_extract = getter.get()
         dependencies = dependencies_extract.dependencies
 
-        assert len(dependencies) == 17
+        assert len(dependencies) == 18
         assert len(dependencies_extract.dev_dependencies) == 0
 
         assert dependencies[1].name == "colorama"
@@ -51,6 +55,12 @@ requests [security] >= 2.8.1, == 2.8.* ; python_version < "2.7"
         assert dependencies[11].is_conditional
         assert dependencies[11].is_optional
         assert "requests" in dependencies[11].top_levels
+
+        assert dependencies[17].name == "fox-python"
+        assert not dependencies[17].is_conditional
+        assert not dependencies[17].is_optional
+        assert "fox_python" in dependencies[17].top_levels
+        assert "fox" in dependencies[17].top_levels
 
 
 def test_parse_requirements_txt_urls(tmp_path: Path) -> None:

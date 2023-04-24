@@ -3,10 +3,14 @@ from __future__ import annotations
 import itertools
 import re
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 
 from deptry.dependency import Dependency
 from deptry.dependency_getter.base import DependenciesExtract, DependencyGetter
 from deptry.utils import load_pyproject_toml
+
+if TYPE_CHECKING:
+    from collections.abc import Mapping, Sequence
 
 
 @dataclass
@@ -42,18 +46,20 @@ class PEP621DependencyGetter(DependencyGetter):
     def _get_dependencies(self) -> list[Dependency]:
         pyproject_data = load_pyproject_toml(self.config)
         dependency_strings: list[str] = pyproject_data["project"]["dependencies"]
-        return self._extract_pep_508_dependencies(dependency_strings)
+        return self._extract_pep_508_dependencies(dependency_strings, self.package_module_name_map)
 
     def _get_optional_dependencies(self) -> dict[str, list[Dependency]]:
         pyproject_data = load_pyproject_toml(self.config)
 
         return {
-            group: self._extract_pep_508_dependencies(dependencies)
+            group: self._extract_pep_508_dependencies(dependencies, self.package_module_name_map)
             for group, dependencies in pyproject_data["project"].get("optional-dependencies", {}).items()
         }
 
     @classmethod
-    def _extract_pep_508_dependencies(cls, dependencies: list[str]) -> list[Dependency]:
+    def _extract_pep_508_dependencies(
+        cls, dependencies: list[str], package_module_name_map: Mapping[str, Sequence[str]]
+    ) -> list[Dependency]:
         """
         Given a list of dependency specifications (e.g. "django>2.1; os_name != 'nt'"), convert them to Dependency objects.
         """
@@ -64,7 +70,12 @@ class PEP621DependencyGetter(DependencyGetter):
             name = cls._find_dependency_name_in(spec)
             if name:
                 extracted_dependencies.append(
-                    Dependency(name, conditional=cls._is_conditional(spec), optional=cls._is_optional(spec))
+                    Dependency(
+                        name,
+                        conditional=cls._is_conditional(spec),
+                        optional=cls._is_optional(spec),
+                        module_names=package_module_name_map.get(name),
+                    )
                 )
 
         return extracted_dependencies
