@@ -32,11 +32,22 @@ jobs:
         run: poetry lock --check
 
   tox:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.image }}
     strategy:
       matrix:
-        python-version: ['3.7', '3.8', '3.9', '3.10', '3.11']
+        os: [macOS, Ubuntu, Windows]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+        include:
+          - os: macOS
+            image: macos-12
+          - os: Ubuntu
+            image: ubuntu-22.04
+          - os: Windows
+            image: windows-2022
       fail-fast: false
+    defaults:
+      run:
+        shell: bash
     steps:
       - name: Check out
         uses: actions/checkout@v3
@@ -46,14 +57,11 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install Poetry
-        uses: snok/install-poetry@v1
-
       - name: Load cached venv
         uses: actions/cache@v3
         with:
           path: .tox
-          key: venv-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('poetry.lock') }}
+          key: venv-${{ runner.os }}-${{ matrix.image }}-${{ matrix.python-version }}-${{ hashFiles('poetry.lock') }}
 
       - name: Install tox
         run: python -m pip install "tox-gh-actions==3.1.0" # renovate: pep440-python-dependency
@@ -61,9 +69,9 @@ jobs:
       - name: Test with tox
         run: tox
 
-      - name: Upload coverage reports to Codecov with GitHub Action on Python 3.11
+      - name: Upload coverage reports to Codecov with GitHub Action on Python 3.11 for Ubuntu
         uses: codecov/codecov-action@v3
-        if: ${{ matrix.python-version == '3.11' }}
+        if: ${{ matrix.python-version == '3.11' && matrix.os == 'Ubuntu' }}
 
   check-docs:
     runs-on: ubuntu-latest
