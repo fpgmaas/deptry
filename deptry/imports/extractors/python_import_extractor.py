@@ -16,7 +16,7 @@ class PythonImportExtractor(ImportExtractor):
         try:
             with open(self.file) as python_file:
                 tree = ast.parse(python_file.read(), str(self.file))
-        except UnicodeDecodeError:
+        except (UnicodeDecodeError, ValueError):
             try:
                 with open(self.file, encoding=self._get_file_encoding(self.file)) as python_file:
                     tree = ast.parse(python_file.read(), str(self.file))

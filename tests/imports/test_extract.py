@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import logging
 import uuid
 from pathlib import Path
@@ -46,38 +47,20 @@ def test_import_parser_ipynb() -> None:
     ("file_content", "encoding"),
     [
         (
-            """
-#!/usr/bin/python
-# -*- encoding: utf-8 -*-
-import foo
-print('嘉大')
-""",
+            "# -*- encoding: utf-8 -*-\nimport foo\nprint('嘉大')",
             "utf-8",
         ),
         (
-            """
-#!/usr/bin/python
-# -*- encoding: iso-8859-15 -*-
-import foo
-print('Æ	Ç')
-""",
+            "# -*- encoding: iso-8859-15 -*-\nimport foo\nprint('Æ	Ç')",
             "iso-8859-15",
         ),
         (
-            """
-#!/usr/bin/python
-# -*- encoding: utf-16 -*-
-import foo
-print('嘉大')
-""",
+            "# -*- encoding: utf-16 -*-\nimport foo\nprint('嘉大')",
             "utf-16",
         ),
         (
-            """
-my_string = '🐺'
-import foo
-""",
-            None,
+            "import foo\nmy_string = '🐺'",
+            "utf-16",
         ),
     ],
 )
@@ -107,7 +90,7 @@ def test_import_parser_file_encodings(file_content: str, encoding: str | None, t
             "utf-16",
         ),
         (
-            ["my_string = '🐺'", "import foo"],
+            ["import foo", "my_string = '🐺'"],
             None,
         ),
     ],
@@ -117,17 +100,16 @@ def test_import_parser_file_encodings_ipynb(code_cell_content: list[str], encodi
 
     with run_within_dir(tmp_path):
         with open(random_file_name, "w", encoding=encoding) as f:
-            file_content = f"""{{
- "cells": [
-  {{
-   "cell_type": "code",
-   "metadata": {{}},
-   "source": [
-    {", ".join([ f'"{code_line}"'  for code_line in code_cell_content])}
-   ]
-  }}
-  ]}}"""
-            f.write(file_content)
+            file_content = {
+                "cells": [
+                    {
+                        "cell_type": "code",
+                        "metadata": {},
+                        "source": code_cell_content,
+                    }
+                ]
+            }
+            f.write(json.dumps(file_content))
 
         assert get_imported_modules_from_file(Path(random_file_name)) == {"foo"}
 

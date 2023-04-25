@@ -6,7 +6,9 @@ import subprocess
 from typing import TYPE_CHECKING
 
 import pytest
+from click.testing import CliRunner
 
+from deptry.cli import deptry
 from tests.utils import get_issues_report, run_within_dir
 
 if TYPE_CHECKING:
@@ -26,9 +28,9 @@ def pdm_dir_with_venv_installed(tmp_path_factory: TempPathFactory) -> Path:
 
 def test_cli_with_pdm(pdm_dir_with_venv_installed: Path) -> None:
     with run_within_dir(pdm_dir_with_venv_installed):
-        result = subprocess.run(shlex.split("deptry . -o report.json"), capture_output=True, text=True)
+        result = CliRunner().invoke(deptry, ". -o report.json")
 
-        assert result.returncode == 1
+        assert result.exit_code == 1
         assert get_issues_report() == {
             "misplaced_dev": ["black"],
             "missing": ["white"],

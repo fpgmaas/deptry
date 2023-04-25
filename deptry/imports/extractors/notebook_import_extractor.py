@@ -34,7 +34,7 @@ class NotebookImportExtractor(ImportExtractor):
         try:
             with open(path_to_ipynb) as ipynb_file:
                 notebook: dict[str, Any] = json.load(ipynb_file)
-        except UnicodeDecodeError:
+        except (UnicodeDecodeError, ValueError):
             try:
                 with open(path_to_ipynb, encoding=cls._get_file_encoding(path_to_ipynb)) as ipynb_file:
                     notebook = json.load(ipynb_file, strict=False)
