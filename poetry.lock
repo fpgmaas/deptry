@@ -1014,14 +1014,14 @@ files = [
 
 [[package]]
 name = "types-chardet"
-version = "5.0.4.3"
+version = "5.0.4.4"
 description = "Typing stubs for chardet"
 category = "dev"
 optional = false
 python-versions = "*"
 files = [
-    {file = "types-chardet-5.0.4.3.tar.gz", hash = "sha256:45eacdd010ef7cf9d1a3c619cd19dd13a3b86cd62d3b45e06ed0ea53a14ad111"},
-    {file = "types_chardet-5.0.4.3-py3-none-any.whl", hash = "sha256:f7b8b0cc809281f5f40e719cfdf37b009170150a98bf98abd79f7b68d3c7f710"},
+    {file = "types-chardet-5.0.4.4.tar.gz", hash = "sha256:5692bfc24b23f2998d7f13cd0a73c520865db91e4eada42e6a572df0cf3f472c"},
+    {file = "types_chardet-5.0.4.4-py3-none-any.whl", hash = "sha256:91364fc7a9faacb00be37689306691fc41549ad394eceeb37b4a2ee6b7a703be"},
 ]
 
 [[package]]
@@ -1133,4 +1133,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.7,<4.0"
-content-hash = "f78d2e94d8caf06b639923a11be0e08783aa108a1d58c43b5827ca9021dfd247"
+content-hash = "37b2cee5e05bb8c3b49450e9eec2d7078867cc1844174e3830caf4af37783624"
