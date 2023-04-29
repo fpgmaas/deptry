@@ -39,7 +39,7 @@ types-chardet = "5.0.4.3"
 
 [tool.poetry.group.docs.dependencies]
 mkdocs = "1.4.2"
-mkdocs-material = "9.1.7"
+mkdocs-material = "9.1.8"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
