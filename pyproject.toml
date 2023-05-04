@@ -94,10 +94,7 @@ show_error_codes = true
 # In some Python versions, we can end up with backport modules being untyped, while they are typed on others.
 [[tool.mypy.overrides]]
 module = [
-    "deptry.cli",
     "deptry.core",
-    "deptry.dependency",
-    "deptry.module",
     "scripts.generate_stdlibs",
     "tests.test_core",
 ]

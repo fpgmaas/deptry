@@ -92,7 +92,7 @@ class ModuleBuilder:
         Most packages simply have a field called "Name" in their metadata. This method extracts that field.
         """
         try:
-            name: str = metadata(self.name)["Name"]  # type: ignore[no-untyped-call]
+            name: str = metadata(self.name)["Name"]
         except PackageNotFoundError:
             return None
         else:

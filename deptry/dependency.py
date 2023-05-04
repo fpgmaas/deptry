@@ -98,7 +98,7 @@ class Dependency:
 
         This function extracts these names, if a top-level.txt file exists.
         """
-        metadata_top_levels = distribution.read_text("top_level.txt")  # type: ignore[no-untyped-call]
+        metadata_top_levels = distribution.read_text("top_level.txt")
         if metadata_top_levels is None:
             raise FileNotFoundError("top_level.txt")
 
@@ -122,7 +122,7 @@ class Dependency:
         So if no file top-level.txt is provided, we can try and extract top-levels from this file, in
         this case _black_version, black, and blackd.
         """
-        metadata_records = distribution.read_text("RECORD")  # type: ignore[no-untyped-call]
+        metadata_records = distribution.read_text("RECORD")
 
         if metadata_records is None:
             raise FileNotFoundError("RECORD")
