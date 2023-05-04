@@ -22,5 +22,5 @@ class PyprojectFileNotFoundError(FileNotFoundError):
 class UnsupportedPythonVersionError(ValueError):
     def __init__(self, version: tuple[int, int]) -> None:
         super().__init__(
-            f"Python version {version[0]}.{version[1]} is not supported. Only versions >= 3.7 are supported."
+            f"Python version {version[0]}.{version[1]} is not supported. Only versions >= 3.8 are supported."
         )
