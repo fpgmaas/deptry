@@ -401,8 +401,9 @@ deptry . --json-output deptry_report.txt
 
 Deptry will automatically detect top level modules names that belong to a
 module in two ways.
-The first is by inspecting the installed packages. The second is by translating
-the package name to a module name (`foo-bar` translates to `foo_bar`).
+The first is by inspecting the installed packages. The second, used as fallback
+for when the package is not installed, is by translating the package name to a
+module name (`Foo-Bar` translates to `foo_bar`).
 
 This however is not always sufficient. A situation may occur where a package is
 not installed because it is optional and unused in the current installation.
