@@ -22,7 +22,7 @@ classifiers = [
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.7,<4.0"
+python = ">=3.8,<4.0"
 chardet = ">=4.0.0"
 click = "^8.0.0"
 importlib-metadata = { version = "*", python = "<=3.7" }
