@@ -3,12 +3,12 @@ from __future__ import annotations
 import logging
 import re
 from contextlib import suppress
+from importlib import metadata
 from typing import TYPE_CHECKING
-
-from deptry.compat import metadata
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
+    from importlib.metadata import Distribution
 
 
 class Dependency:
@@ -36,7 +36,7 @@ class Dependency:
         self.top_levels = self._get_top_levels(name, distribution, module_names)
 
     def _get_top_levels(
-        self, name: str, distribution: metadata.Distribution | None, module_names: Sequence[str] | None
+        self, name: str, distribution: Distribution | None, module_names: Sequence[str] | None
     ) -> set[str]:
         if module_names is not None:
             return set(module_names)
@@ -64,7 +64,7 @@ class Dependency:
         return f"Dependency '{self.name}'{self._string_for_printing()}with top-levels: {self.top_levels}."
 
     @staticmethod
-    def find_distribution(name: str) -> metadata.Distribution | None:
+    def find_distribution(name: str) -> Distribution | None:
         try:
             return metadata.distribution(name)
         except metadata.PackageNotFoundError:
@@ -86,7 +86,7 @@ class Dependency:
             return " "
 
     @staticmethod
-    def _get_top_level_module_names_from_top_level_txt(distribution: metadata.Distribution) -> set[str]:
+    def _get_top_level_module_names_from_top_level_txt(distribution: Distribution) -> set[str]:
         """
         top-level.txt is a metadata file added by setuptools that looks as follows:
 
@@ -105,7 +105,7 @@ class Dependency:
         return {x for x in metadata_top_levels.splitlines() if x}
 
     @staticmethod
-    def _get_top_level_module_names_from_record_file(distribution: metadata.Distribution) -> set[str]:
+    def _get_top_level_module_names_from_record_file(distribution: Distribution) -> set[str]:
         """
         Get the top-level module names from the RECORD file, whose contents usually look as follows:
 

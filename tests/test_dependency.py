@@ -1,8 +1,8 @@
 from __future__ import annotations
 
+from importlib.metadata import PackageNotFoundError
 from unittest.mock import patch
 
-from deptry.compat import metadata
 from deptry.dependency import Dependency
 
 
@@ -88,7 +88,7 @@ def test_not_predefined_and_not_installed() -> None:
     """
 
     with patch("deptry.dependency.metadata.distribution") as mock:
-        mock.side_effect = metadata.PackageNotFoundError
+        mock.side_effect = PackageNotFoundError
         dependency = Dependency("Foo-bar")
 
     assert dependency.name == "Foo-bar"
