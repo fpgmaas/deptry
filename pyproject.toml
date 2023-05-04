@@ -47,7 +47,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.black]
 line-length = 120
-target-version = ["py37"]
+target-version = ["py38"]
 preview = true
 
 [tool.coverage.report]
@@ -117,7 +117,7 @@ ignore_missing = ["tomllib"]
 deptry = "deptry.cli:deptry"
 
 [tool.ruff]
-target-version = "py37"
+target-version = "py38"
 line-length = 120
 fix = true
 select = [
