@@ -100,7 +100,7 @@ class Dependency:
         """
         metadata_top_levels = distribution.read_text("top_level.txt")  # type: ignore[no-untyped-call]
         if metadata_top_levels is None:
-            raise FileNotFoundError("top_levels.txt")
+            raise FileNotFoundError("top_level.txt")
 
         return {x for x in metadata_top_levels.splitlines() if x}
 
