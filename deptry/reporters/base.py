@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 class Reporter(ABC):
     """Base class for all violation reporters."""
 
-    issues: dict[str, list[Violation]]
+    violations: dict[str, list[Violation]]
 
     @abstractmethod
     def report(self) -> None:

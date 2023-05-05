@@ -17,21 +17,27 @@ class TextReporter(Reporter):
         self._log_and_exit()
 
     def _log_and_exit(self) -> None:
-        total_issues_found = sum([len(v) for k, v in self.issues.items()])
-        self._log_total_number_of_issues_found(total_issues_found)
-        if "obsolete" in self.issues and self.issues["obsolete"]:
-            self._log_obsolete_dependencies(self.issues["obsolete"])
-        if "missing" in self.issues and self.issues["missing"]:
-            self._log_missing_dependencies(self.issues["missing"])
-        if "transitive" in self.issues and self.issues["transitive"]:
-            self._log_transitive_dependencies(self.issues["transitive"])
-        if "misplaced_dev" in self.issues and self.issues["misplaced_dev"]:
-            self._log_misplaced_develop_dependencies(self.issues["misplaced_dev"])
-        if total_issues_found > 0:
+        total_violations_found = sum([len(v) for k, v in self.violations.items()])
+
+        self._log_total_number_of_violations_found(total_violations_found)
+
+        if "obsolete" in self.violations and self.violations["obsolete"]:
+            self._log_obsolete_dependencies(self.violations["obsolete"])
+
+        if "missing" in self.violations and self.violations["missing"]:
+            self._log_missing_dependencies(self.violations["missing"])
+
+        if "transitive" in self.violations and self.violations["transitive"]:
+            self._log_transitive_dependencies(self.violations["transitive"])
+
+        if "misplaced_dev" in self.violations and self.violations["misplaced_dev"]:
+            self._log_misplaced_develop_dependencies(self.violations["misplaced_dev"])
+
+        if total_violations_found > 0:
             self._log_additional_info()
 
     @staticmethod
-    def _log_total_number_of_issues_found(number: int) -> None:
+    def _log_total_number_of_violations_found(number: int) -> None:
         if number == 0:
             logging.info("Success! No dependency issues found.")
         elif number == 1:

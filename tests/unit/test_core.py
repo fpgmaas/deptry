@@ -131,24 +131,24 @@ def test__get_stdlib_packages_unsupported(version_info: tuple[int | str, ...]) -
         Core._get_stdlib_modules()
 
 
-def test__exit_with_issues() -> None:
-    issues = {
+def test__exit_with_violations() -> None:
+    violations = {
         "missing": [Violation(MissingDependenciesFinder, Module("foo"))],
         "obsolete": [Violation(ObsoleteDependenciesFinder, Dependency("foo", Path("pyproject.toml")))],
         "transitive": [Violation(TransitiveDependenciesFinder, Module("foo"))],
         "misplaced_dev": [Violation(MisplacedDevDependenciesFinder, Module("foo"))],
     }
     with pytest.raises(SystemExit) as e:
-        Core._exit(issues)
+        Core._exit(violations)
 
     assert e.type == SystemExit
     assert e.value.code == 1
 
 
-def test__exit_without_issues() -> None:
-    issues: dict[str, list[Violation]] = {}
+def test__exit_without_violations() -> None:
+    violations: dict[str, list[Violation]] = {}
     with pytest.raises(SystemExit) as e:
-        Core._exit(issues)
+        Core._exit(violations)
 
     assert e.type == SystemExit
     assert e.value.code == 0

@@ -15,14 +15,14 @@ class JSONReporter(Reporter):
     def report(self) -> None:
         output = {}
 
-        for issue_type, issues in self.issues.items():
+        for issue_type, violations in self.violations.items():
             output[issue_type] = [
                 (
-                    issue.issue.package
-                    if isinstance(issue.issue, Module) and issue.issue_type is TransitiveDependenciesFinder
-                    else issue.issue.name
+                    violation.issue.package
+                    if isinstance(violation.issue, Module) and violation.issue_type is TransitiveDependenciesFinder
+                    else violation.issue.name
                 )
-                for issue in issues
+                for violation in violations
             ]
 
         with open(self.json_output, "w", encoding="utf-8") as f:

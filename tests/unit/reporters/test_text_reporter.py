@@ -19,13 +19,13 @@ if TYPE_CHECKING:
 
 def test_logging_number_multiple(caplog: LogCaptureFixture) -> None:
     with caplog.at_level(logging.INFO):
-        issues = {
+        violations = {
             "missing": [Violation(MissingDependenciesFinder, Module("foo", package="foo_package"))],
             "obsolete": [Violation(ObsoleteDependenciesFinder, Dependency("foo", Path("pyproject.toml")))],
             "transitive": [Violation(TransitiveDependenciesFinder, Module("foo", package="foo_package"))],
             "misplaced_dev": [Violation(MisplacedDevDependenciesFinder, Module("foo", package="foo_package"))],
         }
-        TextReporter(issues).report()
+        TextReporter(violations).report()
 
     assert "There were 4 dependency issues found" in caplog.text
     assert "The project contains obsolete dependencies" in caplog.text
@@ -37,16 +37,16 @@ def test_logging_number_multiple(caplog: LogCaptureFixture) -> None:
 
 def test_logging_number_single(caplog: LogCaptureFixture) -> None:
     with caplog.at_level(logging.INFO):
-        issues = {"missing": [Violation(MissingDependenciesFinder, Module("foo", package="foo_package"))]}
-        TextReporter(issues).report()
+        violations = {"missing": [Violation(MissingDependenciesFinder, Module("foo", package="foo_package"))]}
+        TextReporter(violations).report()
 
     assert "There was 1 dependency issue found" in caplog.text
 
 
 def test_logging_number_none(caplog: LogCaptureFixture) -> None:
     with caplog.at_level(logging.INFO):
-        issues: dict[str, list[Violation]] = {"missing": []}
-        TextReporter(issues).report()
+        violations: dict[str, list[Violation]] = {"missing": []}
+        TextReporter(violations).report()
 
     assert "No dependency issues found" in caplog.text
     assert "There were 4 dependency issues found" not in caplog.text
