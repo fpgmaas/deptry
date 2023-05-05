@@ -50,19 +50,22 @@ class PoetryDependencyGetter(DependencyGetter):
 
         return self._get_dependencies(dependencies, self.package_module_name_map)
 
-    @classmethod
     def _get_dependencies(
-        cls, poetry_dependencies: dict[str, Any], package_module_name_map: Mapping[str, Sequence[str]]
+        self, poetry_dependencies: dict[str, Any], package_module_name_map: Mapping[str, Sequence[str]]
     ) -> list[Dependency]:
         dependencies = []
         for dep, spec in poetry_dependencies.items():
             # dep is the dependency name, spec is the version specification, e.g. "^0.2.2" or {"*", optional = true}
             if dep != "python":
-                optional = cls._is_optional(spec)
-                conditional = cls._is_conditional(spec)
+                optional = self._is_optional(spec)
+                conditional = self._is_conditional(spec)
                 dependencies.append(
                     Dependency(
-                        dep, conditional=conditional, optional=optional, module_names=package_module_name_map.get(dep)
+                        dep,
+                        self.config,
+                        conditional=conditional,
+                        optional=optional,
+                        module_names=package_module_name_map.get(dep),
                     )
                 )
 

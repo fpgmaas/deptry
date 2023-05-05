@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from collections.abc import Sequence
     from importlib.metadata import Distribution
+    from pathlib import Path
 
 
 class Dependency:
@@ -20,7 +21,12 @@ class Dependency:
     """
 
     def __init__(
-        self, name: str, conditional: bool = False, optional: bool = False, module_names: Sequence[str] | None = None
+        self,
+        name: str,
+        definition_file: Path,
+        conditional: bool = False,
+        optional: bool = False,
+        module_names: Sequence[str] | None = None,
     ) -> None:
         """
         Args:
@@ -30,6 +36,7 @@ class Dependency:
         distribution = self.find_distribution(name)
 
         self.name = name
+        self.definition_file = definition_file
         self.is_conditional = conditional
         self.is_optional = optional
         self.found = distribution is not None

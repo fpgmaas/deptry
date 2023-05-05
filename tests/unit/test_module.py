@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from pathlib import Path
+
 from deptry.dependency import Dependency
 from deptry.module import ModuleBuilder
 
@@ -13,7 +15,7 @@ def test_simple_import() -> None:
 
 def test_top_level() -> None:
     # Test if no error is raised, argument is accepted.
-    dependency = Dependency("beautifulsoup4")
+    dependency = Dependency("beautifulsoup4", Path("pyproject.toml"))
     dependency.top_levels = {"bs4"}
     module = ModuleBuilder("bs4", {"foo", "bar"}, frozenset(), [dependency]).build()
     assert module.package is None

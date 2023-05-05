@@ -5,6 +5,7 @@ import logging
 import os
 import re
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Match
 
 from deptry.dependency import Dependency
@@ -55,13 +56,13 @@ class RequirementsTxtDependencyGetter(DependencyGetter):
             data = f.readlines()
 
         for line in data:
-            dependency = self._extract_dependency_from_line(line)
+            dependency = self._extract_dependency_from_line(line, Path(file_name))
             if dependency:
                 dependencies.append(dependency)
 
         return dependencies
 
-    def _extract_dependency_from_line(self, line: str) -> Dependency | None:
+    def _extract_dependency_from_line(self, line: str, file_path: Path) -> Dependency | None:
         """
         Extract a dependency from a single line of a requirements.txt file.
         """
@@ -74,6 +75,7 @@ class RequirementsTxtDependencyGetter(DependencyGetter):
             conditional = self._check_if_dependency_is_conditional(line)
             return Dependency(
                 name=name,
+                definition_file=file_path,
                 optional=optional,
                 conditional=conditional,
                 module_names=self.package_module_name_map.get(name),
