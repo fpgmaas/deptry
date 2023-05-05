@@ -5,15 +5,17 @@ from pathlib import Path
 from deptry.dependency import Dependency
 from deptry.issues_finder.missing import MissingDependenciesFinder
 from deptry.module import ModuleBuilder
+from deptry.violation import Violation
 
 
 def test_simple() -> None:
     dependencies: list[Dependency] = []
-    modules = [ModuleBuilder("foobar", {"foo"}, frozenset(), dependencies).build()]
+    module_foobar = ModuleBuilder("foobar", {"foo"}, frozenset(), dependencies).build()
+    modules = [module_foobar]
 
     deps = MissingDependenciesFinder(imported_modules=modules, dependencies=dependencies).find()
 
-    assert deps == ["foobar"]
+    assert deps == [Violation(MissingDependenciesFinder, module_foobar)]
 
 
 def test_local_module() -> None:

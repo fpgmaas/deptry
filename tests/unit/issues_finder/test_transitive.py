@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 from deptry.issues_finder.transitive import TransitiveDependenciesFinder
 from deptry.module import ModuleBuilder
+from deptry.violation import Violation
 
 if TYPE_CHECKING:
     from deptry.dependency import Dependency
@@ -14,11 +15,12 @@ def test_simple() -> None:
     black is in testing environment which requires platformdirs, so platformdirs should be found as transitive.
     """
     dependencies: list[Dependency] = []
-    modules = [ModuleBuilder("platformdirs", {"foo"}, frozenset(), dependencies).build()]
+    module_platformdirs = ModuleBuilder("platformdirs", {"foo"}, frozenset(), dependencies).build()
+    modules = [module_platformdirs]
 
     deps = TransitiveDependenciesFinder(imported_modules=modules, dependencies=dependencies).find()
 
-    assert deps == ["platformdirs"]
+    assert deps == [Violation(TransitiveDependenciesFinder, module_platformdirs)]
 
 
 def test_simple_with_ignore() -> None:

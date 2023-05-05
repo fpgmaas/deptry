@@ -8,8 +8,15 @@ from unittest import mock
 import pytest
 
 from deptry.core import Core
+from deptry.dependency import Dependency
 from deptry.exceptions import UnsupportedPythonVersionError
+from deptry.issues_finder.misplaced_dev import MisplacedDevDependenciesFinder
+from deptry.issues_finder.missing import MissingDependenciesFinder
+from deptry.issues_finder.obsolete import ObsoleteDependenciesFinder
+from deptry.issues_finder.transitive import TransitiveDependenciesFinder
+from deptry.module import Module
 from deptry.stdlibs import STDLIBS_PYTHON
+from deptry.violation import Violation
 from tests.utils import create_files, run_within_dir
 
 
@@ -126,10 +133,10 @@ def test__get_stdlib_packages_unsupported(version_info: tuple[int | str, ...]) -
 
 def test__exit_with_issues() -> None:
     issues = {
-        "missing": ["foo"],
-        "obsolete": ["foo"],
-        "transitive": ["foo"],
-        "misplaced_dev": ["foo"],
+        "missing": [Violation(MissingDependenciesFinder, Module("foo"))],
+        "obsolete": [Violation(ObsoleteDependenciesFinder, Dependency("foo", Path("pyproject.toml")))],
+        "transitive": [Violation(TransitiveDependenciesFinder, Module("foo"))],
+        "misplaced_dev": [Violation(MisplacedDevDependenciesFinder, Module("foo"))],
     }
     with pytest.raises(SystemExit) as e:
         Core._exit(issues)
@@ -139,7 +146,7 @@ def test__exit_with_issues() -> None:
 
 
 def test__exit_without_issues() -> None:
-    issues: dict[str, list[str]] = {}
+    issues: dict[str, list[Violation]] = {}
     with pytest.raises(SystemExit) as e:
         Core._exit(issues)
 
