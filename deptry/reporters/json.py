@@ -3,9 +3,8 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass
 
-from deptry.issues_finder.transitive import TransitiveDependenciesFinder
-from deptry.module import Module
 from deptry.reporters.base import Reporter
+from deptry.violations import TransitiveDependencyViolation
 
 
 @dataclass
@@ -19,7 +18,7 @@ class JSONReporter(Reporter):
             output[issue_type] = [
                 (
                     violation.issue.package
-                    if isinstance(violation.issue, Module) and violation.issue_type is TransitiveDependenciesFinder
+                    if isinstance(violation, TransitiveDependencyViolation)
                     else violation.issue.name
                 )
                 for violation in violations

@@ -3,6 +3,7 @@ from __future__ import annotations
 import re
 import sys
 from pathlib import Path
+from typing import TYPE_CHECKING
 from unittest import mock
 
 import pytest
@@ -10,14 +11,18 @@ import pytest
 from deptry.core import Core
 from deptry.dependency import Dependency
 from deptry.exceptions import UnsupportedPythonVersionError
-from deptry.issues_finder.misplaced_dev import MisplacedDevDependenciesFinder
-from deptry.issues_finder.missing import MissingDependenciesFinder
-from deptry.issues_finder.obsolete import ObsoleteDependenciesFinder
-from deptry.issues_finder.transitive import TransitiveDependenciesFinder
 from deptry.module import Module
 from deptry.stdlibs import STDLIBS_PYTHON
-from deptry.violation import Violation
+from deptry.violations import (
+    MisplacedDevDependencyViolation,
+    MissingDependencyViolation,
+    ObsoleteDependencyViolation,
+    TransitiveDependencyViolation,
+)
 from tests.utils import create_files, run_within_dir
+
+if TYPE_CHECKING:
+    from deptry.violations import Violation
 
 
 @pytest.mark.parametrize(
@@ -132,11 +137,11 @@ def test__get_stdlib_packages_unsupported(version_info: tuple[int | str, ...]) -
 
 
 def test__exit_with_violations() -> None:
-    violations = {
-        "missing": [Violation(MissingDependenciesFinder, Module("foo"))],
-        "obsolete": [Violation(ObsoleteDependenciesFinder, Dependency("foo", Path("pyproject.toml")))],
-        "transitive": [Violation(TransitiveDependenciesFinder, Module("foo"))],
-        "misplaced_dev": [Violation(MisplacedDevDependenciesFinder, Module("foo"))],
+    violations: dict[str, list[Violation]] = {
+        "missing": [MissingDependencyViolation(Module("foo"))],
+        "obsolete": [ObsoleteDependencyViolation(Dependency("foo", Path("pyproject.toml")))],
+        "transitive": [TransitiveDependencyViolation(Module("foo"))],
+        "misplaced_dev": [MisplacedDevDependencyViolation(Module("foo"))],
     }
     with pytest.raises(SystemExit) as e:
         Core._exit(violations)

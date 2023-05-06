@@ -5,10 +5,11 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from deptry.issues_finder.base import IssuesFinder
-from deptry.violation import Violation
+from deptry.violations import MisplacedDevDependencyViolation
 
 if TYPE_CHECKING:
     from deptry.module import Module
+    from deptry.violations import Violation
 
 
 @dataclass
@@ -27,14 +28,14 @@ class MisplacedDevDependenciesFinder(IssuesFinder):
         In that case, it's added under module.dev_top_levels. _get_package_name is added for these edge-cases.
         """
         logging.debug("\nScanning for incorrect development dependencies...")
-        misplaced_dev_dependencies = []
+        misplaced_dev_dependencies: list[Violation] = []
 
         for module in self.imported_modules:
             logging.debug(f"Scanning module {module.name}...")
             corresponding_package_name = self._get_package_name(module)
 
             if corresponding_package_name and self._is_development_dependency(module, corresponding_package_name):
-                misplaced_dev_dependencies.append(Violation(self.__class__, module))
+                misplaced_dev_dependencies.append(MisplacedDevDependencyViolation(module))
 
         return misplaced_dev_dependencies
 

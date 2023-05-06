@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from deptry.violation import Violation
+    from deptry.violations import Violation
 
 
 @dataclass

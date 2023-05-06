@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from deptry.issues_finder.transitive import TransitiveDependenciesFinder
 from deptry.module import ModuleBuilder
-from deptry.violation import Violation
+from deptry.violations import TransitiveDependencyViolation
 
 if TYPE_CHECKING:
     from deptry.dependency import Dependency
@@ -20,7 +20,7 @@ def test_simple() -> None:
 
     deps = TransitiveDependenciesFinder(imported_modules=modules, dependencies=dependencies).find()
 
-    assert deps == [Violation(TransitiveDependenciesFinder, module_platformdirs)]
+    assert deps == [TransitiveDependencyViolation(module_platformdirs)]
 
 
 def test_simple_with_ignore() -> None:

@@ -28,7 +28,7 @@ if TYPE_CHECKING:
     from deptry.dependency import Dependency
     from deptry.dependency_getter.base import DependenciesExtract
     from deptry.module import Module
-    from deptry.violation import Violation
+    from deptry.violations import Violation
 
 
 @dataclass

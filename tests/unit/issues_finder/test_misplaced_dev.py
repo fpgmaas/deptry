@@ -5,7 +5,7 @@ from pathlib import Path
 from deptry.dependency import Dependency
 from deptry.issues_finder.misplaced_dev import MisplacedDevDependenciesFinder
 from deptry.module import Module
-from deptry.violation import Violation
+from deptry.violations import MisplacedDevDependencyViolation
 
 
 def test_simple() -> None:
@@ -15,4 +15,4 @@ def test_simple() -> None:
 
     deps = MisplacedDevDependenciesFinder(imported_modules=modules, dependencies=dependencies).find()
 
-    assert deps == [Violation(MisplacedDevDependenciesFinder, module_foo)]
+    assert deps == [MisplacedDevDependencyViolation(module_foo)]

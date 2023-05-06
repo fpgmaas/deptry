@@ -5,7 +5,7 @@ from pathlib import Path
 from deptry.dependency import Dependency
 from deptry.issues_finder.obsolete import ObsoleteDependenciesFinder
 from deptry.module import ModuleBuilder
-from deptry.violation import Violation
+from deptry.violations import ObsoleteDependencyViolation
 
 
 def test_simple() -> None:
@@ -15,7 +15,7 @@ def test_simple() -> None:
 
     deps = ObsoleteDependenciesFinder(imported_modules=modules, dependencies=dependencies).find()
 
-    assert deps == [Violation(ObsoleteDependenciesFinder, dependency_toml)]
+    assert deps == [ObsoleteDependencyViolation(dependency_toml)]
 
 
 def test_simple_with_ignore() -> None:

@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from deptry.dependency import Dependency
     from deptry.module import Module
-    from deptry.violation import Violation
+    from deptry.violations import Violation
 
 
 @dataclass

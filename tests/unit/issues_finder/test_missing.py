@@ -5,7 +5,7 @@ from pathlib import Path
 from deptry.dependency import Dependency
 from deptry.issues_finder.missing import MissingDependenciesFinder
 from deptry.module import ModuleBuilder
-from deptry.violation import Violation
+from deptry.violations import MissingDependencyViolation
 
 
 def test_simple() -> None:
@@ -15,7 +15,7 @@ def test_simple() -> None:
 
     deps = MissingDependenciesFinder(imported_modules=modules, dependencies=dependencies).find()
 
-    assert deps == [Violation(MissingDependenciesFinder, module_foobar)]
+    assert deps == [MissingDependencyViolation(module_foobar)]
 
 
 def test_local_module() -> None:

@@ -8,7 +8,7 @@ from deptry.module import Module
 from deptry.reporters.base import Reporter
 
 if TYPE_CHECKING:
-    from deptry.violation import Violation
+    from deptry.violations import Violation
 
 
 @dataclass

@@ -5,10 +5,11 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from deptry.issues_finder.base import IssuesFinder
-from deptry.violation import Violation
+from deptry.violations import TransitiveDependencyViolation
 
 if TYPE_CHECKING:
     from deptry.module import Module
+    from deptry.violations import Violation
 
 
 @dataclass
@@ -26,14 +27,14 @@ class TransitiveDependenciesFinder(IssuesFinder):
 
     def find(self) -> list[Violation]:
         logging.debug("\nScanning for transitive dependencies...")
-        transitive_dependencies = []
+        transitive_dependencies: list[Violation] = []
 
         for module in self.imported_modules:
             logging.debug(f"Scanning module {module.name}...")
 
             if self._is_transitive(module):
                 # `self._is_transitive` only returns `True` if the package is not None.
-                transitive_dependencies.append(Violation(self.__class__, module))
+                transitive_dependencies.append(TransitiveDependencyViolation(module))
 
         return transitive_dependencies
 

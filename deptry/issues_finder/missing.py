@@ -5,10 +5,11 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from deptry.issues_finder.base import IssuesFinder
-from deptry.violation import Violation
+from deptry.violations import MissingDependencyViolation
 
 if TYPE_CHECKING:
     from deptry.module import Module
+    from deptry.violations import Violation
 
 
 @dataclass
@@ -19,13 +20,13 @@ class MissingDependenciesFinder(IssuesFinder):
 
     def find(self) -> list[Violation]:
         logging.debug("\nScanning for missing dependencies...")
-        missing_dependencies = []
+        missing_dependencies: list[Violation] = []
 
         for module in self.imported_modules:
             logging.debug(f"Scanning module {module.name}...")
 
             if self._is_missing(module):
-                missing_dependencies.append(Violation(self.__class__, module))
+                missing_dependencies.append(MissingDependencyViolation(module))
 
         return missing_dependencies
 

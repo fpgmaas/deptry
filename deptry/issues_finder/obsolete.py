@@ -5,10 +5,11 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from deptry.issues_finder.base import IssuesFinder
-from deptry.violation import Violation
+from deptry.violations import ObsoleteDependencyViolation
 
 if TYPE_CHECKING:
     from deptry.dependency import Dependency
+    from deptry.violations import Violation
 
 
 @dataclass
@@ -25,13 +26,13 @@ class ObsoleteDependenciesFinder(IssuesFinder):
 
     def find(self) -> list[Violation]:
         logging.debug("\nScanning for obsolete dependencies...")
-        obsolete_dependencies = []
+        obsolete_dependencies: list[Violation] = []
 
         for dependency in self.dependencies:
             logging.debug(f"Scanning module {dependency.name}...")
 
             if self._is_obsolete(dependency):
-                obsolete_dependencies.append(Violation(self.__class__, dependency))
+                obsolete_dependencies.append(ObsoleteDependencyViolation(dependency))
 
         return obsolete_dependencies
 
