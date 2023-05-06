@@ -96,7 +96,7 @@ show_error_codes = true
 module = [
     "deptry.core",
     "scripts.generate_stdlibs",
-    "tests.test_core",
+    "tests.unit.test_core",
 ]
 warn_unused_ignores = false
 

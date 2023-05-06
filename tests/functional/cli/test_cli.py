@@ -2,32 +2,21 @@ from __future__ import annotations
 
 import os
 import shlex
-import shutil
 import subprocess
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-import pytest
 from click.testing import CliRunner
 
 from deptry.cli import deptry
 from tests.utils import get_issues_report, run_within_dir
 
 if TYPE_CHECKING:
-    from _pytest.tmpdir import TempPathFactory
+    from tests.functional.types import ToolSpecificProjectBuilder
 
 
-@pytest.fixture(scope="session")
-def dir_with_venv_installed(tmp_path_factory: TempPathFactory) -> Path:
-    tmp_path_proj = tmp_path_factory.getbasetemp() / "example_project"
-    shutil.copytree("tests/data/example_project", tmp_path_proj)
-    with run_within_dir(tmp_path_proj):
-        assert subprocess.check_call(shlex.split("poetry install --no-interaction --no-root")) == 0
-    return tmp_path_proj
-
-
-def test_cli_returns_error(dir_with_venv_installed: Path) -> None:
-    with run_within_dir(dir_with_venv_installed):
+def test_cli_returns_error(poetry_project_builder: ToolSpecificProjectBuilder) -> None:
+    with run_within_dir(poetry_project_builder("example_project")):
         result = CliRunner().invoke(deptry, ". -o report.json")
 
         assert result.exit_code == 1
@@ -39,8 +28,8 @@ def test_cli_returns_error(dir_with_venv_installed: Path) -> None:
         }
 
 
-def test_cli_ignore_notebooks(dir_with_venv_installed: Path) -> None:
-    with run_within_dir(dir_with_venv_installed):
+def test_cli_ignore_notebooks(project_builder: ToolSpecificProjectBuilder) -> None:
+    with run_within_dir(project_builder("example_project", "poetry install --no-interaction --no-root")):
         result = CliRunner().invoke(deptry, ". --ignore-notebooks -o report.json")
 
         assert result.exit_code == 1
@@ -52,22 +41,22 @@ def test_cli_ignore_notebooks(dir_with_venv_installed: Path) -> None:
         }
 
 
-def test_cli_ignore_flags(dir_with_venv_installed: Path) -> None:
-    with run_within_dir(dir_with_venv_installed):
+def test_cli_ignore_flags(project_builder: ToolSpecificProjectBuilder) -> None:
+    with run_within_dir(project_builder("example_project", "poetry install --no-interaction --no-root")):
         result = CliRunner().invoke(deptry, ". --ignore-obsolete isort,pkginfo,requests -im white -id black")
 
         assert result.exit_code == 0
 
 
-def test_cli_skip_flags(dir_with_venv_installed: Path) -> None:
-    with run_within_dir(dir_with_venv_installed):
+def test_cli_skip_flags(project_builder: ToolSpecificProjectBuilder) -> None:
+    with run_within_dir(project_builder("example_project", "poetry install --no-interaction --no-root")):
         result = CliRunner().invoke(deptry, ". --skip-obsolete --skip-missing --skip-misplaced-dev --skip-transitive")
 
         assert result.exit_code == 0
 
 
-def test_cli_exclude(dir_with_venv_installed: Path) -> None:
-    with run_within_dir(dir_with_venv_installed):
+def test_cli_exclude(project_builder: ToolSpecificProjectBuilder) -> None:
+    with run_within_dir(project_builder("example_project", "poetry install --no-interaction --no-root")):
         result = CliRunner().invoke(deptry, ". --exclude src/notebook.ipynb -o report.json")
 
         assert result.exit_code == 1
@@ -79,8 +68,8 @@ def test_cli_exclude(dir_with_venv_installed: Path) -> None:
         }
 
 
-def test_cli_extend_exclude(dir_with_venv_installed: Path) -> None:
-    with run_within_dir(dir_with_venv_installed):
+def test_cli_extend_exclude(project_builder: ToolSpecificProjectBuilder) -> None:
+    with run_within_dir(project_builder("example_project", "poetry install --no-interaction --no-root")):
         result = CliRunner().invoke(deptry, ". -ee src/notebook.ipynb -o report.json")
 
         assert result.exit_code == 1
@@ -92,8 +81,8 @@ def test_cli_extend_exclude(dir_with_venv_installed: Path) -> None:
         }
 
 
-def test_cli_known_first_party(dir_with_venv_installed: Path) -> None:
-    with run_within_dir(dir_with_venv_installed):
+def test_cli_known_first_party(project_builder: ToolSpecificProjectBuilder) -> None:
+    with run_within_dir(project_builder("example_project", "poetry install --no-interaction --no-root")):
         result = CliRunner().invoke(deptry, ". --known-first-party white -o report.json")
 
         assert result.exit_code == 1
@@ -105,8 +94,8 @@ def test_cli_known_first_party(dir_with_venv_installed: Path) -> None:
         }
 
 
-def test_cli_not_verbose(dir_with_venv_installed: Path) -> None:
-    with run_within_dir(dir_with_venv_installed):
+def test_cli_not_verbose(project_builder: ToolSpecificProjectBuilder) -> None:
+    with run_within_dir(project_builder("example_project", "poetry install --no-interaction --no-root")):
         result = subprocess.run(shlex.split("poetry run deptry . -o report.json"), capture_output=True, text=True)
 
         assert result.returncode == 1
@@ -119,8 +108,8 @@ def test_cli_not_verbose(dir_with_venv_installed: Path) -> None:
         }
 
 
-def test_cli_verbose(dir_with_venv_installed: Path) -> None:
-    with run_within_dir(dir_with_venv_installed):
+def test_cli_verbose(project_builder: ToolSpecificProjectBuilder) -> None:
+    with run_within_dir(project_builder("example_project", "poetry install --no-interaction --no-root")):
         result = subprocess.run(
             shlex.split("poetry run deptry . --verbose -o report.json"), capture_output=True, text=True
         )
@@ -135,8 +124,8 @@ def test_cli_verbose(dir_with_venv_installed: Path) -> None:
         }
 
 
-def test_cli_with_not_json_output(dir_with_venv_installed: Path) -> None:
-    with run_within_dir(dir_with_venv_installed):
+def test_cli_with_not_json_output(project_builder: ToolSpecificProjectBuilder) -> None:
+    with run_within_dir(project_builder("example_project", "poetry install --no-interaction --no-root")):
         # Remove previously generated `report.json`.
         os.remove("report.json")
 
@@ -155,8 +144,8 @@ def test_cli_with_not_json_output(dir_with_venv_installed: Path) -> None:
         )
 
 
-def test_cli_with_json_output(dir_with_venv_installed: Path) -> None:
-    with run_within_dir(dir_with_venv_installed):
+def test_cli_with_json_output(project_builder: ToolSpecificProjectBuilder) -> None:
+    with run_within_dir(project_builder("example_project", "poetry install --no-interaction --no-root")):
         result = subprocess.run(shlex.split("poetry run deptry . -o deptry.json"), capture_output=True, text=True)
 
         # Assert that we still write to console when generating a JSON report.
