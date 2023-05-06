@@ -38,7 +38,7 @@ pytest-cov = "4.0.0"
 types-chardet = "5.0.4.4"
 
 [tool.poetry.group.docs.dependencies]
-mkdocs = "1.4.2"
+mkdocs = "1.4.3"
 mkdocs-material = "9.1.9"
 
 [build-system]
