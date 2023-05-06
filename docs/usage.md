@@ -375,6 +375,59 @@ deptry . --known-first-party bar --known-first-party foo
 Write the detected issues to a JSON file. This will write the following kind of output:
 
 ```json
+[
+     {
+         "error": {
+             "code": "DEP002",
+             "message": "uvicorn defined as a dependency but not used in the codebase"
+         },
+         "module": "uvicorn",
+         "location": {
+             "file": "pyproject.toml",
+             "line": null,
+             "column": null
+         }
+     },
+     {
+         "error": {
+             "code": "DEP002",
+             "message": "uvloop defined as a dependency but not used in the codebase"
+         },
+         "module": "uvloop",
+         "location": {
+             "file": "pyproject.toml",
+             "line": null,
+             "column": null
+         }
+     },
+     {
+         "error": {
+             "code": "DEP004",
+             "message": "black imported but declared as a dev dependency"
+         },
+         "module": "black",
+         "location": {
+             "file": "src/main.py",
+             "line": 4,
+             "column": 0
+         }
+     },
+     {
+         "error": {
+             "code": "DEP003",
+             "message": "httpx imported but it is a transitive dependency"
+         },
+         "module": "httpx",
+         "location": {
+             "file": "src/main.py",
+             "line": 6,
+             "column": 0
+         }
+     }
+]
+```
+
+```json
 {
     "obsolete": ["uvicorn", "uvloop"],
     "missing": [],
