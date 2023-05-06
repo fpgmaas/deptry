@@ -16,7 +16,7 @@ from deptry.issues_finder.misplaced_dev import MisplacedDevDependenciesFinder
 from deptry.issues_finder.missing import MissingDependenciesFinder
 from deptry.issues_finder.obsolete import ObsoleteDependenciesFinder
 from deptry.issues_finder.transitive import TransitiveDependenciesFinder
-from deptry.module import ModuleBuilder
+from deptry.module import ModuleBuilder, ModuleLocations
 from deptry.python_file_finder import PythonFileFinder
 from deptry.reporters import JSONReporter, TextReporter
 from deptry.stdlibs import STDLIBS_PYTHON
@@ -27,7 +27,6 @@ if TYPE_CHECKING:
 
     from deptry.dependency import Dependency
     from deptry.dependency_getter.base import DependenciesExtract
-    from deptry.module import Module
     from deptry.violations import Violation
 
 
@@ -68,19 +67,26 @@ class Core:
         local_modules = self._get_local_modules()
         stdlib_modules = self._get_stdlib_modules()
 
-        imported_modules = [
-            ModuleBuilder(
-                mod,
-                local_modules,
-                stdlib_modules,
-                dependencies_extract.dependencies,
-                dependencies_extract.dev_dependencies,
-            ).build()
-            for mod in get_imported_modules_for_list_of_files(all_python_files)
+        imported_modules_with_locations = [
+            ModuleLocations(
+                ModuleBuilder(
+                    module,
+                    local_modules,
+                    stdlib_modules,
+                    dependencies_extract.dependencies,
+                    dependencies_extract.dev_dependencies,
+                ).build(),
+                locations,
+            )
+            for module, locations in get_imported_modules_for_list_of_files(all_python_files).items()
         ]
-        imported_modules = [mod for mod in imported_modules if not mod.standard_library]
+        imported_modules_with_locations = [
+            module_with_locations
+            for module_with_locations in imported_modules_with_locations
+            if not module_with_locations.module.standard_library
+        ]
 
-        violations = self._find_violations(imported_modules, dependencies_extract.dependencies)
+        violations = self._find_violations(imported_modules_with_locations, dependencies_extract.dependencies)
         TextReporter(violations).report()
 
         if self.json_output:
@@ -89,25 +95,33 @@ class Core:
         self._exit(violations)
 
     def _find_violations(
-        self, imported_modules: list[Module], dependencies: list[Dependency]
-    ) -> dict[str, list[Violation]]:
-        result = {}
+        self, imported_modules_with_locations: list[ModuleLocations], dependencies: list[Dependency]
+    ) -> list[Violation]:
+        result = []
 
         if not self.skip_obsolete:
-            result["obsolete"] = ObsoleteDependenciesFinder(imported_modules, dependencies, self.ignore_obsolete).find()
+            result.extend(
+                ObsoleteDependenciesFinder(imported_modules_with_locations, dependencies, self.ignore_obsolete).find()
+            )
 
         if not self.skip_missing:
-            result["missing"] = MissingDependenciesFinder(imported_modules, dependencies, self.ignore_missing).find()
+            result.extend(
+                MissingDependenciesFinder(imported_modules_with_locations, dependencies, self.ignore_missing).find()
+            )
 
         if not self.skip_transitive:
-            result["transitive"] = TransitiveDependenciesFinder(
-                imported_modules, dependencies, self.ignore_transitive
-            ).find()
+            result.extend(
+                TransitiveDependenciesFinder(
+                    imported_modules_with_locations, dependencies, self.ignore_transitive
+                ).find()
+            )
 
         if not self.skip_misplaced_dev:
-            result["misplaced_dev"] = MisplacedDevDependenciesFinder(
-                imported_modules, dependencies, self.ignore_misplaced_dev
-            ).find()
+            result.extend(
+                MisplacedDevDependenciesFinder(
+                    imported_modules_with_locations, dependencies, self.ignore_misplaced_dev
+                ).find()
+            )
 
         return result
 
@@ -161,5 +175,5 @@ class Core:
         logging.debug("")
 
     @staticmethod
-    def _exit(violations: dict[str, list[Violation]]) -> None:
-        sys.exit(int(any(violations.values())))
+    def _exit(violations: list[Violation]) -> None:
+        sys.exit(bool(violations))

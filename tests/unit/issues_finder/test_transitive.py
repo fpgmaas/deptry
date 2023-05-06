@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+from pathlib import Path
 from typing import TYPE_CHECKING
 
+from deptry.imports.location import Location
 from deptry.issues_finder.transitive import TransitiveDependenciesFinder
-from deptry.module import ModuleBuilder
+from deptry.module import ModuleBuilder, ModuleLocations
 from deptry.violations import TransitiveDependencyViolation
 
 if TYPE_CHECKING:
@@ -15,20 +17,23 @@ def test_simple() -> None:
     black is in testing environment which requires platformdirs, so platformdirs should be found as transitive.
     """
     dependencies: list[Dependency] = []
+
+    module_platformdirs_locations = [Location(Path("foo.py"), 1, 2), Location(Path("bar.py"), 3, 4)]
     module_platformdirs = ModuleBuilder("platformdirs", {"foo"}, frozenset(), dependencies).build()
-    modules = [module_platformdirs]
 
-    deps = TransitiveDependenciesFinder(imported_modules=modules, dependencies=dependencies).find()
+    modules_locations = [ModuleLocations(module_platformdirs, module_platformdirs_locations)]
 
-    assert deps == [TransitiveDependencyViolation(module_platformdirs)]
+    assert TransitiveDependenciesFinder(modules_locations, dependencies).find() == [
+        TransitiveDependencyViolation(module_platformdirs, location) for location in module_platformdirs_locations
+    ]
 
 
 def test_simple_with_ignore() -> None:
     dependencies: list[Dependency] = []
-    modules = [ModuleBuilder("foobar", {"foo"}, frozenset(), dependencies).build()]
+    modules_locations = [
+        ModuleLocations(
+            ModuleBuilder("foobar", {"foo"}, frozenset(), dependencies).build(), [Location(Path("foo.py"), 1, 2)]
+        )
+    ]
 
-    deps = TransitiveDependenciesFinder(
-        imported_modules=modules, dependencies=dependencies, ignored_modules=("foobar",)
-    ).find()
-
-    assert deps == []
+    assert TransitiveDependenciesFinder(modules_locations, dependencies, ignored_modules=("foobar",)).find() == []

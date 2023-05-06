@@ -29,12 +29,15 @@ class TransitiveDependenciesFinder(IssuesFinder):
         logging.debug("\nScanning for transitive dependencies...")
         transitive_dependencies: list[Violation] = []
 
-        for module in self.imported_modules:
+        for module_with_locations in self.imported_modules_with_locations:
+            module = module_with_locations.module
+
             logging.debug(f"Scanning module {module.name}...")
 
             if self._is_transitive(module):
                 # `self._is_transitive` only returns `True` if the package is not None.
-                transitive_dependencies.append(TransitiveDependencyViolation(module))
+                for location in module_with_locations.locations:
+                    transitive_dependencies.append(TransitiveDependencyViolation(module, location))
 
         return transitive_dependencies
 
