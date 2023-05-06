@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from pathlib import Path
+
 from deptry.dependency import Dependency
 from deptry.issues_finder.missing import MissingDependenciesFinder
 from deptry.module import ModuleBuilder
@@ -39,7 +41,7 @@ def test_no_error() -> None:
     This should run without an error, even though `foo` is not installed.
     """
 
-    dependencies = [Dependency("foo")]
+    dependencies = [Dependency("foo", Path("pyproject.toml"))]
     module = ModuleBuilder("foo", {"bar"}, frozenset(), dependencies).build()
 
     deps = MissingDependenciesFinder(imported_modules=[module], dependencies=dependencies).find()

@@ -56,9 +56,8 @@ class PEP621DependencyGetter(DependencyGetter):
             for group, dependencies in pyproject_data["project"].get("optional-dependencies", {}).items()
         }
 
-    @classmethod
     def _extract_pep_508_dependencies(
-        cls, dependencies: list[str], package_module_name_map: Mapping[str, Sequence[str]]
+        self, dependencies: list[str], package_module_name_map: Mapping[str, Sequence[str]]
     ) -> list[Dependency]:
         """
         Given a list of dependency specifications (e.g. "django>2.1; os_name != 'nt'"), convert them to Dependency objects.
@@ -67,13 +66,14 @@ class PEP621DependencyGetter(DependencyGetter):
 
         for spec in dependencies:
             # An example of a spec is `"tomli>=1.1.0; python_version < \"3.11\""`
-            name = cls._find_dependency_name_in(spec)
+            name = self._find_dependency_name_in(spec)
             if name:
                 extracted_dependencies.append(
                     Dependency(
                         name,
-                        conditional=cls._is_conditional(spec),
-                        optional=cls._is_optional(spec),
+                        self.config,
+                        conditional=self._is_conditional(spec),
+                        optional=self._is_optional(spec),
                         module_names=package_module_name_map.get(name),
                     )
                 )
