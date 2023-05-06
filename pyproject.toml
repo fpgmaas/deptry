@@ -112,6 +112,7 @@ ignore_missing = ["tomllib"]
 deptry = "deptry.cli:deptry"
 
 [tool.pytest.ini_options]
+addopts = "--doctest-modules"
 norecursedirs = ["data*"]
 
 [tool.ruff]
