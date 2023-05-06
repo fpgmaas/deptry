@@ -1,17 +1,17 @@
 from __future__ import annotations
 
 import logging
+from dataclasses import dataclass
+
+from deptry.reporters.base import Reporter
 
 
-class ResultLogger:
-    """
-    Display the issues to the user, and return exit-status 0 or 1 depending on if any issues were found.
-    """
+@dataclass
+class TextReporter(Reporter):
+    def report(self) -> None:
+        self._log_and_exit()
 
-    def __init__(self, issues: dict[str, list[str]]) -> None:
-        self.issues = issues
-
-    def log_and_exit(self) -> None:
+    def _log_and_exit(self) -> None:
         total_issues_found = sum([len(v) for k, v in self.issues.items()])
         self._log_total_number_of_issues_found(total_issues_found)
         if "obsolete" in self.issues and self.issues["obsolete"]:

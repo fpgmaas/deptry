@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from typing import TYPE_CHECKING
 
-from deptry.json_writer import JsonWriter
+from deptry.reporters import JSONReporter
 from tests.utils import run_within_dir
 
 if TYPE_CHECKING:
@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 def test_simple(tmp_path: Path) -> None:
     with run_within_dir(tmp_path):
-        JsonWriter(json_output="output.json").write(issues={"one": ["two"], "three": ["four"]})
+        JSONReporter({"one": ["two"], "three": ["four"]}, "output.json").report()
 
         with open("output.json") as f:
             data = json.load(f)

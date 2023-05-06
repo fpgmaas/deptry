@@ -16,10 +16,9 @@ from deptry.issues_finder.misplaced_dev import MisplacedDevDependenciesFinder
 from deptry.issues_finder.missing import MissingDependenciesFinder
 from deptry.issues_finder.obsolete import ObsoleteDependenciesFinder
 from deptry.issues_finder.transitive import TransitiveDependenciesFinder
-from deptry.json_writer import JsonWriter
 from deptry.module import ModuleBuilder
 from deptry.python_file_finder import PythonFileFinder
-from deptry.result_logger import ResultLogger
+from deptry.reporters import JSONReporter, TextReporter
 from deptry.stdlibs import STDLIBS_PYTHON
 
 if TYPE_CHECKING:
@@ -81,10 +80,10 @@ class Core:
         imported_modules = [mod for mod in imported_modules if not mod.standard_library]
 
         issues = self._find_issues(imported_modules, dependencies_extract.dependencies)
-        ResultLogger(issues=issues).log_and_exit()
+        TextReporter(issues).report()
 
         if self.json_output:
-            JsonWriter(self.json_output).write(issues=issues)
+            JSONReporter(issues, self.json_output).report()
 
         self._exit(issues)
 
