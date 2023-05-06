@@ -44,18 +44,6 @@ def test_cli_with_pdm(pdm_project_builder: ToolSpecificProjectBuilder) -> None:
             },
             {
                 "error": {
-                    "code": "DEP001",
-                    "message": "white imported but missing from the dependency definitions",
-                },
-                "module": "white",
-                "location": {
-                    "file": str(Path("src/main.py")),
-                    "line": 6,
-                    "column": 0,
-                },
-            },
-            {
-                "error": {
                     "code": "DEP004",
                     "message": "black imported but declared as a dev dependency",
                 },
@@ -63,6 +51,18 @@ def test_cli_with_pdm(pdm_project_builder: ToolSpecificProjectBuilder) -> None:
                 "location": {
                     "file": str(Path("src/main.py")),
                     "line": 4,
+                    "column": 0,
+                },
+            },
+            {
+                "error": {
+                    "code": "DEP001",
+                    "message": "white imported but missing from the dependency definitions",
+                },
+                "module": "white",
+                "location": {
+                    "file": str(Path("src/main.py")),
+                    "line": 6,
                     "column": 0,
                 },
             },

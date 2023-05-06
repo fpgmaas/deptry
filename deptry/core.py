@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import operator
 import sys
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
@@ -97,33 +98,39 @@ class Core:
     def _find_violations(
         self, imported_modules_with_locations: list[ModuleLocations], dependencies: list[Dependency]
     ) -> list[Violation]:
-        result = []
+        violations = []
 
         if not self.skip_obsolete:
-            result.extend(
+            violations.extend(
                 ObsoleteDependenciesFinder(imported_modules_with_locations, dependencies, self.ignore_obsolete).find()
             )
 
         if not self.skip_missing:
-            result.extend(
+            violations.extend(
                 MissingDependenciesFinder(imported_modules_with_locations, dependencies, self.ignore_missing).find()
             )
 
         if not self.skip_transitive:
-            result.extend(
+            violations.extend(
                 TransitiveDependenciesFinder(
                     imported_modules_with_locations, dependencies, self.ignore_transitive
                 ).find()
             )
 
         if not self.skip_misplaced_dev:
-            result.extend(
+            violations.extend(
                 MisplacedDevDependenciesFinder(
                     imported_modules_with_locations, dependencies, self.ignore_misplaced_dev
                 ).find()
             )
 
-        return result
+        return self._get_sorted_violations(violations)
+
+    @staticmethod
+    def _get_sorted_violations(violations: list[Violation]) -> list[Violation]:
+        return sorted(
+            violations, key=operator.attrgetter("location.file", "location.line", "location.column", "error_code")
+        )
 
     def _get_dependencies(self, dependency_management_format: DependencyManagementFormat) -> DependenciesExtract:
         if dependency_management_format is DependencyManagementFormat.POETRY:

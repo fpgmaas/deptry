@@ -47,6 +47,18 @@ def test_cli_single_requirements_txt(requirements_txt_project_builder: ToolSpeci
             },
             {
                 "error": {
+                    "code": "DEP004",
+                    "message": "black imported but declared as a dev dependency",
+                },
+                "module": "black",
+                "location": {
+                    "file": str(Path("src/main.py")),
+                    "line": 4,
+                    "column": 0,
+                },
+            },
+            {
+                "error": {
                     "code": "DEP001",
                     "message": "white imported but missing from the dependency definitions",
                 },
@@ -64,8 +76,8 @@ def test_cli_single_requirements_txt(requirements_txt_project_builder: ToolSpeci
                 },
                 "module": "urllib3",
                 "location": {
-                    "file": str(Path("src/notebook.ipynb")),
-                    "line": 3,
+                    "file": str(Path("src/main.py")),
+                    "line": 7,
                     "column": 0,
                 },
             },
@@ -76,20 +88,8 @@ def test_cli_single_requirements_txt(requirements_txt_project_builder: ToolSpeci
                 },
                 "module": "urllib3",
                 "location": {
-                    "file": str(Path("src/main.py")),
-                    "line": 7,
-                    "column": 0,
-                },
-            },
-            {
-                "error": {
-                    "code": "DEP004",
-                    "message": "black imported but declared as a dev dependency",
-                },
-                "module": "black",
-                "location": {
-                    "file": str(Path("src/main.py")),
-                    "line": 4,
+                    "file": str(Path("src/notebook.ipynb")),
+                    "line": 3,
                     "column": 0,
                 },
             },
@@ -134,18 +134,6 @@ def test_cli_multiple_requirements_txt(requirements_txt_project_builder: ToolSpe
             },
             {
                 "error": {
-                    "code": "DEP001",
-                    "message": "white imported but missing from the dependency definitions",
-                },
-                "module": "white",
-                "location": {
-                    "file": str(Path("src/main.py")),
-                    "line": 6,
-                    "column": 0,
-                },
-            },
-            {
-                "error": {
                     "code": "DEP004",
                     "message": "black imported but declared as a dev dependency",
                 },
@@ -153,6 +141,18 @@ def test_cli_multiple_requirements_txt(requirements_txt_project_builder: ToolSpe
                 "location": {
                     "file": str(Path("src/main.py")),
                     "line": 4,
+                    "column": 0,
+                },
+            },
+            {
+                "error": {
+                    "code": "DEP001",
+                    "message": "white imported but missing from the dependency definitions",
+                },
+                "module": "white",
+                "location": {
+                    "file": str(Path("src/main.py")),
+                    "line": 6,
                     "column": 0,
                 },
             },
