@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, ClassVar
 
 from deptry.violations import Violation
 
@@ -11,4 +11,9 @@ if TYPE_CHECKING:
 
 @dataclass
 class ObsoleteDependencyViolation(Violation):
+    error_code: ClassVar[str] = "DEP002"
+    error_template: ClassVar[str] = "{name} defined as a dependency but not used in the codebase"
     issue: Dependency
+
+    def get_error_message(self) -> str:
+        return self.error_template.format(name=self.issue.name)
