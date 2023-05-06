@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from unittest.mock import patch
 
+from deptry.compat import metadata
 from deptry.dependency import Dependency
 
 
@@ -34,7 +35,7 @@ def test_read_top_level_from_top_level_txt() -> None:
         dependency = Dependency("Foo-bar")
 
     assert dependency.name == "Foo-bar"
-    assert dependency.top_levels == {"foo_bar", "foo", "bar"}
+    assert dependency.top_levels == {"foo", "bar"}
 
 
 def test_read_top_level_from_record() -> None:
@@ -49,7 +50,11 @@ def test_read_top_level_from_record() -> None:
 
         def read_text(self, file_name: str) -> str | None:
             if file_name == "RECORD":
-                return """black/trans.cpython-39-darwin.so,sha256=<HASH>
+                return """\
+../../../bin/black,sha256=<HASH>,247
+__pycache__/_black_version.cpython-311.pyc,,
+_black_version.py,sha256=<HASH>,19
+black/trans.cpython-39-darwin.so,sha256=<HASH>
 black/trans.py,sha256=<HASH>
 blackd/__init__.py,sha256=<HASH>
 blackd/__main__.py,sha256=<HASH>
@@ -61,7 +66,7 @@ blackd/__main__.py,sha256=<HASH>
         dependency = Dependency("Foo-bar")
 
     assert dependency.name == "Foo-bar"
-    assert dependency.top_levels == {"foo_bar", "black", "blackd"}
+    assert dependency.top_levels == {"_black_version", "black", "blackd"}
 
 
 def test_read_top_level_from_predefined() -> None:
@@ -73,5 +78,18 @@ def test_read_top_level_from_predefined() -> None:
         dependency = Dependency("Foo-bar", module_names=["foo"])
 
     assert dependency.name == "Foo-bar"
-    assert dependency.top_levels == {"foo_bar", "foo"}
+    assert dependency.top_levels == {"foo"}
     mock.return_value.read_text.assert_not_called()
+
+
+def test_not_predefined_and_not_installed() -> None:
+    """
+    Use the fallback option of translating the package name.
+    """
+
+    with patch("deptry.dependency.metadata.distribution") as mock:
+        mock.side_effect = metadata.PackageNotFoundError
+        dependency = Dependency("Foo-bar")
+
+    assert dependency.name == "Foo-bar"
+    assert dependency.top_levels == {"foo_bar"}

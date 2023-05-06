@@ -12,7 +12,7 @@ def test_dependency_getter(tmp_path: Path) -> None:
 # PEP 621 project metadata
 # See https://www.python.org/dev/peps/pep-0621/
 dependencies = [
-    "foo",
+    "qux",
     "bar>=20.9",
     "optional-foo[option]>=0.12.11",
     "conditional-bar>=1.1.0; python_version < 3.11",
@@ -32,10 +32,10 @@ dependencies = [
 
         assert len(dependencies) == 5
 
-        assert dependencies[0].name == "foo"
+        assert dependencies[0].name == "qux"
         assert not dependencies[0].is_conditional
         assert not dependencies[0].is_optional
-        assert "foo" in dependencies[0].top_levels
+        assert "qux" in dependencies[0].top_levels
 
         assert dependencies[1].name == "bar"
         assert not dependencies[1].is_conditional
@@ -55,7 +55,6 @@ dependencies = [
         assert dependencies[4].name == "fox-python"
         assert not dependencies[4].is_conditional
         assert not dependencies[4].is_optional
-        assert "fox_python" in dependencies[4].top_levels
         assert "fox" in dependencies[4].top_levels
 
 
@@ -65,14 +64,14 @@ def test_dev_dependency_getter(tmp_path: Path) -> None:
 # PEP 621 project metadata
 # See https://www.python.org/dev/peps/pep-0621/
 dependencies = [
-    "foo",
+    "qux",
     "bar>=20.9",
     "optional-foo[option]>=0.12.11",
     "conditional-bar>=1.1.0; python_version < 3.11",
 ]
 [tool.pdm.dev-dependencies]
 test = [
-    "foo",
+    "qux",
     "bar; python_version < 3.11"
     ]
 tox = [
@@ -88,10 +87,10 @@ tox = [
 
         assert len(dev_dependencies) == 3
 
-        assert dev_dependencies[0].name == "foo"
+        assert dev_dependencies[0].name == "qux"
         assert not dev_dependencies[0].is_conditional
         assert not dev_dependencies[0].is_optional
-        assert "foo" in dev_dependencies[0].top_levels
+        assert "qux" in dev_dependencies[0].top_levels
 
         assert dev_dependencies[1].name == "bar"
         assert dev_dependencies[1].is_conditional
