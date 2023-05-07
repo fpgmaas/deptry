@@ -28,6 +28,7 @@ if TYPE_CHECKING:
     from deptry.dependency import Dependency
     from deptry.dependency_getter.base import DependenciesExtract
     from deptry.module import Module
+    from deptry.violations import Violation
 
 
 @dataclass
@@ -79,28 +80,35 @@ class Core:
         ]
         imported_modules = [mod for mod in imported_modules if not mod.standard_library]
 
-        issues = self._find_issues(imported_modules, dependencies_extract.dependencies)
-        TextReporter(issues).report()
+        violations = self._find_violations(imported_modules, dependencies_extract.dependencies)
+        TextReporter(violations).report()
 
         if self.json_output:
-            JSONReporter(issues, self.json_output).report()
+            JSONReporter(violations, self.json_output).report()
 
-        self._exit(issues)
+        self._exit(violations)
 
-    def _find_issues(self, imported_modules: list[Module], dependencies: list[Dependency]) -> dict[str, list[str]]:
+    def _find_violations(
+        self, imported_modules: list[Module], dependencies: list[Dependency]
+    ) -> dict[str, list[Violation]]:
         result = {}
+
         if not self.skip_obsolete:
             result["obsolete"] = ObsoleteDependenciesFinder(imported_modules, dependencies, self.ignore_obsolete).find()
+
         if not self.skip_missing:
             result["missing"] = MissingDependenciesFinder(imported_modules, dependencies, self.ignore_missing).find()
+
         if not self.skip_transitive:
             result["transitive"] = TransitiveDependenciesFinder(
                 imported_modules, dependencies, self.ignore_transitive
             ).find()
+
         if not self.skip_misplaced_dev:
             result["misplaced_dev"] = MisplacedDevDependenciesFinder(
                 imported_modules, dependencies, self.ignore_misplaced_dev
             ).find()
+
         return result
 
     def _get_dependencies(self, dependency_management_format: DependencyManagementFormat) -> DependenciesExtract:
@@ -153,5 +161,5 @@ class Core:
         logging.debug("")
 
     @staticmethod
-    def _exit(issues: dict[str, list[str]]) -> None:
-        sys.exit(int(any(issues.values())))
+    def _exit(violations: dict[str, list[Violation]]) -> None:
+        sys.exit(int(any(violations.values())))

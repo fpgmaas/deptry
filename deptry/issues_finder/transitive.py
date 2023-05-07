@@ -2,12 +2,14 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING
 
 from deptry.issues_finder.base import IssuesFinder
+from deptry.violations import TransitiveDependencyViolation
 
 if TYPE_CHECKING:
     from deptry.module import Module
+    from deptry.violations import Violation
 
 
 @dataclass
@@ -23,17 +25,16 @@ class TransitiveDependenciesFinder(IssuesFinder):
     Then it must be a transitive dependency.
     """
 
-    def find(self) -> list[str]:
+    def find(self) -> list[Violation]:
         logging.debug("\nScanning for transitive dependencies...")
-        transitive_dependencies = []
+        transitive_dependencies: list[Violation] = []
 
         for module in self.imported_modules:
             logging.debug(f"Scanning module {module.name}...")
 
             if self._is_transitive(module):
                 # `self._is_transitive` only returns `True` if the package is not None.
-                module_package = cast(str, module.package)
-                transitive_dependencies.append(module_package)
+                transitive_dependencies.append(TransitiveDependencyViolation(module))
 
         return transitive_dependencies
 

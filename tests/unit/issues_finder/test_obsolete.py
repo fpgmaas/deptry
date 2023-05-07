@@ -5,15 +5,17 @@ from pathlib import Path
 from deptry.dependency import Dependency
 from deptry.issues_finder.obsolete import ObsoleteDependenciesFinder
 from deptry.module import ModuleBuilder
+from deptry.violations import ObsoleteDependencyViolation
 
 
 def test_simple() -> None:
-    dependencies = [Dependency("click", Path("pyproject.toml")), Dependency("toml", Path("pyproject.toml"))]
+    dependency_toml = Dependency("toml", Path("pyproject.toml"))
+    dependencies = [Dependency("click", Path("pyproject.toml")), dependency_toml]
     modules = [ModuleBuilder("click", {"foo"}, frozenset(), dependencies).build()]
 
     deps = ObsoleteDependenciesFinder(imported_modules=modules, dependencies=dependencies).find()
 
-    assert deps == ["toml"]
+    assert deps == [ObsoleteDependencyViolation(dependency_toml)]
 
 
 def test_simple_with_ignore() -> None:

@@ -5,9 +5,11 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from deptry.issues_finder.base import IssuesFinder
+from deptry.violations import ObsoleteDependencyViolation
 
 if TYPE_CHECKING:
     from deptry.dependency import Dependency
+    from deptry.violations import Violation
 
 
 @dataclass
@@ -22,14 +24,15 @@ class ObsoleteDependenciesFinder(IssuesFinder):
     but if this is imported, the associated dependency `matplotlib` is not obsolete, even if `matplotlib` itself is not imported anywhere.
     """
 
-    def find(self) -> list[str]:
+    def find(self) -> list[Violation]:
         logging.debug("\nScanning for obsolete dependencies...")
-        obsolete_dependencies = []
+        obsolete_dependencies: list[Violation] = []
+
         for dependency in self.dependencies:
             logging.debug(f"Scanning module {dependency.name}...")
 
             if self._is_obsolete(dependency):
-                obsolete_dependencies.append(dependency.name)
+                obsolete_dependencies.append(ObsoleteDependencyViolation(dependency))
 
         return obsolete_dependencies
 

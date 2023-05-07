@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from deptry.dependency import Dependency
     from deptry.module import Module
+    from deptry.violations import Violation
 
 
 @dataclass
@@ -18,6 +19,6 @@ class IssuesFinder(ABC):
     ignored_modules: tuple[str, ...] = ()
 
     @abstractmethod
-    def find(self) -> list[str]:
+    def find(self) -> list[Violation]:
         """Find issues about dependencies."""
         raise NotImplementedError()

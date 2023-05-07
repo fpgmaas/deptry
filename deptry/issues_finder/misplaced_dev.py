@@ -5,9 +5,11 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from deptry.issues_finder.base import IssuesFinder
+from deptry.violations import MisplacedDevDependencyViolation
 
 if TYPE_CHECKING:
     from deptry.module import Module
+    from deptry.violations import Violation
 
 
 @dataclass
@@ -19,19 +21,22 @@ class MisplacedDevDependenciesFinder(IssuesFinder):
     This is the case for any development dependency encountered, since files solely used for development purposes should be excluded from scanning.
     """
 
-    def find(self) -> list[str]:
+    def find(self) -> list[Violation]:
         """
         In this function, we use 'corresponding_package_name' instead of module.package, since it can happen that a
         development dependency is not installed, but it's still found to be used in the codebase, due to simple name matching.
         In that case, it's added under module.dev_top_levels. _get_package_name is added for these edge-cases.
         """
         logging.debug("\nScanning for incorrect development dependencies...")
-        misplaced_dev_dependencies = []
+        misplaced_dev_dependencies: list[Violation] = []
+
         for module in self.imported_modules:
             logging.debug(f"Scanning module {module.name}...")
             corresponding_package_name = self._get_package_name(module)
+
             if corresponding_package_name and self._is_development_dependency(module, corresponding_package_name):
-                misplaced_dev_dependencies.append(corresponding_package_name)
+                misplaced_dev_dependencies.append(MisplacedDevDependencyViolation(module))
+
         return misplaced_dev_dependencies
 
     def _is_development_dependency(self, module: Module, corresponding_package_name: str) -> bool:
