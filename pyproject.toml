@@ -25,6 +25,7 @@ classifiers = [
 python = ">=3.8,<4.0"
 chardet = ">=4.0.0"
 click = "^8.0.0"
+colorama = { version = ">=0.4.6", markers = "sys_platform == 'win32'" }
 pathspec = ">=0.9.0"
 tomli = { version = "^2.0.1", python = "<3.11" }
 
@@ -34,6 +35,7 @@ pre-commit = "3.3.1"
 pytest = "7.3.1"
 pytest-cov = "4.0.0"
 types-chardet = "5.0.4.5"
+types-colorama = { version = "0.4.15.11", markers = "sys_platform == 'win32'" }
 
 [tool.poetry.group.docs.dependencies]
 mkdocs = "1.4.3"
