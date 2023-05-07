@@ -35,6 +35,7 @@ if TYPE_CHECKING:
 class Core:
     root: Path
     config: Path
+    no_ansi: bool
     ignore_obsolete: tuple[str, ...]
     ignore_missing: tuple[str, ...]
     ignore_transitive: tuple[str, ...]

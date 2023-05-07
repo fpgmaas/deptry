@@ -120,6 +120,11 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
     default="pyproject.toml",
 )
 @click.option(
+    "--no-ansi",
+    is_flag=True,
+    help="Disable ANSI characters in terminal output.",
+)
+@click.option(
     "--skip-obsolete",
     is_flag=True,
     help="Boolean flag to specify if deptry should skip scanning the project for obsolete dependencies.",
@@ -259,6 +264,7 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
 def deptry(
     root: Path,
     config: Path,
+    no_ansi: bool,
     ignore_obsolete: tuple[str, ...],
     ignore_missing: tuple[str, ...],
     ignore_transitive: tuple[str, ...],
@@ -286,6 +292,7 @@ def deptry(
     Core(
         root=root,
         config=config,
+        no_ansi=no_ansi,
         ignore_obsolete=ignore_obsolete,
         ignore_missing=ignore_missing,
         ignore_transitive=ignore_transitive,
