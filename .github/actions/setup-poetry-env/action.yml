@@ -16,9 +16,25 @@ runs:
         python-version: ${{ inputs.python-version }}
 
     - name: Install Poetry
-      uses: snok/install-poetry@v1
-      with:
-        virtualenvs-in-project: true
+      env:
+        # renovate: datasource=pypi depName=poetry
+        POETRY_VERSION: "1.4.2"
+      run: curl -sSL https://install.python-poetry.org | python - -y
+      shell: bash
+
+    - name: Add Poetry to Path
+      run: echo "$HOME/.local/bin" >> $GITHUB_PATH
+      if: ${{ matrix.os != 'Windows' }}
+      shell: bash
+
+    - name: Add Poetry to Path
+      run: echo "$APPDATA\Python\Scripts" >> $GITHUB_PATH
+      if: ${{ matrix.os == 'Windows' }}
+      shell: bash
+
+    - name: Configure Poetry virtual environment in project
+      run: poetry config virtualenvs.in-project true
+      shell: bash
 
     - name: Load cached venv
       id: cached-poetry-dependencies
