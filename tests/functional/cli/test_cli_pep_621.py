@@ -21,7 +21,7 @@ def test_cli_with_pep_621(pip_project_builder: ToolSpecificProjectBuilder) -> No
             {
                 "error": {
                     "code": "DEP002",
-                    "message": "isort defined as a dependency but not used in the codebase",
+                    "message": "'isort' defined as a dependency but not used in the codebase",
                 },
                 "module": "isort",
                 "location": {
@@ -33,7 +33,7 @@ def test_cli_with_pep_621(pip_project_builder: ToolSpecificProjectBuilder) -> No
             {
                 "error": {
                     "code": "DEP002",
-                    "message": "requests defined as a dependency but not used in the codebase",
+                    "message": "'requests' defined as a dependency but not used in the codebase",
                 },
                 "module": "requests",
                 "location": {
@@ -45,7 +45,7 @@ def test_cli_with_pep_621(pip_project_builder: ToolSpecificProjectBuilder) -> No
             {
                 "error": {
                     "code": "DEP002",
-                    "message": "mypy defined as a dependency but not used in the codebase",
+                    "message": "'mypy' defined as a dependency but not used in the codebase",
                 },
                 "module": "mypy",
                 "location": {
@@ -57,7 +57,7 @@ def test_cli_with_pep_621(pip_project_builder: ToolSpecificProjectBuilder) -> No
             {
                 "error": {
                     "code": "DEP002",
-                    "message": "pytest defined as a dependency but not used in the codebase",
+                    "message": "'pytest' defined as a dependency but not used in the codebase",
                 },
                 "module": "pytest",
                 "location": {
@@ -69,7 +69,7 @@ def test_cli_with_pep_621(pip_project_builder: ToolSpecificProjectBuilder) -> No
             {
                 "error": {
                     "code": "DEP001",
-                    "message": "white imported but missing from the dependency definitions",
+                    "message": "'white' imported but missing from the dependency definitions",
                 },
                 "module": "white",
                 "location": {

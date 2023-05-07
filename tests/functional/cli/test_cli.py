@@ -24,7 +24,7 @@ def test_cli_returns_error(poetry_project_builder: ToolSpecificProjectBuilder) -
             {
                 "error": {
                     "code": "DEP002",
-                    "message": "isort defined as a dependency but not used in the codebase",
+                    "message": "'isort' defined as a dependency but not used in the codebase",
                 },
                 "module": "isort",
                 "location": {
@@ -36,7 +36,7 @@ def test_cli_returns_error(poetry_project_builder: ToolSpecificProjectBuilder) -
             {
                 "error": {
                     "code": "DEP002",
-                    "message": "requests defined as a dependency but not used in the codebase",
+                    "message": "'requests' defined as a dependency but not used in the codebase",
                 },
                 "module": "requests",
                 "location": {
@@ -48,7 +48,7 @@ def test_cli_returns_error(poetry_project_builder: ToolSpecificProjectBuilder) -
             {
                 "error": {
                     "code": "DEP004",
-                    "message": "black imported but declared as a dev dependency",
+                    "message": "'black' imported but declared as a dev dependency",
                 },
                 "module": "black",
                 "location": {
@@ -60,7 +60,7 @@ def test_cli_returns_error(poetry_project_builder: ToolSpecificProjectBuilder) -
             {
                 "error": {
                     "code": "DEP001",
-                    "message": "white imported but missing from the dependency definitions",
+                    "message": "'white' imported but missing from the dependency definitions",
                 },
                 "module": "white",
                 "location": {
@@ -81,7 +81,7 @@ def test_cli_ignore_notebooks(project_builder: ToolSpecificProjectBuilder) -> No
             {
                 "error": {
                     "code": "DEP002",
-                    "message": "toml defined as a dependency but not used in the codebase",
+                    "message": "'toml' defined as a dependency but not used in the codebase",
                 },
                 "module": "toml",
                 "location": {
@@ -93,7 +93,7 @@ def test_cli_ignore_notebooks(project_builder: ToolSpecificProjectBuilder) -> No
             {
                 "error": {
                     "code": "DEP002",
-                    "message": "isort defined as a dependency but not used in the codebase",
+                    "message": "'isort' defined as a dependency but not used in the codebase",
                 },
                 "module": "isort",
                 "location": {
@@ -105,7 +105,7 @@ def test_cli_ignore_notebooks(project_builder: ToolSpecificProjectBuilder) -> No
             {
                 "error": {
                     "code": "DEP002",
-                    "message": "requests defined as a dependency but not used in the codebase",
+                    "message": "'requests' defined as a dependency but not used in the codebase",
                 },
                 "module": "requests",
                 "location": {
@@ -117,7 +117,7 @@ def test_cli_ignore_notebooks(project_builder: ToolSpecificProjectBuilder) -> No
             {
                 "error": {
                     "code": "DEP004",
-                    "message": "black imported but declared as a dev dependency",
+                    "message": "'black' imported but declared as a dev dependency",
                 },
                 "module": "black",
                 "location": {
@@ -129,7 +129,7 @@ def test_cli_ignore_notebooks(project_builder: ToolSpecificProjectBuilder) -> No
             {
                 "error": {
                     "code": "DEP001",
-                    "message": "white imported but missing from the dependency definitions",
+                    "message": "'white' imported but missing from the dependency definitions",
                 },
                 "module": "white",
                 "location": {
@@ -164,7 +164,7 @@ def test_cli_exclude(project_builder: ToolSpecificProjectBuilder) -> None:
             {
                 "error": {
                     "code": "DEP002",
-                    "message": "toml defined as a dependency but not used in the codebase",
+                    "message": "'toml' defined as a dependency but not used in the codebase",
                 },
                 "module": "toml",
                 "location": {
@@ -176,7 +176,7 @@ def test_cli_exclude(project_builder: ToolSpecificProjectBuilder) -> None:
             {
                 "error": {
                     "code": "DEP002",
-                    "message": "isort defined as a dependency but not used in the codebase",
+                    "message": "'isort' defined as a dependency but not used in the codebase",
                 },
                 "module": "isort",
                 "location": {
@@ -188,7 +188,7 @@ def test_cli_exclude(project_builder: ToolSpecificProjectBuilder) -> None:
             {
                 "error": {
                     "code": "DEP002",
-                    "message": "requests defined as a dependency but not used in the codebase",
+                    "message": "'requests' defined as a dependency but not used in the codebase",
                 },
                 "module": "requests",
                 "location": {
@@ -200,7 +200,7 @@ def test_cli_exclude(project_builder: ToolSpecificProjectBuilder) -> None:
             {
                 "error": {
                     "code": "DEP004",
-                    "message": "black imported but declared as a dev dependency",
+                    "message": "'black' imported but declared as a dev dependency",
                 },
                 "module": "black",
                 "location": {
@@ -212,7 +212,7 @@ def test_cli_exclude(project_builder: ToolSpecificProjectBuilder) -> None:
             {
                 "error": {
                     "code": "DEP001",
-                    "message": "white imported but missing from the dependency definitions",
+                    "message": "'white' imported but missing from the dependency definitions",
                 },
                 "module": "white",
                 "location": {
@@ -233,7 +233,7 @@ def test_cli_extend_exclude(project_builder: ToolSpecificProjectBuilder) -> None
             {
                 "error": {
                     "code": "DEP002",
-                    "message": "toml defined as a dependency but not used in the codebase",
+                    "message": "'toml' defined as a dependency but not used in the codebase",
                 },
                 "module": "toml",
                 "location": {
@@ -245,7 +245,7 @@ def test_cli_extend_exclude(project_builder: ToolSpecificProjectBuilder) -> None
             {
                 "error": {
                     "code": "DEP002",
-                    "message": "isort defined as a dependency but not used in the codebase",
+                    "message": "'isort' defined as a dependency but not used in the codebase",
                 },
                 "module": "isort",
                 "location": {
@@ -257,7 +257,7 @@ def test_cli_extend_exclude(project_builder: ToolSpecificProjectBuilder) -> None
             {
                 "error": {
                     "code": "DEP002",
-                    "message": "requests defined as a dependency but not used in the codebase",
+                    "message": "'requests' defined as a dependency but not used in the codebase",
                 },
                 "module": "requests",
                 "location": {
@@ -269,7 +269,7 @@ def test_cli_extend_exclude(project_builder: ToolSpecificProjectBuilder) -> None
             {
                 "error": {
                     "code": "DEP004",
-                    "message": "black imported but declared as a dev dependency",
+                    "message": "'black' imported but declared as a dev dependency",
                 },
                 "module": "black",
                 "location": {
@@ -281,7 +281,7 @@ def test_cli_extend_exclude(project_builder: ToolSpecificProjectBuilder) -> None
             {
                 "error": {
                     "code": "DEP001",
-                    "message": "white imported but missing from the dependency definitions",
+                    "message": "'white' imported but missing from the dependency definitions",
                 },
                 "module": "white",
                 "location": {
@@ -302,7 +302,7 @@ def test_cli_known_first_party(project_builder: ToolSpecificProjectBuilder) -> N
             {
                 "error": {
                     "code": "DEP002",
-                    "message": "isort defined as a dependency but not used in the codebase",
+                    "message": "'isort' defined as a dependency but not used in the codebase",
                 },
                 "module": "isort",
                 "location": {
@@ -314,7 +314,7 @@ def test_cli_known_first_party(project_builder: ToolSpecificProjectBuilder) -> N
             {
                 "error": {
                     "code": "DEP002",
-                    "message": "requests defined as a dependency but not used in the codebase",
+                    "message": "'requests' defined as a dependency but not used in the codebase",
                 },
                 "module": "requests",
                 "location": {
@@ -326,7 +326,7 @@ def test_cli_known_first_party(project_builder: ToolSpecificProjectBuilder) -> N
             {
                 "error": {
                     "code": "DEP004",
-                    "message": "black imported but declared as a dev dependency",
+                    "message": "'black' imported but declared as a dev dependency",
                 },
                 "module": "black",
                 "location": {
@@ -348,7 +348,7 @@ def test_cli_not_verbose(project_builder: ToolSpecificProjectBuilder) -> None:
             {
                 "error": {
                     "code": "DEP002",
-                    "message": "isort defined as a dependency but not used in the codebase",
+                    "message": "'isort' defined as a dependency but not used in the codebase",
                 },
                 "module": "isort",
                 "location": {
@@ -360,7 +360,7 @@ def test_cli_not_verbose(project_builder: ToolSpecificProjectBuilder) -> None:
             {
                 "error": {
                     "code": "DEP002",
-                    "message": "requests defined as a dependency but not used in the codebase",
+                    "message": "'requests' defined as a dependency but not used in the codebase",
                 },
                 "module": "requests",
                 "location": {
@@ -372,7 +372,7 @@ def test_cli_not_verbose(project_builder: ToolSpecificProjectBuilder) -> None:
             {
                 "error": {
                     "code": "DEP004",
-                    "message": "black imported but declared as a dev dependency",
+                    "message": "'black' imported but declared as a dev dependency",
                 },
                 "module": "black",
                 "location": {
@@ -384,7 +384,7 @@ def test_cli_not_verbose(project_builder: ToolSpecificProjectBuilder) -> None:
             {
                 "error": {
                     "code": "DEP001",
-                    "message": "white imported but missing from the dependency definitions",
+                    "message": "'white' imported but missing from the dependency definitions",
                 },
                 "module": "white",
                 "location": {
@@ -408,7 +408,7 @@ def test_cli_verbose(project_builder: ToolSpecificProjectBuilder) -> None:
             {
                 "error": {
                     "code": "DEP002",
-                    "message": "isort defined as a dependency but not used in the codebase",
+                    "message": "'isort' defined as a dependency but not used in the codebase",
                 },
                 "module": "isort",
                 "location": {
@@ -420,7 +420,7 @@ def test_cli_verbose(project_builder: ToolSpecificProjectBuilder) -> None:
             {
                 "error": {
                     "code": "DEP002",
-                    "message": "requests defined as a dependency but not used in the codebase",
+                    "message": "'requests' defined as a dependency but not used in the codebase",
                 },
                 "module": "requests",
                 "location": {
@@ -432,7 +432,7 @@ def test_cli_verbose(project_builder: ToolSpecificProjectBuilder) -> None:
             {
                 "error": {
                     "code": "DEP004",
-                    "message": "black imported but declared as a dev dependency",
+                    "message": "'black' imported but declared as a dev dependency",
                 },
                 "module": "black",
                 "location": {
@@ -444,7 +444,7 @@ def test_cli_verbose(project_builder: ToolSpecificProjectBuilder) -> None:
             {
                 "error": {
                     "code": "DEP001",
-                    "message": "white imported but missing from the dependency definitions",
+                    "message": "'white' imported but missing from the dependency definitions",
                 },
                 "module": "white",
                 "location": {
@@ -467,10 +467,10 @@ def test_cli_with_not_json_output(project_builder: ToolSpecificProjectBuilder) -
         assert len(list(Path(".").glob("*.json"))) == 0
         assert (
             result.stderr
-            == f"Scanning 2 files...\n\n{str(Path('pyproject.toml'))}: DEP002 isort defined as a dependency but not"
-            f" used in the codebase\n{str(Path('pyproject.toml'))}: DEP002 requests defined as a dependency but not"
-            f" used in the codebase\n{str(Path('src/main.py'))}:4:0: DEP004 black imported but declared as a dev"
-            f" dependency\n{str(Path('src/main.py'))}:6:0: DEP001 white imported but missing from the dependency"
+            == f"Scanning 2 files...\n\n{str(Path('pyproject.toml'))}: DEP002 'isort' defined as a dependency but not"
+            f" used in the codebase\n{str(Path('pyproject.toml'))}: DEP002 'requests' defined as a dependency but not"
+            f" used in the codebase\n{str(Path('src/main.py'))}:4:0: DEP004 'black' imported but declared as a dev"
+            f" dependency\n{str(Path('src/main.py'))}:6:0: DEP001 'white' imported but missing from the dependency"
             " definitions\nFound 4 dependency issues.\n\nFor more information, see the documentation:"
             " https://fpgmaas.github.io/deptry/\n"
         )
@@ -483,10 +483,10 @@ def test_cli_with_json_output(project_builder: ToolSpecificProjectBuilder) -> No
         # Assert that we still write to console when generating a JSON report.
         assert (
             result.stderr
-            == f"Scanning 2 files...\n\n{str(Path('pyproject.toml'))}: DEP002 isort defined as a dependency but not"
-            f" used in the codebase\n{str(Path('pyproject.toml'))}: DEP002 requests defined as a dependency but not"
-            f" used in the codebase\n{str(Path('src/main.py'))}:4:0: DEP004 black imported but declared as a dev"
-            f" dependency\n{str(Path('src/main.py'))}:6:0: DEP001 white imported but missing from the dependency"
+            == f"Scanning 2 files...\n\n{str(Path('pyproject.toml'))}: DEP002 'isort' defined as a dependency but not"
+            f" used in the codebase\n{str(Path('pyproject.toml'))}: DEP002 'requests' defined as a dependency but not"
+            f" used in the codebase\n{str(Path('src/main.py'))}:4:0: DEP004 'black' imported but declared as a dev"
+            f" dependency\n{str(Path('src/main.py'))}:6:0: DEP001 'white' imported but missing from the dependency"
             " definitions\nFound 4 dependency issues.\n\nFor more information, see the documentation:"
             " https://fpgmaas.github.io/deptry/\n"
         )
@@ -494,7 +494,7 @@ def test_cli_with_json_output(project_builder: ToolSpecificProjectBuilder) -> No
             {
                 "error": {
                     "code": "DEP002",
-                    "message": "isort defined as a dependency but not used in the codebase",
+                    "message": "'isort' defined as a dependency but not used in the codebase",
                 },
                 "module": "isort",
                 "location": {
@@ -506,7 +506,7 @@ def test_cli_with_json_output(project_builder: ToolSpecificProjectBuilder) -> No
             {
                 "error": {
                     "code": "DEP002",
-                    "message": "requests defined as a dependency but not used in the codebase",
+                    "message": "'requests' defined as a dependency but not used in the codebase",
                 },
                 "module": "requests",
                 "location": {
@@ -518,7 +518,7 @@ def test_cli_with_json_output(project_builder: ToolSpecificProjectBuilder) -> No
             {
                 "error": {
                     "code": "DEP004",
-                    "message": "black imported but declared as a dev dependency",
+                    "message": "'black' imported but declared as a dev dependency",
                 },
                 "module": "black",
                 "location": {
@@ -530,7 +530,7 @@ def test_cli_with_json_output(project_builder: ToolSpecificProjectBuilder) -> No
             {
                 "error": {
                     "code": "DEP001",
-                    "message": "white imported but missing from the dependency definitions",
+                    "message": "'white' imported but missing from the dependency definitions",
                 },
                 "module": "white",
                 "location": {

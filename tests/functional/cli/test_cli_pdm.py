@@ -21,7 +21,7 @@ def test_cli_with_pdm(pdm_project_builder: ToolSpecificProjectBuilder) -> None:
             {
                 "error": {
                     "code": "DEP002",
-                    "message": "isort defined as a dependency but not used in the codebase",
+                    "message": "'isort' defined as a dependency but not used in the codebase",
                 },
                 "module": "isort",
                 "location": {
@@ -33,7 +33,7 @@ def test_cli_with_pdm(pdm_project_builder: ToolSpecificProjectBuilder) -> None:
             {
                 "error": {
                     "code": "DEP002",
-                    "message": "requests defined as a dependency but not used in the codebase",
+                    "message": "'requests' defined as a dependency but not used in the codebase",
                 },
                 "module": "requests",
                 "location": {
@@ -45,7 +45,7 @@ def test_cli_with_pdm(pdm_project_builder: ToolSpecificProjectBuilder) -> None:
             {
                 "error": {
                     "code": "DEP004",
-                    "message": "black imported but declared as a dev dependency",
+                    "message": "'black' imported but declared as a dev dependency",
                 },
                 "module": "black",
                 "location": {
@@ -57,7 +57,7 @@ def test_cli_with_pdm(pdm_project_builder: ToolSpecificProjectBuilder) -> None:
             {
                 "error": {
                     "code": "DEP001",
-                    "message": "white imported but missing from the dependency definitions",
+                    "message": "'white' imported but missing from the dependency definitions",
                 },
                 "module": "white",
                 "location": {

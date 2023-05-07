@@ -31,10 +31,10 @@ def test_logging_number_multiple(caplog: LogCaptureFixture) -> None:
 
     assert caplog.messages == [
         "",
-        f"{str(Path('foo.py'))}:1:2: DEP001 foo imported but missing from the dependency definitions",
-        f"{str(Path('pyproject.toml'))}: DEP002 foo defined as a dependency but not used in the codebase",
-        f"{str(Path('foo/bar.py'))}:1:2: DEP003 foo_package imported but it is a transitive dependency",
-        f"{str(Path('foo.py'))}:1:2: DEP004 foo imported but declared as a dev dependency",
+        f"{str(Path('foo.py'))}:1:2: DEP001 'foo' imported but missing from the dependency definitions",
+        f"{str(Path('pyproject.toml'))}: DEP002 'foo' defined as a dependency but not used in the codebase",
+        f"{str(Path('foo/bar.py'))}:1:2: DEP003 'foo_package' imported but it is a transitive dependency",
+        f"{str(Path('foo.py'))}:1:2: DEP004 'foo' imported but declared as a dev dependency",
         "Found 4 dependency issues.",
         "\nFor more information, see the documentation: https://fpgmaas.github.io/deptry/",
     ]
@@ -48,7 +48,7 @@ def test_logging_number_single(caplog: LogCaptureFixture) -> None:
 
     assert caplog.messages == [
         "",
-        "foo.py:1:2: DEP001 foo imported but missing from the dependency definitions",
+        "foo.py:1:2: DEP001 'foo' imported but missing from the dependency definitions",
         "Found 1 dependency issue.",
         "\nFor more information, see the documentation: https://fpgmaas.github.io/deptry/",
     ]
