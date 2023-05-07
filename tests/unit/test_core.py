@@ -3,7 +3,6 @@ from __future__ import annotations
 import re
 import sys
 from pathlib import Path
-from typing import TYPE_CHECKING
 from unittest import mock
 
 import pytest
@@ -11,6 +10,7 @@ import pytest
 from deptry.core import Core
 from deptry.dependency import Dependency
 from deptry.exceptions import UnsupportedPythonVersionError
+from deptry.imports.location import Location
 from deptry.module import Module
 from deptry.stdlibs import STDLIBS_PYTHON
 from deptry.violations import (
@@ -21,8 +21,25 @@ from deptry.violations import (
 )
 from tests.utils import create_files, run_within_dir
 
-if TYPE_CHECKING:
-    from deptry.violations import Violation
+
+def test__get_sorted_violations() -> None:
+    violations = [
+        MisplacedDevDependencyViolation(Module("foo"), Location(Path("foo.py"), 1, 0)),
+        MissingDependencyViolation(Module("foo"), Location(Path("foo.py"), 2, 0)),
+        MissingDependencyViolation(Module("foo"), Location(Path("foo.py"), 1, 0)),
+        MissingDependencyViolation(Module("foo"), Location(Path("bar.py"), 3, 1)),
+        MissingDependencyViolation(Module("foo"), Location(Path("bar.py"), 2, 1)),
+        MissingDependencyViolation(Module("foo"), Location(Path("bar.py"), 3, 0)),
+    ]
+
+    assert Core._get_sorted_violations(violations) == [
+        MissingDependencyViolation(Module("foo"), Location(Path("bar.py"), 2, 1)),
+        MissingDependencyViolation(Module("foo"), Location(Path("bar.py"), 3, 0)),
+        MissingDependencyViolation(Module("foo"), Location(Path("bar.py"), 3, 1)),
+        MissingDependencyViolation(Module("foo"), Location(Path("foo.py"), 1, 0)),
+        MisplacedDevDependencyViolation(Module("foo"), Location(Path("foo.py"), 1, 0)),
+        MissingDependencyViolation(Module("foo"), Location(Path("foo.py"), 2, 0)),
+    ]
 
 
 @pytest.mark.parametrize(
@@ -137,12 +154,13 @@ def test__get_stdlib_packages_unsupported(version_info: tuple[int | str, ...]) -
 
 
 def test__exit_with_violations() -> None:
-    violations: dict[str, list[Violation]] = {
-        "missing": [MissingDependencyViolation(Module("foo"))],
-        "obsolete": [ObsoleteDependencyViolation(Dependency("foo", Path("pyproject.toml")))],
-        "transitive": [TransitiveDependencyViolation(Module("foo"))],
-        "misplaced_dev": [MisplacedDevDependencyViolation(Module("foo"))],
-    }
+    violations = [
+        MissingDependencyViolation(Module("foo"), Location(Path("foo.py"), 1, 2)),
+        ObsoleteDependencyViolation(Dependency("foo", Path("pyproject.toml")), Location(Path("pyproject.toml"))),
+        TransitiveDependencyViolation(Module("foo"), Location(Path("foo.py"), 1, 2)),
+        MisplacedDevDependencyViolation(Module("foo"), Location(Path("foo.py"), 1, 2)),
+    ]
+
     with pytest.raises(SystemExit) as e:
         Core._exit(violations)
 
@@ -151,9 +169,8 @@ def test__exit_with_violations() -> None:
 
 
 def test__exit_without_violations() -> None:
-    violations: dict[str, list[Violation]] = {}
     with pytest.raises(SystemExit) as e:
-        Core._exit(violations)
+        Core._exit([])
 
     assert e.type == SystemExit
     assert e.value.code == 0

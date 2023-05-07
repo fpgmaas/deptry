@@ -13,16 +13,18 @@ from deptry.imports.extractors.base import ImportExtractor
 if TYPE_CHECKING:
     from pathlib import Path
 
+    from deptry.imports.location import Location
+
 
 @dataclass
 class NotebookImportExtractor(ImportExtractor):
     """Extract import statements from a Jupyter notebook."""
 
-    def extract_imports(self) -> set[str]:
+    def extract_imports(self) -> dict[str, list[Location]]:
         """Extract the imported top-level modules from all code cells in the Jupyter Notebook."""
         notebook = self._read_ipynb_file(self.file)
         if not notebook:
-            return set()
+            return {}
 
         cells = self._keep_code_cells(notebook)
         import_statements = [self._extract_import_statements_from_cell(cell) for cell in cells]

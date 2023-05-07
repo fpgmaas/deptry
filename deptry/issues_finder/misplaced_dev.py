@@ -30,12 +30,15 @@ class MisplacedDevDependenciesFinder(IssuesFinder):
         logging.debug("\nScanning for incorrect development dependencies...")
         misplaced_dev_dependencies: list[Violation] = []
 
-        for module in self.imported_modules:
+        for module_with_locations in self.imported_modules_with_locations:
+            module = module_with_locations.module
+
             logging.debug(f"Scanning module {module.name}...")
             corresponding_package_name = self._get_package_name(module)
 
             if corresponding_package_name and self._is_development_dependency(module, corresponding_package_name):
-                misplaced_dev_dependencies.append(MisplacedDevDependencyViolation(module))
+                for location in module_with_locations.locations:
+                    misplaced_dev_dependencies.append(MisplacedDevDependencyViolation(module, location))
 
         return misplaced_dev_dependencies
 

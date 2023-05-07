@@ -4,6 +4,7 @@ import logging
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
+from deptry.imports.location import Location
 from deptry.issues_finder.base import IssuesFinder
 from deptry.violations import ObsoleteDependencyViolation
 
@@ -32,7 +33,9 @@ class ObsoleteDependenciesFinder(IssuesFinder):
             logging.debug(f"Scanning module {dependency.name}...")
 
             if self._is_obsolete(dependency):
-                obsolete_dependencies.append(ObsoleteDependencyViolation(dependency))
+                obsolete_dependencies.append(
+                    ObsoleteDependencyViolation(dependency, Location(dependency.definition_file))
+                )
 
         return obsolete_dependencies
 
@@ -48,12 +51,19 @@ class ObsoleteDependenciesFinder(IssuesFinder):
         return True
 
     def _dependency_found_in_imported_modules(self, dependency: Dependency) -> bool:
-        return any(module.package == dependency.name for module in self.imported_modules)
+        return any(
+            module_with_locations.module.package == dependency.name
+            for module_with_locations in self.imported_modules_with_locations
+        )
 
     def _any_of_the_top_levels_imported(self, dependency: Dependency) -> bool:
         if not dependency.top_levels:
             return False
 
         return any(
-            any(module.name == top_level for module in self.imported_modules) for top_level in dependency.top_levels
+            any(
+                module_with_locations.module.name == top_level
+                for module_with_locations in self.imported_modules_with_locations
+            )
+            for top_level in dependency.top_levels
         )

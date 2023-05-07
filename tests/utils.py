@@ -30,9 +30,9 @@ def run_within_dir(path: Path) -> Generator[None, None, None]:
         os.chdir(oldpwd)
 
 
-def get_issues_report(path: str = "report.json") -> dict[str, Any]:
+def get_issues_report(path: str = "report.json") -> list[dict[str, Any]]:
     with open(path) as file:
-        report: dict[str, Any] = json.load(file)
+        report: list[dict[str, Any]] = json.load(file)
 
     return report
 

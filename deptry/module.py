@@ -1,12 +1,13 @@
 from __future__ import annotations
 
 import logging
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from importlib.metadata import PackageNotFoundError, metadata
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from deptry.dependency import Dependency
+    from deptry.imports.location import Location
 
 
 @dataclass
@@ -33,6 +34,12 @@ class Module:
 
     def __str__(self) -> str:
         return "\n".join("{}: {}".format(*item) for item in vars(self).items())
+
+
+@dataclass
+class ModuleLocations:
+    module: Module
+    locations: list[Location] = field(default_factory=list)
 
 
 class ModuleBuilder:

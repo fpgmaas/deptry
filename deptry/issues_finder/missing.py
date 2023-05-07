@@ -22,11 +22,14 @@ class MissingDependenciesFinder(IssuesFinder):
         logging.debug("\nScanning for missing dependencies...")
         missing_dependencies: list[Violation] = []
 
-        for module in self.imported_modules:
+        for module_with_locations in self.imported_modules_with_locations:
+            module = module_with_locations.module
+
             logging.debug(f"Scanning module {module.name}...")
 
             if self._is_missing(module):
-                missing_dependencies.append(MissingDependencyViolation(module))
+                for location in module_with_locations.locations:
+                    missing_dependencies.append(MissingDependencyViolation(module, location))
 
         return missing_dependencies
 

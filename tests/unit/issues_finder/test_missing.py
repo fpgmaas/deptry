@@ -3,39 +3,46 @@ from __future__ import annotations
 from pathlib import Path
 
 from deptry.dependency import Dependency
+from deptry.imports.location import Location
 from deptry.issues_finder.missing import MissingDependenciesFinder
-from deptry.module import ModuleBuilder
+from deptry.module import ModuleBuilder, ModuleLocations
 from deptry.violations import MissingDependencyViolation
 
 
 def test_simple() -> None:
     dependencies: list[Dependency] = []
+
+    module_foobar_locations = [Location(Path("foo.py"), 1, 2), Location(Path("bar.py"), 3, 4)]
     module_foobar = ModuleBuilder("foobar", {"foo"}, frozenset(), dependencies).build()
-    modules = [module_foobar]
 
-    deps = MissingDependenciesFinder(imported_modules=modules, dependencies=dependencies).find()
+    modules_locations = [ModuleLocations(module_foobar, module_foobar_locations)]
 
-    assert deps == [MissingDependencyViolation(module_foobar)]
+    assert MissingDependenciesFinder(modules_locations, dependencies).find() == [
+        MissingDependencyViolation(module_foobar, location) for location in module_foobar_locations
+    ]
 
 
 def test_local_module() -> None:
     dependencies: list[Dependency] = []
-    modules = [ModuleBuilder("foobar", {"foo", "foobar"}, frozenset(), dependencies).build()]
+    modules_locations = [
+        ModuleLocations(
+            ModuleBuilder("foobar", {"foo", "foobar"}, frozenset(), dependencies).build(),
+            [Location(Path("foo.py"), 1, 2)],
+        )
+    ]
 
-    deps = MissingDependenciesFinder(imported_modules=modules, dependencies=dependencies).find()
-
-    assert deps == []
+    assert MissingDependenciesFinder(modules_locations, dependencies).find() == []
 
 
 def test_simple_with_ignore() -> None:
     dependencies: list[Dependency] = []
-    modules = [ModuleBuilder("foobar", {"foo", "bar"}, frozenset(), dependencies).build()]
+    modules_locations = [
+        ModuleLocations(
+            ModuleBuilder("foobar", {"foo", "bar"}, frozenset(), dependencies).build(), [Location(Path("foo.py"), 1, 2)]
+        )
+    ]
 
-    deps = MissingDependenciesFinder(
-        imported_modules=modules, dependencies=dependencies, ignored_modules=("foobar",)
-    ).find()
-
-    assert deps == []
+    assert MissingDependenciesFinder(modules_locations, dependencies, ignored_modules=("foobar",)).find() == []
 
 
 def test_no_error() -> None:
@@ -44,8 +51,10 @@ def test_no_error() -> None:
     """
 
     dependencies = [Dependency("foo", Path("pyproject.toml"))]
-    module = ModuleBuilder("foo", {"bar"}, frozenset(), dependencies).build()
+    modules_locations = [
+        ModuleLocations(
+            ModuleBuilder("foo", {"bar"}, frozenset(), dependencies).build(), [Location(Path("foo.py"), 1, 2)]
+        )
+    ]
 
-    deps = MissingDependenciesFinder(imported_modules=[module], dependencies=dependencies).find()
-
-    assert deps == []
+    assert MissingDependenciesFinder(modules_locations, dependencies).find() == []

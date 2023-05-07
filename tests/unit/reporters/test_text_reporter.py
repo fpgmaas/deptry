@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from deptry.dependency import Dependency
+from deptry.imports.location import Location
 from deptry.module import Module
 from deptry.reporters import TextReporter
 from deptry.violations import (
@@ -17,46 +18,47 @@ from deptry.violations import (
 if TYPE_CHECKING:
     from _pytest.logging import LogCaptureFixture
 
-    from deptry.violations import Violation
-
 
 def test_logging_number_multiple(caplog: LogCaptureFixture) -> None:
     with caplog.at_level(logging.INFO):
-        violations: dict[str, list[Violation]] = {
-            "missing": [MissingDependencyViolation(Module("foo", package="foo_package"))],
-            "obsolete": [ObsoleteDependencyViolation(Dependency("foo", Path("pyproject.toml")))],
-            "transitive": [TransitiveDependencyViolation(Module("foo", package="foo_package"))],
-            "misplaced_dev": [MisplacedDevDependencyViolation(Module("foo", package="foo_package"))],
-        }
+        violations = [
+            MissingDependencyViolation(Module("foo", package="foo_package"), Location(Path("foo.py"), 1, 2)),
+            ObsoleteDependencyViolation(Dependency("foo", Path("pyproject.toml")), Location(Path("pyproject.toml"))),
+            TransitiveDependencyViolation(Module("foo", package="foo_package"), Location(Path("foo/bar.py"), 1, 2)),
+            MisplacedDevDependencyViolation(Module("foo", package="foo_package"), Location(Path("foo.py"), 1, 2)),
+        ]
         TextReporter(violations).report()
 
-    assert "There were 4 dependency issues found" in caplog.text
-    assert "The project contains obsolete dependencies" in caplog.text
-    assert "There are dependencies missing from the project's list of dependencies" in caplog.text
-    assert "There are transitive dependencies that should be explicitly defined as dependencies" in caplog.text
-    assert "There are imported modules from development dependencies detected" in caplog.text
-    assert "For more information, see the documentation" in caplog.text
+    assert caplog.messages == [
+        "",
+        f"{str(Path('foo.py'))}:1:2: DEP001 foo imported but missing from the dependency definitions",
+        f"{str(Path('pyproject.toml'))}: DEP002 foo defined as a dependency but not used in the codebase",
+        f"{str(Path('foo/bar.py'))}:1:2: DEP003 foo_package imported but it is a transitive dependency",
+        f"{str(Path('foo.py'))}:1:2: DEP004 foo imported but declared as a dev dependency",
+        "Found 4 dependency issues.",
+        "\nFor more information, see the documentation: https://fpgmaas.github.io/deptry/",
+    ]
 
 
 def test_logging_number_single(caplog: LogCaptureFixture) -> None:
     with caplog.at_level(logging.INFO):
-        violations: dict[str, list[Violation]] = {
-            "missing": [MissingDependencyViolation(Module("foo", package="foo_package"))]
-        }
-        TextReporter(violations).report()
+        TextReporter(
+            [MissingDependencyViolation(Module("foo", package="foo_package"), Location(Path("foo.py"), 1, 2))]
+        ).report()
 
-    assert "There was 1 dependency issue found" in caplog.text
+    assert caplog.messages == [
+        "",
+        "foo.py:1:2: DEP001 foo imported but missing from the dependency definitions",
+        "Found 1 dependency issue.",
+        "\nFor more information, see the documentation: https://fpgmaas.github.io/deptry/",
+    ]
 
 
 def test_logging_number_none(caplog: LogCaptureFixture) -> None:
     with caplog.at_level(logging.INFO):
-        violations: dict[str, list[Violation]] = {"missing": []}
-        TextReporter(violations).report()
+        TextReporter([]).report()
 
-    assert "No dependency issues found" in caplog.text
-    assert "There were 4 dependency issues found" not in caplog.text
-    assert "The project contains obsolete dependencies" not in caplog.text
-    assert "There are dependencies missing from the project's list of dependencies" not in caplog.text
-    assert "There are transitive dependencies that should be explicitly defined as dependencies" not in caplog.text
-    assert "There are imported modules from development dependencies detected" not in caplog.text
-    assert "For more information, see the documentation" not in caplog.text
+    assert caplog.messages == [
+        "",
+        "Success! No dependency issues found.",
+    ]

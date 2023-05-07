@@ -2,10 +2,13 @@ from __future__ import annotations
 
 import ast
 from abc import ABC, abstractmethod
+from collections import defaultdict
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 import chardet
+
+from deptry.imports.location import Location
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -20,11 +23,10 @@ class ImportExtractor(ABC):
     file: Path
 
     @abstractmethod
-    def extract_imports(self) -> set[str]:
+    def extract_imports(self) -> dict[str, list[Location]]:
         raise NotImplementedError()
 
-    @staticmethod
-    def _extract_imports_from_ast(tree: ast.AST) -> set[str]:
+    def _extract_imports_from_ast(self, tree: ast.AST) -> dict[str, list[Location]]:
         """
         Given an Abstract Syntax Tree, find the imported top-level modules.
         For example, given the source tree of a file with contents:
@@ -34,13 +36,16 @@ class ImportExtractor(ABC):
         Will return the set {"pandas"}.
         """
 
-        imported_modules: set[str] = set()
+        imported_modules: dict[str, list[Location]] = defaultdict(list)
 
         for node in ast.walk(tree):
             if isinstance(node, ast.Import):
-                imported_modules |= {module.name.split(".")[0] for module in node.names}
+                for module in node.names:
+                    imported_modules[module.name.split(".")[0]].append(
+                        Location(self.file, node.lineno, node.col_offset)
+                    )
             elif isinstance(node, ast.ImportFrom) and node.module and node.level == 0:
-                imported_modules.add(node.module.split(".")[0])
+                imported_modules[node.module.split(".")[0]].append(Location(self.file, node.lineno, node.col_offset))
 
         return imported_modules
 

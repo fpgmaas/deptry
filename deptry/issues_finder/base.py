@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from deptry.dependency import Dependency
-    from deptry.module import Module
+    from deptry.module import ModuleLocations
     from deptry.violations import Violation
 
 
@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 class IssuesFinder(ABC):
     """Base class for all issues finders."""
 
-    imported_modules: list[Module]
+    imported_modules_with_locations: list[ModuleLocations]
     dependencies: list[Dependency]
     ignored_modules: tuple[str, ...] = ()
 

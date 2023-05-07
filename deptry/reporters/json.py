@@ -2,9 +2,12 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 
 from deptry.reporters.base import Reporter
-from deptry.violations import TransitiveDependencyViolation
+
+if TYPE_CHECKING:
+    from typing import Any
 
 
 @dataclass
@@ -12,17 +15,23 @@ class JSONReporter(Reporter):
     json_output: str
 
     def report(self) -> None:
-        output = {}
+        output: list[dict[str, str | dict[str, Any]]] = []
 
-        for issue_type, violations in self.violations.items():
-            output[issue_type] = [
-                (
-                    violation.issue.package
-                    if isinstance(violation, TransitiveDependencyViolation)
-                    else violation.issue.name
-                )
-                for violation in violations
-            ]
+        for violation in self.violations:
+            output.append(
+                {
+                    "error": {
+                        "code": violation.error_code,
+                        "message": violation.get_error_message(),
+                    },
+                    "module": violation.issue.name,
+                    "location": {
+                        "file": str(violation.location.file),
+                        "line": violation.location.line,
+                        "column": violation.location.column,
+                    },
+                },
+            )
 
         with open(self.json_output, "w", encoding="utf-8") as f:
             json.dump(output, f, ensure_ascii=False, indent=4)
