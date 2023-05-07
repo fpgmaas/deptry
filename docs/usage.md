@@ -154,24 +154,6 @@ extend_exclude = ["a_directory", "a_python_file\\.py", "a_pattern/.*"]
 deptry . --extend-exclude "a_directory|a_python_file\.py|a_pattern/.*"
 ```
 
-#### Ignore obsolete
-
-List of packages to ignore when running the check for [obsolete dependencies](issues-detection.md#obsolete-dependencies-dep002).
-
-- Type: `List[str]`
-- Default: `[]`
-- `pyproject.toml` option name: `ignore_obsolete`
-- CLI option name: `--ignore-obsolete` (short: `-io`)
-- `pyproject.toml` example:
-```toml
-[tool.deptry]
-ignore_obsolete = ["uvicorn", "uvloop"]
-```
-- CLI example:
-```shell
-deptry . --ignore-obsolete "uvicorn,uvloop"
-```
-
 #### Ignore missing
 
 List of Python modules to ignore when running the check for [missing dependencies](issues-detection.md#missing-dependencies-dep001).
@@ -188,6 +170,24 @@ ignore_missing = ["pip", "tomllib"]
 - CLI example:
 ```shell
 deptry . --ignore-missing "pip,tomllib"
+```
+
+#### Ignore obsolete
+
+List of packages to ignore when running the check for [obsolete dependencies](issues-detection.md#obsolete-dependencies-dep002).
+
+- Type: `List[str]`
+- Default: `[]`
+- `pyproject.toml` option name: `ignore_obsolete`
+- CLI option name: `--ignore-obsolete` (short: `-io`)
+- `pyproject.toml` example:
+```toml
+[tool.deptry]
+ignore_obsolete = ["uvicorn", "uvloop"]
+```
+- CLI example:
+```shell
+deptry . --ignore-obsolete "uvicorn,uvloop"
 ```
 
 #### Ignore transitive
@@ -244,24 +244,6 @@ ignore_notebooks = true
 deptry . --ignore-notebooks
 ```
 
-#### Skip obsolete
-
-Disable the check for [obsolete dependencies](issues-detection.md#obsolete-dependencies-dep002).
-
-- Type: `bool`
-- Default: `False`
-- `pyproject.toml` option name: `skip_obsolete`
-- CLI option name: `--skip-obsolete`
-- `pyproject.toml` example:
-```toml
-[tool.deptry]
-skip_obsolete = true
-```
-- CLI example:
-```shell
-deptry . --skip-obsolete
-```
-
 #### Skip missing
 
 Disable the check for [missing dependencies](issues-detection.md#missing-dependencies-dep001).
@@ -278,6 +260,24 @@ skip_missing = true
 - CLI example:
 ```shell
 deptry . --skip-missing
+```
+
+#### Skip obsolete
+
+Disable the check for [obsolete dependencies](issues-detection.md#obsolete-dependencies-dep002).
+
+- Type: `bool`
+- Default: `False`
+- `pyproject.toml` option name: `skip_obsolete`
+- CLI option name: `--skip-obsolete`
+- `pyproject.toml` example:
+```toml
+[tool.deptry]
+skip_obsolete = true
+```
+- CLI example:
+```shell
+deptry . --skip-obsolete
 ```
 
 #### Skip transitive
