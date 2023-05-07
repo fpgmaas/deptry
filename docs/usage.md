@@ -156,7 +156,7 @@ deptry . --extend-exclude "a_directory|a_python_file\.py|a_pattern/.*"
 
 #### Ignore obsolete
 
-List of packages to ignore when running the check for [obsolete dependencies](issues-detection.md#obsolete-dependencies).
+List of packages to ignore when running the check for [obsolete dependencies](issues-detection.md#obsolete-dependencies-dep002).
 
 - Type: `List[str]`
 - Default: `[]`
@@ -174,7 +174,7 @@ deptry . --ignore-obsolete "uvicorn,uvloop"
 
 #### Ignore missing
 
-List of Python modules to ignore when running the check for [missing dependencies](issues-detection.md#missing-dependencies).
+List of Python modules to ignore when running the check for [missing dependencies](issues-detection.md#missing-dependencies-dep001).
 
 - Type: `List[str]`
 - Default: `[]`
@@ -192,7 +192,7 @@ deptry . --ignore-missing "pip,tomllib"
 
 #### Ignore transitive
 
-List of Python modules to ignore when running the check for [transitive dependencies](issues-detection.md#transitive-dependencies).
+List of Python modules to ignore when running the check for [transitive dependencies](issues-detection.md#transitive-dependencies-dep003).
 
 - Type: `List[str]`
 - Default: `[]`
@@ -210,7 +210,7 @@ deptry . --ignore-transitive "httpx,pip"
 
 #### Ignore misplaced dev
 
-List of Python modules to ignore when running the check for [misplaced development dependencies](issues-detection.md#misplaced-development-dependencies).
+List of Python modules to ignore when running the check for [misplaced development dependencies](issues-detection.md#misplaced-development-dependencies-dep004).
 
 - Type: `List[str]`
 - Default: `[]`
@@ -246,7 +246,7 @@ deptry . --ignore-notebooks
 
 #### Skip obsolete
 
-Disable the check for [obsolete dependencies](issues-detection.md#obsolete-dependencies).
+Disable the check for [obsolete dependencies](issues-detection.md#obsolete-dependencies-dep002).
 
 - Type: `bool`
 - Default: `False`
@@ -264,7 +264,7 @@ deptry . --skip-obsolete
 
 #### Skip missing
 
-Disable the check for [missing dependencies](issues-detection.md#missing-dependencies).
+Disable the check for [missing dependencies](issues-detection.md#missing-dependencies-dep001).
 
 - Type: `bool`
 - Default: `False`
@@ -282,7 +282,7 @@ deptry . --skip-missing
 
 #### Skip transitive
 
-Disable the check for [transitive dependencies](issues-detection.md#transitive-dependencies).
+Disable the check for [transitive dependencies](issues-detection.md#transitive-dependencies-dep003).
 
 - Type: `bool`
 - Default: `False`
@@ -300,7 +300,7 @@ deptry . --skip-transitive
 
 #### Skip misplaced dev
 
-Disable the check for [misplaced development dependencies](issues-detection.md#misplaced-development-dependencies).
+Disable the check for [misplaced development dependencies](issues-detection.md#misplaced-development-dependencies-dep004).
 
 - Type: `bool`
 - Default: `False`

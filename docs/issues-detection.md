@@ -2,12 +2,49 @@
 
 _deptry_ looks for the following issues in dependencies:
 
-- [Obsolete dependencies](#obsolete-dependencies)
-- [Missing dependencies](#missing-dependencies)
-- [Transitive dependencies](#transitive-dependencies)
-- [Misplaced development dependencies](#misplaced-development-dependencies)
+- [Missing dependencies (DEP001)](#missing-dependencies-dep001)
+- [Obsolete dependencies (DEP002)](#obsolete-dependencies-dep002)
+- [Transitive dependencies (DEP003)](#transitive-dependencies-dep003)
+- [Misplaced development dependencies (DEP004)](#misplaced-development-dependencies-dep004)
 
-## Obsolete dependencies
+## Missing dependencies (DEP001)
+
+Python modules that are imported within a project, for which no corresponding packages are found in the dependencies.
+
+### Configuration
+
+This check can be disabled with [Skip missing](usage.md#skip-missing) option.
+
+Specific dependencies can be ignored with [Ignore missing](usage.md#ignore-missing) option.
+
+### Example
+
+On a project with the following dependencies:
+
+```toml
+[project]
+dependencies = []
+```
+
+and the following `main.py` that is the only Python file in the project:
+
+```python
+import httpx
+
+def make_http_request():
+    return httpx.get("https://example.com")
+```
+
+_deptry_ will report `httpx` as a missing dependency because it is imported in the project, but not defined in the dependencies.
+
+To fix the issue, `httpx` should be added to `[project.dependencies]`:
+
+```toml
+[project]
+dependencies = ["httpx==0.23.1"]
+```
+
+## Obsolete dependencies (DEP002)
 
 Dependencies that are required in a project, but are not used within the codebase.
 
@@ -48,44 +85,7 @@ To fix the issue, `requests` should be removed from `[project.dependencies]`:
 dependencies = ["httpx==0.23.1"]
 ```
 
-## Missing dependencies
-
-Python modules that are imported within a project, for which no corresponding packages are found in the dependencies.
-
-### Configuration
-
-This check can be disabled with [Skip missing](usage.md#skip-missing) option.
-
-Specific dependencies can be ignored with [Ignore missing](usage.md#ignore-missing) option.
-
-### Example
-
-On a project with the following dependencies:
-
-```toml
-[project]
-dependencies = []
-```
-
-and the following `main.py` that is the only Python file in the project:
-
-```python
-import httpx
-
-def make_http_request():
-    return httpx.get("https://example.com")
-```
-
-_deptry_ will report `httpx` as a missing dependency because it is imported in the project, but not defined in the dependencies.
-
-To fix the issue, `httpx` should be added to `[project.dependencies]`:
-
-```toml
-[project]
-dependencies = ["httpx==0.23.1"]
-```
-
-## Transitive dependencies
+## Transitive dependencies (DEP003)
 
 Python modules that are imported within a project, where the corresponding dependencies are in the dependency tree, but not as direct dependencies.
 For example, assume your project has a `.py` file that imports module A. However, A is not in your project's dependencies. Instead, another package (B) is in your list of dependencies, which in turn depends on A. Package A should be explicitly added to your project's list of dependencies.
@@ -133,7 +133,7 @@ dependencies = [
 ]
 ```
 
-## Misplaced development dependencies
+## Misplaced development dependencies (DEP004)
 
 Dependencies specified as development ones that should be included as regular dependencies.
 
