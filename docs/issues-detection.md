@@ -121,7 +121,7 @@ def get_certificates_location():
     return certifi.where()
 ```
 
-_deptry_ will report `certifi` as a transitive dependency because it is not used in the project.
+_deptry_ will report `certifi` as a transitive dependency because it is used in the project, but not defined as a direct dependency, and is only present in the dependency tree because another dependency depends on it.
 
 To fix the issue, `certifi` should be explicitly added to `[project.dependencies]`:
 
