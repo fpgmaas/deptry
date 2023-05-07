@@ -89,7 +89,7 @@ class Core:
         ]
 
         violations = self._find_violations(imported_modules_with_locations, dependencies_extract.dependencies)
-        TextReporter(violations).report()
+        TextReporter(violations, use_ansi=not self.no_ansi).report()
 
         if self.json_output:
             JSONReporter(violations, self.json_output).report()

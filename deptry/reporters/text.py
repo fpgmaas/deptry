@@ -12,6 +12,8 @@ if TYPE_CHECKING:
 
 @dataclass
 class TextReporter(Reporter):
+    use_ansi: bool = True
+
     def report(self) -> None:
         self._log_and_exit()
 
