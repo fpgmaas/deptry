@@ -427,15 +427,6 @@ Write the detected issues to a JSON file. This will write the following kind of 
 ]
 ```
 
-```json
-{
-    "obsolete": ["uvicorn", "uvloop"],
-    "missing": [],
-    "transitive": ["httpx"],
-    "misplaced_dev": ["black"]
-}
-```
-
 - Type: `Path`
 - Default: `None`
 - `pyproject.toml` option name: `json_output`
