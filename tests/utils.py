@@ -5,6 +5,8 @@ import os
 from contextlib import contextmanager
 from typing import TYPE_CHECKING, Any, Generator
 
+from deptry.reporters.text import COLORS
+
 if TYPE_CHECKING:
     from pathlib import Path
 
@@ -47,3 +49,7 @@ def create_files(paths: list[Path]) -> None:
         path.parent.mkdir(parents=True, exist_ok=True)
         with open(path, "w"):
             pass
+
+
+def stylize(text: str, **kwargs: Any) -> str:
+    return text.format(**kwargs, **COLORS)
