@@ -24,8 +24,8 @@ class MisplacedDevDependenciesFinder(IssuesFinder):
     def find(self) -> list[Violation]:
         """
         In this function, we use 'corresponding_package_name' instead of module.package, since it can happen that a
-        development dependency is not installed, but it's still found to be used in the codebase, due to simple name matching.
-        In that case, it's added under module.dev_top_levels. _get_package_name is added for these edge-cases.
+        development dependency is not installed, but it's still found to be used in the codebase, due to simple name
+        matching. In that case, it's added under module.dev_top_levels. _get_package_name is added for these edge-cases.
         """
         logging.debug("\nScanning for incorrect development dependencies...")
         misplaced_dev_dependencies: list[Violation] = []

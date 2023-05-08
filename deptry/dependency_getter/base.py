@@ -24,6 +24,9 @@ class DependencyGetter(ABC):
 
     Args:
         config: The path to a configuration file that contains the project's dependencies.
+        package_module_name_map: A mapping of package names to their corresponding module names that may not be found
+        otherwise from the package's metadata. The keys in the mapping should be package names, and the values should
+        be sequences of module names associated with the package.
     """
 
     config: Path

@@ -16,13 +16,15 @@ if TYPE_CHECKING:
 @dataclass
 class ObsoleteDependenciesFinder(IssuesFinder):
     """
-    Given a list of imported modules and a list of project dependencies, determine which ones are obsolete.
+    Finds obsolete dependencies by comparing a list of imported modules to a list of project dependencies.
 
-    This is done by checking for each dependency if there is any module of which the metadata field 'Name' is equal to the dependency.
-    If that is found, the dependency is not obsolete.
-    Otherwise, we look at the top-level module names of the dependency, and check if any of those is imported. An example of this is
-    'matplotlib' with top-levels: ['matplotlib', 'mpl_toolkits', 'pylab']. `mpl_toolkits` does not have any associated metadata,
-    but if this is imported, the associated dependency `matplotlib` is not obsolete, even if `matplotlib` itself is not imported anywhere.
+    A dependency is considered obsolete if none of the following conditions hold:
+    - A module with the exact name of the dependency is imported.
+    - Any of the top-level modules of the dependency are imported.
+
+    For example, 'matplotlib' has top-levels ['matplotlib', 'mpl_toolkits', 'pylab']. `mpl_toolkits` does not have
+    any associated metadata, but if this is imported the associated dependency `matplotlib` is not obsolete,
+    even if `matplotlib` itself is not imported anywhere.
     """
 
     def find(self) -> list[Violation]:
