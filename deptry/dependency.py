@@ -54,9 +54,9 @@ class Dependency:
                 3. If metadata extraction fails, fall back to the dependency's name, where `-` is replaced with `_`.
 
         Args:
-            name (str): The name of the dependency.
-            distribution (Optional[Distribution]): The metadata distribution of the package.
-            module_names (Optional[Sequence[str]]): If this is given, use these as the top-level modules instead of
+            name: The name of the dependency.
+            distribution: The metadata distribution of the package.
+            module_names: If this is given, use these as the top-level modules instead of
                 searching for them in the metadata.
         """
         if module_names is not None:
