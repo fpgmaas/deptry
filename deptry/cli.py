@@ -131,9 +131,9 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
     help="Disable ANSI characters in terminal output.",
 )
 @click.option(
-    "--skip-obsolete",
+    "--skip-unused",
     is_flag=True,
-    help="Boolean flag to specify if deptry should skip scanning the project for obsolete dependencies.",
+    help="Boolean flag to specify if deptry should skip scanning the project for unused dependencies.",
 )
 @click.option(
     "--skip-missing",
@@ -154,12 +154,12 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
     ),
 )
 @click.option(
-    "--ignore-obsolete",
+    "--ignore-unused",
     "-io",
     type=COMMA_SEPARATED_TUPLE,
     help="""
-    Comma-separated list of dependencies that should never be marked as obsolete, even if they are not imported in any of the files scanned.
-    For example; `deptry . --ignore-obsolete foo,bar`.
+    Comma-separated list of dependencies that should never be marked as unused, even if they are not imported in any of the files scanned.
+    For example; `deptry . --ignore-unused foo,bar`.
     """,
     default=(),
 )
@@ -271,11 +271,11 @@ def deptry(
     root: Path,
     config: Path,
     no_ansi: bool,
-    ignore_obsolete: tuple[str, ...],
+    ignore_unused: tuple[str, ...],
     ignore_missing: tuple[str, ...],
     ignore_transitive: tuple[str, ...],
     ignore_misplaced_dev: tuple[str, ...],
-    skip_obsolete: bool,
+    skip_unused: bool,
     skip_missing: bool,
     skip_transitive: bool,
     skip_misplaced_dev: bool,
@@ -299,7 +299,7 @@ def deptry(
         root=root,
         config=config,
         no_ansi=no_ansi,
-        ignore_obsolete=ignore_obsolete,
+        ignore_unused=ignore_unused,
         ignore_missing=ignore_missing,
         ignore_transitive=ignore_transitive,
         ignore_misplaced_dev=ignore_misplaced_dev,
@@ -307,7 +307,7 @@ def deptry(
         extend_exclude=extend_exclude,
         using_default_exclude=not exclude,
         ignore_notebooks=ignore_notebooks,
-        skip_obsolete=skip_obsolete,
+        skip_unused=skip_unused,
         skip_missing=skip_missing,
         skip_transitive=skip_transitive,
         skip_misplaced_dev=skip_misplaced_dev,

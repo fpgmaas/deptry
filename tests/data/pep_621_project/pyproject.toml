@@ -27,4 +27,4 @@ requires = ["setuptools>=61.0.0"]
 build-backend = "setuptools.build_meta"
 
 [tool.deptry]
-ignore_obsolete = ["pkginfo"]
+ignore_unused = ["pkginfo"]

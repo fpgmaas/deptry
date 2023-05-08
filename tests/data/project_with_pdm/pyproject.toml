@@ -26,4 +26,4 @@ lint = [
 ]
 
 [tool.deptry]
-ignore_obsolete = ["pkginfo"]
+ignore_unused = ["pkginfo"]

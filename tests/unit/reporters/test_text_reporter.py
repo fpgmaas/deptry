@@ -14,8 +14,8 @@ from deptry.reporters.text import COLORS, COLORS_NOOP
 from deptry.violations import (
     MisplacedDevDependencyViolation,
     MissingDependencyViolation,
-    ObsoleteDependencyViolation,
     TransitiveDependencyViolation,
+    UnusedDependencyViolation,
 )
 from tests.utils import stylize
 
@@ -27,7 +27,7 @@ def test_logging_number_multiple(caplog: LogCaptureFixture) -> None:
     with caplog.at_level(logging.INFO):
         violations = [
             MissingDependencyViolation(Module("foo", package="foo_package"), Location(Path("foo.py"), 1, 2)),
-            ObsoleteDependencyViolation(Dependency("foo", Path("pyproject.toml")), Location(Path("pyproject.toml"))),
+            UnusedDependencyViolation(Dependency("foo", Path("pyproject.toml")), Location(Path("pyproject.toml"))),
             TransitiveDependencyViolation(Module("foo", package="foo_package"), Location(Path("foo/bar.py"), 1, 2)),
             MisplacedDevDependencyViolation(Module("foo", package="foo_package"), Location(Path("foo.py"), 1, 2)),
         ]
@@ -102,7 +102,7 @@ def test_logging_no_ansi(caplog: LogCaptureFixture) -> None:
     with caplog.at_level(logging.INFO):
         violations = [
             MissingDependencyViolation(Module("foo", package="foo_package"), Location(Path("foo.py"), 1, 2)),
-            ObsoleteDependencyViolation(Dependency("foo", Path("pyproject.toml")), Location(Path("pyproject.toml"))),
+            UnusedDependencyViolation(Dependency("foo", Path("pyproject.toml")), Location(Path("pyproject.toml"))),
             TransitiveDependencyViolation(Module("foo", package="foo_package"), Location(Path("foo/bar.py"), 1, 2)),
             MisplacedDevDependencyViolation(Module("foo", package="foo_package"), Location(Path("foo.py"), 1, 2)),
         ]

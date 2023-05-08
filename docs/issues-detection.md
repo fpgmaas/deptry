@@ -3,7 +3,7 @@
 _deptry_ looks for the following issues in dependencies:
 
 - [Missing dependencies (DEP001)](#missing-dependencies-dep001)
-- [Obsolete dependencies (DEP002)](#obsolete-dependencies-dep002)
+- [Unused dependencies (DEP002)](#unused-dependencies-dep002)
 - [Transitive dependencies (DEP003)](#transitive-dependencies-dep003)
 - [Misplaced development dependencies (DEP004)](#misplaced-development-dependencies-dep004)
 
@@ -44,15 +44,15 @@ To fix the issue, `httpx` should be added to `[project.dependencies]`:
 dependencies = ["httpx==0.23.1"]
 ```
 
-## Obsolete dependencies (DEP002)
+## Unused dependencies (DEP002)
 
 Dependencies that are required in a project, but are not used within the codebase.
 
 ### Configuration
 
-This check can be disabled with [Skip obsolete](usage.md#skip-obsolete) option.
+This check can be disabled with [Skip unused](usage.md#skip-unused) option.
 
-Specific dependencies can be ignored with [Ignore obsolete](usage.md#ignore-obsolete) option.
+Specific dependencies can be ignored with [Ignore unused](usage.md#ignore-unused) option.
 
 ### Example
 
@@ -76,7 +76,7 @@ def make_http_request():
     return httpx.get("https://example.com")
 ```
 
-_deptry_ will report `requests` as an obsolete dependency because it is not used in the project.
+_deptry_ will report `requests` as an unused dependency because it is not used in the project.
 
 To fix the issue, `requests` should be removed from `[project.dependencies]`:
 

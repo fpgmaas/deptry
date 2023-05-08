@@ -15,8 +15,8 @@ from deptry.exceptions import IncorrectDependencyFormatError, UnsupportedPythonV
 from deptry.imports.extract import get_imported_modules_for_list_of_files
 from deptry.issues_finder.misplaced_dev import MisplacedDevDependenciesFinder
 from deptry.issues_finder.missing import MissingDependenciesFinder
-from deptry.issues_finder.obsolete import ObsoleteDependenciesFinder
 from deptry.issues_finder.transitive import TransitiveDependenciesFinder
+from deptry.issues_finder.unused import UnusedDependenciesFinder
 from deptry.module import ModuleBuilder, ModuleLocations
 from deptry.python_file_finder import PythonFileFinder
 from deptry.reporters import JSONReporter, TextReporter
@@ -36,11 +36,11 @@ class Core:
     root: Path
     config: Path
     no_ansi: bool
-    ignore_obsolete: tuple[str, ...]
+    ignore_unused: tuple[str, ...]
     ignore_missing: tuple[str, ...]
     ignore_transitive: tuple[str, ...]
     ignore_misplaced_dev: tuple[str, ...]
-    skip_obsolete: bool
+    skip_unused: bool
     skip_missing: bool
     skip_transitive: bool
     skip_misplaced_dev: bool
@@ -101,9 +101,9 @@ class Core:
     ) -> list[Violation]:
         violations = []
 
-        if not self.skip_obsolete:
+        if not self.skip_unused:
             violations.extend(
-                ObsoleteDependenciesFinder(imported_modules_with_locations, dependencies, self.ignore_obsolete).find()
+                UnusedDependenciesFinder(imported_modules_with_locations, dependencies, self.ignore_unused).find()
             )
 
         if not self.skip_missing:
