@@ -12,6 +12,19 @@ if TYPE_CHECKING:
 
 @dataclass
 class Violation(ABC):
+    """
+    An abstract base class representing a violation found in the project's dependencies.
+
+    Attributes:
+        error_code (ClassVar[str]): A class variable representing the error code associated with the violation. e.g.
+            `DEP001`.
+        error_template (ClassVar[str]): A class variable representing a string template used to generate an error
+            message for the violation.
+        issue (Union[Dependency, Module]): An attribute representing the module or dependency where the violation
+            occurred.
+        location (Location): An attribute representing the location in the code where the violation occurred.
+    """
+
     error_code: ClassVar[str] = ""
     error_template: ClassVar[str] = ""
     issue: Dependency | Module

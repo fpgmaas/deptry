@@ -17,7 +17,14 @@ class Dependency:
     A project's dependency with its associated top-level module names. There are stored in the metadata's top_level.txt.
     An example of this is 'matplotlib' with top-levels: ['matplotlib', 'mpl_toolkits', 'pylab'].
 
-    By default, we also add the dependency's name with '-' replaced by '_' to the top-level modules.
+    Attributes:
+        name (str): The name of the dependency.
+        definition_file (Path): The path to the file defining the dependency, e.g. 'pyproject.toml'.
+        is_conditional (bool): Indicates if the dependency is conditional.
+        is_optional (bool): Indicates if the dependency is optional i.e. dependencies that are not installed by default
+          and that can be used to 'create a variant of your package with a set of extra functionalities.
+        found (bool): Indicates if the dependency has been found in the environment.
+        top_levels (set[str]): The top-level module names associated with the dependency.
     """
 
     def __init__(
@@ -28,11 +35,6 @@ class Dependency:
         optional: bool = False,
         module_names: Sequence[str] | None = None,
     ) -> None:
-        """
-        Args:
-            name: Name of the dependency, as shown in pyproject.toml
-            conditional: boolean to indicate if the dependency is conditional, e.g. 'importlib-metadata': {'version': '*', 'python': '<=3.7'}
-        """
         distribution = self.find_distribution(name)
 
         self.name = name
@@ -45,6 +47,18 @@ class Dependency:
     def _get_top_levels(
         self, name: str, distribution: Distribution | None, module_names: Sequence[str] | None
     ) -> set[str]:
+        """
+        Get the top-level module names for a dependency. They are searched for in the following order:
+                1. If `module_names` is defined, simply use those as the top-level modules.
+                2. Otherwise, try to extract the top-level module names from the metadata.
+                3. If metadata extraction fails, fall back to the dependency's name, where `-` is replaced with `_`.
+
+        Args:
+            name (str): The name of the dependency.
+            distribution (Optional[Distribution]): The metadata distribution of the package.
+            module_names (Optional[Sequence[str]]): If this is given, use these as the top-level modules instead of
+                searching for them in the metadata.
+        """
         if module_names is not None:
             return set(module_names)
 

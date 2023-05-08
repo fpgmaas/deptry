@@ -12,6 +12,22 @@ if TYPE_CHECKING:
 
 @dataclass
 class Module:
+    """
+    Represents an imported module and its properties.
+
+    Attributes:
+        name (str): The name of the imported module.
+        standard_library (bool, optional): Whether the module is part of the Python standard library. Defaults to False.
+        local_module (bool, optional): Whether the module is a local module. Defaults to False.
+        package (str, optional): The name of the package that contains the module. Defaults to None.
+        top_levels (List[str], optional): A list of dependencies that contain this module in their top-level module
+            names. Defaults to None.
+        dev_top_levels (List[str], optional): A list of development dependencies that contain this module in their
+            top-level module names. Defaults to None.
+        is_dependency (bool, optional): Whether the module is provided by a listed dependency. Defaults to None.
+        is_dev_dependency (bool, optional): Whether the module is provided by a listed development dependency. Defaults to None.
+    """
+
     name: str
     standard_library: bool = False
     local_module: bool = False
