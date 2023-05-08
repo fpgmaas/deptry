@@ -22,7 +22,7 @@ class Dependency:
         definition_file (Path): The path to the file defining the dependency, e.g. 'pyproject.toml'.
         is_conditional (bool): Indicates if the dependency is conditional.
         is_optional (bool): Indicates if the dependency is optional i.e. dependencies that are not installed by default
-          and that can be used to create a variant of your package with a set of extra functionalities.
+          and that can be used to create a variant of the package with a set of extra functionalities.
         found (bool): Indicates if the dependency has been found in the environment.
         top_levels (set[str]): The top-level module names associated with the dependency.
     """
