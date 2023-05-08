@@ -60,8 +60,8 @@ deptry .
 
 Example output could look as follows:
 
-```terminal
-Scanning 1 files...
+```console
+Scanning 2 files...
 
 foo/bar.py:1:0: DEP004 'numpy' imported but declared as a dev dependency
 foo/bar.py:2:0: DEP001 'matplotlib' imported but missing from the dependency definitions
