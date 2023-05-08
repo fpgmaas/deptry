@@ -18,10 +18,10 @@ class IssuesFinder(ABC):
     Subclasses must implement the 'find' method, which returns a list of Violation objects representing the issues found.
 
     Attributes:
-        imported_modules_with_locations (list[ModuleLocations]): A list of ModuleLocations objects representing the
+        imported_modules_with_locations: A list of ModuleLocations objects representing the
             modules imported by the project and their locations.
-        dependencies (list[Dependency]): A list of Dependency objects representing the project's dependencies.
-        ignored_modules (tuple[str, ...]): A tuple of module names to ignore when scanning for issues. Defaults to an
+        dependencies: A list of Dependency objects representing the project's dependencies.
+        ignored_modules: A tuple of module names to ignore when scanning for issues. Defaults to an
             empty tuple.
 
     """
