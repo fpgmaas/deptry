@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 @dataclass
 class MissingDependencyViolation(Violation):
     error_code: ClassVar[str] = "DEP001"
-    error_template: ClassVar[str] = "{name} imported but missing from the dependency definitions"
+    error_template: ClassVar[str] = "'{name}' imported but missing from the dependency definitions"
     issue: Module
 
     def get_error_message(self) -> str:

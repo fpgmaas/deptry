@@ -81,6 +81,7 @@ def test__get_local_modules(
             Core(
                 root=tmp_path / root_suffix,
                 config=Path("pyproject.toml"),
+                no_ansi=False,
                 ignore_obsolete=(),
                 ignore_missing=(),
                 ignore_transitive=(),

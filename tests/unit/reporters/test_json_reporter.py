@@ -35,7 +35,7 @@ def test_simple(tmp_path: Path) -> None:
 
         assert data == [
             {
-                "error": {"code": "DEP001", "message": "foo imported but missing from the dependency definitions"},
+                "error": {"code": "DEP001", "message": "'foo' imported but missing from the dependency definitions"},
                 "module": "foo",
                 "location": {
                     "file": str(Path("foo.py")),
@@ -44,7 +44,7 @@ def test_simple(tmp_path: Path) -> None:
                 },
             },
             {
-                "error": {"code": "DEP002", "message": "foo defined as a dependency but not used in the codebase"},
+                "error": {"code": "DEP002", "message": "'foo' defined as a dependency but not used in the codebase"},
                 "module": "foo",
                 "location": {
                     "file": str(Path("pyproject.toml")),
@@ -53,7 +53,7 @@ def test_simple(tmp_path: Path) -> None:
                 },
             },
             {
-                "error": {"code": "DEP003", "message": "foo_package imported but it is a transitive dependency"},
+                "error": {"code": "DEP003", "message": "'foo_package' imported but it is a transitive dependency"},
                 "module": "foo",
                 "location": {
                     "file": str(Path("foo/bar.py")),
@@ -62,7 +62,7 @@ def test_simple(tmp_path: Path) -> None:
                 },
             },
             {
-                "error": {"code": "DEP004", "message": "foo imported but declared as a dev dependency"},
+                "error": {"code": "DEP004", "message": "'foo' imported but declared as a dev dependency"},
                 "module": "foo",
                 "location": {
                     "file": str(Path("foo.py")),

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import sys
 from collections import defaultdict
 from importlib.metadata import version
 from pathlib import Path
@@ -13,6 +14,11 @@ from deptry.core import Core
 
 if TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
+
+if sys.platform == "win32":
+    from colorama import just_fix_windows_console
+
+    just_fix_windows_console()
 
 DEFAULT_EXCLUDE = ("venv", r"\.venv", r"\.direnv", "tests", r"\.git", r"setup\.py")
 
@@ -118,6 +124,11 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
     callback=read_configuration_from_pyproject_toml,
     help="Path to the pyproject.toml file to read configuration from.",
     default="pyproject.toml",
+)
+@click.option(
+    "--no-ansi",
+    is_flag=True,
+    help="Disable ANSI characters in terminal output.",
 )
 @click.option(
     "--skip-obsolete",
@@ -259,6 +270,7 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
 def deptry(
     root: Path,
     config: Path,
+    no_ansi: bool,
     ignore_obsolete: tuple[str, ...],
     ignore_missing: tuple[str, ...],
     ignore_transitive: tuple[str, ...],
@@ -286,6 +298,7 @@ def deptry(
     Core(
         root=root,
         config=config,
+        no_ansi=no_ansi,
         ignore_obsolete=ignore_obsolete,
         ignore_missing=ignore_missing,
         ignore_transitive=ignore_transitive,

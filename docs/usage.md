@@ -117,6 +117,18 @@ Path to the `pyproject.toml` file that holds _deptry_'s configuration and depend
 deptry . --config sub_directory/pyproject.toml
 ```
 
+#### No ANSI
+
+Disable ANSI characters in terminal output.
+
+- Type: `bool`
+- Default: `False`
+- CLI option name: `--no-ansi`
+- CLI example:
+```shell
+deptry . --no-ansi
+```
+
 #### Exclude
 
 List of patterns to exclude when searching for source files.

@@ -983,6 +983,18 @@ files = [
 ]
 
 [[package]]
+name = "types-colorama"
+version = "0.4.15.11"
+description = "Typing stubs for colorama"
+category = "dev"
+optional = false
+python-versions = "*"
+files = [
+    {file = "types-colorama-0.4.15.11.tar.gz", hash = "sha256:a9421eb24d9cfc584880dc1d33b7fd406a14227c1f99f50c5ab9265e04d07638"},
+    {file = "types_colorama-0.4.15.11-py3-none-any.whl", hash = "sha256:d1e37571a19e152c930b3e789c316e9332e51a43bfcd4470b98225be974fb90c"},
+]
+
+[[package]]
 name = "typing-extensions"
 version = "4.5.0"
 description = "Backported and Experimental Type Hints for Python 3.7+"
@@ -1092,4 +1104,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<4.0"
-content-hash = "6ac0b19f6d2552027ceb837d25370b61ba938190df6a5e78e337e38e3ddf0df5"
+content-hash = "159af32c77d65dddd6eb4c2ab0ee8d0b908978b1075114cd09e60e50da228043"

@@ -22,7 +22,7 @@ def test_cli_gitignore_is_used(pip_project_builder: ToolSpecificProjectBuilder) 
             {
                 "error": {
                     "code": "DEP002",
-                    "message": "requests defined as a dependency but not used in the codebase",
+                    "message": "'requests' defined as a dependency but not used in the codebase",
                 },
                 "module": "requests",
                 "location": {
@@ -34,7 +34,7 @@ def test_cli_gitignore_is_used(pip_project_builder: ToolSpecificProjectBuilder) 
             {
                 "error": {
                     "code": "DEP002",
-                    "message": "mypy defined as a dependency but not used in the codebase",
+                    "message": "'mypy' defined as a dependency but not used in the codebase",
                 },
                 "module": "mypy",
                 "location": {
@@ -46,7 +46,7 @@ def test_cli_gitignore_is_used(pip_project_builder: ToolSpecificProjectBuilder) 
             {
                 "error": {
                     "code": "DEP002",
-                    "message": "pytest defined as a dependency but not used in the codebase",
+                    "message": "'pytest' defined as a dependency but not used in the codebase",
                 },
                 "module": "pytest",
                 "location": {
@@ -67,7 +67,7 @@ def test_cli_gitignore_is_not_used(pip_project_builder: ToolSpecificProjectBuild
             {
                 "error": {
                     "code": "DEP002",
-                    "message": "isort defined as a dependency but not used in the codebase",
+                    "message": "'isort' defined as a dependency but not used in the codebase",
                 },
                 "module": "isort",
                 "location": {
@@ -79,7 +79,7 @@ def test_cli_gitignore_is_not_used(pip_project_builder: ToolSpecificProjectBuild
             {
                 "error": {
                     "code": "DEP002",
-                    "message": "requests defined as a dependency but not used in the codebase",
+                    "message": "'requests' defined as a dependency but not used in the codebase",
                 },
                 "module": "requests",
                 "location": {
@@ -91,7 +91,7 @@ def test_cli_gitignore_is_not_used(pip_project_builder: ToolSpecificProjectBuild
             {
                 "error": {
                     "code": "DEP002",
-                    "message": "pytest defined as a dependency but not used in the codebase",
+                    "message": "'pytest' defined as a dependency but not used in the codebase",
                 },
                 "module": "pytest",
                 "location": {
