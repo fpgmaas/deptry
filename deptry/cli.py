@@ -130,6 +130,7 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
     is_flag=True,
     help="Disable ANSI characters in terminal output.",
 )
+@click.option("--skip-obsolete", is_flag=True, hidden=True)
 @click.option(
     "--skip-unused",
     is_flag=True,
@@ -153,9 +154,10 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
         " regular dependencies."
     ),
 )
+@click.option("--ignore-obsolete", "-io", type=COMMA_SEPARATED_TUPLE, default=(), hidden=True)
 @click.option(
     "--ignore-unused",
-    "-io",
+    "-iu",
     type=COMMA_SEPARATED_TUPLE,
     help="""
     Comma-separated list of dependencies that should never be marked as unused, even if they are not imported in any of the files scanned.
@@ -272,10 +274,12 @@ def deptry(
     config: Path,
     no_ansi: bool,
     ignore_unused: tuple[str, ...],
+    ignore_obsolete: tuple[str, ...],
     ignore_missing: tuple[str, ...],
     ignore_transitive: tuple[str, ...],
     ignore_misplaced_dev: tuple[str, ...],
     skip_unused: bool,
+    skip_obsolete: bool,
     skip_missing: bool,
     skip_transitive: bool,
     skip_misplaced_dev: bool,
@@ -295,11 +299,25 @@ def deptry(
 
     """
 
+    if ignore_obsolete:
+        logging.warning(
+            "Warning: In an upcoming release, support for the `--ignore-obsolete` and `-io` command-line options and"
+            " the `ignore_obsolete` configuration parameter will be discontinued. Instead, use the `--ignore-unused`,"
+            " `-iu` options or the `ignore_unused` configuration parameter to achieve the desired behavior."
+        )
+
+    if skip_obsolete:
+        logging.warning(
+            "Warning: In an upcoming release, support for the `--skip-obsolete` command-line option and the"
+            " `skip_obsolete` configuration parameter will be discontinued. Instead, use the `--skip-unused` option or"
+            " the `skip_unused` configuration parameter to achieve the desired behavior."
+        )
+
     Core(
         root=root,
         config=config,
         no_ansi=no_ansi,
-        ignore_unused=ignore_unused,
+        ignore_unused=ignore_unused + ignore_obsolete,
         ignore_missing=ignore_missing,
         ignore_transitive=ignore_transitive,
         ignore_misplaced_dev=ignore_misplaced_dev,
@@ -307,7 +325,7 @@ def deptry(
         extend_exclude=extend_exclude,
         using_default_exclude=not exclude,
         ignore_notebooks=ignore_notebooks,
-        skip_unused=skip_unused,
+        skip_unused=skip_unused or skip_obsolete,
         skip_missing=skip_missing,
         skip_transitive=skip_transitive,
         skip_misplaced_dev=skip_misplaced_dev,
