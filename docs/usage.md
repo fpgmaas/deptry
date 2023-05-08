@@ -154,27 +154,9 @@ extend_exclude = ["a_directory", "a_python_file\\.py", "a_pattern/.*"]
 deptry . --extend-exclude "a_directory|a_python_file\.py|a_pattern/.*"
 ```
 
-#### Ignore obsolete
-
-List of packages to ignore when running the check for [obsolete dependencies](issues-detection.md#obsolete-dependencies).
-
-- Type: `List[str]`
-- Default: `[]`
-- `pyproject.toml` option name: `ignore_obsolete`
-- CLI option name: `--ignore-obsolete` (short: `-io`)
-- `pyproject.toml` example:
-```toml
-[tool.deptry]
-ignore_obsolete = ["uvicorn", "uvloop"]
-```
-- CLI example:
-```shell
-deptry . --ignore-obsolete "uvicorn,uvloop"
-```
-
 #### Ignore missing
 
-List of Python modules to ignore when running the check for [missing dependencies](issues-detection.md#missing-dependencies).
+List of Python modules to ignore when running the check for [Missing dependencies (DEP001)](issues-detection.md#missing-dependencies-dep001).
 
 - Type: `List[str]`
 - Default: `[]`
@@ -190,9 +172,27 @@ ignore_missing = ["pip", "tomllib"]
 deptry . --ignore-missing "pip,tomllib"
 ```
 
+#### Ignore obsolete
+
+List of packages to ignore when running the check for [Obsolete dependencies (DEP002)](issues-detection.md#obsolete-dependencies-dep002).
+
+- Type: `List[str]`
+- Default: `[]`
+- `pyproject.toml` option name: `ignore_obsolete`
+- CLI option name: `--ignore-obsolete` (short: `-io`)
+- `pyproject.toml` example:
+```toml
+[tool.deptry]
+ignore_obsolete = ["uvicorn", "uvloop"]
+```
+- CLI example:
+```shell
+deptry . --ignore-obsolete "uvicorn,uvloop"
+```
+
 #### Ignore transitive
 
-List of Python modules to ignore when running the check for [transitive dependencies](issues-detection.md#transitive-dependencies).
+List of Python modules to ignore when running the check for [Transitive dependencies (DEP003)](issues-detection.md#transitive-dependencies-dep003).
 
 - Type: `List[str]`
 - Default: `[]`
@@ -210,7 +210,7 @@ deptry . --ignore-transitive "httpx,pip"
 
 #### Ignore misplaced dev
 
-List of Python modules to ignore when running the check for [misplaced development dependencies](issues-detection.md#misplaced-development-dependencies).
+List of Python modules to ignore when running the check for [Misplaced development dependencies (DEP004)](issues-detection.md#misplaced-development-dependencies-dep004).
 
 - Type: `List[str]`
 - Default: `[]`
@@ -244,27 +244,9 @@ ignore_notebooks = true
 deptry . --ignore-notebooks
 ```
 
-#### Skip obsolete
-
-Disable the check for [obsolete dependencies](issues-detection.md#obsolete-dependencies).
-
-- Type: `bool`
-- Default: `False`
-- `pyproject.toml` option name: `skip_obsolete`
-- CLI option name: `--skip-obsolete`
-- `pyproject.toml` example:
-```toml
-[tool.deptry]
-skip_obsolete = true
-```
-- CLI example:
-```shell
-deptry . --skip-obsolete
-```
-
 #### Skip missing
 
-Disable the check for [missing dependencies](issues-detection.md#missing-dependencies).
+Disable the check for [Missing dependencies (DEP001)](issues-detection.md#missing-dependencies-dep001).
 
 - Type: `bool`
 - Default: `False`
@@ -280,9 +262,27 @@ skip_missing = true
 deptry . --skip-missing
 ```
 
+#### Skip obsolete
+
+Disable the check for [Obsolete dependencies (DEP002)](issues-detection.md#obsolete-dependencies-dep002).
+
+- Type: `bool`
+- Default: `False`
+- `pyproject.toml` option name: `skip_obsolete`
+- CLI option name: `--skip-obsolete`
+- `pyproject.toml` example:
+```toml
+[tool.deptry]
+skip_obsolete = true
+```
+- CLI example:
+```shell
+deptry . --skip-obsolete
+```
+
 #### Skip transitive
 
-Disable the check for [transitive dependencies](issues-detection.md#transitive-dependencies).
+Disable the check for [Transitive dependencies (DEP003)](issues-detection.md#transitive-dependencies-dep003).
 
 - Type: `bool`
 - Default: `False`
@@ -300,7 +300,7 @@ deptry . --skip-transitive
 
 #### Skip misplaced dev
 
-Disable the check for [misplaced development dependencies](issues-detection.md#misplaced-development-dependencies).
+Disable the check for [Misplaced development dependencies (DEP004)](issues-detection.md#misplaced-development-dependencies-dep004).
 
 - Type: `bool`
 - Default: `False`
@@ -425,15 +425,6 @@ Write the detected issues to a JSON file. This will write the following kind of 
          }
      }
 ]
-```
-
-```json
-{
-    "obsolete": ["uvicorn", "uvloop"],
-    "missing": [],
-    "transitive": ["httpx"],
-    "misplaced_dev": ["black"]
-}
 ```
 
 - Type: `Path`
