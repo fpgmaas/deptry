@@ -28,16 +28,13 @@ Dependency issues are detected by scanning for imported modules within all Pytho
 
 ### Installation
 
-_deptry_ can be added to your project with
+To add _deptry_ to your project, run one of the following commands:
 
 ```shell
+# Install with poetry
 poetry add --group dev deptry
-```
 
-or with:
-
-```shell
-<activate virtual environment>
+# Install with pip
 pip install deptry
 ```
 
@@ -55,9 +52,20 @@ To scan your project for dependency issues, run:
 deptry .
 ```
 
-_deptry_ can be configured by using additional command line arguments, or by adding a `[tool.deptry]` section in _pyproject.toml_.
+Example output could look as follows:
 
-For more information, see the [documentation](https://fpgmaas.github.io/deptry/).
+```terminal
+Scanning 1 files...
+
+foo/bar.py:1:0: DEP004 'numpy' imported but declared as a dev dependency
+foo/bar.py:2:0: DEP001 'matplotlib' imported but missing from the dependency definitions
+pyproject.toml: DEP002 'pandas' defined as a dependency but not used in the codebase
+Found 3 dependency issues.
+```
+
+### Configuration
+
+_deptry_ can be configured by using additional command line arguments, or by adding a `[tool.deptry]` section in _pyproject.toml_. For more information, see the [Usage and Configuration](https://fpgmaas.github.io/deptry/usage/) section of the documentation..
 
 ---
 
