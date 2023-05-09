@@ -33,7 +33,7 @@ class MisplacedDevDependenciesFinder(IssuesFinder):
         for module_with_locations in self.imported_modules_with_locations:
             module = module_with_locations.module
 
-            logging.debug(f"Scanning module {module.name}...")
+            logging.debug("Scanning module %s...", module.name)
             corresponding_package_name = self._get_package_name(module)
 
             if corresponding_package_name and self._is_development_dependency(module, corresponding_package_name):
@@ -50,12 +50,12 @@ class MisplacedDevDependenciesFinder(IssuesFinder):
 
         if module.name in self.ignored_modules:
             logging.debug(
-                f"Dependency '{corresponding_package_name}' found to be a misplaced development dependency, but"
-                " ignoring."
+                "Dependency '%s' found to be a misplaced development dependency, but ignoring.",
+                corresponding_package_name,
             )
             return False
 
-        logging.debug(f"Dependency '{corresponding_package_name}' marked as a misplaced development dependency.")
+        logging.debug("Dependency '%s' marked as a misplaced development dependency.", corresponding_package_name)
         return True
 
     def _get_package_name(self, module: Module) -> str | None:
@@ -64,12 +64,13 @@ class MisplacedDevDependenciesFinder(IssuesFinder):
         if module.dev_top_levels:
             if len(module.dev_top_levels) > 1:
                 logging.debug(
-                    f"Module {module.name} is found in the top-level module names of multiple development dependencies."
-                    " Skipping."
+                    "Module %s is found in the top-level module names of multiple development dependencies. Skipping.",
+                    module.name,
                 )
             elif len(module.dev_top_levels) == 0:
                 logging.debug(
-                    f"Module {module.name} has no metadata and it is not found in any top-level module names. Skipping."
+                    "Module %s has no metadata and it is not found in any top-level module names. Skipping.",
+                    module.name,
                 )
             else:
                 return module.dev_top_levels[0]

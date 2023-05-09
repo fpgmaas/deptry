@@ -25,7 +25,7 @@ class PythonImportExtractor(ImportExtractor):
                 with open(self.file, encoding=self._get_file_encoding(self.file)) as python_file:
                     tree = ast.parse(python_file.read(), str(self.file))
             except UnicodeDecodeError:
-                logging.warning(f"Warning: File {self.file} could not be decoded. Skipping...")
+                logging.warning("Warning: File %s could not be decoded. Skipping...", self.file)
                 return {}
 
         return self._extract_imports_from_ast(tree)

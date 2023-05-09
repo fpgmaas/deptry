@@ -41,7 +41,7 @@ class NotebookImportExtractor(ImportExtractor):
                 with open(path_to_ipynb, encoding=cls._get_file_encoding(path_to_ipynb)) as ipynb_file:
                     notebook = json.load(ipynb_file, strict=False)
             except UnicodeDecodeError:
-                logging.warning(f"Warning: File {path_to_ipynb} could not be decoded. Skipping...")
+                logging.warning("Warning: File %s could not be decoded. Skipping...", path_to_ipynb)
                 return None
         return notebook
 

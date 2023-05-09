@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 
 def get_imported_modules_for_list_of_files(list_of_files: list[Path]) -> dict[str, list[Location]]:
-    logging.info(f"Scanning {len(list_of_files)} file{'s' if len(list_of_files)>1 else ''}...")
+    logging.info("Scanning %d %s...", len(list_of_files), "files" if len(list_of_files) > 1 else "file")
 
     modules: dict[str, list[Location]] = defaultdict(list)
 
@@ -23,17 +23,17 @@ def get_imported_modules_for_list_of_files(list_of_files: list[Path]) -> dict[st
             for location in locations:
                 modules[module].append(location)
 
-    logging.debug(f"All imported modules: {modules}\n")
+    logging.debug("All imported modules: %s\n", modules)
 
     return modules
 
 
 def get_imported_modules_from_file(path_to_file: Path) -> dict[str, list[Location]]:
-    logging.debug(f"Scanning {path_to_file}...")
+    logging.debug("Scanning %s...", path_to_file)
 
     modules = _get_extractor_class(path_to_file)(path_to_file).extract_imports()
 
-    logging.debug(f"Found the following imports in {str(path_to_file)}: {modules}")
+    logging.debug("Found the following imports in %s: %s", path_to_file, modules)
 
     return modules
 

@@ -108,7 +108,7 @@ class DependencySpecificationDetector:
         check = any(os.path.isfile(requirements_txt) for requirements_txt in self.requirements_txt)
         if check:
             logging.debug(
-                f"Dependency specification found in '{', '.join(self.requirements_txt)}'. Will use this to determine"
-                " the project's dependencies.\n"
+                "Dependency specification found in '%s'. Will use this to determine the project's dependencies.\n",
+                ", ".join(self.requirements_txt),
             )
         return check

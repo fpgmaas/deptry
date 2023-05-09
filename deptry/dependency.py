@@ -73,8 +73,12 @@ class Dependency:
         # we'll guess the name.
         module_name = name.replace("-", "_").lower()
         logging.warning(
-            f"Assuming the corresponding module name of package {self.name!r} is {module_name!r}. Install the package"
-            " or configure a package_module_name_map entry to override this behaviour."
+            (
+                "Assuming the corresponding module name of package %r is %r. Install the package or configure a"
+                " package_module_name_map entry to override this behaviour."
+            ),
+            self.name,
+            module_name,
         )
         return {module_name}
 
