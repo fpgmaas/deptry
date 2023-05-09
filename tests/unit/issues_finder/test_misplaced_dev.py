@@ -20,3 +20,21 @@ def test_simple() -> None:
     assert MisplacedDevDependenciesFinder(modules_locations, dependencies).find() == [
         MisplacedDevDependencyViolation(module_foo, location) for location in module_foo_locations
     ]
+
+
+def test_regular_and_dev_dependency() -> None:
+    """
+    If a dependency is both a regular and a development dependency, no 'misplaced dev dependency' violation
+    should be detected if it is used in the code base.
+    """
+
+    dependencies = [Dependency("foo", Path("pyproject.toml"))]
+
+    module_foo_locations = [Location(Path("foo.py"), 1, 2)]
+    module_foo = Module(
+        "foo", dev_top_levels=["foo"], is_provided_by_dev_dependency=True, is_provided_by_dependency=True
+    )
+
+    modules_locations = [ModuleLocations(module_foo, module_foo_locations)]
+
+    assert not MisplacedDevDependenciesFinder(modules_locations, dependencies).find()
