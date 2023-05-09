@@ -134,6 +134,8 @@ select = [
     "C4",
     # flake8-debugger
     "T10",
+    # flake8-logging-format
+    "G",
     # flake8-print
     "T20",
     # flake8-simplify
