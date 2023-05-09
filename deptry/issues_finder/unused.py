@@ -44,7 +44,7 @@ class UnusedDependenciesFinder(IssuesFinder):
             return False
 
         if dependency.name in self.ignored_modules:
-            logging.debug("Dependency '%s' found to be obsolete, but ignoring.", dependency.name)
+            logging.debug("Dependency '%s' found to be unused, but ignoring.", dependency.name)
             return False
 
         logging.debug("Dependency '%s' does not seem to be used.", dependency.name)
