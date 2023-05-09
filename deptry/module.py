@@ -21,9 +21,10 @@ class Module:
         local_module: Whether the module is a local module.
         package: The name of the package that contains the module.
         top_levels: A list of dependencies that contain this module in their top-level module
-            names.
+            names. This can be multiple, e.g. `google-cloud-api` and `google-cloud-bigquery` both have
+            `google` in their top-level module names.
         dev_top_levels: A list of development dependencies that contain this module in their
-            top-level module names.
+            top-level module names. Can be multiple, similar to the attribute `top_levels`.
         is_provided_by_dependency: Whether the module is provided by a listed dependency.
         is_provided_by_dev_dependency: Whether the module is provided by a listed development dependency.
     """
