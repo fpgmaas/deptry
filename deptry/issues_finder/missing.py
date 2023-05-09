@@ -37,8 +37,8 @@ class MissingDependenciesFinder(IssuesFinder):
         if any(
             [
                 module.package is not None,
-                module.provided_by_dependency,
-                module.provided_by_dev_dependency,
+                module.is_provided_by_dependency,
+                module.is_provided_by_dev_dependency,
                 module.local_module,
             ]
         ):

@@ -35,8 +35,8 @@ class Module:
     package: str | None = None
     top_levels: list[str] | None = None
     dev_top_levels: list[str] | None = None
-    provided_by_dependency: bool | None = None
-    provided_by_dev_dependency: bool | None = None
+    is_provided_by_dependency: bool | None = None
+    is_provided_by_dev_dependency: bool | None = None
 
     def __post_init__(self) -> None:
         self._log()
@@ -100,15 +100,15 @@ class ModuleBuilder:
         top_levels = self._get_corresponding_top_levels_from(self.dependencies)
         dev_top_levels = self._get_corresponding_top_levels_from(self.dev_dependencies)
 
-        provided_by_dependency = self._has_matching_dependency(package, top_levels)
-        provided_by_dev_dependency = self._has_matching_dev_dependency(package, dev_top_levels)
+        is_provided_by_dependency = self._has_matching_dependency(package, top_levels)
+        is_provided_by_dev_dependency = self._has_matching_dev_dependency(package, dev_top_levels)
         return Module(
             self.name,
             package=package,
             top_levels=top_levels,
             dev_top_levels=dev_top_levels,
-            provided_by_dependency=provided_by_dependency,
-            provided_by_dev_dependency=provided_by_dev_dependency,
+            is_provided_by_dependency=is_provided_by_dependency,
+            is_provided_by_dev_dependency=is_provided_by_dev_dependency,
         )
 
     def _get_package_name_from_metadata(self) -> str | None:

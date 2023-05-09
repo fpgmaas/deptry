@@ -13,7 +13,7 @@ def test_simple() -> None:
     dependencies = [Dependency("bar", Path("pyproject.toml"))]
 
     module_foo_locations = [Location(Path("foo.py"), 1, 2), Location(Path("bar.py"), 3, 4)]
-    module_foo = Module("foo", dev_top_levels=["foo"], provided_by_dev_dependency=True)
+    module_foo = Module("foo", dev_top_levels=["foo"], is_provided_by_dev_dependency=True)
 
     modules_locations = [ModuleLocations(module_foo, module_foo_locations)]
 
