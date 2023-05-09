@@ -52,11 +52,13 @@ class RequirementsTxtDependencyGetter(DependencyGetter):
         logging.debug("Scanning %s for %s", file_name, "dev dependencies" if is_dev else "dependencies")
         dependencies = []
 
-        with open(file_name) as f:
+        file_path = Path(file_name)
+
+        with file_path.open() as f:
             data = f.readlines()
 
         for line in data:
-            dependency = self._extract_dependency_from_line(line, Path(file_name))
+            dependency = self._extract_dependency_from_line(line, file_path)
             if dependency:
                 dependencies.append(dependency)
 

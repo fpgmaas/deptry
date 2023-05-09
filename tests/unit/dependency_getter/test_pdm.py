@@ -21,7 +21,7 @@ dependencies = [
 """
 
     with run_within_dir(tmp_path):
-        with open("pyproject.toml", "w") as f:
+        with Path("pyproject.toml").open("w") as f:
             f.write(fake_pyproject_toml)
 
         getter = PDMDependencyGetter(
@@ -80,7 +80,7 @@ tox = [
 """
 
     with run_within_dir(tmp_path):
-        with open("pyproject.toml", "w") as f:
+        with Path("pyproject.toml").open("w") as f:
             f.write(fake_pyproject_toml)
 
         dev_dependencies = PDMDependencyGetter(Path("pyproject.toml")).get().dev_dependencies

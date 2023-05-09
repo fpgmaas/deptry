@@ -3,12 +3,10 @@ from __future__ import annotations
 import json
 import os
 from contextlib import contextmanager
-from typing import TYPE_CHECKING, Any, Generator
+from pathlib import Path
+from typing import Any, Generator
 
 from deptry.reporters.text import COLORS
-
-if TYPE_CHECKING:
-    from pathlib import Path
 
 
 @contextmanager
@@ -24,7 +22,7 @@ def run_within_dir(path: Path) -> Generator[None, None, None]:
     ```
 
     """
-    oldpwd = os.getcwd()
+    oldpwd = Path.cwd()
     os.chdir(path)
     try:
         yield
@@ -33,7 +31,7 @@ def run_within_dir(path: Path) -> Generator[None, None, None]:
 
 
 def get_issues_report(path: str = "report.json") -> list[dict[str, Any]]:
-    with open(path) as file:
+    with Path(path).open() as file:
         report: list[dict[str, Any]] = json.load(file)
 
     return report
@@ -47,7 +45,7 @@ def create_files(paths: list[Path]) -> None:
     """
     for path in paths:
         path.parent.mkdir(parents=True, exist_ok=True)
-        with open(path, "w"):
+        with path.open("w"):
             pass
 
 

@@ -29,7 +29,7 @@ group2 = [
 """
 
     with run_within_dir(tmp_path):
-        with open("pyproject.toml", "w") as f:
+        with Path("pyproject.toml").open("w") as f:
             f.write(fake_pyproject_toml)
 
         getter = PEP621DependencyGetter(
