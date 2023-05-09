@@ -126,6 +126,8 @@ select = [
     "YTT",
     # flake8-bandit
     "S",
+    # flake8-blind-except
+    "BLE",
     # flake8-bugbear
     "B",
     # flake8-builtins
