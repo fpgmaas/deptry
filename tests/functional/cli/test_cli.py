@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import os
 import shlex
 import subprocess
 from pathlib import Path
@@ -480,7 +479,7 @@ def test_cli_with_no_ansi(project_builder: ToolSpecificProjectBuilder) -> None:
 def test_cli_with_not_json_output(project_builder: ToolSpecificProjectBuilder) -> None:
     with run_within_dir(project_builder("example_project", "poetry install --no-interaction --no-root")):
         # Remove previously generated `report.json`.
-        os.remove("report.json")
+        Path("report.json").unlink()
 
         result = subprocess.run(shlex.split("poetry run deptry ."), capture_output=True, text=True)
 

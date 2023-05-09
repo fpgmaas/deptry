@@ -18,14 +18,14 @@ class PythonImportExtractor(ImportExtractor):
     def extract_imports(self) -> dict[str, list[Location]]:
         """Extract all imported top-level modules from the Python file."""
         try:
-            with open(self.file) as python_file:
+            with self.file.open() as python_file:
                 tree = ast.parse(python_file.read(), str(self.file))
         except (UnicodeDecodeError, ValueError):
             try:
-                with open(self.file, encoding=self._get_file_encoding(self.file)) as python_file:
+                with self.file.open(encoding=self._get_file_encoding(self.file)) as python_file:
                     tree = ast.parse(python_file.read(), str(self.file))
             except UnicodeDecodeError:
-                logging.warning(f"Warning: File {self.file} could not be decoded. Skipping...")
+                logging.warning("Warning: File %s could not be decoded. Skipping...", self.file)
                 return {}
 
         return self._extract_imports_from_ast(tree)

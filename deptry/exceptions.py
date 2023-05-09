@@ -1,5 +1,10 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from pathlib import Path
+
 
 class DependencySpecificationNotFoundError(FileNotFoundError):
     def __init__(self, requirements_txt: tuple[str, ...]) -> None:
@@ -15,7 +20,7 @@ class IncorrectDependencyFormatError(ValueError):
 
 
 class PyprojectFileNotFoundError(FileNotFoundError):
-    def __init__(self, directory: str) -> None:
+    def __init__(self, directory: Path) -> None:
         super().__init__(f"No file `pyproject.toml` found in directory {directory}")
 
 

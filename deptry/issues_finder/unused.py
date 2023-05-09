@@ -32,7 +32,7 @@ class UnusedDependenciesFinder(IssuesFinder):
         unused_dependencies: list[Violation] = []
 
         for dependency in self.dependencies:
-            logging.debug(f"Scanning module {dependency.name}...")
+            logging.debug("Scanning module %s...", dependency.name)
 
             if self._is_unused(dependency):
                 unused_dependencies.append(UnusedDependencyViolation(dependency, Location(dependency.definition_file)))
@@ -44,10 +44,10 @@ class UnusedDependenciesFinder(IssuesFinder):
             return False
 
         if dependency.name in self.ignored_modules:
-            logging.debug(f"Dependency '{dependency.name}' found to be unused, but ignoring.")
+            logging.debug("Dependency '%s' found to be obsolete, but ignoring.", dependency.name)
             return False
 
-        logging.debug(f"Dependency '{dependency.name}' does not seem to be used.")
+        logging.debug("Dependency '%s' does not seem to be used.", dependency.name)
         return True
 
     def _dependency_found_in_imported_modules(self, dependency: Dependency) -> bool:

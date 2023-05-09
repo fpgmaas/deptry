@@ -28,7 +28,7 @@ requests [security] >= 2.8.1, == 2.8.* ; python_version < "2.7"
 fox-python
 """
     with run_within_dir(tmp_path):
-        with open("requirements.txt", "w") as f:
+        with Path("requirements.txt").open("w") as f:
             f.write(fake_requirements_txt)
 
         getter = RequirementsTxtDependencyGetter(
@@ -70,7 +70,7 @@ git+https://github.com/baz/foo-bar.git@asd
 git+https://github.com/abc123/bar-foo@xyz789#egg=bar-fooo"""
 
     with run_within_dir(tmp_path):
-        with open("requirements.txt", "w") as f:
+        with Path("requirements.txt").open("w") as f:
             f.write(fake_requirements_txt)
 
         dependencies_extract = RequirementsTxtDependencyGetter(Path("pyproject.toml")).get()
@@ -88,7 +88,7 @@ git+https://github.com/abc123/bar-foo@xyz789#egg=bar-fooo"""
 
 def test_single(tmp_path: Path) -> None:
     with run_within_dir(tmp_path):
-        with open("req.txt", "w") as f:
+        with Path("req.txt").open("w") as f:
             f.write("click==8.1.3 #123asd\ncolorama==0.4.5")
 
         dependencies_extract = RequirementsTxtDependencyGetter(
@@ -105,9 +105,10 @@ def test_single(tmp_path: Path) -> None:
 
 def test_multiple(tmp_path: Path) -> None:
     with run_within_dir(tmp_path):
-        with open("foo.txt", "w") as f:
+        with Path("foo.txt").open("w") as f:
             f.write("click==8.1.3 #123asd")
-        with open("bar.txt", "w") as f:
+
+        with Path("bar.txt").open("w") as f:
             f.write("bar")
 
         dependencies_extract = RequirementsTxtDependencyGetter(
@@ -124,9 +125,10 @@ def test_multiple(tmp_path: Path) -> None:
 
 def test_dev_single(tmp_path: Path) -> None:
     with run_within_dir(tmp_path):
-        with open("requirements.txt", "w") as f:
+        with Path("requirements.txt").open("w") as f:
             f.write("")
-        with open("requirements-dev.txt", "w") as f:
+
+        with Path("requirements-dev.txt").open("w") as f:
             f.write("click==8.1.3 #123asd\ncolorama==0.4.5")
 
         dependencies_extract = RequirementsTxtDependencyGetter(Path("pyproject.toml")).get()
@@ -143,11 +145,13 @@ def test_dev_single(tmp_path: Path) -> None:
 
 def test_dev_multiple(tmp_path: Path) -> None:
     with run_within_dir(tmp_path):
-        with open("requirements.txt", "w") as f:
+        with Path("requirements.txt").open("w") as f:
             f.write("")
-        with open("requirements-dev.txt", "w") as f:
+
+        with Path("requirements-dev.txt").open("w") as f:
             f.write("click==8.1.3 #123asd")
-        with open("dev-requirements.txt", "w") as f:
+
+        with Path("dev-requirements.txt").open("w") as f:
             f.write("bar")
 
         dependencies_extract = RequirementsTxtDependencyGetter(Path("pyproject.toml")).get()
@@ -162,11 +166,13 @@ def test_dev_multiple(tmp_path: Path) -> None:
 
 def test_dev_multiple_with_arguments(tmp_path: Path) -> None:
     with run_within_dir(tmp_path):
-        with open("requirements.txt", "w") as f:
+        with Path("requirements.txt").open("w") as f:
             f.write("")
-        with open("foo.txt", "w") as f:
+
+        with Path("foo.txt").open("w") as f:
             f.write("click==8.1.3 #123asd")
-        with open("bar.txt", "w") as f:
+
+        with Path("bar.txt").open("w") as f:
             f.write("bar")
 
         dependencies_extract = RequirementsTxtDependencyGetter(

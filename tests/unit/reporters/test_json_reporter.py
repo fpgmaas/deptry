@@ -28,7 +28,7 @@ def test_simple(tmp_path: Path) -> None:
             "output.json",
         ).report()
 
-        with open("output.json") as f:
+        with Path("output.json").open() as f:
             data = json.load(f)
 
         assert data == [

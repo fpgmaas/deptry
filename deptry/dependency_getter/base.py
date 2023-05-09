@@ -39,7 +39,9 @@ class DependencyGetter(ABC):
 
     @staticmethod
     def _log_dependencies(dependencies: list[Dependency], is_dev: bool = False) -> None:
-        logging.debug(f"The project contains the following {'dev ' if is_dev else ''}dependencies:")
+        logging.debug("The project contains the following %s:", "dev dependencies" if is_dev else "dependencies")
+
         for dependency in dependencies:
-            logging.debug(str(dependency))
+            logging.debug(dependency)
+
         logging.debug("")
