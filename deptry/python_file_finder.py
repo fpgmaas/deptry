@@ -29,7 +29,7 @@ class PythonFileFinder:
     def get_all_python_files_in(self, directories: tuple[Path, ...]) -> list[Path]:
         logging.debug("Collecting Python files to scan...")
 
-        source_files = []
+        source_files = set()
 
         ignore_regex = re.compile("|".join(self.exclude + self.extend_exclude))
         file_lookup_suffixes = {".py"} if self.ignore_notebooks else {".py", ".ipynb"}
@@ -47,11 +47,13 @@ class PythonFileFinder:
                 for file_str in files:
                     file = root / file_str
                     if not self._is_file_ignored(file, file_lookup_suffixes, ignore_regex, gitignore_spec):
-                        source_files.append(file)
+                        source_files.add(file)
 
-        logging.debug("Python files to scan for imports:\n%s\n", "\n".join([str(file) for file in source_files]))
+        source_files_list = list(source_files)
 
-        return source_files
+        logging.debug("Python files to scan for imports:\n%s\n", "\n".join([str(file) for file in source_files_list]))
+
+        return source_files_list
 
     def _is_directory_ignored(self, directory: Path, ignore_regex: Pattern[str]) -> bool:
         return bool((self.exclude + self.extend_exclude) and ignore_regex.match(str(directory)))

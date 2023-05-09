@@ -176,6 +176,17 @@ def test_multiple_source_directories(exclude: tuple[str], expected: list[Path], 
         assert sorted(files) == expected
 
 
+def test_duplicates_are_removed(tmp_path: Path) -> None:
+    with run_within_dir(tmp_path):
+        create_files([Path("dir/subdir/file1.py")])
+
+        files = PythonFileFinder(exclude=(), extend_exclude=(), using_default_exclude=False).get_all_python_files_in(
+            (Path("."), Path("."))
+        )
+
+        assert sorted(files) == [Path("dir/subdir/file1.py")]
+
+
 def test__generate_gitignore_pathspec_with_non_default_exclude(tmp_path: Path) -> None:
     gitignore_pathspec = PythonFileFinder(
         exclude=(), extend_exclude=(), using_default_exclude=False
