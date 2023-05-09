@@ -43,14 +43,15 @@ class MisplacedDevDependenciesFinder(IssuesFinder):
         return misplaced_dev_dependencies
 
     def _is_development_dependency(self, module: Module, corresponding_package_name: str) -> bool:
-        # Module can both be a regular and a development dependency.
-        # Only continue if module is ONLY a dev dependency.
+        # Module can be provided both by a regular and by a development dependency.
+        # Only continue if module is ONLY provided by a dev dependency.
         if not module.is_dev_dependency or module.is_dependency:
             return False
 
         if module.name in self.ignored_modules:
             logging.debug(
-                f"Module '{corresponding_package_name}' found to be a misplaced development dependency, but ignoring."
+                f"Dependency '{corresponding_package_name}' found to be a misplaced development dependency, but"
+                " ignoring."
             )
             return False
 
