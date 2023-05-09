@@ -34,7 +34,7 @@ class PythonFileFinder:
         ignore_regex = re.compile("|".join(self.exclude + self.extend_exclude))
         file_lookup_suffixes = {".py"} if self.ignore_notebooks else {".py", ".ipynb"}
 
-        gitignore_spec = self._generate_gitignore_pathspec(directory)
+        gitignore_spec = self._generate_gitignore_pathspec(Path("."))
 
         for root_str, dirs, files in os.walk(directory, topdown=True):
             root = Path(root_str)

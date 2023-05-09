@@ -1,0 +1,1 @@
+import a_non_existing_module
