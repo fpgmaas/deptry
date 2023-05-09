@@ -45,8 +45,7 @@ def create_files(paths: list[Path]) -> None:
     """
     for path in paths:
         path.parent.mkdir(parents=True, exist_ok=True)
-        with path.open("w"):
-            pass
+        path.touch()
 
 
 def stylize(text: str, **kwargs: Any) -> str:
