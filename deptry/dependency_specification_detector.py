@@ -1,15 +1,11 @@
 from __future__ import annotations
 
 import logging
-import os
 from enum import Enum
-from typing import TYPE_CHECKING
+from pathlib import Path
 
 from deptry.exceptions import DependencySpecificationNotFoundError
 from deptry.utils import load_pyproject_toml
-
-if TYPE_CHECKING:
-    from pathlib import Path
 
 
 class DependencyManagementFormat(Enum):
@@ -105,10 +101,10 @@ class DependencySpecificationDetector:
             return True
 
     def _project_uses_requirements_txt(self) -> bool:
-        check = any(os.path.isfile(requirements_txt) for requirements_txt in self.requirements_txt)
+        check = any(Path(requirements_txt).is_file() for requirements_txt in self.requirements_txt)
         if check:
             logging.debug(
-                f"Dependency specification found in '{', '.join(self.requirements_txt)}'. Will use this to determine"
-                " the project's dependencies.\n"
+                "Dependency specification found in '%s'. Will use this to determine the project's dependencies.\n",
+                ", ".join(self.requirements_txt),
             )
         return check

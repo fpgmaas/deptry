@@ -45,18 +45,20 @@ class RequirementsTxtDependencyGetter(DependencyGetter):
         """
         dev_requirements_files = [file_name for file_name in self.requirements_txt_dev if file_name in os.listdir()]
         if dev_requirements_files:
-            logging.debug(f"Found files with development requirements! {dev_requirements_files}")
+            logging.debug("Found files with development requirements! %s", dev_requirements_files)
         return dev_requirements_files
 
     def _get_dependencies_from_requirements_file(self, file_name: str, is_dev: bool = False) -> list[Dependency]:
-        logging.debug(f"Scanning {file_name} for {'dev ' if is_dev else ''}dependencies")
+        logging.debug("Scanning %s for %s", file_name, "dev dependencies" if is_dev else "dependencies")
         dependencies = []
 
-        with open(file_name) as f:
+        file_path = Path(file_name)
+
+        with file_path.open() as f:
             data = f.readlines()
 
         for line in data:
-            dependency = self._extract_dependency_from_line(line, Path(file_name))
+            dependency = self._extract_dependency_from_line(line, file_path)
             if dependency:
                 dependencies.append(dependency)
 
@@ -132,5 +134,5 @@ class RequirementsTxtDependencyGetter(DependencyGetter):
         if match:
             return match.group(1)
 
-        logging.warning(f"Could not parse dependency name from url {line}")
+        logging.warning("Could not parse dependency name from url %s", line)
         return None

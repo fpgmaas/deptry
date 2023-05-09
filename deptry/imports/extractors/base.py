@@ -51,5 +51,5 @@ class ImportExtractor(ABC):
 
     @staticmethod
     def _get_file_encoding(file: Path) -> str:
-        with open(file, "rb") as f:
+        with file.open("rb") as f:
             return chardet.detect(f.read())["encoding"]

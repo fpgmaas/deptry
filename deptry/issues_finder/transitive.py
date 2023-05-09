@@ -32,7 +32,7 @@ class TransitiveDependenciesFinder(IssuesFinder):
         for module_with_locations in self.imported_modules_with_locations:
             module = module_with_locations.module
 
-            logging.debug(f"Scanning module {module.name}...")
+            logging.debug("Scanning module %s...", module.name)
 
             if self._is_transitive(module):
                 # `self._is_transitive` only returns `True` if the package is not None.
@@ -53,8 +53,8 @@ class TransitiveDependenciesFinder(IssuesFinder):
             return False
 
         if module.name in self.ignored_modules:
-            logging.debug(f"Dependency '{module.package}' found to be a transitive dependency, but ignoring.")
+            logging.debug("Dependency '%s' found to be a transitive dependency, but ignoring.", module.package)
             return False
 
-        logging.debug(f"Dependency '{module.package}' marked as a transitive dependency.")
+        logging.debug("Dependency '%s' marked as a transitive dependency.", module.package)
         return True

@@ -179,7 +179,7 @@ class Core:
     def _log_config(self) -> None:
         logging.debug("Running with the following configuration:")
         for key, value in vars(self).items():
-            logging.debug(f"{key}: {value}")
+            logging.debug("%s: %s", key, value)
         logging.debug("")
 
     @staticmethod

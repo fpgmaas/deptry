@@ -51,12 +51,15 @@ def test_read_configuration_from_pyproject_toml_exists(tmp_path: Path) -> None:
     """
 
     with run_within_dir(tmp_path):
-        with open("pyproject.toml", "w") as f:
+        pyproject_toml_path = Path("pyproject.toml")
+
+        with pyproject_toml_path.open("w") as f:
             f.write(pyproject_toml_content)
 
-        assert read_configuration_from_pyproject_toml(
-            click_context, click.UNPROCESSED(None), Path("pyproject.toml")
-        ) == Path("pyproject.toml")
+        assert (
+            read_configuration_from_pyproject_toml(click_context, click.UNPROCESSED(None), pyproject_toml_path)
+            == pyproject_toml_path
+        )
 
     assert click_context.default_map == {
         "exclude": ["foo", "bar"],
@@ -76,10 +79,15 @@ def test_read_configuration_from_pyproject_toml_exists(tmp_path: Path) -> None:
 
 
 def test_read_configuration_from_pyproject_toml_file_not_found(caplog: LogCaptureFixture) -> None:
+    pyproject_toml_path = Path("a_non_existent_pyproject.toml")
+
     with caplog.at_level(logging.DEBUG):
-        assert read_configuration_from_pyproject_toml(
-            click.Context(click.Command("")), click.UNPROCESSED(None), Path("a_non_existent_pyproject.toml")
-        ) == Path("a_non_existent_pyproject.toml")
+        assert (
+            read_configuration_from_pyproject_toml(
+                click.Context(click.Command("")), click.UNPROCESSED(None), pyproject_toml_path
+            )
+            == pyproject_toml_path
+        )
 
     assert "No pyproject.toml file to read configuration from." in caplog.text
 
@@ -93,12 +101,14 @@ def test_read_configuration_from_pyproject_toml_file_without_deptry_section(
     """
 
     with run_within_dir(tmp_path):
-        with open("pyproject.toml", "w") as f:
+        pyproject_toml_path = Path("pyproject.toml")
+
+        with pyproject_toml_path.open("w") as f:
             f.write(pyproject_toml_content)
 
         with caplog.at_level(logging.DEBUG):
             assert read_configuration_from_pyproject_toml(
-                click.Context(click.Command("")), click.UNPROCESSED(None), Path("pyproject.toml")
+                click.Context(click.Command("")), click.UNPROCESSED(None), pyproject_toml_path
             ) == Path("pyproject.toml")
 
     assert "No configuration for deptry was found in pyproject.toml." in caplog.text

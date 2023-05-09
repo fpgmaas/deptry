@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 from deptry.reporters.base import Reporter
@@ -33,5 +34,5 @@ class JSONReporter(Reporter):
                 },
             )
 
-        with open(self.json_output, "w", encoding="utf-8") as f:
+        with Path(self.json_output).open("w", encoding="utf-8") as f:
             json.dump(output, f, ensure_ascii=False, indent=4)

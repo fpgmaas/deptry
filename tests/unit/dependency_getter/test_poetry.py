@@ -18,7 +18,7 @@ toml = "^0.10.2"
 qux =  { version = ">=2.5.1,<4.0.0", optional = true }"""
 
     with run_within_dir(tmp_path):
-        with open("pyproject.toml", "w") as f:
+        with Path("pyproject.toml").open("w") as f:
             f.write(fake_pyproject_toml)
 
         getter = PoetryDependencyGetter(

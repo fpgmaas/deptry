@@ -126,6 +126,8 @@ select = [
     "YTT",
     # flake8-bandit
     "S",
+    # flake8-blind-except
+    "BLE",
     # flake8-bugbear
     "B",
     # flake8-builtins
@@ -134,16 +136,24 @@ select = [
     "C4",
     # flake8-debugger
     "T10",
+    # flake8-logging-format
+    "G",
     # flake8-print
     "T20",
+    # flake8-pytest-style
+    "PT",
     # flake8-simplify
     "SIM",
     # flake8-type-checking
     "TCH",
+    # flake8-use-pathlib
+    "PTH",
     # isort
     "I",
     # mccabe
     "C90",
+    # pep8-naming
+    "N",
     # pycodestyle
     "E", "W",
     # pyflakes

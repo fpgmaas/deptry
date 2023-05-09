@@ -25,7 +25,7 @@ class MissingDependenciesFinder(IssuesFinder):
         for module_with_locations in self.imported_modules_with_locations:
             module = module_with_locations.module
 
-            logging.debug(f"Scanning module {module.name}...")
+            logging.debug("Scanning module %s...", module.name)
 
             if self._is_missing(module):
                 for location in module_with_locations.locations:
@@ -45,8 +45,8 @@ class MissingDependenciesFinder(IssuesFinder):
             return False
 
         if module.name in self.ignored_modules:
-            logging.debug(f"Identified module '{module.name}' as a missing dependency, but ignoring.")
+            logging.debug("Identified module '%s' as a missing dependency, but ignoring.", module.name)
             return False
 
-        logging.debug(f"No package found to import module '{module.name}' from. Marked as a missing dependency.")
+        logging.debug("No package found to import module '%s' from. Marked as a missing dependency.", module.name)
         return True
