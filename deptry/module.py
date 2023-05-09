@@ -21,11 +21,12 @@ class Module:
         local_module: Whether the module is a local module.
         package: The name of the package that contains the module.
         top_levels: A list of dependencies that contain this module in their top-level module
-            names.
+            names. This can be multiple, e.g. `google-cloud-api` and `google-cloud-bigquery` both have
+            `google` in their top-level module names.
         dev_top_levels: A list of development dependencies that contain this module in their
-            top-level module names.
-        is_dependency: Whether the module is provided by a listed dependency.
-        is_dev_dependency: Whether the module is provided by a listed development dependency.
+            top-level module names. Can be multiple, similar to the attribute `top_levels`.
+        is_provided_by_dependency: Whether the module is provided by a listed dependency.
+        is_provided_by_dev_dependency: Whether the module is provided by a listed development dependency.
     """
 
     name: str
@@ -34,8 +35,8 @@ class Module:
     package: str | None = None
     top_levels: list[str] | None = None
     dev_top_levels: list[str] | None = None
-    is_dependency: bool | None = None
-    is_dev_dependency: bool | None = None
+    is_provided_by_dependency: bool | None = None
+    is_provided_by_dev_dependency: bool | None = None
 
     def __post_init__(self) -> None:
         self._log()
@@ -75,7 +76,7 @@ class ModuleBuilder:
             local_modules: The list of local modules
             stdlib_modules: The list of Python stdlib modules
             dependencies: A list of the project's dependencies
-            dev-dependencies: A list of the project's development dependencies
+            dev_dependencies: A list of the project's development dependencies
         """
         self.name = name
         self.local_modules = local_modules
@@ -99,15 +100,15 @@ class ModuleBuilder:
         top_levels = self._get_corresponding_top_levels_from(self.dependencies)
         dev_top_levels = self._get_corresponding_top_levels_from(self.dev_dependencies)
 
-        is_dependency = self._has_matching_dependency(package, top_levels)
-        is_dev_dependency = self._has_matching_dev_dependency(package, dev_top_levels)
+        is_provided_by_dependency = self._has_matching_dependency(package, top_levels)
+        is_provided_by_dev_dependency = self._has_matching_dev_dependency(package, dev_top_levels)
         return Module(
             self.name,
             package=package,
             top_levels=top_levels,
             dev_top_levels=dev_top_levels,
-            is_dependency=is_dependency,
-            is_dev_dependency=is_dev_dependency,
+            is_provided_by_dependency=is_provided_by_dependency,
+            is_provided_by_dev_dependency=is_provided_by_dev_dependency,
         )
 
     def _get_package_name_from_metadata(self) -> str | None:

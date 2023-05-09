@@ -45,7 +45,7 @@ class MisplacedDevDependenciesFinder(IssuesFinder):
     def _is_development_dependency(self, module: Module, corresponding_package_name: str) -> bool:
         # Module can be provided both by a regular and by a development dependency.
         # Only continue if module is ONLY provided by a dev dependency.
-        if not module.is_dev_dependency or module.is_dependency:
+        if not module.is_provided_by_dev_dependency or module.is_provided_by_dependency:
             return False
 
         if module.name in self.ignored_modules:
