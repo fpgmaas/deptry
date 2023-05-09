@@ -79,7 +79,7 @@ def test__get_local_modules(
 
         assert (
             Core(
-                root=tmp_path / root_suffix,
+                root=(tmp_path / root_suffix,),
                 config=Path("pyproject.toml"),
                 no_ansi=False,
                 ignore_obsolete=(),

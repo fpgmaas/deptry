@@ -104,7 +104,7 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
 
 
 @click.command()
-@click.argument("root", type=click.Path(exists=True, path_type=Path))
+@click.argument("root", type=click.Path(exists=True, path_type=Path), nargs=-1, required=True)
 @click.option(
     "--verbose",
     "-v",
@@ -268,7 +268,7 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
     show_default=False,
 )
 def deptry(
-    root: Path,
+    root: tuple[Path, ...],
     config: Path,
     no_ansi: bool,
     ignore_obsolete: tuple[str, ...],
@@ -290,8 +290,15 @@ def deptry(
 ) -> None:
     """Find dependency issues in your Python project.
 
-    [ROOT] is the path to the root directory of the project to be scanned.
-    All other arguments should be specified relative to [ROOT].
+    ROOT is the path to the root directory of the project to be scanned. For instance, to invoke deptry in the current
+    directory:
+
+        deptry .
+
+    If your project has multiple source directories, multiple ROOT can be specified.  For instance, to invoke deptry in
+    both 'src' and 'worker' directories:
+
+        deptry src worker
 
     """
 

@@ -1,0 +1,14 @@
+[project]
+# PEP 621 project metadata
+# See https://www.python.org/dev/peps/pep-0621/
+name = "foo"
+version = "1.2.3"
+requires-python = ">=3.7"
+dependencies = ["toml"]
+
+[build-system]
+requires = ["setuptools>=61.0.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.deptry]
+ignore_obsolete = ["pkginfo"]

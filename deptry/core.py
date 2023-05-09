@@ -33,7 +33,7 @@ if TYPE_CHECKING:
 
 @dataclass
 class Core:
-    root: Path
+    root: tuple[Path, ...]
     config: Path
     no_ansi: bool
     ignore_obsolete: tuple[str, ...]
@@ -148,13 +148,15 @@ class Core:
 
     def _get_local_modules(self) -> set[str]:
         """
-        Get all local Python modules from the root directory and `known_first_party` list.
+        Get all local Python modules from the source directories and `known_first_party` list.
         A module is considered a local Python module if it matches at least one of those conditions:
         - it is a directory that contains at least one Python file
         - it is a Python file that is not named `__init__.py` (since it is a special case)
         - it is set in the `known_first_party` list
         """
-        guessed_local_modules = {path.stem for path in self.root.iterdir() if self._is_local_module(path)}
+        guessed_local_modules = {
+            path.stem for source in self.root for path in source.iterdir() if self._is_local_module(path)
+        }
 
         return guessed_local_modules | set(self.known_first_party)
 

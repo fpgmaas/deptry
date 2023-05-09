@@ -26,7 +26,7 @@ class PythonFileFinder:
     using_default_exclude: bool
     ignore_notebooks: bool = False
 
-    def get_all_python_files_in(self, directory: Path) -> list[Path]:
+    def get_all_python_files_in(self, directories: tuple[Path, ...]) -> list[Path]:
         logging.debug("Collecting Python files to scan...")
 
         source_files = []
@@ -36,17 +36,18 @@ class PythonFileFinder:
 
         gitignore_spec = self._generate_gitignore_pathspec(Path("."))
 
-        for root_str, dirs, files in os.walk(directory, topdown=True):
-            root = Path(root_str)
+        for directory in directories:
+            for root_str, dirs, files in os.walk(directory, topdown=True):
+                root = Path(root_str)
 
-            if self._is_directory_ignored(root, ignore_regex):
-                dirs[:] = []
-                continue
+                if self._is_directory_ignored(root, ignore_regex):
+                    dirs[:] = []
+                    continue
 
-            for file_str in files:
-                file = root / file_str
-                if not self._is_file_ignored(file, file_lookup_suffixes, ignore_regex, gitignore_spec):
-                    source_files.append(file)
+                for file_str in files:
+                    file = root / file_str
+                    if not self._is_file_ignored(file, file_lookup_suffixes, ignore_regex, gitignore_spec):
+                        source_files.append(file)
 
         logging.debug("Python files to scan for imports:\n%s\n", "\n".join([str(file) for file in source_files]))
 
