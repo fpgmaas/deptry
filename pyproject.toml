@@ -152,6 +152,8 @@ select = [
     "I",
     # mccabe
     "C90",
+    # pep8-naming
+    "N",
     # pycodestyle
     "E", "W",
     # pyflakes
