@@ -43,7 +43,7 @@ class MisplacedDevDependenciesFinder(IssuesFinder):
         return misplaced_dev_dependencies
 
     def _is_development_dependency(self, module: Module, corresponding_package_name: str) -> bool:
-        if not module.is_dev_dependency:
+        if not module.is_provided_by_dev_dependency:
             return False
 
         if module.name in self.ignored_modules:
