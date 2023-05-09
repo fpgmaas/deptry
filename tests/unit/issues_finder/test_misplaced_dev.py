@@ -24,7 +24,7 @@ def test_simple() -> None:
 
 def test_regular_and_dev_dependency() -> None:
     """
-    If a dependency is both a regular and a development dependency, no error 'misplaced dev dependency' violation
+    If a dependency is both a regular and a development dependency, no 'misplaced dev dependency' violation
     should be detected if it is used in the code base.
     """
 
