@@ -115,6 +115,7 @@ deptry = "deptry.cli:deptry"
 
 [tool.pytest.ini_options]
 addopts = "--doctest-modules"
+filterwarnings = ["error"]
 norecursedirs = ["data*"]
 
 [tool.ruff]
