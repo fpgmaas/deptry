@@ -20,6 +20,3 @@ black = "^22.6.0"
 ignore_obsolete = [
 'pkginfo'
 ]
-ignore_unused = [
-'requests'
-]

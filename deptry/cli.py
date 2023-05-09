@@ -11,6 +11,7 @@ import click
 
 from deptry.config import read_configuration_from_pyproject_toml
 from deptry.core import Core
+from deptry.deprecate_obsolete import get_value_for_ignore_unused, get_value_for_skip_unused
 
 if TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
@@ -299,25 +300,11 @@ def deptry(
 
     """
 
-    if ignore_obsolete:
-        logging.warning(
-            "Warning: In an upcoming release, support for the `--ignore-obsolete` and `-io` command-line options and"
-            " the `ignore_obsolete` configuration parameter will be discontinued. Instead, use the `--ignore-unused`,"
-            " `-iu` options or the `ignore_unused` configuration parameter to achieve the desired behavior."
-        )
-
-    if skip_obsolete:
-        logging.warning(
-            "Warning: In an upcoming release, support for the `--skip-obsolete` command-line option and the"
-            " `skip_obsolete` configuration parameter will be discontinued. Instead, use the `--skip-unused` option or"
-            " the `skip_unused` configuration parameter to achieve the desired behavior."
-        )
-
     Core(
         root=root,
         config=config,
         no_ansi=no_ansi,
-        ignore_unused=ignore_unused + ignore_obsolete,
+        ignore_unused=get_value_for_ignore_unused(ignore_obsolete=ignore_obsolete, ignore_unused=ignore_unused),
         ignore_missing=ignore_missing,
         ignore_transitive=ignore_transitive,
         ignore_misplaced_dev=ignore_misplaced_dev,
@@ -325,7 +312,7 @@ def deptry(
         extend_exclude=extend_exclude,
         using_default_exclude=not exclude,
         ignore_notebooks=ignore_notebooks,
-        skip_unused=skip_unused or skip_obsolete,
+        skip_unused=get_value_for_skip_unused(skip_obsolete=skip_obsolete, skip_unused=skip_unused),
         skip_missing=skip_missing,
         skip_transitive=skip_transitive,
         skip_misplaced_dev=skip_misplaced_dev,
