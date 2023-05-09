@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 
 def get_imported_modules_for_list_of_files(list_of_files: list[Path]) -> dict[str, list[Location]]:
-    logging.info(f"Scanning {len(list_of_files)} files...")
+    logging.info(f"Scanning {len(list_of_files)} file{'s' if len(list_of_files)>1 else ''}...")
 
     modules: dict[str, list[Location]] = defaultdict(list)
 
