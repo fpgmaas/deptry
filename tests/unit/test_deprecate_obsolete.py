@@ -24,9 +24,8 @@ def test_skip_unused():
 
 
 def test_skip_unused_and_skip_obsolete():
-    with pytest.raises(ValueError) as exc_info:
+    with pytest.raises(ValueError, match=SKIP_OBSOLETE_AND_SKIP_UNUSED_ERROR_MESSAGE):
         get_value_for_skip_unused(skip_obsolete=True, skip_unused=True)
-    assert str(exc_info.value) == SKIP_OBSOLETE_AND_SKIP_UNUSED_ERROR_MESSAGE
 
 
 def test_ignore_obsolete(caplog):
@@ -41,6 +40,5 @@ def test_ignore_unused():
 
 
 def test_ignore_unused_and_ignore_obsolete():
-    with pytest.raises(ValueError) as exc_info:
+    with pytest.raises(ValueError, match=IGNORE_OBSOLETE_AND_IGNORE_UNUSED_ERROR_MESSAGE):
         get_value_for_ignore_unused(ignore_obsolete="b", ignore_unused="a")
-    assert str(exc_info.value) == IGNORE_OBSOLETE_AND_IGNORE_UNUSED_ERROR_MESSAGE
