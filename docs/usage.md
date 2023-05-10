@@ -8,7 +8,13 @@ _deptry_ can be run with:
 deptry .
 ```
 
-where `.` is the path to the root directory of the project to be scanned. All other arguments should be specified relative to this directory.
+where `.` is the path to the root directory of the project to be scanned.
+
+If your project has multiple source directories, multiple root directories can be provided:
+
+```shell
+deptry a_directory another_directory
+```
 
 If you want to configure _deptry_ using `pyproject.toml`, or if your dependencies are stored in `pyproject.toml`, but it is located in another location than the one _deptry_ is run from, you can specify the location to it by using `--config <path_to_pyproject.toml>` argument.
 
