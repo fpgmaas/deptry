@@ -17,6 +17,4 @@ pkginfo = "^1.8.3"
 black = "^22.6.0"
 
 [tool.deptry]
-ignore_unused = [
-'pkginfo'
-]
+ignore_unused = ["pkginfo"]
