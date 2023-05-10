@@ -190,22 +190,22 @@ ignore_missing = ["pip", "tomllib"]
 deptry . --ignore-missing "pip,tomllib"
 ```
 
-#### Ignore obsolete
+#### Ignore unused
 
-List of packages to ignore when running the check for [Obsolete dependencies (DEP002)](issues-detection.md#obsolete-dependencies-dep002).
+List of packages to ignore when running the check for [Unused dependencies (DEP002)](issues-detection.md#unused-dependencies-dep002).
 
 - Type: `List[str]`
 - Default: `[]`
-- `pyproject.toml` option name: `ignore_obsolete`
-- CLI option name: `--ignore-obsolete` (short: `-io`)
+- `pyproject.toml` option name: `ignore_unused`
+- CLI option name: `--ignore-unused` (short: `-io`)
 - `pyproject.toml` example:
 ```toml
 [tool.deptry]
-ignore_obsolete = ["uvicorn", "uvloop"]
+ignore_unused = ["uvicorn", "uvloop"]
 ```
 - CLI example:
 ```shell
-deptry . --ignore-obsolete "uvicorn,uvloop"
+deptry . --ignore-unused "uvicorn,uvloop"
 ```
 
 #### Ignore transitive
@@ -280,22 +280,22 @@ skip_missing = true
 deptry . --skip-missing
 ```
 
-#### Skip obsolete
+#### Skip unused
 
-Disable the check for [Obsolete dependencies (DEP002)](issues-detection.md#obsolete-dependencies-dep002).
+Disable the check for [Unused dependencies (DEP002)](issues-detection.md#unused-dependencies-dep002).
 
 - Type: `bool`
 - Default: `False`
-- `pyproject.toml` option name: `skip_obsolete`
-- CLI option name: `--skip-obsolete`
+- `pyproject.toml` option name: `skip_unused`
+- CLI option name: `--skip-unused`
 - `pyproject.toml` example:
 ```toml
 [tool.deptry]
-skip_obsolete = true
+skip_unused = true
 ```
 - CLI example:
 ```shell
-deptry . --skip-obsolete
+deptry . --skip-unused
 ```
 
 #### Skip transitive
@@ -471,7 +471,7 @@ This however is not always sufficient. A situation may occur where a package is
 not installed because it is optional and unused in the current installation.
 Then when the package name doesn't directly translate to the top level module
 name, or there are more top level modules names, Deptry may report both
-obsolete packages, and missing packages. A concrete example is deptry reporting obsolete (optional) dependency
+unused packages, and missing packages. A concrete example is deptry reporting unused (optional) dependency
 `foo-python`, and missing package `foo`, while package `foo-python` would
 install top level module `foo`, if it were installed.
 

@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 
 from deptry.imports.location import Location
 from deptry.issues_finder.base import IssuesFinder
-from deptry.violations import ObsoleteDependencyViolation
+from deptry.violations import UnusedDependencyViolation
 
 if TYPE_CHECKING:
     from deptry.dependency import Dependency
@@ -14,39 +14,37 @@ if TYPE_CHECKING:
 
 
 @dataclass
-class ObsoleteDependenciesFinder(IssuesFinder):
+class UnusedDependenciesFinder(IssuesFinder):
     """
-    Finds obsolete dependencies by comparing a list of imported modules to a list of project dependencies.
+    Finds unused dependencies by comparing a list of imported modules to a list of project dependencies.
 
-    A dependency is considered obsolete if none of the following conditions hold:
+    A dependency is considered unused if none of the following conditions hold:
     - A module with the exact name of the dependency is imported.
     - Any of the top-level modules of the dependency are imported.
 
     For example, 'matplotlib' has top-levels ['matplotlib', 'mpl_toolkits', 'pylab']. `mpl_toolkits` does not have
-    any associated metadata, but if this is imported the associated dependency `matplotlib` is not obsolete,
+    any associated metadata, but if this is imported the associated dependency `matplotlib` is not unused,
     even if `matplotlib` itself is not imported anywhere.
     """
 
     def find(self) -> list[Violation]:
-        logging.debug("\nScanning for obsolete dependencies...")
-        obsolete_dependencies: list[Violation] = []
+        logging.debug("\nScanning for unused dependencies...")
+        unused_dependencies: list[Violation] = []
 
         for dependency in self.dependencies:
             logging.debug("Scanning module %s...", dependency.name)
 
-            if self._is_obsolete(dependency):
-                obsolete_dependencies.append(
-                    ObsoleteDependencyViolation(dependency, Location(dependency.definition_file))
-                )
+            if self._is_unused(dependency):
+                unused_dependencies.append(UnusedDependencyViolation(dependency, Location(dependency.definition_file)))
 
-        return obsolete_dependencies
+        return unused_dependencies
 
-    def _is_obsolete(self, dependency: Dependency) -> bool:
+    def _is_unused(self, dependency: Dependency) -> bool:
         if self._dependency_found_in_imported_modules(dependency) or self._any_of_the_top_levels_imported(dependency):
             return False
 
         if dependency.name in self.ignored_modules:
-            logging.debug("Dependency '%s' found to be obsolete, but ignoring.", dependency.name)
+            logging.debug("Dependency '%s' found to be unused, but ignoring.", dependency.name)
             return False
 
         logging.debug("Dependency '%s' does not seem to be used.", dependency.name)

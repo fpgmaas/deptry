@@ -36,7 +36,7 @@ toml
 
 ## Config
 
-pyproject.toml specifies to ignore the dependency:
+pyproject.toml specifies to ignore the dependencies through the to-be deprecated `ignore_obsolete`:
 
 ```
 pkginfo
@@ -47,7 +47,7 @@ pkginfo
 So expected output without any additional configuration:
 
 ```
-unused: isort, requests (pkginfo is ignored)
+unused: isort, requests
 missing: white
 transitive: None
 dev: black

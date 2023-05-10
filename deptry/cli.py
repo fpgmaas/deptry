@@ -11,6 +11,7 @@ import click
 
 from deptry.config import read_configuration_from_pyproject_toml
 from deptry.core import Core
+from deptry.deprecate_obsolete import get_value_for_ignore_unused, get_value_for_skip_unused
 
 if TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
@@ -130,10 +131,11 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
     is_flag=True,
     help="Disable ANSI characters in terminal output.",
 )
+@click.option("--skip-obsolete", is_flag=True, hidden=True)
 @click.option(
-    "--skip-obsolete",
+    "--skip-unused",
     is_flag=True,
-    help="Boolean flag to specify if deptry should skip scanning the project for obsolete dependencies.",
+    help="Boolean flag to specify if deptry should skip scanning the project for unused dependencies.",
 )
 @click.option(
     "--skip-missing",
@@ -153,13 +155,14 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
         " regular dependencies."
     ),
 )
+@click.option("--ignore-obsolete", "-io", type=COMMA_SEPARATED_TUPLE, default=(), hidden=True)
 @click.option(
-    "--ignore-obsolete",
-    "-io",
+    "--ignore-unused",
+    "-iu",
     type=COMMA_SEPARATED_TUPLE,
     help="""
-    Comma-separated list of dependencies that should never be marked as obsolete, even if they are not imported in any of the files scanned.
-    For example; `deptry . --ignore-obsolete foo,bar`.
+    Comma-separated list of dependencies that should never be marked as unused, even if they are not imported in any of the files scanned.
+    For example; `deptry . --ignore-unused foo,bar`.
     """,
     default=(),
 )
@@ -271,10 +274,12 @@ def deptry(
     root: tuple[Path, ...],
     config: Path,
     no_ansi: bool,
+    ignore_unused: tuple[str, ...],
     ignore_obsolete: tuple[str, ...],
     ignore_missing: tuple[str, ...],
     ignore_transitive: tuple[str, ...],
     ignore_misplaced_dev: tuple[str, ...],
+    skip_unused: bool,
     skip_obsolete: bool,
     skip_missing: bool,
     skip_transitive: bool,
@@ -306,7 +311,7 @@ def deptry(
         root=root,
         config=config,
         no_ansi=no_ansi,
-        ignore_obsolete=ignore_obsolete,
+        ignore_unused=get_value_for_ignore_unused(ignore_obsolete=ignore_obsolete, ignore_unused=ignore_unused),
         ignore_missing=ignore_missing,
         ignore_transitive=ignore_transitive,
         ignore_misplaced_dev=ignore_misplaced_dev,
@@ -314,7 +319,7 @@ def deptry(
         extend_exclude=extend_exclude,
         using_default_exclude=not exclude,
         ignore_notebooks=ignore_notebooks,
-        skip_obsolete=skip_obsolete,
+        skip_unused=get_value_for_skip_unused(skip_obsolete=skip_obsolete, skip_unused=skip_unused),
         skip_missing=skip_missing,
         skip_transitive=skip_transitive,
         skip_misplaced_dev=skip_misplaced_dev,

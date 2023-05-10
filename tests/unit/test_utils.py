@@ -8,7 +8,7 @@ from deptry.utils import load_pyproject_toml
 def test_load_pyproject_toml() -> None:
     assert load_pyproject_toml(Path("tests/data/example_project/pyproject.toml")) == {
         "tool": {
-            "deptry": {"ignore_obsolete": ["pkginfo"]},
+            "deptry": {"ignore_unused": ["pkginfo"]},
             "poetry": {
                 "authors": ["test <test@test.com>"],
                 "dependencies": {

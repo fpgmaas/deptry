@@ -20,11 +20,11 @@ def test_read_configuration_from_pyproject_toml_exists(tmp_path: Path) -> None:
             "exclude": ["bar"],
             "extend_exclude": ["foo"],
             "ignore_notebooks": False,
-            "ignore_obsolete": ["baz", "bar"],
+            "ignore_unused": ["baz", "bar"],
             "ignore_missing": [],
             "ignore_misplaced_dev": [],
             "ignore_transitive": [],
-            "skip_obsolete": False,
+            "skip_unused": False,
             "skip_missing": False,
             "skip_transitive": False,
             "skip_misplaced_dev": False,
@@ -38,11 +38,11 @@ def test_read_configuration_from_pyproject_toml_exists(tmp_path: Path) -> None:
         exclude = ["foo", "bar"]
         extend_exclude = ["bar", "foo"]
         ignore_notebooks = true
-        ignore_obsolete = ["foo"]
+        ignore_unused = ["foo"]
         ignore_missing = ["baz", "foobar"]
         ignore_misplaced_dev = ["barfoo"]
         ignore_transitive = ["foobaz"]
-        skip_obsolete = true
+        skip_unused = true
         skip_missing = true
         skip_transitive = true
         skip_misplaced_dev = true
@@ -65,11 +65,11 @@ def test_read_configuration_from_pyproject_toml_exists(tmp_path: Path) -> None:
         "exclude": ["foo", "bar"],
         "extend_exclude": ["bar", "foo"],
         "ignore_notebooks": True,
-        "ignore_obsolete": ["foo"],
+        "ignore_unused": ["foo"],
         "ignore_missing": ["baz", "foobar"],
         "ignore_misplaced_dev": ["barfoo"],
         "ignore_transitive": ["foobaz"],
-        "skip_obsolete": True,
+        "skip_unused": True,
         "skip_missing": True,
         "skip_transitive": True,
         "skip_misplaced_dev": True,

@@ -17,7 +17,7 @@
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/deptry)](https://pypistats.org/packages/deptry)
 [![License](https://img.shields.io/github/license/fpgmaas/deptry)](https://img.shields.io/github/license/fpgmaas/deptry)
 
-_deptry_ is a command line tool to check for issues with dependencies in a Python project, such as obsolete or missing dependencies. It supports the following types of projects:
+_deptry_ is a command line tool to check for issues with dependencies in a Python project, such as unused or missing dependencies. It supports the following types of projects:
 
 - Projects that use [Poetry](https://python-poetry.org/) and a corresponding `pyproject.toml` file
 - Projects that use [PDM](https://pdm.fming.dev/latest/) and a corresponding `pyproject.toml` file

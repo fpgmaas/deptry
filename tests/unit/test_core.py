@@ -16,8 +16,8 @@ from deptry.stdlibs import STDLIBS_PYTHON
 from deptry.violations import (
     MisplacedDevDependencyViolation,
     MissingDependencyViolation,
-    ObsoleteDependencyViolation,
     TransitiveDependencyViolation,
+    UnusedDependencyViolation,
 )
 from tests.utils import create_files, run_within_dir
 
@@ -82,11 +82,11 @@ def test__get_local_modules(
                 root=(tmp_path / root_suffix,),
                 config=Path("pyproject.toml"),
                 no_ansi=False,
-                ignore_obsolete=(),
+                ignore_unused=(),
                 ignore_missing=(),
                 ignore_transitive=(),
                 ignore_misplaced_dev=(),
-                skip_obsolete=False,
+                skip_unused=False,
                 skip_missing=False,
                 skip_transitive=False,
                 skip_misplaced_dev=False,
@@ -157,7 +157,7 @@ def test__get_stdlib_packages_unsupported(version_info: tuple[int | str, ...]) -
 def test__exit_with_violations() -> None:
     violations = [
         MissingDependencyViolation(Module("foo"), Location(Path("foo.py"), 1, 2)),
-        ObsoleteDependencyViolation(Dependency("foo", Path("pyproject.toml")), Location(Path("pyproject.toml"))),
+        UnusedDependencyViolation(Dependency("foo", Path("pyproject.toml")), Location(Path("pyproject.toml"))),
         TransitiveDependencyViolation(Module("foo"), Location(Path("foo.py"), 1, 2)),
         MisplacedDevDependencyViolation(Module("foo"), Location(Path("foo.py"), 1, 2)),
     ]

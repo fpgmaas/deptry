@@ -142,14 +142,14 @@ def test_cli_ignore_notebooks(project_builder: ToolSpecificProjectBuilder) -> No
 
 def test_cli_ignore_flags(project_builder: ToolSpecificProjectBuilder) -> None:
     with run_within_dir(project_builder("example_project", "poetry install --no-interaction --no-root")):
-        result = CliRunner().invoke(deptry, ". --ignore-obsolete isort,pkginfo,requests -im white -id black")
+        result = CliRunner().invoke(deptry, ". --ignore-unused isort,pkginfo,requests -im white -id black")
 
         assert result.exit_code == 0
 
 
 def test_cli_skip_flags(project_builder: ToolSpecificProjectBuilder) -> None:
     with run_within_dir(project_builder("example_project", "poetry install --no-interaction --no-root")):
-        result = CliRunner().invoke(deptry, ". --skip-obsolete --skip-missing --skip-misplaced-dev --skip-transitive")
+        result = CliRunner().invoke(deptry, ". --skip-unused --skip-missing --skip-misplaced-dev --skip-transitive")
 
         assert result.exit_code == 0
 

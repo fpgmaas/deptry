@@ -47,7 +47,7 @@ pkginfo
 So expected output without any additional configuration:
 
 ```
-obsolete: requests (because pkginfo is ignored)
+unused: isort, requests (because pkginfo is ignored)
 missing: white
 transitive: None
 dev: black

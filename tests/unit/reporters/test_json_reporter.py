@@ -10,8 +10,8 @@ from deptry.reporters import JSONReporter
 from deptry.violations import (
     MisplacedDevDependencyViolation,
     MissingDependencyViolation,
-    ObsoleteDependencyViolation,
     TransitiveDependencyViolation,
+    UnusedDependencyViolation,
 )
 from tests.utils import run_within_dir
 
@@ -21,9 +21,7 @@ def test_simple(tmp_path: Path) -> None:
         JSONReporter(
             [
                 MissingDependencyViolation(Module("foo", package="foo_package"), Location(Path("foo.py"), 1, 2)),
-                ObsoleteDependencyViolation(
-                    Dependency("foo", Path("pyproject.toml")), Location(Path("pyproject.toml"))
-                ),
+                UnusedDependencyViolation(Dependency("foo", Path("pyproject.toml")), Location(Path("pyproject.toml"))),
                 TransitiveDependencyViolation(Module("foo", package="foo_package"), Location(Path("foo/bar.py"), 1, 2)),
                 MisplacedDevDependencyViolation(Module("foo", package="foo_package"), Location(Path("foo.py"), 1, 2)),
             ],
