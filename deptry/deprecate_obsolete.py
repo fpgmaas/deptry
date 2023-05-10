@@ -23,7 +23,7 @@ IGNORE_OBSOLETE_AND_IGNORE_UNUSED_ERROR_MESSAGE = (
 )
 
 
-def get_value_for_skip_unused(skip_obsolete: bool, skip_unused: bool):
+def get_value_for_skip_unused(skip_obsolete: bool, skip_unused: bool) -> bool:
     """
     The skip_obsolete argument will be deprecated in the future, users should use skip_unused instead.
     If only skip_obsolete is defined, display a warning message. If both skip_obsolete and skip_unused are defined,
@@ -38,7 +38,7 @@ def get_value_for_skip_unused(skip_obsolete: bool, skip_unused: bool):
     return skip_unused
 
 
-def get_value_for_ignore_unused(ignore_obsolete: bool, ignore_unused: bool):
+def get_value_for_ignore_unused(ignore_obsolete: tuple[str, ...], ignore_unused: tuple[str, ...]) -> tuple[str, ...]:
     """
     The ignore_obsolete argument will be deprecated in the future, users should use ignore_unused instead.
     If only ignore_obsolete is defined, display a warning message. If both ignore_obsolete and ignore_unused are defined,
