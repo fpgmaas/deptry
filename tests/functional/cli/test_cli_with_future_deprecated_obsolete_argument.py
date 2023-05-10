@@ -18,11 +18,9 @@ if TYPE_CHECKING:
 
 
 def test_cli_uses_both_obsolete_and_unused_flag_from_pyproject_toml(
-    project_builder: ToolSpecificProjectBuilder,
+    poetry_project_builder: ToolSpecificProjectBuilder,
 ) -> None:
-    with run_within_dir(
-        project_builder("project_with_future_deprecated_obsolete_argument", "poetry install --no-interaction --no-root")
-    ):
+    with run_within_dir(poetry_project_builder("project_with_future_deprecated_obsolete_argument")):
         result = subprocess.run(shlex.split("poetry run deptry . -o report.json"), capture_output=True, text=True)
 
         assert IGNORE_OBSOLETE_WARNING in result.stderr
@@ -79,10 +77,8 @@ def test_cli_uses_both_obsolete_and_unused_flag_from_pyproject_toml(
         ]
 
 
-def test_cli_skip_obsolete_argument_still_works(project_builder: ToolSpecificProjectBuilder) -> None:
-    with run_within_dir(
-        project_builder("project_with_future_deprecated_obsolete_argument", "poetry install --no-interaction --no-root")
-    ):
+def test_cli_skip_obsolete_argument_still_works(poetry_project_builder: ToolSpecificProjectBuilder) -> None:
+    with run_within_dir(poetry_project_builder("project_with_future_deprecated_obsolete_argument")):
         result = subprocess.run(
             shlex.split("poetry run deptry . --skip-obsolete -o report.json"), capture_output=True, text=True
         )
@@ -118,20 +114,16 @@ def test_cli_skip_obsolete_argument_still_works(project_builder: ToolSpecificPro
         ]
 
 
-def test_cli_raise_error_if_both_skip_options_used(project_builder: ToolSpecificProjectBuilder) -> None:
-    with run_within_dir(
-        project_builder("project_with_future_deprecated_obsolete_argument", "poetry install --no-interaction --no-root")
-    ):
+def test_cli_raise_error_if_both_skip_options_used(poetry_project_builder: ToolSpecificProjectBuilder) -> None:
+    with run_within_dir(poetry_project_builder("project_with_future_deprecated_obsolete_argument")):
         result = subprocess.run(
             shlex.split("poetry run deptry . --skip-obsolete --skip-unused"), capture_output=True, text=True
         )
         assert SKIP_OBSOLETE_AND_SKIP_UNUSED_ERROR_MESSAGE in result.stderr
 
 
-def test_cli_raise_error_if_both_ignore_options_used(project_builder: ToolSpecificProjectBuilder) -> None:
-    with run_within_dir(
-        project_builder("project_with_future_deprecated_obsolete_argument", "poetry install --no-interaction --no-root")
-    ):
+def test_cli_raise_error_if_both_ignore_options_used(poetry_project_builder: ToolSpecificProjectBuilder) -> None:
+    with run_within_dir(poetry_project_builder("project_with_future_deprecated_obsolete_argument")):
         result = subprocess.run(
             shlex.split("poetry run deptry . --ignore-unused 'a,b'"), capture_output=True, text=True
         )
