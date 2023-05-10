@@ -10,7 +10,7 @@ deptry .
 
 where `.` is the path to the root directory of the project to be scanned.
 
-If your project have multiple source directories, multiple root directories can be provided:
+If your project has multiple source directories, multiple root directories can be provided:
 
 ```shell
 deptry a_directory another_directory
