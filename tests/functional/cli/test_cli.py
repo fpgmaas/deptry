@@ -71,8 +71,8 @@ def test_cli_returns_error(poetry_project_builder: ToolSpecificProjectBuilder) -
         ]
 
 
-def test_cli_ignore_notebooks(project_builder: ToolSpecificProjectBuilder) -> None:
-    with run_within_dir(project_builder("example_project", "poetry install --no-interaction --no-root")):
+def test_cli_ignore_notebooks(poetry_project_builder: ToolSpecificProjectBuilder) -> None:
+    with run_within_dir(poetry_project_builder("example_project")):
         result = CliRunner().invoke(deptry, ". --ignore-notebooks -o report.json")
 
         assert result.exit_code == 1
@@ -140,22 +140,22 @@ def test_cli_ignore_notebooks(project_builder: ToolSpecificProjectBuilder) -> No
         ]
 
 
-def test_cli_ignore_flags(project_builder: ToolSpecificProjectBuilder) -> None:
-    with run_within_dir(project_builder("example_project", "poetry install --no-interaction --no-root")):
+def test_cli_ignore_flags(poetry_project_builder: ToolSpecificProjectBuilder) -> None:
+    with run_within_dir(poetry_project_builder("example_project")):
         result = CliRunner().invoke(deptry, ". --ignore-unused isort,pkginfo,requests -im white -id black")
 
         assert result.exit_code == 0
 
 
-def test_cli_skip_flags(project_builder: ToolSpecificProjectBuilder) -> None:
-    with run_within_dir(project_builder("example_project", "poetry install --no-interaction --no-root")):
+def test_cli_skip_flags(poetry_project_builder: ToolSpecificProjectBuilder) -> None:
+    with run_within_dir(poetry_project_builder("example_project")):
         result = CliRunner().invoke(deptry, ". --skip-unused --skip-missing --skip-misplaced-dev --skip-transitive")
 
         assert result.exit_code == 0
 
 
-def test_cli_exclude(project_builder: ToolSpecificProjectBuilder) -> None:
-    with run_within_dir(project_builder("example_project", "poetry install --no-interaction --no-root")):
+def test_cli_exclude(poetry_project_builder: ToolSpecificProjectBuilder) -> None:
+    with run_within_dir(poetry_project_builder("example_project")):
         result = CliRunner().invoke(deptry, ". --exclude src/notebook.ipynb -o report.json")
 
         assert result.exit_code == 1
@@ -223,8 +223,8 @@ def test_cli_exclude(project_builder: ToolSpecificProjectBuilder) -> None:
         ]
 
 
-def test_cli_extend_exclude(project_builder: ToolSpecificProjectBuilder) -> None:
-    with run_within_dir(project_builder("example_project", "poetry install --no-interaction --no-root")):
+def test_cli_extend_exclude(poetry_project_builder: ToolSpecificProjectBuilder) -> None:
+    with run_within_dir(poetry_project_builder("example_project")):
         result = CliRunner().invoke(deptry, ". -ee src/notebook.ipynb -o report.json")
 
         assert result.exit_code == 1
@@ -292,8 +292,8 @@ def test_cli_extend_exclude(project_builder: ToolSpecificProjectBuilder) -> None
         ]
 
 
-def test_cli_known_first_party(project_builder: ToolSpecificProjectBuilder) -> None:
-    with run_within_dir(project_builder("example_project", "poetry install --no-interaction --no-root")):
+def test_cli_known_first_party(poetry_project_builder: ToolSpecificProjectBuilder) -> None:
+    with run_within_dir(poetry_project_builder("example_project")):
         result = CliRunner().invoke(deptry, ". --known-first-party white -o report.json")
 
         assert result.exit_code == 1
@@ -337,8 +337,8 @@ def test_cli_known_first_party(project_builder: ToolSpecificProjectBuilder) -> N
         ]
 
 
-def test_cli_not_verbose(project_builder: ToolSpecificProjectBuilder) -> None:
-    with run_within_dir(project_builder("example_project", "poetry install --no-interaction --no-root")):
+def test_cli_not_verbose(poetry_project_builder: ToolSpecificProjectBuilder) -> None:
+    with run_within_dir(poetry_project_builder("example_project")):
         result = subprocess.run(shlex.split("poetry run deptry . -o report.json"), capture_output=True, text=True)
 
         assert result.returncode == 1
@@ -395,8 +395,8 @@ def test_cli_not_verbose(project_builder: ToolSpecificProjectBuilder) -> None:
         ]
 
 
-def test_cli_verbose(project_builder: ToolSpecificProjectBuilder) -> None:
-    with run_within_dir(project_builder("example_project", "poetry install --no-interaction --no-root")):
+def test_cli_verbose(poetry_project_builder: ToolSpecificProjectBuilder) -> None:
+    with run_within_dir(poetry_project_builder("example_project")):
         result = subprocess.run(
             shlex.split("poetry run deptry . --verbose -o report.json"), capture_output=True, text=True
         )
@@ -455,8 +455,8 @@ def test_cli_verbose(project_builder: ToolSpecificProjectBuilder) -> None:
         ]
 
 
-def test_cli_with_no_ansi(project_builder: ToolSpecificProjectBuilder) -> None:
-    with run_within_dir(project_builder("example_project", "poetry install --no-interaction --no-root")):
+def test_cli_with_no_ansi(poetry_project_builder: ToolSpecificProjectBuilder) -> None:
+    with run_within_dir(poetry_project_builder("example_project")):
         result = subprocess.run(shlex.split("poetry run deptry . --no-ansi"), capture_output=True, text=True)
 
         expected_output = [
@@ -476,8 +476,8 @@ def test_cli_with_no_ansi(project_builder: ToolSpecificProjectBuilder) -> None:
         assert result.stderr == "\n".join(expected_output)
 
 
-def test_cli_with_not_json_output(project_builder: ToolSpecificProjectBuilder) -> None:
-    with run_within_dir(project_builder("example_project", "poetry install --no-interaction --no-root")):
+def test_cli_with_not_json_output(poetry_project_builder: ToolSpecificProjectBuilder) -> None:
+    with run_within_dir(poetry_project_builder("example_project")):
         # Remove previously generated `report.json`.
         Path("report.json").unlink()
 
@@ -525,8 +525,8 @@ def test_cli_with_not_json_output(project_builder: ToolSpecificProjectBuilder) -
         assert result.stderr == "\n".join(expected_output)
 
 
-def test_cli_with_json_output(project_builder: ToolSpecificProjectBuilder) -> None:
-    with run_within_dir(project_builder("example_project", "poetry install --no-interaction --no-root")):
+def test_cli_with_json_output(poetry_project_builder: ToolSpecificProjectBuilder) -> None:
+    with run_within_dir(poetry_project_builder("example_project")):
         result = subprocess.run(shlex.split("poetry run deptry . -o deptry.json"), capture_output=True, text=True)
 
         expected_output = [
