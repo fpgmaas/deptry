@@ -43,10 +43,16 @@ class PoetryDependencyGetter(DependencyGetter):
         pyproject_data = load_pyproject_toml(self.config)
 
         with contextlib.suppress(KeyError):
-            dependencies = {**pyproject_data["tool"]["poetry"]["dev-dependencies"], **dependencies}
+            dependencies = {**dependencies, **pyproject_data["tool"]["poetry"]["dev-dependencies"]}
 
-        with contextlib.suppress(KeyError):
-            dependencies = {**pyproject_data["tool"]["poetry"]["group"]["dev"]["dependencies"], **dependencies}
+        try:
+            dependency_groups = pyproject_data["tool"]["poetry"]["group"]
+        except KeyError:
+            dependency_groups = {}
+
+        for group_values in dependency_groups.values():
+            with contextlib.suppress(KeyError):
+                dependencies = {**dependencies, **group_values["dependencies"]}
 
         return self._get_dependencies(dependencies, self.package_module_name_map)
 
