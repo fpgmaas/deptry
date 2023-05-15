@@ -13,9 +13,37 @@ if TYPE_CHECKING:
 
 
 @dataclass
+class InstallationOption:
+    """
+    Represents an installation option for a project.
+
+    An installation option is a configuration that defines additional dependencies for a project.
+    For example, given a project 'foo', a valid installation option would be
+    `InstallationOption(name='plot', dependencies=['matplotlib'])`, which indicates that the 'plot'
+    installation option requires the 'matplotlib' package. This installation option can be installed
+    from PyPI as 'foo[plot]'. Setuptools refers to these as optional dependencies, while Poetry
+    refers to them as extras.
+
+    Attributes:
+        name: The name of the installation option.
+        dependencies: A list of additional dependencies required by the installation option.
+    """
+
+    name: str
+    dependencies: list[str]
+
+    def __repr__(self) -> str:
+        return f"Installation option '{self.name}'"
+
+    def __str__(self) -> str:
+        return f"Installation option '{self.name}' with dependencies: {self.dependencies}."
+
+
+@dataclass
 class DependenciesExtract:
     dependencies: list[Dependency]
     dev_dependencies: list[Dependency]
+    installation_options: list[InstallationOption] | None = None
 
 
 @dataclass
@@ -43,5 +71,14 @@ class DependencyGetter(ABC):
 
         for dependency in dependencies:
             logging.debug(dependency)
+
+        logging.debug("")
+
+    @staticmethod
+    def _log_installation_options(installation_options: list[InstallationOption]) -> None:
+        logging.debug("The project contains the following installation options:")
+
+        for option in installation_options:
+            logging.debug(option)
 
         logging.debug("")

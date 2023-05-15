@@ -37,6 +37,9 @@ pytest-cov = "4.0.0"
 types-chardet = "5.0.4.6"
 types-colorama = { version = "0.4.15.11", markers = "sys_platform == 'win32'" }
 
+[tool.poetry.extras]
+foo = ['click']
+
 [tool.poetry.group.docs.dependencies]
 mkdocs = "1.4.3"
 mkdocs-material = "9.1.12"

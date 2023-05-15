@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
 
 from deptry.dependency import Dependency
-from deptry.dependency_getter.base import DependenciesExtract, DependencyGetter
+from deptry.dependency_getter.base import DependenciesExtract, DependencyGetter, InstallationOption
 from deptry.utils import load_pyproject_toml
 
 if TYPE_CHECKING:
@@ -17,20 +17,23 @@ class PoetryDependencyGetter(DependencyGetter):
     """Extract Poetry dependencies from pyproject.toml."""
 
     def get(self) -> DependenciesExtract:
-        dependencies = self._get_poetry_dependencies()
+        dependencies = self._get_dependencies()
         self._log_dependencies(dependencies)
 
-        dev_dependencies = self._get_poetry_dev_dependencies()
+        dev_dependencies = self._get_dev_dependencies()
         self._log_dependencies(dev_dependencies, is_dev=True)
 
-        return DependenciesExtract(dependencies, dev_dependencies)
+        installation_options = self._get_poetry_extras()
+        self._log_installation_options(installation_options)
 
-    def _get_poetry_dependencies(self) -> list[Dependency]:
+        return DependenciesExtract(dependencies, dev_dependencies, installation_options)
+
+    def _get_dependencies(self) -> list[Dependency]:
         pyproject_data = load_pyproject_toml(self.config)
         dependencies: dict[str, Any] = pyproject_data["tool"]["poetry"]["dependencies"]
-        return self._get_dependencies(dependencies, self.package_module_name_map)
+        return self.create_dependency_objects(dependencies, self.package_module_name_map)
 
-    def _get_poetry_dev_dependencies(self) -> list[Dependency]:
+    def _get_dev_dependencies(self) -> list[Dependency]:
         """
         Poetry's development dependencies can be specified under either of the following:
 
@@ -54,9 +57,9 @@ class PoetryDependencyGetter(DependencyGetter):
             with contextlib.suppress(KeyError):
                 dependencies = {**dependencies, **group_values["dependencies"]}
 
-        return self._get_dependencies(dependencies, self.package_module_name_map)
+        return self.create_dependency_objects(dependencies, self.package_module_name_map)
 
-    def _get_dependencies(
+    def create_dependency_objects(
         self, poetry_dependencies: dict[str, Any], package_module_name_map: Mapping[str, Sequence[str]]
     ) -> list[Dependency]:
         dependencies = []
@@ -76,6 +79,14 @@ class PoetryDependencyGetter(DependencyGetter):
                 )
 
         return dependencies
+
+    def _get_poetry_extras(self) -> list[InstallationOption]:
+        pyproject_data = load_pyproject_toml(self.config)
+        try:
+            extras: dict[str, list[str]] = pyproject_data["tool"]["poetry"]["extras"]
+        except KeyError:
+            return None
+        return [InstallationOption(name, dependencies) for name, dependencies in extras.items()]
 
     @staticmethod
     def _is_optional(spec: str | dict[str, Any]) -> bool:
