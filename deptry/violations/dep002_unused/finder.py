@@ -5,8 +5,8 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from deptry.imports.location import Location
-from deptry.issues_finder.base import IssuesFinder
-from deptry.violations import UnusedDependencyViolation
+from deptry.violations.base import ViolationsFinder
+from deptry.violations.dep002_unused.violation import DEP002UnusedDependencyViolation
 
 if TYPE_CHECKING:
     from deptry.dependency import Dependency
@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 
 @dataclass
-class UnusedDependenciesFinder(IssuesFinder):
+class DEP002UnusedDependenciesFinder(ViolationsFinder):
     """
     Finds unused dependencies by comparing a list of imported modules to a list of project dependencies.
 
@@ -35,7 +35,9 @@ class UnusedDependenciesFinder(IssuesFinder):
             logging.debug("Scanning module %s...", dependency.name)
 
             if self._is_unused(dependency):
-                unused_dependencies.append(UnusedDependencyViolation(dependency, Location(dependency.definition_file)))
+                unused_dependencies.append(
+                    DEP002UnusedDependencyViolation(dependency, Location(dependency.definition_file))
+                )
 
         return unused_dependencies
 

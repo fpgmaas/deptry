@@ -8,10 +8,10 @@ from deptry.imports.location import Location
 from deptry.module import Module
 from deptry.reporters import JSONReporter
 from deptry.violations import (
-    MisplacedDevDependencyViolation,
-    MissingDependencyViolation,
-    TransitiveDependencyViolation,
-    UnusedDependencyViolation,
+    DEP001MissingDependencyViolation,
+    DEP002UnusedDependencyViolation,
+    DEP003TransitiveDependencyViolation,
+    DEP004MisplacedDevDependencyViolation,
 )
 from tests.utils import run_within_dir
 
@@ -20,10 +20,16 @@ def test_simple(tmp_path: Path) -> None:
     with run_within_dir(tmp_path):
         JSONReporter(
             [
-                MissingDependencyViolation(Module("foo", package="foo_package"), Location(Path("foo.py"), 1, 2)),
-                UnusedDependencyViolation(Dependency("foo", Path("pyproject.toml")), Location(Path("pyproject.toml"))),
-                TransitiveDependencyViolation(Module("foo", package="foo_package"), Location(Path("foo/bar.py"), 1, 2)),
-                MisplacedDevDependencyViolation(Module("foo", package="foo_package"), Location(Path("foo.py"), 1, 2)),
+                DEP001MissingDependencyViolation(Module("foo", package="foo_package"), Location(Path("foo.py"), 1, 2)),
+                DEP002UnusedDependencyViolation(
+                    Dependency("foo", Path("pyproject.toml")), Location(Path("pyproject.toml"))
+                ),
+                DEP003TransitiveDependencyViolation(
+                    Module("foo", package="foo_package"), Location(Path("foo/bar.py"), 1, 2)
+                ),
+                DEP004MisplacedDevDependencyViolation(
+                    Module("foo", package="foo_package"), Location(Path("foo.py"), 1, 2)
+                ),
             ],
             "output.json",
         ).report()

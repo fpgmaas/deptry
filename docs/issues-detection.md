@@ -1,4 +1,4 @@
-# Issues detection
+# Violations detection
 
 _deptry_ looks for the following issues in dependencies:
 

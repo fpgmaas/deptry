@@ -14,31 +14,31 @@ from deptry.imports.location import Location
 from deptry.module import Module
 from deptry.stdlibs import STDLIBS_PYTHON
 from deptry.violations import (
-    MisplacedDevDependencyViolation,
-    MissingDependencyViolation,
-    TransitiveDependencyViolation,
-    UnusedDependencyViolation,
+    DEP001MissingDependencyViolation,
+    DEP002UnusedDependencyViolation,
+    DEP003TransitiveDependencyViolation,
+    DEP004MisplacedDevDependencyViolation,
 )
 from tests.utils import create_files, run_within_dir
 
 
 def test__get_sorted_violations() -> None:
     violations = [
-        MisplacedDevDependencyViolation(Module("foo"), Location(Path("foo.py"), 1, 0)),
-        MissingDependencyViolation(Module("foo"), Location(Path("foo.py"), 2, 0)),
-        MissingDependencyViolation(Module("foo"), Location(Path("foo.py"), 1, 0)),
-        MissingDependencyViolation(Module("foo"), Location(Path("bar.py"), 3, 1)),
-        MissingDependencyViolation(Module("foo"), Location(Path("bar.py"), 2, 1)),
-        MissingDependencyViolation(Module("foo"), Location(Path("bar.py"), 3, 0)),
+        DEP004MisplacedDevDependencyViolation(Module("foo"), Location(Path("foo.py"), 1, 0)),
+        DEP001MissingDependencyViolation(Module("foo"), Location(Path("foo.py"), 2, 0)),
+        DEP001MissingDependencyViolation(Module("foo"), Location(Path("foo.py"), 1, 0)),
+        DEP001MissingDependencyViolation(Module("foo"), Location(Path("bar.py"), 3, 1)),
+        DEP001MissingDependencyViolation(Module("foo"), Location(Path("bar.py"), 2, 1)),
+        DEP001MissingDependencyViolation(Module("foo"), Location(Path("bar.py"), 3, 0)),
     ]
 
     assert Core._get_sorted_violations(violations) == [
-        MissingDependencyViolation(Module("foo"), Location(Path("bar.py"), 2, 1)),
-        MissingDependencyViolation(Module("foo"), Location(Path("bar.py"), 3, 0)),
-        MissingDependencyViolation(Module("foo"), Location(Path("bar.py"), 3, 1)),
-        MissingDependencyViolation(Module("foo"), Location(Path("foo.py"), 1, 0)),
-        MisplacedDevDependencyViolation(Module("foo"), Location(Path("foo.py"), 1, 0)),
-        MissingDependencyViolation(Module("foo"), Location(Path("foo.py"), 2, 0)),
+        DEP001MissingDependencyViolation(Module("foo"), Location(Path("bar.py"), 2, 1)),
+        DEP001MissingDependencyViolation(Module("foo"), Location(Path("bar.py"), 3, 0)),
+        DEP001MissingDependencyViolation(Module("foo"), Location(Path("bar.py"), 3, 1)),
+        DEP001MissingDependencyViolation(Module("foo"), Location(Path("foo.py"), 1, 0)),
+        DEP004MisplacedDevDependencyViolation(Module("foo"), Location(Path("foo.py"), 1, 0)),
+        DEP001MissingDependencyViolation(Module("foo"), Location(Path("foo.py"), 2, 0)),
     ]
 
 
@@ -156,10 +156,10 @@ def test__get_stdlib_packages_unsupported(version_info: tuple[int | str, ...]) -
 
 def test__exit_with_violations() -> None:
     violations = [
-        MissingDependencyViolation(Module("foo"), Location(Path("foo.py"), 1, 2)),
-        UnusedDependencyViolation(Dependency("foo", Path("pyproject.toml")), Location(Path("pyproject.toml"))),
-        TransitiveDependencyViolation(Module("foo"), Location(Path("foo.py"), 1, 2)),
-        MisplacedDevDependencyViolation(Module("foo"), Location(Path("foo.py"), 1, 2)),
+        DEP001MissingDependencyViolation(Module("foo"), Location(Path("foo.py"), 1, 2)),
+        DEP002UnusedDependencyViolation(Dependency("foo", Path("pyproject.toml")), Location(Path("pyproject.toml"))),
+        DEP003TransitiveDependencyViolation(Module("foo"), Location(Path("foo.py"), 1, 2)),
+        DEP004MisplacedDevDependencyViolation(Module("foo"), Location(Path("foo.py"), 1, 2)),
     ]
 
     with pytest.raises(SystemExit) as e:

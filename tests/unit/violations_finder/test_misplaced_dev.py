@@ -4,9 +4,9 @@ from pathlib import Path
 
 from deptry.dependency import Dependency
 from deptry.imports.location import Location
-from deptry.issues_finder.misplaced_dev import MisplacedDevDependenciesFinder
 from deptry.module import Module, ModuleLocations
-from deptry.violations import MisplacedDevDependencyViolation
+from deptry.violations import DEP004MisplacedDevDependencyViolation
+from deptry.violations.dep004_misplaced_dev.finder import DEP004MisplacedDevDependenciesFinder
 
 
 def test_simple() -> None:
@@ -17,8 +17,8 @@ def test_simple() -> None:
 
     modules_locations = [ModuleLocations(module_foo, module_foo_locations)]
 
-    assert MisplacedDevDependenciesFinder(modules_locations, dependencies).find() == [
-        MisplacedDevDependencyViolation(module_foo, location) for location in module_foo_locations
+    assert DEP004MisplacedDevDependenciesFinder(modules_locations, dependencies).find() == [
+        DEP004MisplacedDevDependencyViolation(module_foo, location) for location in module_foo_locations
     ]
 
 
@@ -37,4 +37,4 @@ def test_regular_and_dev_dependency() -> None:
 
     modules_locations = [ModuleLocations(module_foo, module_foo_locations)]
 
-    assert not MisplacedDevDependenciesFinder(modules_locations, dependencies).find()
+    assert not DEP004MisplacedDevDependenciesFinder(modules_locations, dependencies).find()

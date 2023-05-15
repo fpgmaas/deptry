@@ -13,14 +13,16 @@ from deptry.dependency_getter.requirements_txt import RequirementsTxtDependencyG
 from deptry.dependency_specification_detector import DependencyManagementFormat, DependencySpecificationDetector
 from deptry.exceptions import IncorrectDependencyFormatError, UnsupportedPythonVersionError
 from deptry.imports.extract import get_imported_modules_for_list_of_files
-from deptry.issues_finder.misplaced_dev import MisplacedDevDependenciesFinder
-from deptry.issues_finder.missing import MissingDependenciesFinder
-from deptry.issues_finder.transitive import TransitiveDependenciesFinder
-from deptry.issues_finder.unused import UnusedDependenciesFinder
 from deptry.module import ModuleBuilder, ModuleLocations
 from deptry.python_file_finder import PythonFileFinder
 from deptry.reporters import JSONReporter, TextReporter
 from deptry.stdlibs import STDLIBS_PYTHON
+from deptry.violations import (
+    DEP001MissingDependenciesFinder,
+    DEP002UnusedDependenciesFinder,
+    DEP003TransitiveDependenciesFinder,
+)
+from deptry.violations.dep004_misplaced_dev.finder import DEP004MisplacedDevDependenciesFinder
 
 if TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
@@ -103,24 +105,26 @@ class Core:
 
         if not self.skip_unused:
             violations.extend(
-                UnusedDependenciesFinder(imported_modules_with_locations, dependencies, self.ignore_unused).find()
+                DEP002UnusedDependenciesFinder(imported_modules_with_locations, dependencies, self.ignore_unused).find()
             )
 
         if not self.skip_missing:
             violations.extend(
-                MissingDependenciesFinder(imported_modules_with_locations, dependencies, self.ignore_missing).find()
+                DEP001MissingDependenciesFinder(
+                    imported_modules_with_locations, dependencies, self.ignore_missing
+                ).find()
             )
 
         if not self.skip_transitive:
             violations.extend(
-                TransitiveDependenciesFinder(
+                DEP003TransitiveDependenciesFinder(
                     imported_modules_with_locations, dependencies, self.ignore_transitive
                 ).find()
             )
 
         if not self.skip_misplaced_dev:
             violations.extend(
-                MisplacedDevDependenciesFinder(
+                DEP004MisplacedDevDependenciesFinder(
                     imported_modules_with_locations, dependencies, self.ignore_misplaced_dev
                 ).find()
             )

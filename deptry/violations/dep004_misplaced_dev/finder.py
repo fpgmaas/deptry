@@ -4,8 +4,8 @@ import logging
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from deptry.issues_finder.base import IssuesFinder
-from deptry.violations import MisplacedDevDependencyViolation
+from deptry.violations.base import ViolationsFinder
+from deptry.violations.dep004_misplaced_dev.violation import DEP004MisplacedDevDependencyViolation
 
 if TYPE_CHECKING:
     from deptry.module import Module
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 
 @dataclass
-class MisplacedDevDependenciesFinder(IssuesFinder):
+class DEP004MisplacedDevDependenciesFinder(ViolationsFinder):
     """
     Given a list of imported modules and a list of project dependencies, determine which development dependencies
     should actually be regular dependencies.
@@ -38,7 +38,7 @@ class MisplacedDevDependenciesFinder(IssuesFinder):
 
             if corresponding_package_name and self._is_development_dependency(module, corresponding_package_name):
                 for location in module_with_locations.locations:
-                    misplaced_dev_dependencies.append(MisplacedDevDependencyViolation(module, location))
+                    misplaced_dev_dependencies.append(DEP004MisplacedDevDependencyViolation(module, location))
 
         return misplaced_dev_dependencies
 

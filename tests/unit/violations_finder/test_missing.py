@@ -4,9 +4,8 @@ from pathlib import Path
 
 from deptry.dependency import Dependency
 from deptry.imports.location import Location
-from deptry.issues_finder.missing import MissingDependenciesFinder
 from deptry.module import ModuleBuilder, ModuleLocations
-from deptry.violations import MissingDependencyViolation
+from deptry.violations import DEP001MissingDependenciesFinder, DEP001MissingDependencyViolation
 
 
 def test_simple() -> None:
@@ -17,8 +16,8 @@ def test_simple() -> None:
 
     modules_locations = [ModuleLocations(module_foobar, module_foobar_locations)]
 
-    assert MissingDependenciesFinder(modules_locations, dependencies).find() == [
-        MissingDependencyViolation(module_foobar, location) for location in module_foobar_locations
+    assert DEP001MissingDependenciesFinder(modules_locations, dependencies).find() == [
+        DEP001MissingDependencyViolation(module_foobar, location) for location in module_foobar_locations
     ]
 
 
@@ -31,7 +30,7 @@ def test_local_module() -> None:
         )
     ]
 
-    assert MissingDependenciesFinder(modules_locations, dependencies).find() == []
+    assert DEP001MissingDependenciesFinder(modules_locations, dependencies).find() == []
 
 
 def test_simple_with_ignore() -> None:
@@ -42,7 +41,7 @@ def test_simple_with_ignore() -> None:
         )
     ]
 
-    assert MissingDependenciesFinder(modules_locations, dependencies, ignored_modules=("foobar",)).find() == []
+    assert DEP001MissingDependenciesFinder(modules_locations, dependencies, ignored_modules=("foobar",)).find() == []
 
 
 def test_no_error() -> None:
@@ -57,4 +56,4 @@ def test_no_error() -> None:
         )
     ]
 
-    assert MissingDependenciesFinder(modules_locations, dependencies).find() == []
+    assert DEP001MissingDependenciesFinder(modules_locations, dependencies).find() == []
