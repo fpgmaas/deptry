@@ -23,7 +23,7 @@ from deptry.reporters import JSONReporter, TextReporter
 from deptry.stdlibs import STDLIBS_PYTHON
 
 if TYPE_CHECKING:
-    from collections.abc import Mapping, Sequence
+    from collections.abc import Mapping
     from pathlib import Path
 
     from deptry.dependency import Dependency
@@ -36,14 +36,8 @@ class Core:
     root: tuple[Path, ...]
     config: Path
     no_ansi: bool
-    ignore_unused: tuple[str, ...]
-    ignore_missing: tuple[str, ...]
-    ignore_transitive: tuple[str, ...]
-    ignore_misplaced_dev: tuple[str, ...]
-    skip_unused: bool
-    skip_missing: bool
-    skip_transitive: bool
-    skip_misplaced_dev: bool
+    per_rule_ignores: Mapping[str, tuple[str, ...]]
+    ignore: tuple[str, ...]
     exclude: tuple[str, ...]
     extend_exclude: tuple[str, ...]
     using_default_exclude: bool
@@ -52,7 +46,7 @@ class Core:
     requirements_txt_dev: tuple[str, ...]
     known_first_party: tuple[str, ...]
     json_output: str
-    package_module_name_map: Mapping[str, Sequence[str]]
+    package_module_name_map: Mapping[str, tuple[str, ...]]
 
     def run(self) -> None:
         self._log_config()
@@ -101,27 +95,31 @@ class Core:
     ) -> list[Violation]:
         violations = []
 
-        if not self.skip_unused:
+        if "DEP001" not in self.ignore:
             violations.extend(
-                UnusedDependenciesFinder(imported_modules_with_locations, dependencies, self.ignore_unused).find()
-            )
-
-        if not self.skip_missing:
-            violations.extend(
-                MissingDependenciesFinder(imported_modules_with_locations, dependencies, self.ignore_missing).find()
-            )
-
-        if not self.skip_transitive:
-            violations.extend(
-                TransitiveDependenciesFinder(
-                    imported_modules_with_locations, dependencies, self.ignore_transitive
+                MissingDependenciesFinder(
+                    imported_modules_with_locations, dependencies, self.per_rule_ignores.get("DEP001", ())
                 ).find()
             )
 
-        if not self.skip_misplaced_dev:
+        if "DEP002" not in self.ignore:
+            violations.extend(
+                UnusedDependenciesFinder(
+                    imported_modules_with_locations, dependencies, self.per_rule_ignores.get("DEP002", ())
+                ).find()
+            )
+
+        if "DEP003" not in self.ignore:
+            violations.extend(
+                TransitiveDependenciesFinder(
+                    imported_modules_with_locations, dependencies, self.per_rule_ignores.get("DEP003", ())
+                ).find()
+            )
+
+        if "DEP004" not in self.ignore:
             violations.extend(
                 MisplacedDevDependenciesFinder(
-                    imported_modules_with_locations, dependencies, self.ignore_misplaced_dev
+                    imported_modules_with_locations, dependencies, self.per_rule_ignores.get("DEP004", ())
                 ).find()
             )
 

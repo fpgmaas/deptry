@@ -11,10 +11,11 @@ import click
 
 from deptry.config import read_configuration_from_pyproject_toml
 from deptry.core import Core
-from deptry.deprecate_obsolete import get_value_for_ignore_unused, get_value_for_skip_unused
+from deptry.deprecate.ignore_flags import get_value_for_per_rule_ignores_argument
+from deptry.deprecate.skip_flags import get_value_for_ignore_argument
 
 if TYPE_CHECKING:
-    from collections.abc import Mapping, Sequence
+    from collections.abc import MutableMapping, Sequence
 
 if sys.platform == "win32":
     from colorama import just_fix_windows_console
@@ -64,7 +65,7 @@ class CommaSeparatedMappingParamType(click.ParamType):
         self,
         # In the mapping value below, although a str is a Sequence[str] itself,
         # they are treated differently from other sequences of str.
-        value: str | Mapping[str, Sequence[str] | str],
+        value: str | MutableMapping[str, Sequence[str] | str],
         param: click.Parameter | None,
         ctx: click.Context | None,
     ) -> dict[str, tuple[str, ...]]:
@@ -135,63 +136,76 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
 @click.option(
     "--skip-unused",
     is_flag=True,
-    help="Boolean flag to specify if deptry should skip scanning the project for unused dependencies.",
+    help="To be deprecated.",
+    hidden=True,
 )
 @click.option(
     "--skip-missing",
     is_flag=True,
-    help="Boolean flag to specify if deptry should skip scanning the project for missing dependencies.",
+    help="To be deprecated.",
+    hidden=True,
 )
 @click.option(
     "--skip-transitive",
     is_flag=True,
-    help="Boolean flag to specify if deptry should skip scanning the project for transitive dependencies.",
+    help="To be deprecated.",
+    hidden=True,
 )
 @click.option(
     "--skip-misplaced-dev",
     is_flag=True,
-    help=(
-        "Boolean flag to specify if deptry should skip scanning the project for development dependencies that should be"
-        " regular dependencies."
-    ),
+    help="To be deprecated.",
+    hidden=True,
 )
-@click.option("--ignore-obsolete", "-io", type=COMMA_SEPARATED_TUPLE, default=(), hidden=True)
+@click.option("--ignore-obsolete", "-io", help="To be deprecated.", type=COMMA_SEPARATED_TUPLE, default=(), hidden=True)
 @click.option(
     "--ignore-unused",
     "-iu",
     type=COMMA_SEPARATED_TUPLE,
-    help="""
-    Comma-separated list of dependencies that should never be marked as unused, even if they are not imported in any of the files scanned.
-    For example; `deptry . --ignore-unused foo,bar`.
-    """,
+    hidden=True,
+    help="To be deprecated.",
     default=(),
 )
 @click.option(
     "--ignore-missing",
     "-im",
     type=COMMA_SEPARATED_TUPLE,
-    help="""Comma-separated list of modules that should never be marked as missing dependencies, even if the matching package for the import statement cannot be found.
-    For example; `deptry . --ignore-missing foo,bar`.
-    """,
+    hidden=True,
+    help="To be deprecated.",
     default=(),
 )
 @click.option(
     "--ignore-transitive",
     "-it",
     type=COMMA_SEPARATED_TUPLE,
-    help="""Comma-separated list of dependencies that should never be marked as an issue due to it being a transitive dependency, even though deptry determines them to be transitive.
-    For example; `deptry . --ignore-transitive foo,bar`.
-    """,
+    hidden=True,
+    help="To be deprecated.",
     default=(),
 )
 @click.option(
     "--ignore-misplaced-dev",
     "-id",
     type=COMMA_SEPARATED_TUPLE,
-    help="""Comma-separated list of modules that should never be marked as a misplaced development dependency, even though it seems to not be used solely for development purposes.
-    For example; `deptry . --ignore-misplaced-dev foo,bar`.
-    """,
+    hidden=True,
+    help="To be deprecated.",
     default=(),
+)
+@click.option(
+    "--ignore",
+    "-i",
+    type=COMMA_SEPARATED_TUPLE,
+    help="""A comma-separated list of error codes to ignore. e.g. `deptry --ignore DEP001,DEP002`
+    For more information regarding the error codes, see https://fpgmaas.github.io/deptry/issue-codes/""",
+    default=(),
+)
+@click.option(
+    "--per-rule-ignores",
+    "-pci",
+    type=COMMA_SEPARATED_MAPPING,
+    help="""A comma-separated mapping of packages or modules to be ignored per error code.
+    . e.g. ``deptry . --per-rule-ignores DEP001=matplotlib,DEP002=pandas|numpy``
+    For more information regarding the error codes, see https://fpgmaas.github.io/deptry/issue-codes/""",
+    default={},
 )
 @click.option(
     "--exclude",
@@ -284,6 +298,8 @@ def deptry(
     skip_missing: bool,
     skip_transitive: bool,
     skip_misplaced_dev: bool,
+    ignore: tuple[str, ...],
+    per_rule_ignores: MutableMapping[str, tuple[str, ...]],
     exclude: tuple[str, ...],
     extend_exclude: tuple[str, ...],
     ignore_notebooks: bool,
@@ -291,7 +307,7 @@ def deptry(
     requirements_txt_dev: tuple[str, ...],
     known_first_party: tuple[str, ...],
     json_output: str,
-    package_module_name_map: Mapping[str, Sequence[str]],
+    package_module_name_map: MutableMapping[str, tuple[str, ...]],
 ) -> None:
     """Find dependency issues in your Python project.
 
@@ -306,23 +322,32 @@ def deptry(
         deptry src worker
 
     """
-
+    ignore = get_value_for_ignore_argument(
+        ignore,
+        skip_missing=skip_missing,
+        skip_obsolete=skip_obsolete,
+        skip_unused=skip_unused,
+        skip_transitive=skip_transitive,
+        skip_misplaced_dev=skip_misplaced_dev,
+    )
+    per_rule_ignores = get_value_for_per_rule_ignores_argument(
+        per_rule_ignores=per_rule_ignores,
+        ignore_missing=ignore_missing,
+        ignore_obsolete=ignore_obsolete,
+        ignore_unused=ignore_unused,
+        ignore_misplaced_dev=ignore_misplaced_dev,
+        ignore_transitive=ignore_transitive,
+    )
     Core(
         root=root,
         config=config,
         no_ansi=no_ansi,
-        ignore_unused=get_value_for_ignore_unused(ignore_obsolete=ignore_obsolete, ignore_unused=ignore_unused),
-        ignore_missing=ignore_missing,
-        ignore_transitive=ignore_transitive,
-        ignore_misplaced_dev=ignore_misplaced_dev,
         exclude=exclude or DEFAULT_EXCLUDE,
         extend_exclude=extend_exclude,
         using_default_exclude=not exclude,
         ignore_notebooks=ignore_notebooks,
-        skip_unused=get_value_for_skip_unused(skip_obsolete=skip_obsolete, skip_unused=skip_unused),
-        skip_missing=skip_missing,
-        skip_transitive=skip_transitive,
-        skip_misplaced_dev=skip_misplaced_dev,
+        ignore=ignore,
+        per_rule_ignores=per_rule_ignores,
         requirements_txt=requirements_txt,
         requirements_txt_dev=requirements_txt_dev,
         known_first_party=known_first_party,

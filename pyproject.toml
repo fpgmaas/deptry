@@ -108,7 +108,9 @@ extend_exclude = [
     "tests",
     "scripts",
 ]
-ignore_missing = ["tomllib"]
+
+[tool.deptry.per_rule_ignores]
+DEP001 = ["tomllib"]
 
 [tool.poetry.scripts]
 deptry = "deptry.cli:deptry"

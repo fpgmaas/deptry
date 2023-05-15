@@ -28,5 +28,5 @@ test = [
     "pytest-cov>=4.0.0",
 ]
 
-[tool.deptry]
-ignore_unused = ["pkginfo"]
+[tool.deptry.per_rule_ignores]
+DEP002 = ["pkginfo"]
