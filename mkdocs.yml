@@ -10,7 +10,7 @@ copyright: Maintained by <a href="https://fpgmaas.com">Florian</a>.
 nav:
   - Home: index.md
   - Usage and Configuration: usage.md
-  - Violations detection: issues-detection.md
+  - Violations detection: violations-detection.md
   - Changelog: CHANGELOG.md
   - Contributing: contributing.md
 

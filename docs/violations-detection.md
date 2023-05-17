@@ -1,6 +1,6 @@
 # Violations detection
 
-_deptry_ looks for the following issues in dependencies:
+_deptry_ looks for violations of the following rules in dependencies:
 
 - [Missing dependencies (DEP001)](#missing-dependencies-dep001)
 - [Unused dependencies (DEP002)](#unused-dependencies-dep002)
