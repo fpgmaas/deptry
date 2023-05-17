@@ -26,7 +26,17 @@ def get_value_for_per_rule_ignores_argument(
     ignore_misplaced_dev: tuple[str, ...],
 ) -> MutableMapping[str, tuple[str, ...]]:
     """
-    Convert the to-be-deprecated CLI flags --ignore-<type>, where type is e.g. unused, to the new CLI flag '--per-rule-ignores'.
+    This function is designed to help with the transition from deprecated command-line flags to the new `--per-rule-ignores` flag.
+    The deprecated flags that are replaced by this new flag are:
+
+        - `--ignore-obsolete`
+        - `--ignore-unused`
+        - `--ignore-missing`
+        - `--ignore-transitive`
+        - `--ignore-misplaced-dev`
+
+    This function accepts the values for the deprecated flags and updates the `per_rule_ignores` mapping accordingly.
+
     Raise a warning if one of the to-be-deprecated flags is used.
     """
     user_values = {

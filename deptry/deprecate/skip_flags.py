@@ -20,7 +20,17 @@ def get_value_for_ignore_argument(
     skip_misplaced_dev: bool,
 ) -> tuple[str, ...]:
     """
-    Convert the to-be-deprecated CLI flags --skip-<type>, where type is e.g. unused, to the new CLI flag '--ignore'.
+    This function is designed to help with the transition from deprecated command-line flags to the new `--ignore` flag.
+    The deprecated flags that are replaced by this new flag are:
+
+        - `--skip-obsolete`
+        - `--skip-unused`
+        - `--skip-missing`
+        - `--skip-transitive`
+        - `--skip-misplaced-dev`
+
+    This function accepts the values for the deprecated flags and updates the `ignore` parameter accordingly.
+
     Raise a warning if one of the to-be-deprecated flags is used.
     """
     user_values = {
