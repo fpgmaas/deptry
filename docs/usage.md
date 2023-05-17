@@ -174,7 +174,7 @@ deptry . --extend-exclude "a_directory|a_python_file\.py|a_pattern/.*"
 
 #### Ignore
 
-A comma-separated list of [issue codes](issue-codes.md) to ignore.
+A comma-separated list of [rules](rules-violations.md) to ignore.
 
 - Type: `List[str]`
 - Default: `[]`
@@ -192,7 +192,7 @@ deptry . --ignore DEP003,DEP004
 
 #### Per check ignores
 
-A comma-separated mapping of packages or modules to be ignored per [issue code](issue-codes.md).
+A comma-separated mapping of packages or modules to be ignored per [rule](rules-violations.md) .
 
 - Type: `dict[str, list[str] | str]`
 - Default: `{}`

@@ -3,14 +3,14 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, ClassVar
 
-from deptry.violations import Violation
+from deptry.violations.base import Violation
 
 if TYPE_CHECKING:
     from deptry.dependency import Dependency
 
 
 @dataclass
-class UnusedDependencyViolation(Violation):
+class DEP002UnusedDependencyViolation(Violation):
     error_code: ClassVar[str] = "DEP002"
     error_template: ClassVar[str] = "'{name}' defined as a dependency but not used in the codebase"
     issue: Dependency

@@ -13,14 +13,16 @@ from deptry.dependency_getter.requirements_txt import RequirementsTxtDependencyG
 from deptry.dependency_specification_detector import DependencyManagementFormat, DependencySpecificationDetector
 from deptry.exceptions import IncorrectDependencyFormatError, UnsupportedPythonVersionError
 from deptry.imports.extract import get_imported_modules_for_list_of_files
-from deptry.issues_finder.misplaced_dev import MisplacedDevDependenciesFinder
-from deptry.issues_finder.missing import MissingDependenciesFinder
-from deptry.issues_finder.transitive import TransitiveDependenciesFinder
-from deptry.issues_finder.unused import UnusedDependenciesFinder
 from deptry.module import ModuleBuilder, ModuleLocations
 from deptry.python_file_finder import PythonFileFinder
 from deptry.reporters import JSONReporter, TextReporter
 from deptry.stdlibs import STDLIBS_PYTHON
+from deptry.violations import (
+    DEP001MissingDependenciesFinder,
+    DEP002UnusedDependenciesFinder,
+    DEP003TransitiveDependenciesFinder,
+)
+from deptry.violations.dep004_misplaced_dev.finder import DEP004MisplacedDevDependenciesFinder
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
@@ -97,28 +99,28 @@ class Core:
 
         if "DEP001" not in self.ignore:
             violations.extend(
-                MissingDependenciesFinder(
+                DEP001MissingDependenciesFinder(
                     imported_modules_with_locations, dependencies, self.per_rule_ignores.get("DEP001", ())
                 ).find()
             )
 
         if "DEP002" not in self.ignore:
             violations.extend(
-                UnusedDependenciesFinder(
+                DEP002UnusedDependenciesFinder(
                     imported_modules_with_locations, dependencies, self.per_rule_ignores.get("DEP002", ())
                 ).find()
             )
 
         if "DEP003" not in self.ignore:
             violations.extend(
-                TransitiveDependenciesFinder(
+                DEP003TransitiveDependenciesFinder(
                     imported_modules_with_locations, dependencies, self.per_rule_ignores.get("DEP003", ())
                 ).find()
             )
 
         if "DEP004" not in self.ignore:
             violations.extend(
-                MisplacedDevDependenciesFinder(
+                DEP004MisplacedDevDependenciesFinder(
                     imported_modules_with_locations, dependencies, self.per_rule_ignores.get("DEP004", ())
                 ).find()
             )
