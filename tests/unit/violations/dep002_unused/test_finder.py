@@ -4,9 +4,8 @@ from pathlib import Path
 
 from deptry.dependency import Dependency
 from deptry.imports.location import Location
-from deptry.issues_finder.unused import UnusedDependenciesFinder
 from deptry.module import ModuleBuilder, ModuleLocations
-from deptry.violations import UnusedDependencyViolation
+from deptry.violations import DEP002UnusedDependenciesFinder, DEP002UnusedDependencyViolation
 
 
 def test_simple() -> None:
@@ -18,8 +17,8 @@ def test_simple() -> None:
         )
     ]
 
-    assert UnusedDependenciesFinder(modules_locations, dependencies).find() == [
-        UnusedDependencyViolation(dependency_toml, Location(Path("pyproject.toml")))
+    assert DEP002UnusedDependenciesFinder(modules_locations, dependencies).find() == [
+        DEP002UnusedDependencyViolation(dependency_toml, Location(Path("pyproject.toml")))
     ]
 
 
@@ -31,7 +30,7 @@ def test_simple_with_ignore() -> None:
         )
     ]
 
-    assert UnusedDependenciesFinder(modules_locations, dependencies, ignored_modules=("click",)).find() == []
+    assert DEP002UnusedDependenciesFinder(modules_locations, dependencies, ignored_modules=("click",)).find() == []
 
 
 def test_top_level() -> None:
@@ -46,7 +45,7 @@ def test_top_level() -> None:
         )
     ]
 
-    deps = UnusedDependenciesFinder(modules_locations, dependencies).find()
+    deps = DEP002UnusedDependenciesFinder(modules_locations, dependencies).find()
 
     assert deps == []
 
@@ -62,4 +61,4 @@ def test_without_top_level() -> None:
         )
     ]
 
-    assert UnusedDependenciesFinder(modules_locations, dependencies).find() == []
+    assert DEP002UnusedDependenciesFinder(modules_locations, dependencies).find() == []

@@ -12,10 +12,10 @@ from deptry.module import Module
 from deptry.reporters import TextReporter
 from deptry.reporters.text import COLORS, COLORS_NOOP
 from deptry.violations import (
-    MisplacedDevDependencyViolation,
-    MissingDependencyViolation,
-    TransitiveDependencyViolation,
-    UnusedDependencyViolation,
+    DEP001MissingDependencyViolation,
+    DEP002UnusedDependencyViolation,
+    DEP003TransitiveDependencyViolation,
+    DEP004MisplacedDevDependencyViolation,
 )
 from tests.utils import stylize
 
@@ -26,10 +26,14 @@ if TYPE_CHECKING:
 def test_logging_number_multiple(caplog: LogCaptureFixture) -> None:
     with caplog.at_level(logging.INFO):
         violations = [
-            MissingDependencyViolation(Module("foo", package="foo_package"), Location(Path("foo.py"), 1, 2)),
-            UnusedDependencyViolation(Dependency("foo", Path("pyproject.toml")), Location(Path("pyproject.toml"))),
-            TransitiveDependencyViolation(Module("foo", package="foo_package"), Location(Path("foo/bar.py"), 1, 2)),
-            MisplacedDevDependencyViolation(Module("foo", package="foo_package"), Location(Path("foo.py"), 1, 2)),
+            DEP001MissingDependencyViolation(Module("foo", package="foo_package"), Location(Path("foo.py"), 1, 2)),
+            DEP002UnusedDependencyViolation(
+                Dependency("foo", Path("pyproject.toml")), Location(Path("pyproject.toml"))
+            ),
+            DEP003TransitiveDependencyViolation(
+                Module("foo", package="foo_package"), Location(Path("foo/bar.py"), 1, 2)
+            ),
+            DEP004MisplacedDevDependencyViolation(Module("foo", package="foo_package"), Location(Path("foo.py"), 1, 2)),
         ]
         TextReporter(violations).report()
 
@@ -71,7 +75,7 @@ def test_logging_number_multiple(caplog: LogCaptureFixture) -> None:
 def test_logging_number_single(caplog: LogCaptureFixture) -> None:
     with caplog.at_level(logging.INFO):
         TextReporter(
-            [MissingDependencyViolation(Module("foo", package="foo_package"), Location(Path("foo.py"), 1, 2))]
+            [DEP001MissingDependencyViolation(Module("foo", package="foo_package"), Location(Path("foo.py"), 1, 2))]
         ).report()
 
     assert caplog.messages == [
@@ -101,10 +105,14 @@ def test_logging_number_none(caplog: LogCaptureFixture) -> None:
 def test_logging_no_ansi(caplog: LogCaptureFixture) -> None:
     with caplog.at_level(logging.INFO):
         violations = [
-            MissingDependencyViolation(Module("foo", package="foo_package"), Location(Path("foo.py"), 1, 2)),
-            UnusedDependencyViolation(Dependency("foo", Path("pyproject.toml")), Location(Path("pyproject.toml"))),
-            TransitiveDependencyViolation(Module("foo", package="foo_package"), Location(Path("foo/bar.py"), 1, 2)),
-            MisplacedDevDependencyViolation(Module("foo", package="foo_package"), Location(Path("foo.py"), 1, 2)),
+            DEP001MissingDependencyViolation(Module("foo", package="foo_package"), Location(Path("foo.py"), 1, 2)),
+            DEP002UnusedDependencyViolation(
+                Dependency("foo", Path("pyproject.toml")), Location(Path("pyproject.toml"))
+            ),
+            DEP003TransitiveDependencyViolation(
+                Module("foo", package="foo_package"), Location(Path("foo/bar.py"), 1, 2)
+            ),
+            DEP004MisplacedDevDependencyViolation(Module("foo", package="foo_package"), Location(Path("foo.py"), 1, 2)),
         ]
         TextReporter(violations, use_ansi=False).report()
 

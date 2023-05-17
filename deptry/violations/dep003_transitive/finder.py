@@ -4,8 +4,8 @@ import logging
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from deptry.issues_finder.base import IssuesFinder
-from deptry.violations import TransitiveDependencyViolation
+from deptry.violations.base import ViolationsFinder
+from deptry.violations.dep003_transitive.violation import DEP003TransitiveDependencyViolation
 
 if TYPE_CHECKING:
     from deptry.module import Module
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 
 @dataclass
-class TransitiveDependenciesFinder(IssuesFinder):
+class DEP003TransitiveDependenciesFinder(ViolationsFinder):
     """
     Given a list of imported modules and a list of project dependencies, determine which ones are transitive.
     This is done by elimination; if a module uses an installed package but the package is;
@@ -37,7 +37,7 @@ class TransitiveDependenciesFinder(IssuesFinder):
             if self._is_transitive(module):
                 # `self._is_transitive` only returns `True` if the package is not None.
                 for location in module_with_locations.locations:
-                    transitive_dependencies.append(TransitiveDependencyViolation(module, location))
+                    transitive_dependencies.append(DEP003TransitiveDependencyViolation(module, location))
 
         return transitive_dependencies
 

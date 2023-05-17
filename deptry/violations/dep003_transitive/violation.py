@@ -3,14 +3,14 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, ClassVar
 
-from deptry.violations import Violation
+from deptry.violations.base import Violation
 
 if TYPE_CHECKING:
     from deptry.module import Module
 
 
 @dataclass
-class TransitiveDependencyViolation(Violation):
+class DEP003TransitiveDependencyViolation(Violation):
     error_code: ClassVar[str] = "DEP003"
     error_template: ClassVar[str] = "'{name}' imported but it is a transitive dependency"
     issue: Module
