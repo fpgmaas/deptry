@@ -33,7 +33,7 @@ tomli = { version = "^2.0.1", python = "<3.11" }
 mypy = "1.3.0"
 pre-commit = "3.3.2"
 pytest = "7.3.1"
-pytest-cov = "4.0.0"
+pytest-cov = "4.1.0"
 types-chardet = "5.0.4.6"
 types-colorama = { version = "0.4.15.11", markers = "sys_platform == 'win32'" }
 
