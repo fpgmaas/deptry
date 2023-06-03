@@ -39,7 +39,7 @@ types-colorama = { version = "0.4.15.11", markers = "sys_platform == 'win32'" }
 
 [tool.poetry.group.docs.dependencies]
 mkdocs = "1.4.3"
-mkdocs-material = "9.1.14"
+mkdocs-material = "9.1.15"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
