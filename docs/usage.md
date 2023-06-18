@@ -197,7 +197,7 @@ A comma-separated mapping of packages or modules to be ignored per [rule](rules-
 - Type: `dict[str, list[str] | str]`
 - Default: `{}`
 - `pyproject.toml` option name: `per_rule_ignores`
-- CLI option name: `--per-rule-ignores` (short: `-pci`)
+- CLI option name: `--per-rule-ignores` (short: `-pri`)
 - `pyproject.toml` example:
 ```toml
 [tool.deptry.per_rule_ignores]
