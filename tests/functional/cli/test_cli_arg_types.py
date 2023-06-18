@@ -10,7 +10,7 @@ import pytest
 from deptry.cli import CommaSeparatedMappingParamType, CommaSeparatedTupleParamType
 
 if TYPE_CHECKING:
-    from collections.abc import Mapping, Sequence
+    from collections.abc import MutableMapping, Sequence
     from re import Pattern
 
 
@@ -133,8 +133,8 @@ def test_comma_separated_tuple_param_type_convert(
     ],
 )
 def test_comma_separated_mapping_param_type_convert(
-    value: str | Mapping[str, Sequence[str] | str],
-    expected: Mapping[str, tuple[str, ...]],
+    value: str | MutableMapping[str, Sequence[str] | str],
+    expected: MutableMapping[str, tuple[str, ...]],
 ) -> None:
     """Tests all valid conversion paths."""
     param = mock.Mock(spec=click.Parameter)
@@ -163,7 +163,7 @@ def test_comma_separated_mapping_param_type_convert(
     ],
 )
 def test_comma_separated_mapping_param_type_convert_err(
-    value: str | Mapping[str, Sequence[str] | str],
+    value: str | MutableMapping[str, Sequence[str] | str],
     err_type: type[Exception],
     err_msg_matcher: Pattern[str] | str,
 ) -> None:

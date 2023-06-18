@@ -16,5 +16,5 @@ pkginfo = "^1.8.3"
 [tool.poetry.dev-dependencies]
 black = "^22.6.0"
 
-[tool.deptry]
-ignore_unused = ["pkginfo"]
+[tool.deptry.per_rule_ignores]
+DEP002 = ["pkginfo"]

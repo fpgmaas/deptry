@@ -1,21 +1,20 @@
-# Violations detection
+# Rules & Violations
 
-_deptry_ looks for violations of the following rules in dependencies:
+_deptry_ checks your project against the following rules related to dependencies:
 
-- [Missing dependencies (DEP001)](#missing-dependencies-dep001)
-- [Unused dependencies (DEP002)](#unused-dependencies-dep002)
-- [Transitive dependencies (DEP003)](#transitive-dependencies-dep003)
-- [Misplaced development dependencies (DEP004)](#misplaced-development-dependencies-dep004)
+| Code   | Description                        | More information                                    |
+|--------|------------------------------------| ----------------------------------------------------|
+| DEP001 | Project should not contain missing dependencies               | [link](#missing-dependencies-dep001)                |
+| DEP002 | Project should not contain unused dependencies               | [link](#unused-dependencies-dep002)                 |
+| DEP003 | Project should not use transitive dependencies            | [link](#transitive-dependencies-dep003)             |
+| DEP004 | Project should not use development dependencies in non-development code | [link](#misplaced-development-dependencies-dep004)  |
+
+Any of the checks can be disabled with the [`ignore`](usage.md#ignore) flag. Specific dependencies or modules can be
+ignored with the [`per-rule-ignores`](usage.md#per-rule-ignores) flag.
 
 ## Missing dependencies (DEP001)
 
 Python modules that are imported within a project, for which no corresponding packages are found in the dependencies.
-
-### Configuration
-
-This check can be disabled with [Skip missing](usage.md#skip-missing) option.
-
-Specific dependencies can be ignored with [Ignore missing](usage.md#ignore-missing) option.
 
 ### Example
 
@@ -47,12 +46,6 @@ dependencies = ["httpx==0.23.1"]
 ## Unused dependencies (DEP002)
 
 Dependencies that are required in a project, but are not used within the codebase.
-
-### Configuration
-
-This check can be disabled with [Skip unused](usage.md#skip-unused) option.
-
-Specific dependencies can be ignored with [Ignore unused](usage.md#ignore-unused) option.
 
 ### Example
 
@@ -89,12 +82,6 @@ dependencies = ["httpx==0.23.1"]
 
 Python modules that are imported within a project, where the corresponding dependencies are in the dependency tree, but not as direct dependencies.
 For example, assume your project has a `.py` file that imports module A. However, A is not in your project's dependencies. Instead, another package (B) is in your list of dependencies, which in turn depends on A. Package A should be explicitly added to your project's list of dependencies.
-
-### Configuration
-
-This check can be disabled with [Skip transitive](usage.md#skip-transitive) option.
-
-Specific dependencies can be ignored with [Ignore transitive](usage.md#ignore-transitive) option.
 
 ### Example
 
@@ -136,12 +123,6 @@ dependencies = [
 ## Misplaced development dependencies (DEP004)
 
 Dependencies specified as development ones that should be included as regular dependencies.
-
-### Configuration
-
-This check can be disabled with [Skip misplaced dev](usage.md#skip-misplaced-dev) option.
-
-Specific dependencies can be ignored with [Ignore misplaced dev](usage.md#ignore-misplaced-dev) option.
 
 ### Example
 

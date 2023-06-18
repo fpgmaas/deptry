@@ -142,14 +142,14 @@ def test_cli_ignore_notebooks(poetry_project_builder: ToolSpecificProjectBuilder
 
 def test_cli_ignore_flags(poetry_project_builder: ToolSpecificProjectBuilder) -> None:
     with run_within_dir(poetry_project_builder("example_project")):
-        result = CliRunner().invoke(deptry, ". --ignore-unused isort,pkginfo,requests -im white -id black")
+        result = CliRunner().invoke(deptry, ". --per-rule-ignores DEP002=isort|pkginfo|requests -im white -id black")
 
         assert result.exit_code == 0
 
 
-def test_cli_skip_flags(poetry_project_builder: ToolSpecificProjectBuilder) -> None:
+def test_cli_ignore_flag(poetry_project_builder: ToolSpecificProjectBuilder) -> None:
     with run_within_dir(poetry_project_builder("example_project")):
-        result = CliRunner().invoke(deptry, ". --skip-unused --skip-missing --skip-misplaced-dev --skip-transitive")
+        result = CliRunner().invoke(deptry, ". --ignore DEP001,DEP002,DEP003,DEP004")
 
         assert result.exit_code == 0
 

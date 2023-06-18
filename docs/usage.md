@@ -77,7 +77,7 @@ an example config for your `.pre-commit-config.yaml` file:
   rev: "<tag>"
   hooks:
     - id: deptry
-      args: ["--skip-missing"]
+      args: ["--ignore", "DEP001"]
 ```
 
 Replace `<tag>` with one of the [tags](https://github.com/fpgmaas/deptry/tags) from the
@@ -172,76 +172,41 @@ extend_exclude = ["a_directory", "a_python_file\\.py", "a_pattern/.*"]
 deptry . --extend-exclude "a_directory|a_python_file\.py|a_pattern/.*"
 ```
 
-#### Ignore missing
+#### Ignore
 
-List of Python modules to ignore when running the check for [Missing dependencies (DEP001)](violations-detection.md#missing-dependencies-dep001).
-
-- Type: `List[str]`
-- Default: `[]`
-- `pyproject.toml` option name: `ignore_missing`
-- CLI option name: `--ignore-missing` (short: `-im`)
-- `pyproject.toml` example:
-```toml
-[tool.deptry]
-ignore_missing = ["pip", "tomllib"]
-```
-- CLI example:
-```shell
-deptry . --ignore-missing "pip,tomllib"
-```
-
-#### Ignore unused
-
-List of packages to ignore when running the check for [Unused dependencies (DEP002)](violations-detection.md#unused-dependencies-dep002).
+A comma-separated list of [rules](rules-violations.md) to ignore.
 
 - Type: `List[str]`
 - Default: `[]`
-- `pyproject.toml` option name: `ignore_unused`
-- CLI option name: `--ignore-unused` (short: `-io`)
+- `pyproject.toml` option name: `ignore`
+- CLI option name: `--ignore` (short: `-i`)
 - `pyproject.toml` example:
 ```toml
 [tool.deptry]
-ignore_unused = ["uvicorn", "uvloop"]
+ignore = ["DEP003", "DEP004"]
 ```
 - CLI example:
 ```shell
-deptry . --ignore-unused "uvicorn,uvloop"
+deptry . --ignore DEP003,DEP004
 ```
 
-#### Ignore transitive
+#### Per check ignores
 
-List of Python modules to ignore when running the check for [Transitive dependencies (DEP003)](violations-detection.md#transitive-dependencies-dep003).
+A comma-separated mapping of packages or modules to be ignored per [rule](rules-violations.md) .
 
-- Type: `List[str]`
-- Default: `[]`
-- `pyproject.toml` option name: `ignore_transitive`
-- CLI option name: `--ignore-transitive` (short: `-it`)
+- Type: `dict[str, list[str] | str]`
+- Default: `{}`
+- `pyproject.toml` option name: `per_rule_ignores`
+- CLI option name: `--per-rule-ignores` (short: `-pri`)
 - `pyproject.toml` example:
 ```toml
-[tool.deptry]
-ignore_transitive = ["httpx", "pip"]
+[tool.deptry.per_rule_ignores]
+DEP001 = ["matplotlib"]
+DEP002 = ["pandas", "numpy"]
 ```
 - CLI example:
 ```shell
-deptry . --ignore-transitive "httpx,pip"
-```
-
-#### Ignore misplaced dev
-
-List of Python modules to ignore when running the check for [Misplaced development dependencies (DEP004)](violations-detection.md#misplaced-development-dependencies-dep004).
-
-- Type: `List[str]`
-- Default: `[]`
-- `pyproject.toml` option name: `ignore_misplaced_dev`
-- CLI option name: `--ignore-misplaced-dev` (short: `-id`)
-- `pyproject.toml` example:
-```toml
-[tool.deptry]
-ignore_misplaced_dev = ["black", "isort"]
-```
-- CLI example:
-```shell
-deptry . --ignore-misplaced-dev "black,isort"
+deptry . --per-rule-ignores DEP001=matplotlib,DEP002=pandas|numpy
 ```
 
 #### Ignore notebooks
@@ -260,78 +225,6 @@ ignore_notebooks = true
 - CLI example:
 ```shell
 deptry . --ignore-notebooks
-```
-
-#### Skip missing
-
-Disable the check for [Missing dependencies (DEP001)](violations-detection.md#missing-dependencies-dep001).
-
-- Type: `bool`
-- Default: `False`
-- `pyproject.toml` option name: `skip_missing`
-- CLI option name: `--skip-missing`
-- `pyproject.toml` example:
-```toml
-[tool.deptry]
-skip_missing = true
-```
-- CLI example:
-```shell
-deptry . --skip-missing
-```
-
-#### Skip unused
-
-Disable the check for [Unused dependencies (DEP002)](violations-detection.md#unused-dependencies-dep002).
-
-- Type: `bool`
-- Default: `False`
-- `pyproject.toml` option name: `skip_unused`
-- CLI option name: `--skip-unused`
-- `pyproject.toml` example:
-```toml
-[tool.deptry]
-skip_unused = true
-```
-- CLI example:
-```shell
-deptry . --skip-unused
-```
-
-#### Skip transitive
-
-Disable the check for [Transitive dependencies (DEP003)](violations-detection.md#transitive-dependencies-dep003).
-
-- Type: `bool`
-- Default: `False`
-- `pyproject.toml` option name: `skip_transitive`
-- CLI option name: `--skip-transitive`
-- `pyproject.toml` example:
-```toml
-[tool.deptry]
-skip_transitive = true
-```
-- CLI example:
-```shell
-deptry . --skip-transitive
-```
-
-#### Skip misplaced dev
-
-Disable the check for [Misplaced development dependencies (DEP004)](violations-detection.md#misplaced-development-dependencies-dep004).
-
-- Type: `bool`
-- Default: `False`
-- `pyproject.toml` option name: `skip_misplaced_dev`
-- CLI option name: `--skip-misplaced-dev`
-- `pyproject.toml` example:
-```toml
-[tool.deptry]
-skip_misplaced_dev = true
-```
-- CLI example:
-```shell
-deptry . --skip-misplaced-dev
 ```
 
 #### Requirements txt
@@ -459,7 +352,7 @@ json_output = "deptry_report.txt"
 deptry . --json-output deptry_report.txt
 ```
 
-#### Manually map Package Names to Top Level Module Names
+#### Package module name map
 
 Deptry will automatically detect top level modules names that belong to a
 module in two ways.
