@@ -13,7 +13,7 @@ def generate_deprecation_warning(flag_name: str, issue_code: str, sequence: tupl
         f"Warning: In an upcoming release, support for the `--{flag_name}` command-line option and the"
         f" `{flag_name.replace('-','_')}` configuration parameter will be discontinued. Instead, use"
         f" `--per-rule-ignores {issue_code}={'|'.join(sequence)}` or add a line `{issue_code} ="
-        f" {sequence_as_list_string}` to the `[tool.deptry.per_rule_ignores]` of the configuration file."
+        f" {sequence_as_list_string}` to the `[tool.deptry.per_rule_ignores]` section of the configuration file."
     )
 
 
