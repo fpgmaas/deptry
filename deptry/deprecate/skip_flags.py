@@ -50,11 +50,11 @@ def get_value_for_ignore_argument(
     }
 
     issue_codes = {
-        "ignore-missing": DEP001MissingDependencyViolation.error_code,
-        "ignore-unused": DEP002UnusedDependencyViolation.error_code,
-        "ignore-obsolete": DEP002UnusedDependencyViolation.error_code,
-        "ignore-transitive": DEP003TransitiveDependencyViolation.error_code,
-        "ignore-misplaced-dev": DEP004MisplacedDevDependencyViolation.error_code,
+        "skip-missing": DEP001MissingDependencyViolation.error_code,
+        "skip-unused": DEP002UnusedDependencyViolation.error_code,
+        "skip-obsolete": DEP002UnusedDependencyViolation.error_code,
+        "skip-transitive": DEP003TransitiveDependencyViolation.error_code,
+        "skip-misplaced-dev": DEP004MisplacedDevDependencyViolation.error_code,
     }
 
     for flag, should_skip in user_values.items():

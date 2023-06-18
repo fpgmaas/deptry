@@ -13,7 +13,8 @@ def test_generate_deprecation_warning() -> None:
     assert (
         result
         == "Warning: In an upcoming release, support for the `--skip-unused` command-line option and the `skip_unused`"
-        " configuration parameter will be discontinued. Instead, use `--ignore DEP002` or `ignore = ['DEP002']`."
+        " configuration parameter will be discontinued. Instead, use `--ignore DEP002` or add a line `ignore ="
+        " ['DEP002']` to the `[tool.deptry]` section of the configuration file."
     )
 
 
