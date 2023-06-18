@@ -54,11 +54,11 @@ DEP002 = ["pandas", "numpy"]
 Please note that while the legacy arguments are still functional as of Deptry 0.12.0, we do plan to remove them in a future 1.0.0 release.
 
 
-* Consider all groups for dev dependencies by @mkniewallner in https://github.com/fpgmaas/deptry/pull/392
+* Consider all groups for dev dependencies ([#392](https://github.com/fpgmaas/deptry/pull/392))
 
-### Bug fixes
+### Bug Fixes
 
-* Handle `SyntaxError` raised by `ast.parse` by @mkniewallner in https://github.com/fpgmaas/deptry/pull/426
+* Handle `SyntaxError` raised by `ast.parse` ([#426](https://github.com/fpgmaas/deptry/pull/426))
 
 ### Full Changelog
 
