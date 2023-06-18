@@ -200,7 +200,7 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
 )
 @click.option(
     "--per-rule-ignores",
-    "-pci",
+    "-pri",
     type=COMMA_SEPARATED_MAPPING,
     help="""A comma-separated mapping of packages or modules to be ignored per error code.
     . e.g. ``deptry . --per-rule-ignores DEP001=matplotlib,DEP002=pandas|numpy``
