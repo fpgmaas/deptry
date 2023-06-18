@@ -60,7 +60,9 @@ Please note that while the legacy arguments are still functional as of Deptry 0.
 
 * Handle `SyntaxError` raised by `ast.parse` by @mkniewallner in https://github.com/fpgmaas/deptry/pull/426
 
-**Full Changelog**: https://github.com/fpgmaas/deptry/compare/0.11.0...0.12.0
+### Full Changelog
+
+https://github.com/fpgmaas/deptry/compare/0.11.0...0.12.0
 
 
 ## 0.11.0 - 2023-05-10
