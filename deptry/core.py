@@ -20,9 +20,12 @@ from deptry.stdlibs import STDLIBS_PYTHON
 from deptry.violations import (
     DEP001MissingDependenciesFinder,
     DEP002UnusedDependenciesFinder,
+    DEP002UnusedDependencyViolation,
     DEP003TransitiveDependenciesFinder,
+    DEP003TransitiveDependencyViolation,
+    DEP004MisplacedDevDependenciesFinder,
+    DEP004MisplacedDevDependencyViolation,
 )
-from deptry.violations.dep004_misplaced_dev.finder import DEP004MisplacedDevDependenciesFinder
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
@@ -97,28 +100,28 @@ class Core:
     ) -> list[Violation]:
         violations = []
 
-        if "DEP001" not in self.ignore:
+        if DEP001MissingDependenciesFinder.error_code not in self.ignore:
             violations.extend(
                 DEP001MissingDependenciesFinder(
                     imported_modules_with_locations, dependencies, self.per_rule_ignores.get("DEP001", ())
                 ).find()
             )
 
-        if "DEP002" not in self.ignore:
+        if DEP002UnusedDependencyViolation.error_code not in self.ignore:
             violations.extend(
                 DEP002UnusedDependenciesFinder(
                     imported_modules_with_locations, dependencies, self.per_rule_ignores.get("DEP002", ())
                 ).find()
             )
 
-        if "DEP003" not in self.ignore:
+        if DEP003TransitiveDependencyViolation.error_code not in self.ignore:
             violations.extend(
                 DEP003TransitiveDependenciesFinder(
                     imported_modules_with_locations, dependencies, self.per_rule_ignores.get("DEP003", ())
                 ).find()
             )
 
-        if "DEP004" not in self.ignore:
+        if DEP004MisplacedDevDependencyViolation.error_code not in self.ignore:
             violations.extend(
                 DEP004MisplacedDevDependenciesFinder(
                     imported_modules_with_locations, dependencies, self.per_rule_ignores.get("DEP004", ())
