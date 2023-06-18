@@ -6,7 +6,7 @@ _deptry_ checks your project against the following rules related to dependencies
 |--------|------------------------------------| ----------------------------------------------------|
 | DEP001 | Project should not contain missing dependencies               | [link](#missing-dependencies-dep001)                |
 | DEP002 | Project should not contain unused dependencies               | [link](#unused-dependencies-dep002)                 |
-| DEP003 | Project should not contain unnecessary transitive dependencies            | [link](#transitive-dependencies-dep003)             |
+| DEP003 | Project should not use transitive dependencies            | [link](#transitive-dependencies-dep003)             |
 | DEP004 | Project should not use development dependencies in non-development code | [link](#misplaced-development-dependencies-dep004)  |
 
 Any of the checks can be disabled with the [`ignore`](usage.md#ignore) flag. Specific dependencies or modules can be
