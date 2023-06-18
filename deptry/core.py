@@ -19,6 +19,7 @@ from deptry.reporters import JSONReporter, TextReporter
 from deptry.stdlibs import STDLIBS_PYTHON
 from deptry.violations import (
     DEP001MissingDependenciesFinder,
+    DEP001MissingDependencyViolation,
     DEP002UnusedDependenciesFinder,
     DEP002UnusedDependencyViolation,
     DEP003TransitiveDependenciesFinder,
@@ -100,7 +101,7 @@ class Core:
     ) -> list[Violation]:
         violations = []
 
-        if DEP001MissingDependenciesFinder.error_code not in self.ignore:
+        if DEP001MissingDependencyViolation.error_code not in self.ignore:
             violations.extend(
                 DEP001MissingDependenciesFinder(
                     imported_modules_with_locations, dependencies, self.per_rule_ignores.get("DEP001", ())

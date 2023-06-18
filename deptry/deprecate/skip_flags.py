@@ -2,12 +2,20 @@ from __future__ import annotations
 
 import logging
 
+from deptry.violations import (
+    DEP001MissingDependencyViolation,
+    DEP002UnusedDependencyViolation,
+    DEP003TransitiveDependencyViolation,
+    DEP004MisplacedDevDependencyViolation,
+)
+
 
 def generate_deprecation_warning(flag_name: str, issue_code: str) -> str:
     return (
         f"Warning: In an upcoming release, support for the `--{flag_name}` command-line option and the"
         f" `{flag_name.replace('-','_')}` configuration parameter will be discontinued. Instead, use `--ignore"
-        f" {issue_code}` or add a line `ignore = ['{issue_code}']` to the `[tool.deptry]` section of the configuration file."
+        f" {issue_code}` or add a line `ignore = ['{issue_code}']` to the `[tool.deptry]` section of the configuration"
+        " file."
     )
 
 
@@ -42,11 +50,11 @@ def get_value_for_ignore_argument(
     }
 
     issue_codes = {
-        "skip-missing": "DEP001",
-        "skip-unused": "DEP002",
-        "skip-obsolete": "DEP002",
-        "skip-transitive": "DEP003",
-        "skip-misplaced-dev": "DEP004",
+        "ignore-missing": DEP001MissingDependencyViolation.error_code,
+        "ignore-unused": DEP002UnusedDependencyViolation.error_code,
+        "ignore-obsolete": DEP002UnusedDependencyViolation.error_code,
+        "ignore-transitive": DEP003TransitiveDependencyViolation.error_code,
+        "ignore-misplaced-dev": DEP004MisplacedDevDependencyViolation.error_code,
     }
 
     for flag, should_skip in user_values.items():

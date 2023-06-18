@@ -3,6 +3,13 @@ from __future__ import annotations
 import logging
 from typing import TYPE_CHECKING
 
+from deptry.violations import (
+    DEP001MissingDependencyViolation,
+    DEP002UnusedDependencyViolation,
+    DEP003TransitiveDependencyViolation,
+    DEP004MisplacedDevDependencyViolation,
+)
+
 if TYPE_CHECKING:
     from collections.abc import MutableMapping
 
@@ -48,11 +55,11 @@ def get_value_for_per_rule_ignores_argument(
     }
 
     issue_codes = {
-        "ignore-missing": "DEP001",
-        "ignore-unused": "DEP002",
-        "ignore-obsolete": "DEP002",
-        "ignore-transitive": "DEP003",
-        "ignore-misplaced-dev": "DEP004",
+        "ignore-missing": DEP001MissingDependencyViolation.error_code,
+        "ignore-unused": DEP002UnusedDependencyViolation.error_code,
+        "ignore-obsolete": DEP002UnusedDependencyViolation.error_code,
+        "ignore-transitive": DEP003TransitiveDependencyViolation.error_code,
+        "ignore-misplaced-dev": DEP004MisplacedDevDependencyViolation.error_code,
     }
 
     for flag, modules_or_dependencies_to_be_ignored in user_values.items():
