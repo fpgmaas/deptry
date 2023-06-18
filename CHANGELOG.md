@@ -1,5 +1,70 @@
 # Changelog
 
+## 0.12.0 - 2023-06-18
+
+## What's Changed
+
+This release introduces a significant change to the command-line flags and configuration options to make use of the error codes introduced in release [0.10.0](https://github.com/fpgmaas/deptry/releases/tag/0.10.0).
+
+| Code   | Issue                            |
+|--------|----------------------------------|
+| DEP001 | Missing dependency               |
+| DEP002 | Unused/obsolete dependency              |
+| DEP003 | Transitive dependency            |
+| DEP004 | Misplaced development dependency |
+
+## Features
+
+- **Replaced --skip-unused, --skip-obsolete, --skip-missing, --skip-misplaced-dev flags**: We have replaced the currently existing flags with the more generalized `--ignore` flag. Now, instead of skipping types of checks, you can specify the exact error codes to ignore using the `--ignore` flag (e.g., `deptry . --ignore "DEP001,DEP002"` to ignore checking for missing and unused dependencies).
+
+The changes are also reflected in `pyproject.toml`. For example,
+
+
+```toml
+[tool.deptry]
+skip_missing = true
+skip_unused = true
+```
+
+is superseded by
+
+```toml
+[tool.deptry]
+ignore = ["DEP001", "DEP002"]
+```
+
+- **Replaced --ignore-unused, --ignore-obsolete, --ignore-missing, --ignore-misplaced-dev flags**: Previously, specific checks for spefific dependencies/modules could be ingored using the `--ignore-<code>` flags. We are replacing these flags with the more generalized `--per-rule-ignores` flag. This flag allows you to specify dependencies that should be ignored for specific error codes, offering granular control over which errors are ignored for which dependencies. For instance, `deptry . --per-rule-ignores DEP001=matplotlib,DEP002=pandas|numpy` means `DEP001` will be ignored for `matplotlib`, while `DEP002` will be ignored for both `pandas` and `numpy`.
+
+The changes are also reflected in `pyproject.toml`. For example,
+
+```toml
+[tool.deptry]
+ignore_missing = ["matplotlib"]
+ignore_unused = ["pandas", "numpy"]
+```
+
+is superseded by
+
+```toml
+[tool.deptry.per_rule_ignores]
+DEP001 = ["matplotlib"]
+DEP002 = ["pandas", "numpy"]
+```
+
+Please note that while the legacy arguments are still functional as of Deptry 0.12.0, we do plan to remove them in a future 1.0.0 release.
+
+
+* Consider all groups for dev dependencies ([#392](https://github.com/fpgmaas/deptry/pull/392))
+
+### Bug Fixes
+
+* Handle `SyntaxError` raised by `ast.parse` ([#426](https://github.com/fpgmaas/deptry/pull/426))
+
+### Full Changelog
+
+https://github.com/fpgmaas/deptry/compare/0.11.0...0.12.0
+
+
 ## 0.11.0 - 2023-05-10
 
 ### Deprecations
