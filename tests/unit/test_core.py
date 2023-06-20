@@ -105,7 +105,7 @@ def test__get_stdlib_packages_without_stdlib_module_names() -> None:
 
 @pytest.mark.skipif(sys.version_info < (3, 10), reason="only Python >= 3.10 has sys.stdlib_module_names")
 def test__get_stdlib_packages_with_stdlib_module_names() -> None:
-    assert Core._get_stdlib_modules() == sys.stdlib_module_names  # type: ignore[attr-defined]
+    assert Core._get_stdlib_modules() == sys.stdlib_module_names  # type: ignore[attr-defined, unused-ignore]
 
 
 @pytest.mark.parametrize(
@@ -123,7 +123,7 @@ def test__get_stdlib_packages_with_stdlib_module_names() -> None:
 def test__get_stdlib_packages_with_stdlib_module_names_future_version(version_info: tuple[int | str, ...]) -> None:
     """Test that future versions of Python not yet tested on the CI will also work."""
     with mock.patch("sys.version_info", (sys.version_info[0], sys.version_info[1] + 1, 0)):
-        assert Core._get_stdlib_modules() == sys.stdlib_module_names  # type: ignore[attr-defined]
+        assert Core._get_stdlib_modules() == sys.stdlib_module_names  # type: ignore[attr-defined, unused-ignore]
 
 
 @pytest.mark.parametrize(

@@ -92,16 +92,6 @@ warn_unreachable = true
 pretty = true
 show_error_codes = true
 
-# Ignore warnings for unused ignores because of https://github.com/python/mypy/issues/8823.
-# In some Python versions, we can end up with backport modules being untyped, while they are typed on others.
-[[tool.mypy.overrides]]
-module = [
-    "deptry.core",
-    "scripts.generate_stdlibs",
-    "tests.unit.test_core",
-]
-warn_unused_ignores = false
-
 [tool.deptry]
 extend_exclude = [
     "docs",
