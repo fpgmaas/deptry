@@ -91,7 +91,7 @@ def write_stdlibs_file(stdlib_python: dict[str, list[str]]) -> None:
     )
 
     with OUTPUT_PATH.open("w+") as stdlib_file:
-        stdlib_file.write(ast.unparse(node))  # type: ignore[attr-defined]
+        stdlib_file.write(ast.unparse(node))  # type: ignore[attr-defined, unused-ignore]
 
 
 if __name__ == "__main__":

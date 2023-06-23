@@ -177,7 +177,7 @@ class Core:
         if sys.version_info[:2] >= (3, 10):
             return sys.stdlib_module_names
 
-        try:  # type: ignore[unreachable]
+        try:  # type: ignore[unreachable, unused-ignore]
             return STDLIBS_PYTHON[f"{sys.version_info[0]}{sys.version_info[1]}"]
         except KeyError as e:
             raise UnsupportedPythonVersionError((sys.version_info[0], sys.version_info[1])) from e

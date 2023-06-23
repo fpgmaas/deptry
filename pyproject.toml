@@ -30,7 +30,7 @@ pathspec = ">=0.9.0"
 tomli = { version = "^2.0.1", python = "<3.11" }
 
 [tool.poetry.group.dev.dependencies]
-mypy = "1.3.0"
+mypy = "1.4.0"
 pre-commit = "3.3.3"
 pytest = "7.3.2"
 pytest-cov = "4.1.0"
@@ -91,16 +91,6 @@ strict = true
 warn_unreachable = true
 pretty = true
 show_error_codes = true
-
-# Ignore warnings for unused ignores because of https://github.com/python/mypy/issues/8823.
-# In some Python versions, we can end up with backport modules being untyped, while they are typed on others.
-[[tool.mypy.overrides]]
-module = [
-    "deptry.core",
-    "scripts.generate_stdlibs",
-    "tests.unit.test_core",
-]
-warn_unused_ignores = false
 
 [tool.deptry]
 extend_exclude = [
