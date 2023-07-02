@@ -43,6 +43,12 @@
   // https://docs.renovatebot.com/configuration-options/#packagerules
   packageRules: [
     {
+      matchDepTypes: ["typing"],
+      matchDatasources: ["pypi"],
+      excludePackageNames: ["mypy"],
+      automerge: true,
+    },
+    {
       matchPackageNames: ["astral-sh/ruff-pre-commit"],
       customChangelogUrl: "https://github.com/charliermarsh/ruff",
     },
