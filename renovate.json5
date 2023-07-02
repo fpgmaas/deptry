@@ -5,12 +5,19 @@
   extends: [
     // https://docs.renovatebot.com/presets-config/#configbase
     "config:base",
+
+    // https://docs.renovatebot.com/presets-default/#automergepatch
+    ":automergePatch",
+
     // https://docs.renovatebot.com/presets-default/#enableprecommit
     ":enablePreCommit",
+
     // https://docs.renovatebot.com/presets-default/#prhourlylimitnone
     ":prHourlyLimitNone",
+
     // https://docs.renovatebot.com/presets-default/#rebasestaleprs
     ":rebaseStalePrs",
+
     // https://docs.renovatebot.com/presets-regexManagers/#regexmanagersgithubactionsversions
     "regexManagers:githubActionsVersions",
   ],
@@ -23,6 +30,9 @@
 
   // https://docs.renovatebot.com/configuration-options/#rangestrategy
   rangeStrategy: "replace",
+
+  // https://docs.renovatebot.com/configuration-options/#platformautomerge
+  platformAutomerge: true,
 
   // https://docs.renovatebot.com/configuration-options/#lockfilemaintenance
   lockFileMaintenance: {
