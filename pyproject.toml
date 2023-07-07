@@ -30,16 +30,18 @@ pathspec = ">=0.9.0"
 tomli = { version = "^2.0.1", python = "<3.11" }
 
 [tool.poetry.group.dev.dependencies]
-mypy = "1.4.1"
 pre-commit = "3.3.3"
 pytest = "7.4.0"
 pytest-cov = "4.1.0"
-types-chardet = "5.0.4.6"
-types-colorama = { version = "0.4.15.11", markers = "sys_platform == 'win32'" }
 
 [tool.poetry.group.docs.dependencies]
 mkdocs = "1.4.3"
 mkdocs-material = "9.1.17"
+
+[tool.poetry.group.typing.dependencies]
+mypy = "1.4.1"
+types-chardet = "5.0.4.6"
+types-colorama = { version = "0.4.15.11", markers = "sys_platform == 'win32'" }
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
