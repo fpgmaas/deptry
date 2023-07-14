@@ -1,23 +1,22 @@
 from __future__ import annotations
 
+import uuid
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from click.testing import CliRunner
-
-from deptry.cli import deptry
-from tests.utils import get_issues_report, run_within_dir
+from tests.utils import get_issues_report
 
 if TYPE_CHECKING:
-    from tests.functional.types import ToolSpecificProjectBuilder
+    from tests.utils import PoetryVenvFactory
 
 
-def test_cli_with_poetry(poetry_project_builder: ToolSpecificProjectBuilder) -> None:
-    with run_within_dir(poetry_project_builder("project_with_poetry")):
-        result = CliRunner().invoke(deptry, ". -o report.json")
+def test_cli_with_poetry(poetry_venv_factory: PoetryVenvFactory) -> None:
+    with poetry_venv_factory("project_with_poetry") as virtual_env:
+        issue_report = f"{uuid.uuid4()}.json"
+        result = virtual_env.run(f"deptry . -o {issue_report}")
 
-        assert result.exit_code == 1
-        assert get_issues_report() == [
+        assert result.returncode == 1
+        assert get_issues_report(Path(issue_report)) == [
             {
                 "error": {
                     "code": "DEP002",

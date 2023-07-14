@@ -1,26 +1,30 @@
 from __future__ import annotations
 
+import uuid
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from click.testing import CliRunner
-
-from deptry.cli import deptry
-from tests.utils import get_issues_report, run_within_dir
+from tests.utils import get_issues_report
 
 if TYPE_CHECKING:
-    from tests.functional.types import ToolSpecificProjectBuilder
+    from tests.utils import PipVenvFactory
 
 
-def test_cli_single_requirements_txt(requirements_txt_project_builder: ToolSpecificProjectBuilder) -> None:
-    with run_within_dir(requirements_txt_project_builder("project_with_requirements_txt")):
-        result = CliRunner().invoke(
-            deptry,
-            ". --requirements-txt requirements.txt --requirements-txt-dev requirements-dev.txt -o report.json",
+def test_cli_single_requirements_txt(pip_venv_factory: PipVenvFactory) -> None:
+    with pip_venv_factory(
+        "project_with_requirements_txt",
+        install_command=(
+            "pip install -r requirements.txt -r requirements-dev.txt -r requirements-2.txt -r requirements-typing.txt"
+        ),
+    ) as virtual_env:
+        issue_report = f"{uuid.uuid4()}.json"
+        result = virtual_env.run(
+            "deptry . --requirements-txt requirements.txt --requirements-txt-dev requirements-dev.txt -o"
+            f" {issue_report}"
         )
 
-        assert result.exit_code == 1
-        assert get_issues_report() == [
+        assert result.returncode == 1
+        assert get_issues_report(Path(issue_report)) == [
             {
                 "error": {
                     "code": "DEP002",
@@ -96,18 +100,21 @@ def test_cli_single_requirements_txt(requirements_txt_project_builder: ToolSpeci
         ]
 
 
-def test_cli_multiple_requirements_txt(requirements_txt_project_builder: ToolSpecificProjectBuilder) -> None:
-    with run_within_dir(requirements_txt_project_builder("project_with_requirements_txt")):
-        result = CliRunner().invoke(
-            deptry,
-            (
-                ". --requirements-txt requirements.txt,requirements-2.txt --requirements-txt-dev requirements-dev.txt"
-                " -o report.json"
-            ),
+def test_cli_multiple_requirements_txt(pip_venv_factory: PipVenvFactory) -> None:
+    with pip_venv_factory(
+        "project_with_requirements_txt",
+        install_command=(
+            "pip install -r requirements.txt -r requirements-dev.txt -r requirements-2.txt -r requirements-typing.txt"
+        ),
+    ) as virtual_env:
+        issue_report = f"{uuid.uuid4()}.json"
+        result = virtual_env.run(
+            "deptry . --requirements-txt requirements.txt,requirements-2.txt --requirements-txt-dev"
+            f" requirements-dev.txt -o {issue_report}"
         )
 
-        assert result.exit_code == 1
-        assert get_issues_report() == [
+        assert result.returncode == 1
+        assert get_issues_report(Path(issue_report)) == [
             {
                 "error": {
                     "code": "DEP002",
