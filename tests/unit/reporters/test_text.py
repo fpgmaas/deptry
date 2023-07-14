@@ -38,6 +38,10 @@ def test_logging_number_multiple(caplog: LogCaptureFixture) -> None:
         TextReporter(violations).report()
 
     assert caplog.messages == [
+        (
+            "Assuming the corresponding module name of package 'foo' is 'foo'. Install the package or configure a"
+            " package_module_name_map entry to override this behaviour."
+        ),
         "",
         stylize(
             (
@@ -117,6 +121,10 @@ def test_logging_no_ansi(caplog: LogCaptureFixture) -> None:
         TextReporter(violations, use_ansi=False).report()
 
     assert caplog.messages == [
+        (
+            "Assuming the corresponding module name of package 'foo' is 'foo'. Install the package or configure a"
+            " package_module_name_map entry to override this behaviour."
+        ),
         "",
         f"{Path('foo.py')}:1:2: DEP001 'foo' imported but missing from the dependency definitions",
         f"{Path('pyproject.toml')}: DEP002 'foo' defined as a dependency but not used in the codebase",

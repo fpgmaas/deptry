@@ -38,7 +38,7 @@ def test_top_level() -> None:
     Test if top-level information is read, and correctly used to not mark a dependency as unused.
     blackd is in the top-level of black, so black should not be marked as an unused dependency.
     """
-    dependencies = [Dependency("black", Path("pyproject.toml"))]
+    dependencies = [Dependency("black", Path("pyproject.toml"), module_names=("black", "blackd"))]
     modules_locations = [
         ModuleLocations(
             ModuleBuilder("blackd", {"foo"}, frozenset(), dependencies).build(), [Location(Path("foo.py"), 1, 2)]
