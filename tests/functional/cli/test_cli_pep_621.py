@@ -1,23 +1,22 @@
 from __future__ import annotations
 
+import uuid
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from click.testing import CliRunner
-
-from deptry.cli import deptry
-from tests.utils import get_issues_report, run_within_dir
+from tests.utils import get_issues_report
 
 if TYPE_CHECKING:
-    from tests.functional.types import ToolSpecificProjectBuilder
+    from tests.utils import PipVenvFactory
 
 
-def test_cli_with_pep_621(pip_project_builder: ToolSpecificProjectBuilder) -> None:
-    with run_within_dir(pip_project_builder("pep_621_project")):
-        result = CliRunner().invoke(deptry, ". -o report.json")
+def test_cli_with_pep_621(pip_venv_factory: PipVenvFactory) -> None:
+    with pip_venv_factory("pep_621_project") as virtual_env:
+        issue_report = f"{uuid.uuid4()}.json"
+        result = virtual_env.run(f"deptry . -o {issue_report}")
 
-        assert result.exit_code == 1
-        assert get_issues_report() == [
+        assert result.returncode == 1
+        assert get_issues_report(Path(issue_report)) == [
             {
                 "error": {
                     "code": "DEP002",

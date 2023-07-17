@@ -1,25 +1,25 @@
 from __future__ import annotations
 
-import shlex
-import subprocess
+import uuid
 from pathlib import Path
 from typing import TYPE_CHECKING
 
 from click.testing import CliRunner
 
 from deptry.cli import deptry
-from tests.utils import get_issues_report, run_within_dir, stylize
+from tests.utils import get_issues_report, stylize
 
 if TYPE_CHECKING:
-    from tests.functional.types import ToolSpecificProjectBuilder
+    from tests.utils import PoetryVenvFactory
 
 
-def test_cli_returns_error(poetry_project_builder: ToolSpecificProjectBuilder) -> None:
-    with run_within_dir(poetry_project_builder("example_project")):
-        result = CliRunner().invoke(deptry, ". -o report.json")
+def test_cli_returns_error(poetry_venv_factory: PoetryVenvFactory) -> None:
+    with poetry_venv_factory("example_project") as virtual_env:
+        issue_report = f"{uuid.uuid4()}.json"
+        result = virtual_env.run(f"deptry . -o {issue_report}")
 
-        assert result.exit_code == 1
-        assert get_issues_report() == [
+        assert result.returncode == 1
+        assert get_issues_report(Path(issue_report)) == [
             {
                 "error": {
                     "code": "DEP002",
@@ -71,12 +71,13 @@ def test_cli_returns_error(poetry_project_builder: ToolSpecificProjectBuilder) -
         ]
 
 
-def test_cli_ignore_notebooks(poetry_project_builder: ToolSpecificProjectBuilder) -> None:
-    with run_within_dir(poetry_project_builder("example_project")):
-        result = CliRunner().invoke(deptry, ". --ignore-notebooks -o report.json")
+def test_cli_ignore_notebooks(poetry_venv_factory: PoetryVenvFactory) -> None:
+    with poetry_venv_factory("example_project") as virtual_env:
+        issue_report = f"{uuid.uuid4()}.json"
+        result = virtual_env.run(f"deptry . --ignore-notebooks -o {issue_report}")
 
-        assert result.exit_code == 1
-        assert get_issues_report() == [
+        assert result.returncode == 1
+        assert get_issues_report(Path(issue_report)) == [
             {
                 "error": {
                     "code": "DEP002",
@@ -140,26 +141,27 @@ def test_cli_ignore_notebooks(poetry_project_builder: ToolSpecificProjectBuilder
         ]
 
 
-def test_cli_ignore_flags(poetry_project_builder: ToolSpecificProjectBuilder) -> None:
-    with run_within_dir(poetry_project_builder("example_project")):
-        result = CliRunner().invoke(deptry, ". --per-rule-ignores DEP002=isort|pkginfo|requests -im white -id black")
+def test_cli_ignore_flags(poetry_venv_factory: PoetryVenvFactory) -> None:
+    with poetry_venv_factory("example_project") as virtual_env:
+        result = virtual_env.run("deptry . --per-rule-ignores DEP002=isort|pkginfo|requests -im white -id black")
 
-        assert result.exit_code == 0
-
-
-def test_cli_ignore_flag(poetry_project_builder: ToolSpecificProjectBuilder) -> None:
-    with run_within_dir(poetry_project_builder("example_project")):
-        result = CliRunner().invoke(deptry, ". --ignore DEP001,DEP002,DEP003,DEP004")
-
-        assert result.exit_code == 0
+        assert result.returncode == 0
 
 
-def test_cli_exclude(poetry_project_builder: ToolSpecificProjectBuilder) -> None:
-    with run_within_dir(poetry_project_builder("example_project")):
-        result = CliRunner().invoke(deptry, ". --exclude src/notebook.ipynb -o report.json")
+def test_cli_ignore_flag(poetry_venv_factory: PoetryVenvFactory) -> None:
+    with poetry_venv_factory("example_project") as virtual_env:
+        result = virtual_env.run("deptry . --ignore DEP001,DEP002,DEP003,DEP004")
 
-        assert result.exit_code == 1
-        assert get_issues_report() == [
+        assert result.returncode == 0
+
+
+def test_cli_exclude(poetry_venv_factory: PoetryVenvFactory) -> None:
+    with poetry_venv_factory("example_project") as virtual_env:
+        issue_report = f"{uuid.uuid4()}.json"
+        result = virtual_env.run(f"deptry . --exclude src/notebook.ipynb -o {issue_report}")
+
+        assert result.returncode == 1
+        assert get_issues_report(Path(issue_report)) == [
             {
                 "error": {
                     "code": "DEP002",
@@ -223,12 +225,13 @@ def test_cli_exclude(poetry_project_builder: ToolSpecificProjectBuilder) -> None
         ]
 
 
-def test_cli_extend_exclude(poetry_project_builder: ToolSpecificProjectBuilder) -> None:
-    with run_within_dir(poetry_project_builder("example_project")):
-        result = CliRunner().invoke(deptry, ". -ee src/notebook.ipynb -o report.json")
+def test_cli_extend_exclude(poetry_venv_factory: PoetryVenvFactory) -> None:
+    with poetry_venv_factory("example_project") as virtual_env:
+        issue_report = f"{uuid.uuid4()}.json"
+        result = virtual_env.run(f"deptry . -ee src/notebook.ipynb -o {issue_report}")
 
-        assert result.exit_code == 1
-        assert get_issues_report() == [
+        assert result.returncode == 1
+        assert get_issues_report(Path(issue_report)) == [
             {
                 "error": {
                     "code": "DEP002",
@@ -292,12 +295,13 @@ def test_cli_extend_exclude(poetry_project_builder: ToolSpecificProjectBuilder) 
         ]
 
 
-def test_cli_known_first_party(poetry_project_builder: ToolSpecificProjectBuilder) -> None:
-    with run_within_dir(poetry_project_builder("example_project")):
-        result = CliRunner().invoke(deptry, ". --known-first-party white -o report.json")
+def test_cli_known_first_party(poetry_venv_factory: PoetryVenvFactory) -> None:
+    with poetry_venv_factory("example_project") as virtual_env:
+        issue_report = f"{uuid.uuid4()}.json"
+        result = virtual_env.run(f"deptry . --known-first-party white -o {issue_report}")
 
-        assert result.exit_code == 1
-        assert get_issues_report() == [
+        assert result.returncode == 1
+        assert get_issues_report(Path(issue_report)) == [
             {
                 "error": {
                     "code": "DEP002",
@@ -337,13 +341,14 @@ def test_cli_known_first_party(poetry_project_builder: ToolSpecificProjectBuilde
         ]
 
 
-def test_cli_not_verbose(poetry_project_builder: ToolSpecificProjectBuilder) -> None:
-    with run_within_dir(poetry_project_builder("example_project")):
-        result = subprocess.run(shlex.split("poetry run deptry . -o report.json"), capture_output=True, text=True)
+def test_cli_not_verbose(poetry_venv_factory: PoetryVenvFactory) -> None:
+    with poetry_venv_factory("example_project") as virtual_env:
+        issue_report = f"{uuid.uuid4()}.json"
+        result = virtual_env.run(f"deptry . -o {issue_report}")
 
         assert result.returncode == 1
         assert "The project contains the following dependencies:" not in result.stderr
-        assert get_issues_report() == [
+        assert get_issues_report(Path(issue_report)) == [
             {
                 "error": {
                     "code": "DEP002",
@@ -395,15 +400,14 @@ def test_cli_not_verbose(poetry_project_builder: ToolSpecificProjectBuilder) -> 
         ]
 
 
-def test_cli_verbose(poetry_project_builder: ToolSpecificProjectBuilder) -> None:
-    with run_within_dir(poetry_project_builder("example_project")):
-        result = subprocess.run(
-            shlex.split("poetry run deptry . --verbose -o report.json"), capture_output=True, text=True
-        )
+def test_cli_verbose(poetry_venv_factory: PoetryVenvFactory) -> None:
+    with poetry_venv_factory("example_project") as virtual_env:
+        issue_report = f"{uuid.uuid4()}.json"
+        result = virtual_env.run(f"deptry . --verbose -o {issue_report}")
 
         assert result.returncode == 1
         assert "The project contains the following dependencies:" in result.stderr
-        assert get_issues_report() == [
+        assert get_issues_report(Path(issue_report)) == [
             {
                 "error": {
                     "code": "DEP002",
@@ -455,9 +459,9 @@ def test_cli_verbose(poetry_project_builder: ToolSpecificProjectBuilder) -> None
         ]
 
 
-def test_cli_with_no_ansi(poetry_project_builder: ToolSpecificProjectBuilder) -> None:
-    with run_within_dir(poetry_project_builder("example_project")):
-        result = subprocess.run(shlex.split("poetry run deptry . --no-ansi"), capture_output=True, text=True)
+def test_cli_with_no_ansi(poetry_venv_factory: PoetryVenvFactory) -> None:
+    with poetry_venv_factory("example_project") as virtual_env:
+        result = virtual_env.run("deptry . --no-ansi")
 
         expected_output = [
             "Scanning 2 files...",
@@ -476,12 +480,11 @@ def test_cli_with_no_ansi(poetry_project_builder: ToolSpecificProjectBuilder) ->
         assert result.stderr == "\n".join(expected_output)
 
 
-def test_cli_with_not_json_output(poetry_project_builder: ToolSpecificProjectBuilder) -> None:
-    with run_within_dir(poetry_project_builder("example_project")):
-        # Remove previously generated `report.json`.
-        Path("report.json").unlink()
+def test_cli_with_not_json_output(poetry_venv_factory: PoetryVenvFactory) -> None:
+    with poetry_venv_factory("example_project") as virtual_env:
+        json_files_count = len(list(Path(".").glob("*.json")))
 
-        result = subprocess.run(shlex.split("poetry run deptry ."), capture_output=True, text=True)
+        result = virtual_env.run("deptry .")
 
         expected_output = [
             "Scanning 2 files...",
@@ -521,13 +524,15 @@ def test_cli_with_not_json_output(poetry_project_builder: ToolSpecificProjectBui
         ]
 
         assert result.returncode == 1
-        assert len(list(Path(".").glob("*.json"))) == 0
+        # Assert that we have the same number of JSON files as before running the command.
+        assert len(list(Path(".").glob("*.json"))) == json_files_count
         assert result.stderr == "\n".join(expected_output)
 
 
-def test_cli_with_json_output(poetry_project_builder: ToolSpecificProjectBuilder) -> None:
-    with run_within_dir(poetry_project_builder("example_project")):
-        result = subprocess.run(shlex.split("poetry run deptry . -o deptry.json"), capture_output=True, text=True)
+def test_cli_with_json_output(poetry_venv_factory: PoetryVenvFactory) -> None:
+    with poetry_venv_factory("example_project") as virtual_env:
+        issue_report = f"{uuid.uuid4()}.json"
+        result = virtual_env.run(f"deptry . -o {issue_report}")
 
         expected_output = [
             "Scanning 2 files...",
@@ -568,7 +573,7 @@ def test_cli_with_json_output(poetry_project_builder: ToolSpecificProjectBuilder
 
         # Assert that we still write to console when generating a JSON report.
         assert result.stderr == "\n".join(expected_output)
-        assert get_issues_report("deptry.json") == [
+        assert get_issues_report(Path(issue_report)) == [
             {
                 "error": {
                     "code": "DEP002",

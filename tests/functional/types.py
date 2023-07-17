@@ -7,10 +7,10 @@ if TYPE_CHECKING:
 
 
 class ProjectBuilder(Protocol):
-    def __call__(self, project: str, setup_command: str, cwd: str | None) -> Path:
+    def __call__(self, root_directory: Path, project: str, setup_commands: list[str], cwd: str | None) -> Path:
         ...
 
 
 class ToolSpecificProjectBuilder(Protocol):
-    def __call__(self, project: str, cwd: str | None = None) -> Path:
+    def __call__(self, root_directory: Path, project: str, cwd: str | None = None) -> Path:
         ...

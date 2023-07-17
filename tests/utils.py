@@ -2,11 +2,94 @@ from __future__ import annotations
 
 import json
 import os
+import shlex
+import shutil
+import subprocess
+import sys
+import venv
 from contextlib import contextmanager
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Generator
 
 from deptry.reporters.text import COLORS
+
+
+@dataclass
+class _BaseVenvFactory:
+    venvs_directory: Path
+
+    @contextmanager
+    def venv(self, project: str, setup_commands: list[str]) -> Generator[VirtualEnvironment, None, None]:
+        venv_path = self.venvs_directory / project
+
+        old_cwd = Path.cwd()
+
+        virtual_env = VirtualEnvironment(venv_path, project)
+        virtual_env.setup(setup_commands, old_cwd)
+
+        os.chdir(venv_path / "project")
+
+        try:
+            yield virtual_env
+        finally:
+            os.chdir(old_cwd)
+
+
+class PDMVenvFactory(_BaseVenvFactory):
+    @contextmanager
+    def __call__(self, project: str) -> Generator[VirtualEnvironment, None, None]:
+        with self.venv(project, ["pip install pdm", "pdm install --no-self"]) as virtual_env:
+            yield virtual_env
+
+
+@dataclass
+class PoetryVenvFactory(_BaseVenvFactory):
+    @contextmanager
+    def __call__(self, project: str) -> Generator[VirtualEnvironment, None, None]:
+        with self.venv(project, ["pip install poetry", "poetry install --no-root"]) as virtual_env:
+            yield virtual_env
+
+
+class PipVenvFactory(_BaseVenvFactory):
+    @contextmanager
+    def __call__(
+        self, project: str, install_command: str = "pip install ."
+    ) -> Generator[VirtualEnvironment, None, None]:
+        with self.venv(project, [install_command]) as virtual_env:
+            yield virtual_env
+
+
+@dataclass
+class VirtualEnvironment:
+    project_path: Path
+    project: str
+    python_executable: Path | None = None
+
+    def __post_init__(self) -> None:
+        self.python_executable = self.project_path / ("Scripts/python.exe" if sys.platform == "win32" else "bin/python")
+
+    def setup(self, setup_commands: list[str], deptry_directory: Path) -> None:
+        if self.project_path.exists():
+            return
+
+        virtual_env = venv.EnvBuilder(with_pip=True)
+        virtual_env.create(self.project_path)
+
+        shutil.copytree(deptry_directory / "tests/data" / self.project, self.project_path / "project")
+
+        for setup_command in [f"pip install {deptry_directory}", *setup_commands]:
+            self.run(setup_command, check=True, cwd=self.project_path / "project")
+
+    def run(self, command: str, check: bool = False, cwd: Path | None = None) -> subprocess.CompletedProcess[str]:
+        return subprocess.run(
+            shlex.split(f"{self.python_executable} -m {command}", posix=sys.platform != "win32"),
+            env={**os.environ, "VIRTUAL_ENV": str(self.project_path)},
+            capture_output=True,
+            text=True,
+            check=check,
+            cwd=cwd,
+        )
 
 
 @contextmanager
@@ -30,8 +113,8 @@ def run_within_dir(path: Path) -> Generator[None, None, None]:
         os.chdir(oldpwd)
 
 
-def get_issues_report(path: str = "report.json") -> list[dict[str, Any]]:
-    with Path(path).open() as file:
+def get_issues_report(path: Path) -> list[dict[str, Any]]:
+    with path.open() as file:
         report: list[dict[str, Any]] = json.load(file)
 
     return report

@@ -1,23 +1,24 @@
 from __future__ import annotations
 
+import uuid
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from click.testing import CliRunner
-
-from deptry.cli import deptry
-from tests.utils import get_issues_report, run_within_dir
+from tests.utils import get_issues_report
 
 if TYPE_CHECKING:
-    from tests.functional.types import ToolSpecificProjectBuilder
+    from tests.utils import PipVenvFactory
 
 
-def test_cli_with_pyproject_different_directory(pip_project_builder: ToolSpecificProjectBuilder) -> None:
-    with run_within_dir(pip_project_builder("project_with_pyproject_different_directory", cwd="a_sub_directory")):
-        result = CliRunner().invoke(deptry, "src --config a_sub_directory/pyproject.toml -o report.json")
+def test_cli_with_pyproject_different_directory(pip_venv_factory: PipVenvFactory) -> None:
+    with pip_venv_factory(
+        "project_with_pyproject_different_directory", install_command="pip install ./a_sub_directory"
+    ) as virtual_env:
+        issue_report = f"{uuid.uuid4()}.json"
+        result = virtual_env.run(f"deptry src --config a_sub_directory/pyproject.toml -o {issue_report}")
 
-        assert result.exit_code == 1
-        assert get_issues_report() == [
+        assert result.returncode == 1
+        assert get_issues_report(Path(issue_report)) == [
             {
                 "error": {
                     "code": "DEP002",
