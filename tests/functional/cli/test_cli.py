@@ -490,31 +490,23 @@ def test_cli_with_not_json_output(poetry_venv_factory: PoetryVenvFactory) -> Non
             "Scanning 2 files...",
             "",
             stylize(
-                (
-                    "{BOLD}{file}{RESET}{CYAN}:{RESET} {BOLD}{RED}DEP002{RESET} 'isort' defined as a dependency but not"
-                    " used in the codebase"
-                ),
+                "{BOLD}{file}{RESET}{CYAN}:{RESET} {BOLD}{RED}DEP002{RESET} 'isort' defined as a dependency but not"
+                " used in the codebase",
                 file=Path("pyproject.toml"),
             ),
             stylize(
-                (
-                    "{BOLD}{file}{RESET}{CYAN}:{RESET} {BOLD}{RED}DEP002{RESET} 'requests' defined as a dependency but"
-                    " not used in the codebase"
-                ),
+                "{BOLD}{file}{RESET}{CYAN}:{RESET} {BOLD}{RED}DEP002{RESET} 'requests' defined as a dependency but"
+                " not used in the codebase",
                 file=Path("pyproject.toml"),
             ),
             stylize(
-                (
-                    "{BOLD}{file}{RESET}{CYAN}:{RESET}4{CYAN}:{RESET}0{CYAN}:{RESET} {BOLD}{RED}DEP004{RESET} 'black'"
-                    " imported but declared as a dev dependency"
-                ),
+                "{BOLD}{file}{RESET}{CYAN}:{RESET}4{CYAN}:{RESET}0{CYAN}:{RESET} {BOLD}{RED}DEP004{RESET} 'black'"
+                " imported but declared as a dev dependency",
                 file=Path("src/main.py"),
             ),
             stylize(
-                (
-                    "{BOLD}{file}{RESET}{CYAN}:{RESET}6{CYAN}:{RESET}0{CYAN}:{RESET} {BOLD}{RED}DEP001{RESET} 'white'"
-                    " imported but missing from the dependency definitions"
-                ),
+                "{BOLD}{file}{RESET}{CYAN}:{RESET}6{CYAN}:{RESET}0{CYAN}:{RESET} {BOLD}{RED}DEP001{RESET} 'white'"
+                " imported but missing from the dependency definitions",
                 file=Path("src/main.py"),
             ),
             stylize("{BOLD}{RED}Found 4 dependency issues.{RESET}"),
@@ -538,31 +530,23 @@ def test_cli_with_json_output(poetry_venv_factory: PoetryVenvFactory) -> None:
             "Scanning 2 files...",
             "",
             stylize(
-                (
-                    "{BOLD}{file}{RESET}{CYAN}:{RESET} {BOLD}{RED}DEP002{RESET} 'isort' defined as a dependency but not"
-                    " used in the codebase"
-                ),
+                "{BOLD}{file}{RESET}{CYAN}:{RESET} {BOLD}{RED}DEP002{RESET} 'isort' defined as a dependency but not"
+                " used in the codebase",
                 file=Path("pyproject.toml"),
             ),
             stylize(
-                (
-                    "{BOLD}{file}{RESET}{CYAN}:{RESET} {BOLD}{RED}DEP002{RESET} 'requests' defined as a dependency but"
-                    " not used in the codebase"
-                ),
+                "{BOLD}{file}{RESET}{CYAN}:{RESET} {BOLD}{RED}DEP002{RESET} 'requests' defined as a dependency but"
+                " not used in the codebase",
                 file=Path("pyproject.toml"),
             ),
             stylize(
-                (
-                    "{BOLD}{file}{RESET}{CYAN}:{RESET}4{CYAN}:{RESET}0{CYAN}:{RESET} {BOLD}{RED}DEP004{RESET} 'black'"
-                    " imported but declared as a dev dependency"
-                ),
+                "{BOLD}{file}{RESET}{CYAN}:{RESET}4{CYAN}:{RESET}0{CYAN}:{RESET} {BOLD}{RED}DEP004{RESET} 'black'"
+                " imported but declared as a dev dependency",
                 file=Path("src/main.py"),
             ),
             stylize(
-                (
-                    "{BOLD}{file}{RESET}{CYAN}:{RESET}6{CYAN}:{RESET}0{CYAN}:{RESET} {BOLD}{RED}DEP001{RESET} 'white'"
-                    " imported but missing from the dependency definitions"
-                ),
+                "{BOLD}{file}{RESET}{CYAN}:{RESET}6{CYAN}:{RESET}0{CYAN}:{RESET} {BOLD}{RED}DEP001{RESET} 'white'"
+                " imported but missing from the dependency definitions",
                 file=Path("src/main.py"),
             ),
             stylize("{BOLD}{RED}Found 4 dependency issues.{RESET}"),

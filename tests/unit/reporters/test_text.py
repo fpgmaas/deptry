@@ -44,31 +44,23 @@ def test_logging_number_multiple(caplog: LogCaptureFixture) -> None:
         ),
         "",
         stylize(
-            (
-                "{BOLD}{file}{RESET}{CYAN}:{RESET}1{CYAN}:{RESET}2{CYAN}:{RESET} {BOLD}{RED}DEP001{RESET} 'foo'"
-                " imported but missing from the dependency definitions"
-            ),
+            "{BOLD}{file}{RESET}{CYAN}:{RESET}1{CYAN}:{RESET}2{CYAN}:{RESET} {BOLD}{RED}DEP001{RESET} 'foo'"
+            " imported but missing from the dependency definitions",
             file=Path("foo.py"),
         ),
         stylize(
-            (
-                "{BOLD}{file}{RESET}{CYAN}:{RESET} {BOLD}{RED}DEP002{RESET} 'foo' defined as a dependency but not used"
-                " in the codebase"
-            ),
+            "{BOLD}{file}{RESET}{CYAN}:{RESET} {BOLD}{RED}DEP002{RESET} 'foo' defined as a dependency but not used"
+            " in the codebase",
             file=Path("pyproject.toml"),
         ),
         stylize(
-            (
-                "{BOLD}{file}{RESET}{CYAN}:{RESET}1{CYAN}:{RESET}2{CYAN}:{RESET} {BOLD}{RED}DEP003{RESET} 'foo_package'"
-                " imported but it is a transitive dependency"
-            ),
+            "{BOLD}{file}{RESET}{CYAN}:{RESET}1{CYAN}:{RESET}2{CYAN}:{RESET} {BOLD}{RED}DEP003{RESET} 'foo_package'"
+            " imported but it is a transitive dependency",
             file=Path("foo/bar.py"),
         ),
         stylize(
-            (
-                "{BOLD}{file}{RESET}{CYAN}:{RESET}1{CYAN}:{RESET}2{CYAN}:{RESET} {BOLD}{RED}DEP004{RESET} 'foo'"
-                " imported but declared as a dev dependency"
-            ),
+            "{BOLD}{file}{RESET}{CYAN}:{RESET}1{CYAN}:{RESET}2{CYAN}:{RESET} {BOLD}{RED}DEP004{RESET} 'foo'"
+            " imported but declared as a dev dependency",
             file=Path("foo.py"),
         ),
         stylize("{BOLD}{RED}Found 4 dependency issues.{RESET}"),
@@ -85,10 +77,8 @@ def test_logging_number_single(caplog: LogCaptureFixture) -> None:
     assert caplog.messages == [
         "",
         stylize(
-            (
-                "{BOLD}{file}{RESET}{CYAN}:{RESET}1{CYAN}:{RESET}2{CYAN}:{RESET} {BOLD}{RED}DEP001{RESET} 'foo'"
-                " imported but missing from the dependency definitions"
-            ),
+            "{BOLD}{file}{RESET}{CYAN}:{RESET}1{CYAN}:{RESET}2{CYAN}:{RESET} {BOLD}{RED}DEP001{RESET} 'foo'"
+            " imported but missing from the dependency definitions",
             file=Path("foo.py"),
         ),
         stylize("{BOLD}{RED}Found 1 dependency issue.{RESET}"),
