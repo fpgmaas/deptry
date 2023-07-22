@@ -482,7 +482,7 @@ def test_cli_with_no_ansi(poetry_venv_factory: PoetryVenvFactory) -> None:
 
 def test_cli_with_not_json_output(poetry_venv_factory: PoetryVenvFactory) -> None:
     with poetry_venv_factory("example_project") as virtual_env:
-        json_files_count = len(list(Path(".").glob("*.json")))
+        json_files_count = len(list(Path().glob("*.json")))
 
         result = virtual_env.run("deptry .")
 
@@ -517,7 +517,7 @@ def test_cli_with_not_json_output(poetry_venv_factory: PoetryVenvFactory) -> Non
 
         assert result.returncode == 1
         # Assert that we have the same number of JSON files as before running the command.
-        assert len(list(Path(".").glob("*.json"))) == json_files_count
+        assert len(list(Path().glob("*.json"))) == json_files_count
         assert result.stderr == "\n".join(expected_output)
 
 

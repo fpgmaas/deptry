@@ -24,7 +24,7 @@ def test_simple(tmp_path: Path) -> None:
 
         files = PythonFileFinder(
             exclude=(".venv",), extend_exclude=("other_dir",), using_default_exclude=False
-        ).get_all_python_files_in((Path("."),))
+        ).get_all_python_files_in((Path(),))
 
         assert sorted(files) == [
             Path("dir/subdir/file1.py"),
@@ -50,7 +50,7 @@ def test_only_matches_start(tmp_path: Path) -> None:
 
         files = PythonFileFinder(
             exclude=("subdir",), extend_exclude=(), using_default_exclude=False
-        ).get_all_python_files_in((Path("."),))
+        ).get_all_python_files_in((Path(),))
 
         assert sorted(files) == [
             Path("dir/subdir/file1.py"),
@@ -78,7 +78,7 @@ def test_matches_ipynb(ignore_notebooks: bool, expected: list[Path], tmp_path: P
 
         files = PythonFileFinder(
             exclude=(), extend_exclude=(), using_default_exclude=False, ignore_notebooks=ignore_notebooks
-        ).get_all_python_files_in((Path("."),))
+        ).get_all_python_files_in((Path(),))
 
         assert sorted(files) == expected
 
@@ -128,7 +128,7 @@ def test_regex_argument(exclude: tuple[str], expected: list[Path], tmp_path: Pat
 
         files = PythonFileFinder(
             exclude=exclude, extend_exclude=(), using_default_exclude=False
-        ).get_all_python_files_in((Path("."),))
+        ).get_all_python_files_in((Path(),))
 
         assert sorted(files) == expected
 
@@ -181,7 +181,7 @@ def test_duplicates_are_removed(tmp_path: Path) -> None:
         create_files([Path("dir/subdir/file1.py")])
 
         files = PythonFileFinder(exclude=(), extend_exclude=(), using_default_exclude=False).get_all_python_files_in(
-            (Path("."), Path("."))
+            (Path(), Path())
         )
 
         assert sorted(files) == [Path("dir/subdir/file1.py")]
@@ -190,7 +190,7 @@ def test_duplicates_are_removed(tmp_path: Path) -> None:
 def test__generate_gitignore_pathspec_with_non_default_exclude(tmp_path: Path) -> None:
     gitignore_pathspec = PythonFileFinder(
         exclude=(), extend_exclude=(), using_default_exclude=False
-    )._generate_gitignore_pathspec(Path("."))
+    )._generate_gitignore_pathspec(Path())
 
     assert gitignore_pathspec is None
 
@@ -199,7 +199,7 @@ def test__generate_gitignore_pathspec_with_non_existing_gitignore(tmp_path: Path
     with run_within_dir(tmp_path):
         gitignore_pathspec = PythonFileFinder(
             exclude=(), extend_exclude=(), using_default_exclude=True
-        )._generate_gitignore_pathspec(Path("."))
+        )._generate_gitignore_pathspec(Path())
 
         assert gitignore_pathspec is None
 
@@ -211,7 +211,7 @@ def test__generate_gitignore_pathspec_with_existing_gitignore(tmp_path: Path) ->
 
         gitignore_pathspec = PythonFileFinder(
             exclude=(), extend_exclude=(), using_default_exclude=True
-        )._generate_gitignore_pathspec(Path("."))
+        )._generate_gitignore_pathspec(Path())
 
         assert isinstance(gitignore_pathspec, PathSpec)
         assert gitignore_pathspec.patterns == [
