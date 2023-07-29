@@ -2,12 +2,15 @@ from __future__ import annotations
 
 from importlib.metadata import PackageNotFoundError
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING
 from unittest.mock import patch
 
 import pytest
 
 from deptry.dependency import Dependency, parse_pep_508_dependency
+
+if TYPE_CHECKING:
+    from typing import Any
 
 
 def test_simple_dependency() -> None:
