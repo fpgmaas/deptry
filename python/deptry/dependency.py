@@ -4,7 +4,9 @@ import logging
 import re
 from contextlib import suppress
 from importlib import metadata
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Mapping
+
+from packaging.requirements import InvalidRequirement, Requirement
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -132,3 +134,18 @@ class Dependency:
         matches = re.finditer(r"^(?!__)([a-zA-Z0-9-_]+)(?:/|\.py,)", metadata_records, re.MULTILINE)
 
         return {x.group(1) for x in matches}
+
+
+def parse_pep_508_dependency(
+    specification: str, definition_file: Path, package_module_name_map: Mapping[str, Sequence[str]]
+) -> Dependency | None:
+    try:
+        requirement = Requirement(specification)
+    except InvalidRequirement:
+        return None
+
+    return Dependency(
+        name=requirement.name,
+        definition_file=definition_file,
+        module_names=package_module_name_map.get(requirement.name),
+    )
