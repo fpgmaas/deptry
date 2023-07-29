@@ -35,7 +35,7 @@ pytest = "7.4.0"
 pytest-cov = "4.1.0"
 
 [tool.poetry.group.docs.dependencies]
-mkdocs = "1.4.3"
+mkdocs = "1.5.1"
 mkdocs-material = "9.1.19"
 
 [tool.poetry.group.typing.dependencies]
