@@ -66,7 +66,7 @@ def get_value_for_per_rule_ignores_argument(
         if modules_or_dependencies_to_be_ignored:
             code = issue_codes[flag]
             logging.warning(generate_deprecation_warning(flag, code, modules_or_dependencies_to_be_ignored))
-            if code not in per_rule_ignores.keys():
+            if code not in per_rule_ignores:
                 per_rule_ignores[code] = modules_or_dependencies_to_be_ignored
             else:
                 per_rule_ignores[code] = tuple(set(per_rule_ignores[code]).union(modules_or_dependencies_to_be_ignored))
