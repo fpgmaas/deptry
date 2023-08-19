@@ -39,7 +39,7 @@ mkdocs = "1.5.2"
 mkdocs-material = "9.1.21"
 
 [tool.poetry.group.typing.dependencies]
-mypy = "1.5.0"
+mypy = "1.5.1"
 types-chardet = "5.0.4.6"
 types-colorama = { version = "0.4.15.12", markers = "sys_platform == 'win32'" }
 
