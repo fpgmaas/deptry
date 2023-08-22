@@ -114,7 +114,6 @@ def test__get_stdlib_packages_with_stdlib_module_names() -> None:
         (sys.version_info[0], sys.version_info[1] + 1, 0),
         (sys.version_info[0], sys.version_info[1] + 1, 13),
         (sys.version_info[0] + 1, sys.version_info[1], 0),
-        (sys.version_info[0], sys.version_info[1] + 1, 0),
         (sys.version_info[0], sys.version_info[1] + 1, 0, "beta", 1),
         (sys.version_info[0], sys.version_info[1] + 1, 0, "candidate", 1),
     ],
