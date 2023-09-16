@@ -7,5 +7,4 @@ import white as w
 from urllib3 import contrib
 
 
-def a_local_method():
-    ...
+def a_local_method(): ...
