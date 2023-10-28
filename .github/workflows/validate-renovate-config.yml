@@ -8,7 +8,7 @@ on:
 
 env:
   # renovate: datasource=node depName=node versioning=node
-  NODE_VERSION: "18"
+  NODE_VERSION: "20"
 
 jobs:
   validate-renovate-config:
