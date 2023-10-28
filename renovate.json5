@@ -52,10 +52,6 @@
       matchPackageNames: ["astral-sh/ruff-pre-commit"],
       customChangelogUrl: "https://github.com/charliermarsh/ruff",
     },
-    {
-      matchPackageNames: ["psf/black-pre-commit-mirror"],
-      customChangelogUrl: "https://github.com/psf/black",
-    },
   ],
 
   // https://docs.renovatebot.com/configuration-options/#regexmanagers
