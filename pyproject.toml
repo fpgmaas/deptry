@@ -47,11 +47,6 @@ types-colorama = { version = "0.4.15.12", markers = "sys_platform == 'win32'" }
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
-[tool.black]
-line-length = 120
-target-version = ["py38"]
-preview = true
-
 [tool.coverage.report]
 skip_empty = true
 # Subset of rules from https://pypi.org/project/covdefaults/
@@ -172,6 +167,9 @@ extend-exclude = ["tests/data/*"]
 
 [tool.ruff.flake8-type-checking]
 strict = true
+
+[tool.ruff.format]
+preview = true
 
 [tool.ruff.isort]
 required-imports = ["from __future__ import annotations"]

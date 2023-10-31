@@ -13,8 +13,7 @@ if TYPE_CHECKING:
 def test_generate_deprecation_warning() -> None:
     result = generate_deprecation_warning(flag_name="ignore-missing", issue_code="DEP002", sequence=("hi", "bye"))
     assert (
-        result
-        == "Warning: In an upcoming release, support for the `--ignore-missing` command-line option and the"
+        result == "Warning: In an upcoming release, support for the `--ignore-missing` command-line option and the"
         " `ignore_missing` configuration parameter will be discontinued. Instead, use `--per-rule-ignores"
         ' DEP002=hi|bye` or add a line `DEP002 = ["hi", "bye"]` to the `[tool.deptry.per_rule_ignores]` section of the'
         " configuration file."
