@@ -4,6 +4,7 @@ It is generated from `scripts/generate_stdlibs.py` script and contains the stdli
 not support https://docs.python.org/3/library/sys.html#sys.stdlib_module_names (< 3.10).
 The file can be generated again using `python scripts/generate_stdlibs.py`.
 """
+
 from __future__ import annotations
 
 STDLIBS_PYTHON = {
