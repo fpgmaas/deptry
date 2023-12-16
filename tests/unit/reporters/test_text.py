@@ -70,9 +70,9 @@ def test_logging_number_multiple(caplog: LogCaptureFixture) -> None:
 
 def test_logging_number_single(caplog: LogCaptureFixture) -> None:
     with caplog.at_level(logging.INFO):
-        TextReporter(
-            [DEP001MissingDependencyViolation(Module("foo", package="foo_package"), Location(Path("foo.py"), 1, 2))]
-        ).report()
+        TextReporter([
+            DEP001MissingDependencyViolation(Module("foo", package="foo_package"), Location(Path("foo.py"), 1, 2))
+        ]).report()
 
     assert caplog.messages == [
         "",

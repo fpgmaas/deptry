@@ -12,15 +12,13 @@ from tests.utils import create_files, run_within_dir
 
 def test_simple(tmp_path: Path) -> None:
     with run_within_dir(tmp_path):
-        create_files(
-            [
-                Path("dir/subdir/file1.py"),
-                Path("dir/subdir/file2.py"),
-                Path("dir/subdir/file3.py"),
-                Path("other_dir/subdir/file1.py"),
-                Path("other_dir/subdir/file2.py"),
-            ]
-        )
+        create_files([
+            Path("dir/subdir/file1.py"),
+            Path("dir/subdir/file2.py"),
+            Path("dir/subdir/file3.py"),
+            Path("other_dir/subdir/file1.py"),
+            Path("other_dir/subdir/file2.py"),
+        ])
 
         files = PythonFileFinder(
             exclude=(".venv",), extend_exclude=("other_dir",), using_default_exclude=False
@@ -38,15 +36,13 @@ def test_only_matches_start(tmp_path: Path) -> None:
     Test that adding 'subdir' as exclude argument does not also exclude dir/subdir.
     """
     with run_within_dir(tmp_path):
-        create_files(
-            [
-                Path("dir/subdir/file1.py"),
-                Path("dir/subdir/file2.py"),
-                Path("dir/subdir/file3.py"),
-                Path("subdir/file1.py"),
-                Path("subdir/file2.py"),
-            ]
-        )
+        create_files([
+            Path("dir/subdir/file1.py"),
+            Path("dir/subdir/file2.py"),
+            Path("dir/subdir/file3.py"),
+            Path("subdir/file1.py"),
+            Path("subdir/file2.py"),
+        ])
 
         files = PythonFileFinder(
             exclude=("subdir",), extend_exclude=(), using_default_exclude=False
@@ -114,17 +110,15 @@ def test_matches_ipynb(ignore_notebooks: bool, expected: list[Path], tmp_path: P
 )
 def test_regex_argument(exclude: tuple[str], expected: list[Path], tmp_path: Path) -> None:
     with run_within_dir(tmp_path):
-        create_files(
-            [
-                Path(".cache/file1.py"),
-                Path(".cache/file2.py"),
-                Path("dir/subdir/file1.py"),
-                Path("dir/subdir/file2.py"),
-                Path("dir/subdir/file3.py"),
-                Path("other_dir/subdir/file1.py"),
-                Path("other_dir/subdir/file2.py"),
-            ]
-        )
+        create_files([
+            Path(".cache/file1.py"),
+            Path(".cache/file2.py"),
+            Path("dir/subdir/file1.py"),
+            Path("dir/subdir/file2.py"),
+            Path("dir/subdir/file3.py"),
+            Path("other_dir/subdir/file1.py"),
+            Path("other_dir/subdir/file2.py"),
+        ])
 
         files = PythonFileFinder(
             exclude=exclude, extend_exclude=(), using_default_exclude=False
@@ -158,16 +152,14 @@ def test_regex_argument(exclude: tuple[str], expected: list[Path], tmp_path: Pat
 )
 def test_multiple_source_directories(exclude: tuple[str], expected: list[Path], tmp_path: Path) -> None:
     with run_within_dir(tmp_path):
-        create_files(
-            [
-                Path("dir/subdir/file1.py"),
-                Path("dir/subdir/file2.py"),
-                Path("dir/subdir/file3.py"),
-                Path("other_dir/subdir/file1.py"),
-                Path("other_dir/subdir/file2.py"),
-                Path("another_dir/subdir/file1.py"),
-            ]
-        )
+        create_files([
+            Path("dir/subdir/file1.py"),
+            Path("dir/subdir/file2.py"),
+            Path("dir/subdir/file3.py"),
+            Path("other_dir/subdir/file1.py"),
+            Path("other_dir/subdir/file2.py"),
+            Path("another_dir/subdir/file1.py"),
+        ])
 
         files = PythonFileFinder(
             exclude=exclude, extend_exclude=(), using_default_exclude=False
@@ -180,9 +172,10 @@ def test_duplicates_are_removed(tmp_path: Path) -> None:
     with run_within_dir(tmp_path):
         create_files([Path("dir/subdir/file1.py")])
 
-        files = PythonFileFinder(exclude=(), extend_exclude=(), using_default_exclude=False).get_all_python_files_in(
-            (Path(), Path())
-        )
+        files = PythonFileFinder(exclude=(), extend_exclude=(), using_default_exclude=False).get_all_python_files_in((
+            Path(),
+            Path(),
+        ))
 
         assert sorted(files) == [Path("dir/subdir/file1.py")]
 

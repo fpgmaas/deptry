@@ -66,16 +66,14 @@ def test__get_local_modules(
     tmp_path: Path, known_first_party: tuple[str, ...], root_suffix: str, expected: set[str]
 ) -> None:
     with run_within_dir(tmp_path):
-        create_files(
-            [
-                Path("module_with_init/__init__.py"),
-                Path("module_with_init/foo.py"),
-                Path("module_with_init/subdirectory/__init__.py"),
-                Path("module_with_init/subdirectory/foo.py"),
-                Path("module_without_init/bar.py"),
-                Path("local_file.py"),
-            ]
-        )
+        create_files([
+            Path("module_with_init/__init__.py"),
+            Path("module_with_init/foo.py"),
+            Path("module_with_init/subdirectory/__init__.py"),
+            Path("module_with_init/subdirectory/foo.py"),
+            Path("module_without_init/bar.py"),
+            Path("local_file.py"),
+        ])
 
         assert (
             Core(
