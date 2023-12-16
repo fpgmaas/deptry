@@ -42,14 +42,12 @@ class DEP003TransitiveDependenciesFinder(ViolationsFinder):
         return transitive_dependencies
 
     def _is_transitive(self, module: Module) -> bool:
-        if any(
-            [
-                module.package is None,
-                module.is_provided_by_dependency,
-                module.is_provided_by_dev_dependency,
-                module.local_module,
-            ]
-        ):
+        if any([
+            module.package is None,
+            module.is_provided_by_dependency,
+            module.is_provided_by_dev_dependency,
+            module.local_module,
+        ]):
             return False
 
         if module.name in self.ignored_modules:
