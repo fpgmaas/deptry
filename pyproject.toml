@@ -41,7 +41,7 @@ mkdocs-material = "9.5.8"
 [tool.poetry.group.typing.dependencies]
 mypy = "1.8.0"
 types-chardet = "5.0.4.6"
-types-colorama = { version = "0.4.15.20240106", markers = "sys_platform == 'win32'" }
+types-colorama = { version = "0.4.15.20240205", markers = "sys_platform == 'win32'" }
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
