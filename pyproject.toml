@@ -111,6 +111,12 @@ norecursedirs = ["data*"]
 target-version = "py38"
 line-length = 120
 fix = true
+extend-exclude = ["tests/data/*"]
+
+[tool.ruff.format]
+preview = true
+
+[tool.ruff.lint]
 select = [
     # flake8-2020
     "YTT",
@@ -163,16 +169,12 @@ ignore = [
     # DoNotAssignLambda
     "E731",
 ]
-extend-exclude = ["tests/data/*"]
 
-[tool.ruff.flake8-type-checking]
+[tool.ruff.lint.flake8-type-checking]
 strict = true
 
-[tool.ruff.format]
-preview = true
-
-[tool.ruff.isort]
+[tool.ruff.lint.isort]
 required-imports = ["from __future__ import annotations"]
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "tests/*" = ["S101", "S603"]
