@@ -13,7 +13,7 @@ from deptry.violations import (
 def generate_deprecation_warning(flag_name: str, issue_code: str) -> str:
     return (
         f"Warning: In an upcoming release, support for the `--{flag_name}` command-line option and the"
-        f" `{flag_name.replace('-','_')}` configuration parameter will be discontinued. Instead, use `--ignore"
+        f" `{flag_name.replace('-', '_')}` configuration parameter will be discontinued. Instead, use `--ignore"
         f" {issue_code}` or add a line `ignore = ['{issue_code}']` to the `[tool.deptry]` section of the configuration"
         " file."
     )
