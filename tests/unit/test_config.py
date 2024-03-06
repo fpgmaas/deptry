@@ -5,17 +5,34 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 import click
+import pytest
+from click import Argument
 
 from deptry.config import read_configuration_from_pyproject_toml
+from deptry.exceptions import InvalidPyprojectTOMLOptionsError
 from tests.utils import run_within_dir
 
 if TYPE_CHECKING:
     from _pytest.logging import LogCaptureFixture
 
 
+click_command = click.Command(
+    "",
+    params=[
+        Argument(param_decls=["exclude"]),
+        Argument(param_decls=["extend_exclude"]),
+        Argument(param_decls=["per_rule_ignores"]),
+        Argument(param_decls=["ignore"]),
+        Argument(param_decls=["ignore_notebooks"]),
+        Argument(param_decls=["requirements_txt"]),
+        Argument(param_decls=["requirements_txt_dev"]),
+    ],
+)
+
+
 def test_read_configuration_from_pyproject_toml_exists(tmp_path: Path) -> None:
     click_context = click.Context(
-        click.Command(""),
+        click_command,
         default_map={
             "exclude": ["bar"],
             "extend_exclude": ["foo"],
@@ -77,7 +94,7 @@ def test_read_configuration_from_pyproject_toml_file_not_found(caplog: LogCaptur
     with caplog.at_level(logging.DEBUG):
         assert (
             read_configuration_from_pyproject_toml(
-                click.Context(click.Command("")), click.UNPROCESSED(None), pyproject_toml_path
+                click.Context(click_command), click.UNPROCESSED(None), pyproject_toml_path
             )
             == pyproject_toml_path
         )
@@ -101,7 +118,30 @@ def test_read_configuration_from_pyproject_toml_file_without_deptry_section(
 
         with caplog.at_level(logging.DEBUG):
             assert read_configuration_from_pyproject_toml(
-                click.Context(click.Command("")), click.UNPROCESSED(None), pyproject_toml_path
+                click.Context(click_command), click.UNPROCESSED(None), pyproject_toml_path
             ) == Path("pyproject.toml")
 
     assert "No configuration for deptry was found in pyproject.toml." in caplog.text
+
+
+def test_read_configuration_from_pyproject_toml_file_with_invalid_options(
+    caplog: LogCaptureFixture, tmp_path: Path
+) -> None:
+    pyproject_toml_content = """
+        [tool.deptry]
+        exclude = ["foo", "bar"]
+        invalid_option = "nope"
+        another_invalid_option = "still nope"
+        extend_exclude = ["bar", "foo"]
+    """
+
+    with run_within_dir(tmp_path):
+        pyproject_toml_path = Path("pyproject.toml")
+
+        with pyproject_toml_path.open("w") as f:
+            f.write(pyproject_toml_content)
+
+        with pytest.raises(InvalidPyprojectTOMLOptionsError):
+            assert read_configuration_from_pyproject_toml(
+                click.Context(click_command), click.UNPROCESSED(None), pyproject_toml_path
+            ) == Path("pyproject.toml")
