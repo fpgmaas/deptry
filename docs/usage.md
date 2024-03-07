@@ -161,7 +161,7 @@ This extends the patterns set in [Exclude](#exclude), to allow defining patterns
 - Type: `List[str]`
 - Default: `[]`
 - `pyproject.toml` option name: `extend_exclude`
-- CLI option name: `--exclude` (short: `-ee`)
+- CLI option name: `--extend-exclude` (short: `-ee`)
 - `pyproject.toml` example:
 ```toml
 [tool.deptry]
