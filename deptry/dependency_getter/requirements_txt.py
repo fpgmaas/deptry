@@ -6,7 +6,7 @@ import os
 import re
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Match
+from urllib.parse import urlparse
 
 from deptry.dependency import Dependency
 from deptry.dependency_getter.base import DependenciesExtract, DependencyGetter
@@ -114,8 +114,8 @@ class RequirementsTxtDependencyGetter(DependencyGetter):
         return ";" in line
 
     @staticmethod
-    def _line_is_url(line: str) -> Match[str] | None:
-        return re.search(r"^(http|https|git\+https)", line)
+    def _line_is_url(line: str) -> bool:
+        return urlparse(line).scheme != ""
 
     @staticmethod
     def _extract_name_from_url(line: str) -> str | None:

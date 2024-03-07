@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import pytest
+
 from deptry.dependency_getter.requirements_txt import RequirementsTxtDependencyGetter
 from tests.utils import run_within_dir
 
@@ -26,6 +28,7 @@ beautifulsoup4
 docopt == 0.6.1
 requests [security] >= 2.8.1, == 2.8.* ; python_version < "2.7"
 fox-python
+httpx==0.25.2
 """
     with run_within_dir(tmp_path):
         with Path("requirements.txt").open("w") as f:
@@ -38,7 +41,7 @@ fox-python
         dependencies_extract = getter.get()
         dependencies = dependencies_extract.dependencies
 
-        assert len(dependencies) == 18
+        assert len(dependencies) == 19
         assert len(dependencies_extract.dev_dependencies) == 0
 
         assert dependencies[1].name == "colorama"
@@ -185,3 +188,25 @@ def test_dev_multiple_with_arguments(tmp_path: Path) -> None:
 
         assert dev_dependencies[0].name == "click"
         assert dev_dependencies[1].name == "bar"
+
+
+@pytest.mark.parametrize(
+    ("line", "expected"),
+    [
+        ("foo", False),
+        ("http", False),
+        ("https", False),
+        ("httpx", False),
+        ("git+http", False),
+        ("git+https", False),
+        ("http://", True),
+        ("https://", True),
+        ("git+http://", True),
+        ("git+https://", True),
+        ("file://", True),
+        ("file:///", True),
+        ("httpx://", True),
+    ],
+)
+def test__line_is_url(line: str, expected: bool) -> None:
+    assert RequirementsTxtDependencyGetter._line_is_url(line) is expected
