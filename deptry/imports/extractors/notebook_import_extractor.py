@@ -13,7 +13,7 @@ from deptry.imports.extractors.base import ImportExtractor
 if TYPE_CHECKING:
     from pathlib import Path
 
-    from deptry.imports.location import Location
+    from deptryrs import Location
 
 
 @dataclass

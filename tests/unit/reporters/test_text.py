@@ -5,9 +5,9 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 import pytest
+from deptryrs import Location
 
 from deptry.dependency import Dependency
-from deptry.imports.location import Location
 from deptry.module import Module
 from deptry.reporters import TextReporter
 from deptry.reporters.text import COLORS, COLORS_NOOP

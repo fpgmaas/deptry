@@ -5,8 +5,9 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, ClassVar
 
 if TYPE_CHECKING:
+    from deptryrs import Location
+
     from deptry.dependency import Dependency
-    from deptry.imports.location import Location
     from deptry.module import Module, ModuleLocations
 
 

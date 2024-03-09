@@ -6,8 +6,9 @@ from importlib.metadata import PackageNotFoundError, metadata
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
+    from deptryrs import Location
+
     from deptry.dependency import Dependency
-    from deptry.imports.location import Location
 
 
 @dataclass

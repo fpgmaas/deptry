@@ -8,9 +8,9 @@ from typing import TYPE_CHECKING
 from unittest import mock
 
 import pytest
+from deptryrs import Location
 
 from deptry.imports.extract import get_imported_modules_from_file
-from deptry.imports.location import Location
 from tests.utils import run_within_dir
 
 if TYPE_CHECKING:

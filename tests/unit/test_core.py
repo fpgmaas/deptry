@@ -6,11 +6,11 @@ from pathlib import Path
 from unittest import mock
 
 import pytest
+from deptryrs import Location
 
 from deptry.core import Core
 from deptry.dependency import Dependency
 from deptry.exceptions import UnsupportedPythonVersionError
-from deptry.imports.location import Location
 from deptry.module import Module
 from deptry.stdlibs import STDLIBS_PYTHON
 from deptry.violations import (

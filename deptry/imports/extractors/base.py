@@ -7,8 +7,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 import chardet
-
-from deptry.imports.location import Location
+from deptryrs import Location
 
 if TYPE_CHECKING:
     from pathlib import Path

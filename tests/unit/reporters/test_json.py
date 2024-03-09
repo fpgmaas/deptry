@@ -3,8 +3,9 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from deptryrs import Location
+
 from deptry.dependency import Dependency
-from deptry.imports.location import Location
 from deptry.module import Module
 from deptry.reporters import JSONReporter
 from deptry.violations import (

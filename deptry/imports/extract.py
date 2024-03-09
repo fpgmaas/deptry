@@ -11,7 +11,7 @@ from deptry.imports.extractors import NotebookImportExtractor
 if TYPE_CHECKING:
     from pathlib import Path
 
-    from deptry.imports.location import Location
+    from deptryrs import Location
 
 
 def get_imported_modules_for_list_of_files(list_of_files: list[Path]) -> dict[str, list[Location]]:

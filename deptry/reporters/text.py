@@ -7,7 +7,8 @@ from typing import TYPE_CHECKING, Any
 from deptry.reporters.base import Reporter
 
 if TYPE_CHECKING:
-    from deptry.imports.location import Location
+    from deptryrs import Location
+
     from deptry.violations import Violation
 
 

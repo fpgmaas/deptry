@@ -3,7 +3,8 @@ from __future__ import annotations
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from deptry.imports.location import Location
+from deptryrs import Location
+
 from deptry.module import ModuleBuilder, ModuleLocations
 from deptry.violations import DEP003TransitiveDependenciesFinder
 from deptry.violations.dep003_transitive.violation import DEP003TransitiveDependencyViolation
