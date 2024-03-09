@@ -99,6 +99,7 @@ extend_exclude = [
     "tests",
     "scripts",
 ]
+known_first_party = ["deptryrs"]
 
 [tool.deptry.per_rule_ignores]
 DEP001 = ["tomllib"]

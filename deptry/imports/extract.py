@@ -4,12 +4,13 @@ import logging
 from collections import defaultdict
 from typing import TYPE_CHECKING
 
-from deptry.imports.extractors import NotebookImportExtractor, PythonImportExtractor
+from deptryrs import get_imports_from_file
+
+from deptry.imports.extractors import NotebookImportExtractor
 
 if TYPE_CHECKING:
     from pathlib import Path
 
-    from deptry.imports.extractors.base import ImportExtractor
     from deptry.imports.location import Location
 
 
@@ -31,14 +32,11 @@ def get_imported_modules_for_list_of_files(list_of_files: list[Path]) -> dict[st
 def get_imported_modules_from_file(path_to_file: Path) -> dict[str, list[Location]]:
     logging.debug("Scanning %s...", path_to_file)
 
-    modules = _get_extractor_class(path_to_file)(path_to_file).extract_imports()
+    if path_to_file.suffix == ".ipynb":
+        modules = NotebookImportExtractor(path_to_file).extract_imports()
+    elif path_to_file.suffix == ".py":
+        modules = get_imports_from_file(str(path_to_file))
 
     logging.debug("Found the following imports in %s: %s", path_to_file, modules)
 
     return modules
-
-
-def _get_extractor_class(path_to_file: Path) -> type[ImportExtractor]:
-    if path_to_file.suffix == ".ipynb":
-        return NotebookImportExtractor
-    return PythonImportExtractor
