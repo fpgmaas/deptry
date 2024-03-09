@@ -14,10 +14,16 @@ use location::Location;
 use rustpython_ast::Visitor;
 use rustpython_parser::text_size::TextRange;
 
+#[pymodule]
+fn deptryrs(_py: Python, m: &PyModule) -> PyResult<()> {
+    m.add_function(wrap_pyfunction!(get_imports_from_file, m)?)?;
+    Ok(())
+}
+
 #[pyfunction]
 fn get_imports_from_file(file_path: String) -> PyResult<String> {
-    let ast: Mod = get_ast_from_file(&file_path)?;
-    let imported_modules = extract_imports_from_ast(ast, &file_path);
+    let ast = get_ast_from_file(&file_path)?;
+    let imported_modules = extract_imports_from_ast(ast);
 
     // Convert the HashMap debug representation to a String
     let imports_str = format!("{:#?}", imported_modules);
@@ -43,8 +49,9 @@ fn get_ast_from_file(file_path: &str) -> PyResult<Mod> {
         .map_err(|e| PySyntaxError::new_err(format!("Error parsing file {}: {}", file_path, e)))
 }
 
-fn extract_imports_from_ast(ast: Mod, file_path: &str) -> HashMap<String, Vec<TextRange>> {
-    let mut visitor = ImportVisitor::new(file_path.to_string());
+/// Extract all imports from an AST
+fn extract_imports_from_ast(ast: Mod) -> HashMap<String, Vec<TextRange>> {
+    let mut visitor = ImportVisitor::new();
 
     match ast {
         Mod::Module(module) => {
@@ -55,11 +62,4 @@ fn extract_imports_from_ast(ast: Mod, file_path: &str) -> HashMap<String, Vec<Te
         _ => {}
     }
     visitor.get_imports()
-}
-
-/// A Python module implemented in Rust.
-#[pymodule]
-fn deptryrs(_py: Python, m: &PyModule) -> PyResult<()> {
-    m.add_function(wrap_pyfunction!(get_imports_from_file, m)?)?;
-    Ok(())
 }

@@ -6,14 +6,14 @@ use std::collections::HashMap;
 
 pub struct ImportVisitor {
     imports: HashMap<String, Vec<TextRange>>,
-    file_path: String,
 }
 
+/// Used to walk through an AST and extract all imported modules
+/// It will return a HashMap, where each key is a module and the value is a vector of TextRanges.
 impl ImportVisitor {
-    pub fn new(file_path: String) -> Self {
+    pub fn new() -> Self {
         ImportVisitor {
             imports: HashMap::new(),
-            file_path,
         }
     }
     pub fn get_imports(self) -> HashMap<String, Vec<TextRange>> {
@@ -22,9 +22,7 @@ impl ImportVisitor {
 }
 
 impl Visitor for ImportVisitor {
-    // Override this method to handle 'import' statements.
     fn visit_stmt_import(&mut self, node: StmtImport) {
-        // println!("{:#?}", node);
         for alias in &node.names {
             self.imports
                 .entry(alias.name.to_string())
@@ -33,7 +31,6 @@ impl Visitor for ImportVisitor {
         }
     }
 
-    // Override this method to handle 'import from' statements.
     fn visit_stmt_import_from(&mut self, node: StmtImportFrom) {
         if let Some(module) = &node.module {
             let module_name = module.to_string();
