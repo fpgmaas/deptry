@@ -3,6 +3,6 @@
 #[derive(Clone)]
 pub struct Location {
     file: String,
-    lineno: usize,
+    range: usize,
     col_offset: usize,
 }
