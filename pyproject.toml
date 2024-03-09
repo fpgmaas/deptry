@@ -21,6 +21,9 @@ classifiers = [
     "Topic :: Software Development :: Quality Assurance",
 ]
 
+[tool.poetry.urls]
+changelog = "https://github.com/fpgmaas/deptry/blob/main/CHANGELOG.md"
+
 [tool.poetry.dependencies]
 python = ">=3.8,<4.0"
 chardet = ">=4.0.0"
