@@ -21,6 +21,10 @@ classifiers = [
     "Topic :: Software Development :: Quality Assurance",
 ]
 
+[tool.maturin]
+python-source = "deptry"
+features = ["pyo3/extension-module"]
+
 [tool.poetry.dependencies]
 python = ">=3.8,<4.0"
 chardet = ">=4.0.0"
@@ -44,8 +48,8 @@ types-chardet = "5.0.4.6"
 types-colorama = { version = "0.4.15.20240205", markers = "sys_platform == 'win32'" }
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["maturin>=1.5,<2.0"]
+build-backend = "maturin"
 
 [tool.coverage.report]
 skip_empty = true
