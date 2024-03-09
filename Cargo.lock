@@ -80,6 +80,7 @@ name = "deptryrs"
 version = "0.1.0"
 dependencies = [
  "pyo3",
+ "rustpython-ast",
  "rustpython-parser",
 ]
 

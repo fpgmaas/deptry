@@ -10,4 +10,5 @@ crate-type = ["cdylib"]
 
 [dependencies]
 pyo3 = "0.20.0"
+rustpython-ast = { version = "0.3.0", features = ["visitor"] }
 rustpython-parser = "0.3.0"
