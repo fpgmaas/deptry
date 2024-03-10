@@ -9,6 +9,10 @@ name = "deptryrs"
 crate-type = ["cdylib"]
 
 [dependencies]
+chardetng = "0.1.17"
+encoding_rs = "0.8.33"
+encoding_rs_io = "0.1.7"
 pyo3 = "0.20.0"
+regex = "1.10.3"
 rustpython-ast = { version = "0.3.0", features = ["visitor"] }
 rustpython-parser = "0.3.0"

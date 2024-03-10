@@ -5,7 +5,6 @@ import logging
 import uuid
 from pathlib import Path
 from typing import TYPE_CHECKING
-from unittest import mock
 
 import pytest
 
@@ -79,7 +78,7 @@ def test_import_parser_file_encodings(file_content: str, encoding: str | None, t
         with random_file.open("w", encoding=encoding) as f:
             f.write(file_content)
 
-        assert get_imported_modules_from_file(random_file) == {"foo": [Location(random_file, 2, 0)]}
+        assert get_imported_modules_from_file(random_file) == {"foo": [Location(random_file, 2, 8)]}
 
 
 @pytest.mark.parametrize(
@@ -126,13 +125,11 @@ def test_import_parser_file_encodings_warning(tmp_path: Path, caplog: LogCapture
     file_path = Path("file1.py")
 
     with run_within_dir(tmp_path):
-        with file_path.open("w", encoding="utf-8") as f:
-            f.write("print('this is a mock unparseable file')")
+        # The characters below are represented differently in ISO-8859-1 and UTF-8, so this should raise an error.
+        with file_path.open("w", encoding="ISO-8859-1") as f:
+            f.write("# -*- coding: utf-8 -*-\nprint('ÆØÅ')")
 
-        with caplog.at_level(logging.WARNING), mock.patch(
-            "deptry.imports.extractors.python_import_extractor.ast.parse",
-            side_effect=UnicodeDecodeError("fakecodec", b"\x00\x00", 1, 2, "Fake reason!"),
-        ):
+        with caplog.at_level(logging.WARNING):
             assert get_imported_modules_from_file(file_path) == {}
 
         assert "Warning: File file1.py could not be decoded. Skipping..." in caplog.text

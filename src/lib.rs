@@ -1,32 +1,34 @@
-use pyo3::exceptions::{PyFileNotFoundError, PyIOError, PySyntaxError};
+// lib.rs
+
+use pyo3::exceptions::PySyntaxError;
 use pyo3::prelude::*;
-use rustpython_ast::{Mod, Stmt};
-use rustpython_parser::{parse, Mode};
-use std::collections::HashMap;
-use std::fs;
-
-use std::io::ErrorKind;
-use std::path::PathBuf;
-
-mod visitor;
-use visitor::ImportVisitor;
-mod location;
-use location::Location;
 use pyo3::types::{PyDict, PyList, PyString};
-use pyo3::{PyObject, PyResult};
-use rustpython_ast::Visitor;
+use rustpython_ast::Mod;
 use rustpython_parser::source_code::LineIndex;
 use rustpython_parser::text_size::TextRange;
+use rustpython_parser::{parse, Mode};
+use std::collections::HashMap;
+
+mod file_utils;
+mod location;
+mod visitor;
+
+use file_utils::read_file;
+use location::Location;
+use rustpython_ast::Visitor;
+use visitor::ImportVisitor;
 
 #[pymodule]
 fn deptryrs(_py: Python, m: &PyModule) -> PyResult<()> {
-    m.add_function(wrap_pyfunction!(get_imports_from_file, m)?)?;
+    m.add_function(wrap_pyfunction!(get_imports_from_py_file, m)?)?;
     m.add_class::<Location>()?;
     Ok(())
 }
 
+// The main function exposed to Python. It reads a file, parses it into an AST, extracts imports,
+// converts them into a structured format, and returns a dictionary to Python.
 #[pyfunction]
-fn get_imports_from_file(py: Python<'_>, file_path: &PyString) -> PyResult<PyObject> {
+fn get_imports_from_py_file(py: Python<'_>, file_path: &PyString) -> PyResult<PyObject> {
     let path_str = file_path.to_str()?;
     let file_content = read_file(&path_str)?;
     let ast = get_ast_from_file_content(&file_content, &path_str)?;
@@ -40,24 +42,13 @@ fn get_imports_from_file(py: Python<'_>, file_path: &PyString) -> PyResult<PyObj
     Ok(imports_dict)
 }
 
-/// Read a file and return its contents as a String.
-fn read_file(file_path: &str) -> PyResult<String> {
-    fs::read_to_string(file_path).map_err(|e| {
-        if e.kind() == ErrorKind::NotFound {
-            PyFileNotFoundError::new_err(format!("File not found: '{}'", file_path))
-        } else {
-            PyIOError::new_err(format!("An error occured: '{}'", e))
-        }
-    })
-}
-
-/// Read a Python file, and return it as an AST,
-fn get_ast_from_file_content(file_content: &str, file_path: &str) -> PyResult<Mod> {
+// Parses the content of a Python file into an abstract syntax tree (AST).
+pub fn get_ast_from_file_content(file_content: &str, file_path: &str) -> PyResult<Mod> {
     parse(&file_content, Mode::Module, file_path)
         .map_err(|e| PySyntaxError::new_err(format!("Error parsing file {}: {}", file_path, e)))
 }
 
-/// Extract all imports from an AST
+// Iterates through an AST to extract import statements and collects them along with their locations.
 fn extract_imports_from_ast(ast: Mod) -> HashMap<String, Vec<TextRange>> {
     let mut visitor = ImportVisitor::new();
 
@@ -73,7 +64,7 @@ fn extract_imports_from_ast(ast: Mod) -> HashMap<String, Vec<TextRange>> {
 }
 
 /// Imports now have associated TextRanges, which is the amount of bytes since the start of the file.
-/// This function takes thata s input, and converts it to imports with associated Location objects,
+/// This function takes that as input, and converts it to imports with associated Location objects,
 /// That carry information such as the file name, the line number, and the column offset.
 fn convert_imports_with_textranges_to_location_objects(
     imports: HashMap<String, Vec<TextRange>>,
@@ -104,6 +95,7 @@ fn convert_imports_with_textranges_to_location_objects(
     imports_with_locations
 }
 
+// Converts the structured location data into a Python-compatible dictionary format.
 fn convert_to_python_dict(
     py: Python<'_>,
     imports_with_locations: HashMap<String, Vec<Location>>,

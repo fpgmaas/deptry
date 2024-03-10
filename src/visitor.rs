@@ -1,4 +1,4 @@
-use rustpython_ast::{self, StmtImport, StmtImportFrom, Visitor, Int};
+use rustpython_ast::{self, Int, StmtImport, StmtImportFrom, Visitor};
 use rustpython_parser::text_size::TextRange;
 use std::collections::HashMap;
 
@@ -21,7 +21,6 @@ impl ImportVisitor {
 
 impl Visitor for ImportVisitor {
     fn visit_stmt_import(&mut self, node: StmtImport) {
-        println!("{:#?}", node);
         for alias in &node.names {
             let top_level_module = get_top_level_module_name(&alias.name.to_string());
             self.imports
@@ -32,7 +31,6 @@ impl Visitor for ImportVisitor {
     }
 
     fn visit_stmt_import_from(&mut self, node: StmtImportFrom) {
-        println!("{:#?}", node);
         if let Some(module) = &node.module {
             let module_name = module.to_string();
             let top_level_module = get_top_level_module_name(&module_name);
@@ -49,14 +47,6 @@ impl Visitor for ImportVisitor {
 
 /// Extracts the top-level module name from a potentially nested module path.
 /// e.g. when a module_name is `foo.bar`, this returns `foo`.
-///
-/// # Arguments
-///
-/// * `module_name` - The potentially nested module name.
-///
-/// # Returns
-///
-/// The top-level module name.
 fn get_top_level_module_name(module_name: &str) -> String {
     module_name
         .split('.')

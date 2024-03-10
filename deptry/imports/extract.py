@@ -4,7 +4,7 @@ import logging
 from collections import defaultdict
 from typing import TYPE_CHECKING
 
-from deptryrs import get_imports_from_file
+from deptryrs import get_imports_from_py_file
 
 from deptry.imports.extractors import NotebookImportExtractor
 
@@ -37,11 +37,14 @@ def get_imported_modules_from_file(path_to_file: Path) -> dict[str, list[Locatio
     if path_to_file.suffix == ".ipynb":
         modules = NotebookImportExtractor(path_to_file).extract_imports()
     elif path_to_file.suffix == ".py":
-        modules = get_imports_from_file(str(path_to_file))
-        modules = convert_rust_locations_to_python_locations(modules)
+        try:
+            modules = get_imports_from_py_file(str(path_to_file))
+        except OSError:
+            logging.warning("Warning: File %s could not be decoded. Skipping...", path_to_file)
+            return {}
 
+    modules = convert_rust_locations_to_python_locations(modules)
     logging.debug("Found the following imports in %s: %s", path_to_file, modules)
-
     return modules
 
 
