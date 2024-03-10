@@ -8,9 +8,9 @@ from typing import TYPE_CHECKING
 from unittest import mock
 
 import pytest
-from deptryrs import Location
 
 from deptry.imports.extract import get_imported_modules_from_file
+from deptry.imports.location import Location
 from tests.utils import run_within_dir
 
 if TYPE_CHECKING:
@@ -21,23 +21,23 @@ def test_import_parser_py() -> None:
     some_imports_path = Path("tests/data/some_imports.py")
 
     assert get_imported_modules_from_file(some_imports_path) == {
-        "barfoo": [Location(some_imports_path, 20, 0)],
-        "baz": [Location(some_imports_path, 16, 4)],
-        "click": [Location(some_imports_path, 24, 4)],
-        "foobar": [Location(some_imports_path, 18, 4)],
-        "httpx": [Location(some_imports_path, 14, 4)],
-        "module_in_class": [Location(some_imports_path, 35, 8)],
-        "module_in_func": [Location(some_imports_path, 30, 4)],
-        "not_click": [Location(some_imports_path, 26, 4)],
+        "barfoo": [Location(some_imports_path, 20, 8)],
+        "baz": [Location(some_imports_path, 16, 5)],
+        "click": [Location(some_imports_path, 24, 12)],
+        "foobar": [Location(some_imports_path, 18, 12)],
+        "httpx": [Location(some_imports_path, 14, 12)],
+        "module_in_class": [Location(some_imports_path, 35, 16)],
+        "module_in_func": [Location(some_imports_path, 30, 12)],
+        "not_click": [Location(some_imports_path, 26, 12)],
         "numpy": [
-            Location(some_imports_path, 5, 0),
-            Location(some_imports_path, 7, 0),
+            Location(some_imports_path, 5, 8),
+            Location(some_imports_path, 7, 1),
         ],
-        "os": [Location(some_imports_path, 1, 0)],
-        "pandas": [Location(some_imports_path, 6, 0)],
-        "pathlib": [Location(some_imports_path, 2, 0)],
-        "randomizer": [Location(some_imports_path, 21, 0)],
-        "typing": [Location(some_imports_path, 3, 0)],
+        "os": [Location(some_imports_path, 1, 1)],
+        "pandas": [Location(some_imports_path, 6, 8)],
+        "pathlib": [Location(some_imports_path, 2, 1)],
+        "randomizer": [Location(some_imports_path, 21, 1)],
+        "typing": [Location(some_imports_path, 3, 1)],
     }
 
 

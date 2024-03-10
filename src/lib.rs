@@ -6,12 +6,13 @@ use std::collections::HashMap;
 use std::fs;
 
 use std::io::ErrorKind;
+use std::path::PathBuf;
 
 mod visitor;
 use visitor::ImportVisitor;
 mod location;
 use location::Location;
-use pyo3::types::{PyDict, PyList};
+use pyo3::types::{PyDict, PyList, PyString};
 use pyo3::{PyObject, PyResult};
 use rustpython_ast::Visitor;
 use rustpython_parser::source_code::LineIndex;
@@ -25,13 +26,14 @@ fn deptryrs(_py: Python, m: &PyModule) -> PyResult<()> {
 }
 
 #[pyfunction]
-fn get_imports_from_file(py: Python<'_>, file_path: String) -> PyResult<PyObject> {
-    let file_content = read_file(&file_path)?;
-    let ast = get_ast_from_file_content(&file_content, &file_path)?;
+fn get_imports_from_file(py: Python<'_>, file_path: &PyString) -> PyResult<PyObject> {
+    let path_str = file_path.to_str()?;
+    let file_content = read_file(&path_str)?;
+    let ast = get_ast_from_file_content(&file_content, &path_str)?;
     let imported_modules = extract_imports_from_ast(ast);
     let imports_with_locations = convert_imports_with_textranges_to_location_objects(
         imported_modules,
-        &file_path,
+        &path_str,
         &file_content,
     );
     let imports_dict = convert_to_python_dict(py, imports_with_locations);

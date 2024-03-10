@@ -4,8 +4,7 @@ import logging
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from deptryrs import Location
-
+from deptry.imports.location import Location
 from deptry.violations.base import ViolationsFinder
 from deptry.violations.dep002_unused.violation import DEP002UnusedDependencyViolation
 

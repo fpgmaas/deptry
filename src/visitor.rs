@@ -1,4 +1,4 @@
-use rustpython_ast::{self, StmtImport, StmtImportFrom, Visitor};
+use rustpython_ast::{self, StmtImport, StmtImportFrom, Visitor, Int};
 use rustpython_parser::text_size::TextRange;
 use std::collections::HashMap;
 
@@ -21,6 +21,7 @@ impl ImportVisitor {
 
 impl Visitor for ImportVisitor {
     fn visit_stmt_import(&mut self, node: StmtImport) {
+        println!("{:#?}", node);
         for alias in &node.names {
             let top_level_module = get_top_level_module_name(&alias.name.to_string());
             self.imports
@@ -31,14 +32,17 @@ impl Visitor for ImportVisitor {
     }
 
     fn visit_stmt_import_from(&mut self, node: StmtImportFrom) {
+        println!("{:#?}", node);
         if let Some(module) = &node.module {
             let module_name = module.to_string();
             let top_level_module = get_top_level_module_name(&module_name);
             let module_range = node.range;
-            self.imports
-                .entry(top_level_module)
-                .or_default()
-                .push(module_range);
+            if node.level == Some(Int::new(0)) {
+                self.imports
+                    .entry(top_level_module)
+                    .or_default()
+                    .push(module_range);
+            }
         }
     }
 }

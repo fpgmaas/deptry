@@ -5,7 +5,7 @@ from __future__ import annotations
 from deptryrs import get_imports_from_file
 
 try:
-    imports_with_locations = get_imports_from_file("deptry/utils.py")
+    imports_with_locations = get_imports_from_file("tests/data/some_imports.py")
     for k, v in imports_with_locations.items():
         print(k)
         print(v)

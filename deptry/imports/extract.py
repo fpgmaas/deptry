@@ -11,7 +11,9 @@ from deptry.imports.extractors import NotebookImportExtractor
 if TYPE_CHECKING:
     from pathlib import Path
 
-    from deptryrs import Location
+    from deptryrs import Location as RustLocation
+
+from deptry.imports.location import Location
 
 
 def get_imported_modules_for_list_of_files(list_of_files: list[Path]) -> dict[str, list[Location]]:
@@ -36,7 +38,16 @@ def get_imported_modules_from_file(path_to_file: Path) -> dict[str, list[Locatio
         modules = NotebookImportExtractor(path_to_file).extract_imports()
     elif path_to_file.suffix == ".py":
         modules = get_imports_from_file(str(path_to_file))
+        modules = convert_rust_locations_to_python_locations(modules)
 
     logging.debug("Found the following imports in %s: %s", path_to_file, modules)
 
     return modules
+
+
+def convert_rust_locations_to_python_locations(
+    imported_modules: dict[str, list[RustLocation]],
+) -> dict[str, list[Location]]:
+    for module, locations in imported_modules.items():
+        imported_modules[module] = [Location.from_rust_location_object(loc) for loc in locations]
+    return imported_modules

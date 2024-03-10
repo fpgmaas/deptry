@@ -2,9 +2,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from deptryrs import Location
-
 from deptry.dependency import Dependency
+from deptry.imports.location import Location
 from deptry.module import Module, ModuleLocations
 from deptry.violations import DEP004MisplacedDevDependencyViolation
 from deptry.violations.dep004_misplaced_dev.finder import DEP004MisplacedDevDependenciesFinder
