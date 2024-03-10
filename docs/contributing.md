@@ -67,7 +67,7 @@ Ready to contribute? Here's how to set up _deptry_ for local development. Please
 
 4. Install [pre-commit](https://pre-commit.com/) to run linters/formatters at commit time:
     ```bash
-    poetry run pre-commit install
+    pdm run pre-commit install
     ```
 
 5. Create a branch for local development:

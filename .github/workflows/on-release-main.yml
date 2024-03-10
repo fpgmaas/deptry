@@ -38,4 +38,4 @@ jobs:
         uses: ./.github/actions/setup-poetry-env
 
       - name: Deploy documentation
-        run: poetry run mkdocs gh-deploy --force
+        run: pdm run mkdocs gh-deploy --force

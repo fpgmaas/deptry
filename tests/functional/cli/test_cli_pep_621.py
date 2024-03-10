@@ -74,7 +74,7 @@ def test_cli_with_pep_621(pip_venv_factory: PipVenvFactory) -> None:
                 "location": {
                     "file": str(Path("src/main.py")),
                     "line": 6,
-                    "column": 0,
+                    "column": 8,
                 },
             },
         ]

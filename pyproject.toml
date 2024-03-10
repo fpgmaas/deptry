@@ -1,10 +1,3 @@
-[tool.poetry]
-name = "deptry"
-version = "0.0.1"
-description = "A command line utility to check for unused, missing and transitive dependencies in a Python project."
-authors = ["Florian Maas <fpgmaas@gmail.com>"]
-maintainers = ["Mathieu Kniewallner <mathieu.kniewallner@gmail.com>"]
-
 [project]
 name = "deptry"
 version = "0.0.1"
@@ -24,11 +17,38 @@ classifiers = [
     "Programming Language :: Python :: Implementation :: CPython",
     "Programming Language :: Python :: Implementation :: PyPy",
 ]
+dependencies = [
+    "chardet>=4.0.0",
+    "click>=8.0.0,<9",
+    "pathspec>=0.9.0",
+    "colorama>=0.4.6; sys_platform == 'win32'",
+    "tomli>=2.0.1; python_version < '3.11'"
+]
+
+[tool.pdm.dev-dependencies]
+dev = [
+    "pre-commit == 3.5.0",
+    "pytest == 8.0.1",
+    "pytest-cov == 4.1.0",
+    "maturin == 1.5.0",
+]
+typing = [
+    "mypy == 1.8.0",
+    "types-chardet == 5.0.4.6",
+    "types-colorama == 0.4.15.20240205; sys_platform == 'win32'",
+]
+docs = [
+    "mkdocs == 1.5.3",
+    "mkdocs-material == 9.5.10",
+]
 
 [project.urls]
 homepage = "https://fpgmaas.github.io/deptry"
 repository = "https://github.com/fpgmaas/deptry"
 documentation = "https://fpgmaas.github.io/deptry"
+
+[project.scripts]
+deptry = "deptry.cli:deptry"
 
 [build-system]
 requires = ["maturin>=1.5,<2.0"]
@@ -36,29 +56,6 @@ build-backend = "maturin"
 
 [tool.maturin]
 features = ["pyo3/extension-module"]
-
-[tool.poetry.dependencies]
-python = ">=3.8,<4.0"
-chardet = ">=4.0.0"
-click = "^8.0.0"
-colorama = { version = ">=0.4.6", markers = "sys_platform == 'win32'" }
-pathspec = ">=0.9.0"
-tomli = { version = "^2.0.1", python = "<3.11" }
-
-[tool.poetry.group.dev.dependencies]
-pre-commit = "3.5.0"
-pytest = "8.0.1"
-pytest-cov = "4.1.0"
-maturin = "^1.5.0"
-
-[tool.poetry.group.docs.dependencies]
-mkdocs = "1.5.3"
-mkdocs-material = "9.5.10"
-
-[tool.poetry.group.typing.dependencies]
-mypy = "1.8.0"
-types-chardet = "5.0.4.6"
-types-colorama = { version = "0.4.15.20240205", markers = "sys_platform == 'win32'" }
 
 [tool.coverage.report]
 skip_empty = true
@@ -111,9 +108,6 @@ extend_exclude = [
 
 [tool.deptry.per_rule_ignores]
 DEP001 = ["tomllib"]
-
-[tool.poetry.scripts]
-deptry = "deptry.cli:deptry"
 
 [tool.pytest.ini_options]
 addopts = "--doctest-modules"
