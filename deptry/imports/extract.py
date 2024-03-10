@@ -4,7 +4,7 @@ import logging
 from collections import defaultdict
 from typing import TYPE_CHECKING
 
-from deptry import get_imports_from_py_file
+from deptry import get_imports_from_py_files
 from deptry.imports.extractors import NotebookImportExtractor
 
 if TYPE_CHECKING:
@@ -18,12 +18,21 @@ from deptry.imports.location import Location
 def get_imported_modules_for_list_of_files(list_of_files: list[Path]) -> dict[str, list[Location]]:
     logging.info("Scanning %d %s...", len(list_of_files), "files" if len(list_of_files) > 1 else "file")
 
+    py_files = [str(file) for file in list_of_files if file.suffix == ".py"]
+    ipynb_files = [file for file in list_of_files if file.suffix == ".ipynb"]
+
     modules: dict[str, list[Location]] = defaultdict(list)
 
-    for file in list_of_files:
+    # Process all .py files in parallel using Rust
+    if py_files:
+        rust_result = get_imports_from_py_files(py_files)
+        for module, locations in convert_rust_locations_to_python_locations(rust_result).items():
+            modules[module].extend(locations)
+
+    # Process each .ipynb file individually
+    for file in ipynb_files:
         for module, locations in get_imported_modules_from_file(file).items():
-            for location in locations:
-                modules[module].append(location)
+            modules[module].extend(locations)
 
     logging.debug("All imported modules: %s\n", modules)
 
@@ -35,12 +44,6 @@ def get_imported_modules_from_file(path_to_file: Path) -> dict[str, list[Locatio
 
     if path_to_file.suffix == ".ipynb":
         modules = NotebookImportExtractor(path_to_file).extract_imports()
-    elif path_to_file.suffix == ".py":
-        try:
-            modules = get_imports_from_py_file(str(path_to_file))
-        except OSError:
-            logging.warning("Warning: File %s could not be decoded. Skipping...", path_to_file)
-            return {}
 
     modules = convert_rust_locations_to_python_locations(modules)
     logging.debug("Found the following imports in %s: %s", path_to_file, modules)

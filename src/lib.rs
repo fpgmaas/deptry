@@ -17,31 +17,54 @@ use file_utils::read_file;
 use location::Location;
 use rustpython_ast::Visitor;
 use visitor::ImportVisitor;
-
+use rayon::prelude::*;
 
 #[pymodule]
 fn deptry(_py: Python, m: &PyModule) -> PyResult<()> {
-    m.add_function(wrap_pyfunction!(get_imports_from_py_file, m)?)?;
+    m.add_function(wrap_pyfunction!(get_imports_from_py_files, m)?)?;
     m.add_class::<Location>()?;
     Ok(())
 }
 
-// The main function exposed to Python. It reads a file, parses it into an AST, extracts imports,
-// converts them into a structured format, and returns a dictionary to Python.
 #[pyfunction]
-fn get_imports_from_py_file(py: Python<'_>, file_path: &PyString) -> PyResult<PyObject> {
-    let path_str = file_path.to_str()?;
-    let file_content = read_file(&path_str)?;
-    let ast = get_ast_from_file_content(&file_content, &path_str)?;
-    let imported_modules = extract_imports_from_ast(ast);
-    let imports_with_locations = convert_imports_with_textranges_to_location_objects(
-        imported_modules,
-        &path_str,
-        &file_content,
-    );
-    let imports_dict = convert_to_python_dict(py, imports_with_locations);
-    Ok(imports_dict)
+fn get_imports_from_py_files(py: Python, file_paths: Vec<&PyString>) -> PyResult<PyObject> {
+    // Convert PyString references to Rust-owned String objects.
+    let rust_file_paths: Vec<String> = file_paths
+        .iter()
+        .map(|py_str| py_str.to_str().unwrap().to_owned())
+        .collect();
+
+    // Now, you can use Rayon to process these paths in parallel.
+    let results: Vec<_> = rust_file_paths
+        .par_iter()
+        .map(|path_str| {
+            let file_content = read_file(path_str).unwrap();
+            let ast = get_ast_from_file_content(&file_content, path_str).unwrap();
+            let imported_modules = extract_imports_from_ast(ast);
+            convert_imports_with_textranges_to_location_objects(
+                imported_modules,
+                path_str,
+                &file_content,
+            )
+        })
+        .collect();
+
+    // Rest of the function to prepare the Python dictionary...
+    let combined_result = PyDict::new(py);
+    for result in results {
+        for (module, locations) in result {
+            let py_locations: Vec<PyObject> = locations
+                .into_iter()
+                .map(|location| location.into_py(py))
+                .collect();
+            let locations_list = PyList::new(py, &py_locations);
+            combined_result.set_item(module, locations_list).unwrap();
+        }
+    }
+
+    Ok(combined_result.into())
 }
+
 
 // Parses the content of a Python file into an abstract syntax tree (AST).
 pub fn get_ast_from_file_content(file_content: &str, file_path: &str) -> PyResult<Mod> {
