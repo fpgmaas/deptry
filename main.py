@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-from deptryrs import get_imports_from_file
+from deptry import get_imports_from_py_file
 
 try:
-    imports_with_locations = get_imports_from_file("tests/data/some_imports.py")
+    imports_with_locations = get_imports_from_py_file("tests/data/some_imports.py")
     for k, v in imports_with_locations.items():
         print(k)
         print(v)

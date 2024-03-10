@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from deptryrs import RustLocation
+    from deptry import Location as RustLocation
 
 
 @dataclass(frozen=True)

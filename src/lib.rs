@@ -18,8 +18,9 @@ use location::Location;
 use rustpython_ast::Visitor;
 use visitor::ImportVisitor;
 
+
 #[pymodule]
-fn deptryrs(_py: Python, m: &PyModule) -> PyResult<()> {
+fn deptry(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(get_imports_from_py_file, m)?)?;
     m.add_class::<Location>()?;
     Ok(())

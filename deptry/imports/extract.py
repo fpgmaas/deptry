@@ -4,14 +4,13 @@ import logging
 from collections import defaultdict
 from typing import TYPE_CHECKING
 
-from deptryrs import get_imports_from_py_file
-
+from deptry import get_imports_from_py_file
 from deptry.imports.extractors import NotebookImportExtractor
 
 if TYPE_CHECKING:
     from pathlib import Path
 
-    from deptryrs import Location as RustLocation
+    from deptry import Location as RustLocation
 
 from deptry.imports.location import Location
 
