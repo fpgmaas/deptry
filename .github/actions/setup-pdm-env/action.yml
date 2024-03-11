@@ -16,7 +16,7 @@ runs:
         python-version: ${{ inputs.python-version }}
 
     - name: Install PDM
-      run: pip install pdm==2.2.1
+      run: pip install pdm==2.12.4
       shell: bash
 
     - name: Configure PDM to use PEP 582 packages
