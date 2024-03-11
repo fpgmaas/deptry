@@ -1,6 +1,10 @@
 name: CI
 
-on: workflow_dispatch
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches: [main]
 
 jobs:
   linux:
