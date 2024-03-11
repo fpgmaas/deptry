@@ -1,10 +1,10 @@
 name: Release
 
 on:
-    workflow_dispatch:
-      inputs:
-        tag:
-          description: "The version to tag."
+    pull_request:
+      types: [opened, synchronize, reopened]
+    push:
+      branches: [main]
 
 jobs:
 
@@ -91,6 +91,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
         - uses: actions/checkout@v4
+
+        - name: Update project version
+          run: |
+            PROJECT_VERSION="0.0.13a1"  # Set this to your desired version
+            sed -i "s/^version = \".*\"/version = \"$PROJECT_VERSION\"/" Cargo.toml
+
         - name: Build sdist
           uses: PyO3/maturin-action@v1
           with:
