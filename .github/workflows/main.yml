@@ -7,6 +7,27 @@ on:
     branches: [main]
 
 jobs:
+
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up the environment
+        uses: ./.github/actions/setup-env
+        with:
+          python-version: '3.11'
+          target: 'x86_64'
+
+      - name: Run pre-commit
+        run: |
+          pdm run pre-commit run -a --show-diff-on-failure
+
+      - name: Inspect dependencies with deptry
+        run: |
+          pdm run deptry .
+
   linux:
     runs-on: ubuntu-latest
     strategy:
@@ -23,14 +44,15 @@ jobs:
           python-version: ${{ matrix.python-version }}
           target: ${{ matrix.target }}
 
-      - name: Pre-commit hooks and deptry
-        if: matrix.python-version == '3.11'
-        run: |
-          pdm run pre-commit run -a --show-diff-on-failure
-          pdm run deptry .
+      - name: Check typing
+        run: pdm run mypy
 
       - name: Run tests
         run: pdm run pytest tests --cov --cov-config=pyproject.toml --cov-report=xml
+
+      - name: Upload coverage reports to Codecov with GitHub Action on Python 3.11 and x86_64
+        uses: codecov/codecov-action@v3
+        if: ${{ matrix.python-version == '3.11' && matrix.target == 'x86_64' }}
 
   windows:
     runs-on: windows-latest
@@ -69,3 +91,18 @@ jobs:
 
       - name: Run tests
         run: pdm run pytest tests --cov --cov-config=pyproject.toml --cov-report=xml
+
+  check-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up the environment
+        uses: ./.github/actions/setup-env
+        with:
+          python-version: '3.11'
+          target: 'x86_64'
+
+      - name: Check if documentation can be built
+        run: pdm run mkdocs build -s
