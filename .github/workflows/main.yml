@@ -30,6 +30,9 @@ jobs:
 
       - name: Set up Python environment with PDM
         run: |
+          python -m venv .venv
+          source .venv/bin/activate
+          python -m pip install --upgrade pip
           pdm config python.use_venv true
           pdm install
 
