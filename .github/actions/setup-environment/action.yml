@@ -1,5 +1,6 @@
 name: 'Setup Python and Rust Environment'
 description: 'Set up Python and Rust for PDM projects with matrix support'
+
 inputs:
   python-version:
     description: 'Python version for setup-python'
@@ -13,7 +14,6 @@ inputs:
 runs:
   using: 'composite'
   steps:
-
     - name: Setup Python
       uses: actions/setup-python@v5
       with:

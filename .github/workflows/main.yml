@@ -14,7 +14,7 @@ jobs:
         python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
         target: [x86_64, x86, aarch64]
     steps:
-      - name: Checkout code
+      - name: Check out
         uses: actions/checkout@v4
 
       - uses: ./.github/actions/setup-environment
@@ -37,7 +37,7 @@ jobs:
       matrix:
         python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
     steps:
-      - name: Checkout code
+      - name: Check out
         uses: actions/checkout@v4
 
       - uses: ./.github/actions/setup-environment
@@ -55,7 +55,7 @@ jobs:
         python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
         target: [x86_64, aarch64]
     steps:
-      - name: Checkout code
+      - name: Check out
         uses: actions/checkout@v4
 
       - uses: ./.github/actions/setup-environment
