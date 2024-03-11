@@ -12,17 +12,20 @@ jobs:
     strategy:
       matrix:
         python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
-        architecture: [x86_64, x86, aarch64]
+        target: [x86_64, x86, aarch64]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
+      - name: Create and activate virtual environment
+        run: |
+          python -m venv .venv
+          source .venv/bin/activate
       - name: Build and install the project
         uses: PyO3/maturin-action@v1
         with:
-          python-version: ${{ matrix.python-version }}
-          architecture: ${{ matrix.architecture }}
+          target: ${{ matrix.target }}
           command: develop
           sccache: 'true'
       - name: Pre-commit hooks and deptry
@@ -43,12 +46,15 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-          architecture: ${{ matrix.architecture }}
+          target: ${{ matrix.target }}
+      - name: Create and activate virtual environment
+        run: |
+            python -m venv .venv
+            source .venv/bin/activate
       - name: Build and install the project
         uses: PyO3/maturin-action@v1
         with:
-          python-version: ${{ matrix.python-version }}
-          architecture: ${{ matrix.architecture }}
+          target: ${{ matrix.target }}
           command: develop
           sccache: 'true'
       - name: Run tests
@@ -59,16 +65,20 @@ jobs:
     strategy:
       matrix:
         python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
-        architecture: [x86_64, aarch64]
+        target: [x86_64, aarch64]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
+      - name: Create and activate virtual environment
+        run: |
+            python -m venv .venv
+            source .venv/bin/activate
       - name: Build and install the project
         uses: PyO3/maturin-action@v1
         with:
-          python-version: ${{ matrix.python-version }}
+          target: ${{ matrix.target }}
           command: develop
           sccache: 'true'
       - name: Run tests
