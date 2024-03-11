@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 from deptry.imports.location import Location
 
 
-def get_imported_modules_for_list_of_files(list_of_files: list[Path]) -> dict[str, list[Location]]:
+def get_imported_modules_from_list_of_files(list_of_files: list[Path]) -> dict[str, list[Location]]:
     logging.info("Scanning %d %s...", len(list_of_files), "files" if len(list_of_files) > 1 else "file")
 
     py_files = [str(file) for file in list_of_files if file.suffix == ".py"]
@@ -31,7 +31,7 @@ def get_imported_modules_for_list_of_files(list_of_files: list[Path]) -> dict[st
 
     # Process each .ipynb file individually
     for file in ipynb_files:
-        for module, locations in get_imported_modules_from_file(file).items():
+        for module, locations in get_imported_modules_from_ipynb_file(file).items():
             modules[module].extend(locations)
 
     logging.debug("All imported modules: %s\n", modules)
@@ -39,11 +39,10 @@ def get_imported_modules_for_list_of_files(list_of_files: list[Path]) -> dict[st
     return modules
 
 
-def get_imported_modules_from_file(path_to_file: Path) -> dict[str, list[Location]]:
+def get_imported_modules_from_ipynb_file(path_to_file: Path) -> dict[str, list[Location]]:
     logging.debug("Scanning %s...", path_to_file)
 
-    if path_to_file.suffix == ".ipynb":
-        modules = NotebookImportExtractor(path_to_file).extract_imports()
+    modules = NotebookImportExtractor(path_to_file).extract_imports()
 
     modules = convert_rust_locations_to_python_locations(modules)
     logging.debug("Found the following imports in %s: %s", path_to_file, modules)

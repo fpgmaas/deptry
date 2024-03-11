@@ -15,56 +15,70 @@ mod visitor;
 
 use file_utils::read_file;
 use location::Location;
+use rayon::prelude::*;
 use rustpython_ast::Visitor;
 use visitor::ImportVisitor;
-use rayon::prelude::*;
 
 #[pymodule]
-fn deptry(_py: Python, m: &PyModule) -> PyResult<()> {
+fn deptry(py: Python, m: &PyModule) -> PyResult<()> {
+    pyo3_log::init(); // Initialize logging to forward to Python's logger
+
     m.add_function(wrap_pyfunction!(get_imports_from_py_files, m)?)?;
+    m.add_function(wrap_pyfunction!(get_imports_from_py_file, m)?)?;
     m.add_class::<Location>()?;
     Ok(())
 }
 
 #[pyfunction]
 fn get_imports_from_py_files(py: Python, file_paths: Vec<&PyString>) -> PyResult<PyObject> {
-    // Convert PyString references to Rust-owned String objects.
     let rust_file_paths: Vec<String> = file_paths
         .iter()
         .map(|py_str| py_str.to_str().unwrap().to_owned())
         .collect();
 
-    // Now, you can use Rayon to process these paths in parallel.
-    let results: Vec<_> = rust_file_paths
-        .par_iter()
-        .map(|path_str| {
-            let file_content = read_file(path_str).unwrap();
-            let ast = get_ast_from_file_content(&file_content, path_str).unwrap();
-            let imported_modules = extract_imports_from_ast(ast);
-            convert_imports_with_textranges_to_location_objects(
-                imported_modules,
-                path_str,
-                &file_content,
-            )
-        })
-        .collect();
+    // This will hold the merged results from all files
+    let mut all_imports = HashMap::new();
 
-    // Rest of the function to prepare the Python dictionary...
-    let combined_result = PyDict::new(py);
-    for result in results {
-        for (module, locations) in result {
-            let py_locations: Vec<PyObject> = locations
-                .into_iter()
-                .map(|location| location.into_py(py))
-                .collect();
-            let locations_list = PyList::new(py, &py_locations);
-            combined_result.set_item(module, locations_list).unwrap();
+    // Iterate over file paths, process each, and merge the results
+    for path_str in rust_file_paths.iter() {
+        let file_result = _get_imports_from_py_file(path_str)?;
+        for (module, locations) in file_result {
+            all_imports.entry(module).or_insert_with(Vec::new).extend(locations);
         }
     }
 
-    Ok(combined_result.into())
+    // Now convert the merged results to a Python dictionary
+    convert_to_python_dict(py, all_imports)
 }
 
+
+#[pyfunction]
+fn get_imports_from_py_file(py: Python, file_path: &PyString) -> PyResult<PyObject> {
+    let path_str = file_path.to_str()?;
+    let result = _get_imports_from_py_file(path_str)?;
+
+    convert_to_python_dict(py, result)
+}
+
+fn _get_imports_from_py_file(path_str: &str) -> PyResult<HashMap<String, Vec<Location>>> {
+    let file_content = match read_file(path_str) {
+        Ok(content) => content,
+        Err(_) => {
+            log::warn!("Warning: File {} could not be read. Skipping...", path_str);
+            return Ok(HashMap::new());
+        }
+    };
+
+    let ast = get_ast_from_file_content(&file_content, path_str)
+        .map_err(|e| PySyntaxError::new_err(format!("Error parsing file {}: {}", path_str, e)))?;
+
+    let imported_modules = extract_imports_from_ast(ast);
+    Ok(convert_imports_with_textranges_to_location_objects(
+        imported_modules,
+        path_str,
+        &file_content,
+    ))
+}
 
 // Parses the content of a Python file into an abstract syntax tree (AST).
 pub fn get_ast_from_file_content(file_content: &str, file_path: &str) -> PyResult<Mod> {
@@ -123,7 +137,7 @@ fn convert_imports_with_textranges_to_location_objects(
 fn convert_to_python_dict(
     py: Python<'_>,
     imports_with_locations: HashMap<String, Vec<Location>>,
-) -> PyObject {
+) -> PyResult<PyObject> {
     let imports_dict = PyDict::new(py);
 
     for (module, locations) in imports_with_locations {
@@ -132,8 +146,8 @@ fn convert_to_python_dict(
             .map(|location| location.into_py(py))
             .collect();
         let locations_list = PyList::new(py, &py_locations);
-        imports_dict.set_item(module, locations_list).unwrap();
+        imports_dict.set_item(module, locations_list)?;
     }
 
-    imports_dict.into()
+    Ok(imports_dict.into())
 }

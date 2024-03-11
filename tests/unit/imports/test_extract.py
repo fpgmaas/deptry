@@ -2,13 +2,14 @@ from __future__ import annotations
 
 import json
 import logging
+import re
 import uuid
 from pathlib import Path
 from typing import TYPE_CHECKING
 
 import pytest
 
-from deptry.imports.extract import get_imported_modules_from_file
+from deptry.imports.extract import get_imported_modules_from_ipynb_file, get_imported_modules_from_list_of_files
 from deptry.imports.location import Location
 from tests.utils import run_within_dir
 
@@ -19,7 +20,7 @@ if TYPE_CHECKING:
 def test_import_parser_py() -> None:
     some_imports_path = Path("tests/data/some_imports.py")
 
-    assert get_imported_modules_from_file(some_imports_path) == {
+    assert get_imported_modules_from_list_of_files([some_imports_path]) == {
         "barfoo": [Location(some_imports_path, 20, 8)],
         "baz": [Location(some_imports_path, 16, 5)],
         "click": [Location(some_imports_path, 24, 12)],
@@ -43,7 +44,7 @@ def test_import_parser_py() -> None:
 def test_import_parser_ipynb() -> None:
     notebook_path = Path("tests/data/example_project/src/notebook.ipynb")
 
-    assert get_imported_modules_from_file(notebook_path) == {
+    assert get_imported_modules_from_ipynb_file(notebook_path) == {
         "click": [Location(notebook_path, 1, 0)],
         "toml": [Location(notebook_path, 5, 0)],
         "urllib3": [Location(notebook_path, 3, 0)],
@@ -78,7 +79,7 @@ def test_import_parser_file_encodings(file_content: str, encoding: str | None, t
         with random_file.open("w", encoding=encoding) as f:
             f.write(file_content)
 
-        assert get_imported_modules_from_file(random_file) == {"foo": [Location(random_file, 2, 8)]}
+        assert get_imported_modules_from_list_of_files([random_file]) == {"foo": [Location(random_file, 2, 8)]}
 
 
 @pytest.mark.parametrize(
@@ -118,7 +119,7 @@ def test_import_parser_file_encodings_ipynb(code_cell_content: list[str], encodi
             }
             f.write(json.dumps(file_content))
 
-        assert get_imported_modules_from_file(random_file) == {"foo": [Location(random_file, 1, 0)]}
+        assert get_imported_modules_from_list_of_files([random_file]) == {"foo": [Location(random_file, 1, 0)]}
 
 
 def test_import_parser_file_encodings_warning(tmp_path: Path, caplog: LogCaptureFixture) -> None:
@@ -130,6 +131,8 @@ def test_import_parser_file_encodings_warning(tmp_path: Path, caplog: LogCapture
             f.write("# -*- coding: utf-8 -*-\nprint('ÆØÅ')")
 
         with caplog.at_level(logging.WARNING):
-            assert get_imported_modules_from_file(file_path) == {}
+            assert get_imported_modules_from_list_of_files([file_path]) == {}
 
-        assert "Warning: File file1.py could not be decoded. Skipping..." in caplog.text
+        # //TODO logging from Rust still includes it's own warning and file + line number. Can we get rid of that?
+        pattern = re.compile(r"WARNING  deptry:lib.rs:\d+ Warning: File file1.py could not be read. Skipping...\n")
+        assert pattern.search(caplog.text) is not None
