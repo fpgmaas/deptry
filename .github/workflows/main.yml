@@ -17,7 +17,8 @@ jobs:
       - name: Check out
         uses: actions/checkout@v4
 
-      - uses: ./.github/actions/setup-environment
+      - name: Set up the environment
+        uses: ./.github/actions/setup-env
         with:
           python-version: ${{ matrix.python-version }}
           target: ${{ matrix.target }}
@@ -40,7 +41,8 @@ jobs:
       - name: Check out
         uses: actions/checkout@v4
 
-      - uses: ./.github/actions/setup-environment
+      - name: Set up the environment
+        uses: ./.github/actions/setup-env
         with:
           python-version: ${{ matrix.python-version }}
           target: ${{ matrix.target }}
@@ -58,7 +60,8 @@ jobs:
       - name: Check out
         uses: actions/checkout@v4
 
-      - uses: ./.github/actions/setup-environment
+      - name: Set up the environment
+        uses: ./.github/actions/setup-env
         with:
           python-version: ${{ matrix.python-version }}
           target: ${{ matrix.target }}
