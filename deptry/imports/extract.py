@@ -44,7 +44,6 @@ def get_imported_modules_from_ipynb_file(path_to_file: Path) -> dict[str, list[L
 
     modules = NotebookImportExtractor(path_to_file).extract_imports()
 
-    modules = convert_rust_locations_to_python_locations(modules)
     logging.debug("Found the following imports in %s: %s", path_to_file, modules)
     return modules
 
@@ -52,6 +51,7 @@ def get_imported_modules_from_ipynb_file(path_to_file: Path) -> dict[str, list[L
 def convert_rust_locations_to_python_locations(
     imported_modules: dict[str, list[RustLocation]],
 ) -> dict[str, list[Location]]:
+    converted_modules: dict[str, list[Location]] = {}
     for module, locations in imported_modules.items():
-        imported_modules[module] = [Location.from_rust_location_object(loc) for loc in locations]
-    return imported_modules
+        converted_modules[module] = [Location.from_rust_location_object(loc) for loc in locations]
+    return converted_modules

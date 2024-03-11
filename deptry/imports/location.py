@@ -15,5 +15,5 @@ class Location:
     column: int | None = None
 
     @classmethod
-    def from_rust_location_object(cls, location: RustLocation):
+    def from_rust_location_object(cls, location: RustLocation) -> Location:
         return cls(file=Path(location.file), line=location.line, column=location.column)
