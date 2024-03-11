@@ -29,7 +29,7 @@ runs:
         python -m pip install pdm
         python -m venv .venv
         if [ "${{ runner.os }}" = "Windows" ]; then
-          .venv\Scripts\Activate
+          source .venv/Scripts/Activate
         else
           source .venv/bin/activate
         fi
