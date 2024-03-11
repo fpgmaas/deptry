@@ -23,6 +23,8 @@ jobs:
           python -m venv .venv
           source .venv/bin/activate
       - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.75.0
       - name: Build and install the project
         uses: PyO3/maturin-action@v1
         with:
@@ -53,6 +55,8 @@ jobs:
             python -m venv .venv
             source .venv/bin/activate
       - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.75.0
       - name: Build and install the project
         uses: PyO3/maturin-action@v1
         with:
@@ -78,6 +82,8 @@ jobs:
             python -m venv .venv
             source .venv/bin/activate
       - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.75.0
       - name: Build and install the project
         uses: PyO3/maturin-action@v1
         with:
