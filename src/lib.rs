@@ -29,6 +29,8 @@ fn deptry(py: Python, m: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
+/// Processes multiple Python files in parallel to extract import statements and their locations.
+/// Accepts a list of file paths and returns a dictionary mapping module names to their import locations.
 #[pyfunction]
 fn get_imports_from_py_files(py: Python, file_paths: Vec<&PyString>) -> PyResult<PyObject> {
     let rust_file_paths: Vec<String> = file_paths
@@ -42,25 +44,24 @@ fn get_imports_from_py_files(py: Python, file_paths: Vec<&PyString>) -> PyResult
         .map(|path_str| _get_imports_from_py_file(path_str))
         .collect();
 
-    // Check if there was any error during processing
     let results = results?;
 
-    // This will hold the merged results from all files
-    let mut all_imports = HashMap::new();
-
     // Merge results from each thread
+    let mut all_imports = HashMap::new();
     for file_result in results {
         for (module, locations) in file_result {
-            all_imports.entry(module).or_insert_with(Vec::new).extend(locations);
+            all_imports
+                .entry(module)
+                .or_insert_with(Vec::new)
+                .extend(locations);
         }
     }
 
-    // Now convert the merged results to a Python dictionary
     convert_to_python_dict(py, all_imports)
 }
 
-
-
+/// Processes a single Python file to extract import statements and their locations.
+/// Accepts a single file path and returns a dictionary mapping module names to their import locations.
 #[pyfunction]
 fn get_imports_from_py_file(py: Python, file_path: &PyString) -> PyResult<PyObject> {
     let path_str = file_path.to_str()?;
@@ -69,6 +70,8 @@ fn get_imports_from_py_file(py: Python, file_path: &PyString) -> PyResult<PyObje
     convert_to_python_dict(py, result)
 }
 
+/// Core helper function that extracts import statements and their locations from the content of a single Python file.
+/// Used internally by both parallel and single file processing functions.
 fn _get_imports_from_py_file(path_str: &str) -> PyResult<HashMap<String, Vec<Location>>> {
     let file_content = match read_file(path_str) {
         Ok(content) => content,
@@ -89,13 +92,14 @@ fn _get_imports_from_py_file(path_str: &str) -> PyResult<HashMap<String, Vec<Loc
     ))
 }
 
-// Parses the content of a Python file into an abstract syntax tree (AST).
+/// Parses the content of a Python file into an abstract syntax tree (AST).
 pub fn get_ast_from_file_content(file_content: &str, file_path: &str) -> PyResult<Mod> {
     parse(&file_content, Mode::Module, file_path)
         .map_err(|e| PySyntaxError::new_err(format!("Error parsing file {}: {}", file_path, e)))
 }
 
-// Iterates through an AST to extract import statements and collects them along with their locations.
+/// Iterates through an AST to identify and collect import statements, and returns them together with their
+/// a TextRange for each occurence.
 fn extract_imports_from_ast(ast: Mod) -> HashMap<String, Vec<TextRange>> {
     let mut visitor = ImportVisitor::new();
 
@@ -110,9 +114,8 @@ fn extract_imports_from_ast(ast: Mod) -> HashMap<String, Vec<TextRange>> {
     visitor.get_imports()
 }
 
-/// Imports now have associated TextRanges, which is the amount of bytes since the start of the file.
-/// This function takes that as input, and converts it to imports with associated Location objects,
-/// That carry information such as the file name, the line number, and the column offset.
+/// Converts textual ranges of import statements into structured location objects.
+/// Facilitates the mapping of imports to detailed, file-specific location data (file, line, column).
 fn convert_imports_with_textranges_to_location_objects(
     imports: HashMap<String, Vec<TextRange>>,
     file_path: &str,
@@ -142,7 +145,7 @@ fn convert_imports_with_textranges_to_location_objects(
     imports_with_locations
 }
 
-// Converts the structured location data into a Python-compatible dictionary format.
+/// Transforms a Rust HashMap containing import data into a Python dictionary suitable for Python-side consumption.
 fn convert_to_python_dict(
     py: Python<'_>,
     imports_with_locations: HashMap<String, Vec<Location>>,
