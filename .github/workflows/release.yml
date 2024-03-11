@@ -95,7 +95,7 @@ jobs:
         - name: Update project version
           run: |
             PROJECT_VERSION="0.0.13a1"  # Set this to your desired version
-            sed -i "s/^version = \".*\"/version = \"$PROJECT_VERSION\"/" Cargo.toml
+            sed -i "s/^version = \".*\"/version = \"$PROJECT_VERSION\"/" pyproject.toml
 
         - name: Build sdist
           uses: PyO3/maturin-action@v1
