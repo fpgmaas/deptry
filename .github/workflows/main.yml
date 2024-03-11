@@ -47,7 +47,7 @@ jobs:
           pdm run deptry .
 
       - name: Run tests
-        run: pytest tests --cov --cov-config=pyproject.toml --cov-report=xml
+        run: pdm run pytest tests --cov --cov-config=pyproject.toml --cov-report=xml
 
 
   # windows:
