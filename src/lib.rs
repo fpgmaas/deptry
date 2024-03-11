@@ -36,12 +36,20 @@ fn get_imports_from_py_files(py: Python, file_paths: Vec<&PyString>) -> PyResult
         .map(|py_str| py_str.to_str().unwrap().to_owned())
         .collect();
 
+    // Process each file in parallel and collect results
+    let results: PyResult<Vec<_>> = rust_file_paths
+        .par_iter()
+        .map(|path_str| _get_imports_from_py_file(path_str))
+        .collect();
+
+    // Check if there was any error during processing
+    let results = results?;
+
     // This will hold the merged results from all files
     let mut all_imports = HashMap::new();
 
-    // Iterate over file paths, process each, and merge the results
-    for path_str in rust_file_paths.iter() {
-        let file_result = _get_imports_from_py_file(path_str)?;
+    // Merge results from each thread
+    for file_result in results {
         for (module, locations) in file_result {
             all_imports.entry(module).or_insert_with(Vec::new).extend(locations);
         }
@@ -50,6 +58,7 @@ fn get_imports_from_py_files(py: Python, file_paths: Vec<&PyString>) -> PyResult
     // Now convert the merged results to a Python dictionary
     convert_to_python_dict(py, all_imports)
 }
+
 
 
 #[pyfunction]
