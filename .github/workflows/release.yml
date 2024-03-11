@@ -119,7 +119,7 @@ jobs:
           uses: PyO3/maturin-action@v1
           env:
             MATURIN_PYPI_TOKEN: ${{ secrets.TEST_PYPI_TOKEN }}
-            MATURIN_REPOSITORY_URL: https://test.pypi.org/
+            MATURIN_REPOSITORY_URL: https://test.pypi.org/legacy/
           with:
             command: upload
             args: --non-interactive --skip-existing wheels-*/*
