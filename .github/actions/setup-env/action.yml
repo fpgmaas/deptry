@@ -1,5 +1,5 @@
 name: 'Setup Python and Rust Environment'
-description: 'Set up Python and Rust for PDM projects with matrix support'
+description: 'Set up Python and Rust environment for PDM projects with matrix support'
 
 inputs:
   python-version:
