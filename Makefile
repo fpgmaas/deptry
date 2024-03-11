@@ -1,12 +1,12 @@
 .PHONY: install
-install: ## Install the Poetry environment.
-	@echo "🚀 Creating virtual environment using Poetry"
-	@poetry install
+install: ## Install the PDM environment.
+	@echo "🚀 Creating virtual environment using PDM"
+	@pdm install
 
 .PHONY: check
 check: ## Run code quality tools.
-	@echo "🚀 Checking Poetry lock file consistency with 'pyproject.toml': Running poetry lock --check"
-	@poetry lock --check
+	@echo "🚀 Checking PDM lock file consistency with 'pyproject.toml': Running pdm lock --check"
+	@pdm lock --check
 	@echo "🚀 Linting code: Running pre-commit"
 	@pdm run pre-commit run -a
 	@echo "🚀 Static type checking: Running mypy"
@@ -20,9 +20,9 @@ test: ## Test the code with pytest.
 	@pdm run pytest --cov --cov-config=pyproject.toml --cov-report=xml
 
 .PHONY: build
-build: clean-build ## Build wheel and sdist files using Poetry.
+build: clean-build ## Build wheel and sdist files using PDM.
 	@echo "🚀 Creating wheel and sdist files"
-	@poetry build
+	@pdm build
 
 .PHONY: clean-build
 clean-build: ## clean build artifacts
@@ -31,10 +31,9 @@ clean-build: ## clean build artifacts
 .PHONY: publish
 publish: ## Publish a release to PyPI.
 	@echo "🚀 Publishing: Dry run."
-	@poetry config pypi-token.pypi $(PYPI_TOKEN)
-	@poetry publish --dry-run
+	@PDM_PYPI_TOKEN=$(PYPI_TOKEN) pdm publish --dry-run
 	@echo "🚀 Publishing."
-	@poetry publish
+	@PDM_PYPI_TOKEN=$(PYPI_TOKEN) pdm publish
 
 .PHONY: build-and-publish
 build-and-publish: build publish ## Build and publish.
