@@ -8,84 +8,84 @@ on:
 
 jobs:
 
-#   linux:
-#     runs-on: ubuntu-latest
-#     strategy:
-#       matrix:
-#         target: [x86_64, x86, aarch64]
-#     steps:
-#       - name: Check out
-#         uses: actions/checkout@v4
+  linux:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target: [x86_64, x86, aarch64]
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
 
-#       - uses: actions/setup-python@v5
-#         with:
-#           python-version: '3.11'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
 
-#       - name: Build wheels
-#         uses: PyO3/maturin-action@v1
-#         with:
-#             target: ${{ matrix.target }}
-#             args: --release --out dist --find-interpreter
-#             sccache: 'true'
-#             manylinux: auto
+      - name: Build wheels
+        uses: PyO3/maturin-action@v1
+        with:
+            target: ${{ matrix.target }}
+            args: --release --out dist --find-interpreter
+            sccache: 'true'
+            manylinux: auto
 
-#       - name: Upload wheels
-#         uses: actions/upload-artifact@v4
-#         with:
-#           name: wheels-linux-${{ matrix.target }}
-#           path: dist
+      - name: Upload wheels
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-linux-${{ matrix.target }}
+          path: dist
 
-#   windows:
-#     runs-on: windows-latest
-#     strategy:
-#       matrix:
-#         target: [x64, x86]
-#     steps:
-#       - name: Check out
-#         uses: actions/checkout@v4
+  windows:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        target: [x64, x86]
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
 
-#       - uses: actions/setup-python@v5
-#         with:
-#           python-version: '3.11'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
 
-#       - name: Build wheels
-#         uses: PyO3/maturin-action@v1
-#         with:
-#           target: ${{ matrix.target }}
-#           args: --release --out dist --find-interpreter
-#           sccache: 'true'
+      - name: Build wheels
+        uses: PyO3/maturin-action@v1
+        with:
+          target: ${{ matrix.target }}
+          args: --release --out dist --find-interpreter
+          sccache: 'true'
 
-#       - name: Upload wheels
-#         uses: actions/upload-artifact@v4
-#         with:
-#           name: wheels-windows-${{ matrix.target }}
-#           path: dist
+      - name: Upload wheels
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-windows-${{ matrix.target }}
+          path: dist
 
-#   macos:
-#     runs-on: macos-latest
-#     strategy:
-#       matrix:
-#         target: [x86_64, aarch64]
-#     steps:
-#       - name: Check out
-#         uses: actions/checkout@v4
+  macos:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        target: [x86_64, aarch64]
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
 
-#       - uses: actions/setup-python@v5
-#         with:
-#           python-version: '3.11'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
 
-#       - name: Build wheels
-#         uses: PyO3/maturin-action@v1
-#         with:
-#           target: ${{ matrix.target }}
-#           args: --release --out dist --find-interpreter
-#           sccache: 'true'
+      - name: Build wheels
+        uses: PyO3/maturin-action@v1
+        with:
+          target: ${{ matrix.target }}
+          args: --release --out dist --find-interpreter
+          sccache: 'true'
 
-#       - name: Upload wheels
-#         uses: actions/upload-artifact@v4
-#         with:
-#           name: wheels-macos-${{ matrix.target }}
-#           path: dist
+      - name: Upload wheels
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-macos-${{ matrix.target }}
+          path: dist
 
   sdist:
     runs-on: ubuntu-latest
@@ -111,8 +111,7 @@ jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
-    needs: [sdist]
-    # needs: [linux, windows, macos, sdist]
+    needs: [linux, windows, macos, sdist]
     steps:
         - uses: actions/download-artifact@v4
         - name: Publish to Test PyPI
