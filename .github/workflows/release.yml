@@ -77,17 +77,13 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Setup Rust toolchain
-        uses: dtolnay/rust-toolchain@stable
-        with:
-            toolchain: 1.75.0
-
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.target }}
           args: --release --out dist --find-interpreter
           sccache: 'true'
+          rust-toolchain: 1.75.0
 
       - name: Upload wheels
         uses: actions/upload-artifact@v4
@@ -114,17 +110,13 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Setup Rust toolchain
-        uses: dtolnay/rust-toolchain@stable
-        with:
-            toolchain: 1.75.0
-
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.target }}
           args: --release --out dist --find-interpreter
           sccache: 'true'
+          rust-toolchain: 1.75.0
 
       - name: Upload wheels
         uses: actions/upload-artifact@v4
@@ -143,16 +135,13 @@ jobs:
           with:
             name: pyproject-toml
 
-        - name: Setup Rust toolchain
-          uses: dtolnay/rust-toolchain@stable
-          with:
-            toolchain: 1.75.0
-
         - name: Build sdist
           uses: PyO3/maturin-action@v1
           with:
             command: sdist
             args: --out dist
+            rust-toolchain: 1.75.0
+
         - name: Upload sdist
           uses: actions/upload-artifact@v4
           with:
