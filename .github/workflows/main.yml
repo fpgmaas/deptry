@@ -43,7 +43,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           target: ${{ matrix.target }}
-          python-target: ${{ matrix.target == 'aarch64' && 'arm64' || 'x64' }}
+          python-target: 'x64'
 
       - name: Check typing
         run: pdm run mypy
