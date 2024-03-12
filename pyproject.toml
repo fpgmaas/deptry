@@ -184,6 +184,7 @@ ignore = [
 strict = true
 
 [tool.ruff.lint.isort]
+known-first-party = ["deptry"]
 required-imports = ["from __future__ import annotations"]
 
 [tool.ruff.lint.per-file-ignores]
