@@ -72,6 +72,7 @@ fn _get_imports_from_py_file(path_str: &str) -> PyResult<HashMap<String, Vec<Loc
         .map_err(|e| PySyntaxError::new_err(format!("Error parsing file {}: {}", path_str, e)))?;
 
     let imported_modules = extract_imports_from_ast(ast);
+
     Ok(convert_imports_with_textranges_to_location_objects(
         imported_modules,
         path_str,
@@ -81,23 +82,21 @@ fn _get_imports_from_py_file(path_str: &str) -> PyResult<HashMap<String, Vec<Loc
 
 /// Parses the content of a Python file into an abstract syntax tree (AST).
 pub fn get_ast_from_file_content(file_content: &str, file_path: &str) -> PyResult<Mod> {
-    parse(&file_content, Mode::Module, file_path)
+    parse(file_content, Mode::Module, file_path)
         .map_err(|e| PySyntaxError::new_err(format!("Error parsing file {}: {}", file_path, e)))
 }
 
 /// Iterates through an AST to identify and collect import statements, and returns them together with their
-/// a TextRange for each occurence.
+/// respective TextRange for each occurrence.
 fn extract_imports_from_ast(ast: Mod) -> HashMap<String, Vec<TextRange>> {
     let mut visitor = ImportVisitor::new();
 
-    match ast {
-        Mod::Module(module) => {
-            for stmt in module.body {
-                visitor.visit_stmt(stmt);
-            }
+    if let Mod::Module(module) = ast {
+        for stmt in module.body {
+            visitor.visit_stmt(stmt);
         }
-        _ => {}
     }
+
     visitor.get_imports()
 }
 

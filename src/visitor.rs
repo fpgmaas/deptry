@@ -22,7 +22,7 @@ impl ImportVisitor {
 impl Visitor for ImportVisitor {
     fn visit_stmt_import(&mut self, node: StmtImport) {
         for alias in &node.names {
-            let top_level_module = get_top_level_module_name(&alias.name.to_string());
+            let top_level_module = get_top_level_module_name(&alias.name);
             self.imports
                 .entry(top_level_module)
                 .or_default()
@@ -31,17 +31,15 @@ impl Visitor for ImportVisitor {
     }
 
     fn visit_stmt_import_from(&mut self, node: StmtImportFrom) {
-        if let Some(module) = &node.module {
-            let module_name = module.to_string();
-            let top_level_module = get_top_level_module_name(&module_name);
-            let module_range = node.range;
-            if node.level == Some(Int::new(0)) {
-                self.imports
-                    .entry(top_level_module)
-                    .or_default()
-                    .push(module_range);
-            }
+        let Some(module) = &node.module else { return };
+        if node.level != Some(Int::new(0)) {
+            return;
         }
+
+        self.imports
+            .entry(get_top_level_module_name(module.as_str()))
+            .or_default()
+            .push(node.range);
     }
 }
 

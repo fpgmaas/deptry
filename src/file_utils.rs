@@ -5,8 +5,9 @@ use encoding_rs::Encoding;
 use pyo3::exceptions::{PyFileNotFoundError, PyIOError};
 use pyo3::prelude::*;
 use regex::Regex;
+use std::fs;
 use std::fs::File;
-use std::io::{self, BufReader, Read};
+use std::io::{BufReader, ErrorKind, Read};
 use std::path::Path;
 
 /// Reads a Python file's content as a `String`. It first attempts to read the file as UTF-8.
@@ -15,20 +16,24 @@ use std::path::Path;
 pub fn read_file(file_path: &str) -> PyResult<String> {
     let path = Path::new(file_path);
 
-    match std::fs::read_to_string(&path) {
+    match fs::read_to_string(path) {
         Ok(content) => Ok(content),
-        Err(e) if e.kind() == io::ErrorKind::InvalidData => {
-            let file = File::open(&path).map_err(|_| {
-                PyFileNotFoundError::new_err(format!("File not found: '{}'", file_path))
-            })?;
-            let mut buffer = Vec::new();
-            BufReader::new(file).read_to_end(&mut buffer)?;
+        Err(e) => match e.kind() {
+            ErrorKind::NotFound => Err(PyFileNotFoundError::new_err(format!(
+                "File not found: '{}'",
+                file_path
+            ))),
+            ErrorKind::InvalidData => {
+                let file = File::open(path).unwrap();
+                let mut buffer = Vec::new();
+                BufReader::new(file).read_to_end(&mut buffer)?;
 
-            let encoding = detect_python_file_encoding_from_regex(&buffer)
-                .unwrap_or_else(|| guess_encoding(&buffer));
-            read_with_encoding(&buffer, encoding)
-        }
-        Err(e) => Err(PyIOError::new_err(format!("An error occurred: '{}'", e))),
+                let encoding = detect_python_file_encoding_from_regex(&buffer)
+                    .unwrap_or_else(|| guess_encoding(&buffer));
+                read_with_encoding(&buffer, encoding)
+            }
+            _ => Err(PyIOError::new_err(format!("An error occurred: '{}'", e))),
+        },
     }
 }
 
