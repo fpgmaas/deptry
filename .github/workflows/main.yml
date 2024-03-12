@@ -30,84 +30,84 @@ jobs:
         run: |
           pdm run deptry .
 
-  # linux:
-  #   runs-on: ubuntu-latest
-  #   strategy:
-  #     matrix:
-  #       python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
-  #       target: [x86_64, x86, aarch64]
-  #   steps:
-  #     - name: Check out
-  #       uses: actions/checkout@v4
+  linux:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
+        target: [x86_64, x86, aarch64]
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
 
-  #     - name: Set up the environment
-  #       uses: ./.github/actions/setup-env
-  #       with:
-  #         python-version: ${{ matrix.python-version }}
-  #         target: ${{ matrix.target }}
-  #         python-target: 'x64'
+      - name: Set up the environment
+        uses: ./.github/actions/setup-env
+        with:
+          python-version: ${{ matrix.python-version }}
+          target: ${{ matrix.target }}
+          python-target: 'x64'
 
-  #     - name: Check typing
-  #       run: pdm run mypy
+      - name: Check typing
+        run: pdm run mypy
 
-  #     - name: Run tests
-  #       run: pdm run pytest tests --cov --cov-config=pyproject.toml --cov-report=xml
+      - name: Run tests
+        run: pdm run pytest tests --cov --cov-config=pyproject.toml --cov-report=xml
 
-  #     - name: Upload coverage reports to Codecov with GitHub Action on Python 3.11 and x86_64
-  #       uses: codecov/codecov-action@v3
-  #       if: ${{ matrix.python-version == '3.11' && matrix.target == 'x86_64' }}
+      - name: Upload coverage reports to Codecov with GitHub Action on Python 3.11 and x86_64
+        uses: codecov/codecov-action@v3
+        if: ${{ matrix.python-version == '3.11' && matrix.target == 'x86_64' }}
 
-  # windows:
-  #   runs-on: windows-latest
-  #   strategy:
-  #     matrix:
-  #       python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
-  #       target: [x64, x86]
-  #   steps:
-  #     - name: Check out
-  #       uses: actions/checkout@v4
+  windows:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
+        target: [x64, x86]
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
 
-  #     - name: Set up the environment
-  #       uses: ./.github/actions/setup-env
-  #       with:
-  #         python-version: ${{ matrix.python-version }}
-  #         target: ${{ matrix.target }}
-  #         python-target: ${{ matrix.target }}
+      - name: Set up the environment
+        uses: ./.github/actions/setup-env
+        with:
+          python-version: ${{ matrix.python-version }}
+          target: ${{ matrix.target }}
+          python-target: ${{ matrix.target }}
 
-  #     - name: Run tests
-  #       run: pdm run pytest tests --cov --cov-config=pyproject.toml --cov-report=xml
+      - name: Run tests
+        run: pdm run pytest tests --cov --cov-config=pyproject.toml --cov-report=xml
 
-  # macos:
-  #   runs-on: macos-latest
-  #   strategy:
-  #     matrix:
-  #       python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
-  #       target: [x86_64, aarch64]
-  #   steps:
-  #     - name: Check out
-  #       uses: actions/checkout@v4
+  macos:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
+        target: [x86_64, aarch64]
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
 
-  #     - name: Set up the environment
-  #       uses: ./.github/actions/setup-env
-  #       with:
-  #         python-version: ${{ matrix.python-version }}
-  #         target: ${{ matrix.target }}
-  #         python-target: ${{ matrix.target == 'aarch64' && 'arm64' || 'x64' }}
+      - name: Set up the environment
+        uses: ./.github/actions/setup-env
+        with:
+          python-version: ${{ matrix.python-version }}
+          target: ${{ matrix.target }}
+          python-target: ${{ matrix.target == 'aarch64' && 'arm64' || 'x64' }}
 
-  #     - name: Run tests
-  #       run: pdm run pytest tests --cov --cov-config=pyproject.toml --cov-report=xml
+      - name: Run tests
+        run: pdm run pytest tests --cov --cov-config=pyproject.toml --cov-report=xml
 
-  # check-docs:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Check out
-  #       uses: actions/checkout@v4
+  check-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
 
-  #     - name: Set up the environment
-  #       uses: ./.github/actions/setup-env
-  #       with:
-  #         python-version: '3.11'
-  #         target: 'x86_64'
+      - name: Set up the environment
+        uses: ./.github/actions/setup-env
+        with:
+          python-version: '3.11'
+          target: 'x86_64'
 
-  #     - name: Check if documentation can be built
-  #       run: pdm run mkdocs build -s
+      - name: Check if documentation can be built
+        run: pdm run mkdocs build -s
