@@ -17,7 +17,7 @@ jobs:
       # //TODO: Change to fetch version from tag.
       - name: Update project version
         run: |
-            PROJECT_VERSION="0.0.13a3"
+            PROJECT_VERSION="0.0.13a4"
             sed -i "s/^version = \".*\"/version = \"$PROJECT_VERSION\"/" pyproject.toml
 
       - name: Upload updated pyproject.toml
