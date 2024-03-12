@@ -9,20 +9,20 @@ on:
 jobs:
 
   set-version:
-      runs-on: ubuntu-latest
-      steps:
-          - uses: actions/checkout@v4
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
 
-          - name: Update project version
-            run: |
-                PROJECT_VERSION="0.0.13a1"
-                sed -i "s/^version = \".*\"/version = \"$PROJECT_VERSION\"/" pyproject.toml
+      - name: Update project version
+        run: |
+            PROJECT_VERSION="0.0.13a1"
+            sed -i "s/^version = \".*\"/version = \"$PROJECT_VERSION\"/" pyproject.toml
 
-          - name: Upload updated pyproject.toml
-            uses: actions/upload-artifact@v4
-            with:
-                name: pyproject-toml
-                path: pyproject.toml
+      - name: Upload updated pyproject.toml
+        uses: actions/upload-artifact@v4
+        with:
+            name: pyproject-toml
+            path: pyproject.toml
 
   linux:
     runs-on: ubuntu-latest
@@ -43,11 +43,6 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Setup Rust toolchain
-        uses: dtolnay/rust-toolchain@stable
-        with:
-            toolchain: 1.75.0
-
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
@@ -55,6 +50,7 @@ jobs:
             args: --release --out dist --find-interpreter
             sccache: 'true'
             manylinux: auto
+            rust-toolchain: 1.75.0
 
       - name: Upload wheels
         uses: actions/upload-artifact@v4
