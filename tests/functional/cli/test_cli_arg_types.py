@@ -6,6 +6,7 @@ from unittest import mock
 
 import click
 import pytest
+
 from deptry.cli import CommaSeparatedMappingParamType, CommaSeparatedTupleParamType
 
 if TYPE_CHECKING:

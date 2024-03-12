@@ -6,6 +6,7 @@ from pathlib import Path
 from unittest import mock
 
 import pytest
+
 from deptry.core import Core
 from deptry.dependency import Dependency
 from deptry.exceptions import UnsupportedPythonVersionError
@@ -18,7 +19,6 @@ from deptry.violations import (
     DEP003TransitiveDependencyViolation,
     DEP004MisplacedDevDependencyViolation,
 )
-
 from tests.utils import create_files, run_within_dir
 
 

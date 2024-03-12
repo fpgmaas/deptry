@@ -8,9 +8,9 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 import pytest
+
 from deptry.imports.extract import get_imported_modules_from_ipynb_file, get_imported_modules_from_list_of_files
 from deptry.imports.location import Location
-
 from tests.utils import run_within_dir
 
 if TYPE_CHECKING:

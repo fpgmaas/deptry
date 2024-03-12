@@ -3,7 +3,6 @@ from __future__ import annotations
 from pathlib import Path
 
 from deptry.dependency_getter.pep_621 import PEP621DependencyGetter
-
 from tests.utils import run_within_dir
 
 

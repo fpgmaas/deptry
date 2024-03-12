@@ -3,7 +3,6 @@ from __future__ import annotations
 from pathlib import Path
 
 from deptry.dependency_getter.pdm import PDMDependencyGetter
-
 from tests.utils import run_within_dir
 
 

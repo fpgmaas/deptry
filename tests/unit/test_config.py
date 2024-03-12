@@ -7,9 +7,9 @@ from typing import TYPE_CHECKING
 import click
 import pytest
 from click import Argument
+
 from deptry.config import read_configuration_from_pyproject_toml
 from deptry.exceptions import InvalidPyprojectTOMLOptionsError
-
 from tests.utils import run_within_dir
 
 if TYPE_CHECKING:
