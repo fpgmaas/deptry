@@ -1,21 +1,34 @@
 # Changelog
 
-## 0.12.0 - 2023-06-18
+## 0.13.0 - 2024-03-12
 
-## What's Changed
+### Features
+
+* _deptry_ will now report invalid configuration options defined in `pyproject.toml` ([#571](https://github.com/fpgmaas/deptry/pull/571))
+
+### Bug Fixes
+
+* Stricten URL detection to avoid flagging libraries like `httpx` as URLs ([#570](https://github.com/fpgmaas/deptry/pull/570))
+
+### Full Changelog
+
+https://github.com/fpgmaas/deptry/compare/0.12.0...0.13.0
+
+
+## 0.12.0 - 2023-06-18
 
 This release introduces a significant change to the command-line flags and configuration options to make use of the error codes introduced in release [0.10.0](https://github.com/fpgmaas/deptry/releases/tag/0.10.0).
 
 | Code   | Issue                            |
 |--------|----------------------------------|
 | DEP001 | Missing dependency               |
-| DEP002 | Unused/obsolete dependency              |
+| DEP002 | Unused/obsolete dependency       |
 | DEP003 | Transitive dependency            |
 | DEP004 | Misplaced development dependency |
 
-## Features
+### Features
 
-- **Replaced --skip-unused, --skip-obsolete, --skip-missing, --skip-misplaced-dev flags**: We have replaced the currently existing flags with the more generalized `--ignore` flag. Now, instead of skipping types of checks, you can specify the exact error codes to ignore using the `--ignore` flag (e.g., `deptry . --ignore "DEP001,DEP002"` to ignore checking for missing and unused dependencies).
+* **Replaced --skip-unused, --skip-obsolete, --skip-missing, --skip-misplaced-dev flags**: We have replaced the currently existing flags with the more generalized `--ignore` flag. Now, instead of skipping types of checks, you can specify the exact error codes to ignore using the `--ignore` flag (e.g., `deptry . --ignore "DEP001,DEP002"` to ignore checking for missing and unused dependencies).
 
 The changes are also reflected in `pyproject.toml`. For example,
 
@@ -33,7 +46,7 @@ is superseded by
 ignore = ["DEP001", "DEP002"]
 ```
 
-- **Replaced --ignore-unused, --ignore-obsolete, --ignore-missing, --ignore-misplaced-dev flags**: Previously, specific checks for spefific dependencies/modules could be ingored using the `--ignore-<code>` flags. We are replacing these flags with the more generalized `--per-rule-ignores` flag. This flag allows you to specify dependencies that should be ignored for specific error codes, offering granular control over which errors are ignored for which dependencies. For instance, `deptry . --per-rule-ignores DEP001=matplotlib,DEP002=pandas|numpy` means `DEP001` will be ignored for `matplotlib`, while `DEP002` will be ignored for both `pandas` and `numpy`.
+* **Replaced --ignore-unused, --ignore-obsolete, --ignore-missing, --ignore-misplaced-dev flags**: Previously, specific checks for spefific dependencies/modules could be ingored using the `--ignore-<code>` flags. We are replacing these flags with the more generalized `--per-rule-ignores` flag. This flag allows you to specify dependencies that should be ignored for specific error codes, offering granular control over which errors are ignored for which dependencies. For instance, `deptry . --per-rule-ignores DEP001=matplotlib,DEP002=pandas|numpy` means `DEP001` will be ignored for `matplotlib`, while `DEP002` will be ignored for both `pandas` and `numpy`.
 
 The changes are also reflected in `pyproject.toml`. For example,
 
