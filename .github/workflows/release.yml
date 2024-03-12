@@ -17,7 +17,6 @@ jobs:
 
       - name: Update project version
         run: |
-            PROJECT_VERSION="0.0.13a5"
             sed -i "s/^version = \".*\"/version = \"$RELEASE_VERSION\"/" pyproject.toml
         env:
             RELEASE_VERSION: ${{ steps.vars.outputs.tag }}
