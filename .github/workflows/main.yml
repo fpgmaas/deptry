@@ -28,7 +28,7 @@ jobs:
 
       - name: Inspect dependencies with deptry
         run: |
-          pdm run deptry .
+          pdm run deptry python
 
   linux:
     runs-on: ubuntu-latest

@@ -20,7 +20,7 @@ use rustpython_ast::Visitor;
 use visitor::ImportVisitor;
 
 #[pymodule]
-fn deptry(py: Python, m: &PyModule) -> PyResult<()> {
+fn rust(py: Python, m: &PyModule) -> PyResult<()> {
     pyo3_log::init(); // Initialize logging to forward to Python's logger
 
     m.add_function(wrap_pyfunction!(get_imports_from_py_files, m)?)?;

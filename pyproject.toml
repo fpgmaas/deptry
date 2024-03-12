@@ -56,6 +56,8 @@ build-backend = "maturin"
 
 [tool.maturin]
 features = ["pyo3/extension-module"]
+python-source = "python"
+module-name = "deptry.rust"
 
 [tool.coverage.report]
 skip_empty = true
@@ -82,10 +84,11 @@ exclude_lines = [
 
 [tool.coverage.run]
 branch = true
-source = ["deptry"]
+source = ["python/deptry"]
 
 [tool.mypy]
-files = ["deptry", "scripts", "tests"]
+mypy_path = "python"
+files = ["python/deptry", "scripts", "tests"]
 explicit_package_bases = true
 exclude = ["tests/data"]
 disallow_any_unimported = true

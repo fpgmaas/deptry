@@ -12,7 +12,7 @@ check: ## Run code quality tools.
 	@echo "🚀 Static type checking: Running mypy"
 	@pdm run mypy
 	@echo "🚀 Checking for dependency issues: Running deptry"
-	@pdm run deptry .
+	@pdm run deptry python
 
 .PHONY: test
 test: ## Test the code with pytest.
