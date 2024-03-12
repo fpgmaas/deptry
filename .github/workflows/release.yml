@@ -32,7 +32,7 @@ jobs:
     needs: [set-version]
     strategy:
       matrix:
-        target: [x86_64, x86, aarch64]
+        target: [x86_64, aarch64]
     steps:
       - name: Check out
         uses: actions/checkout@v4
@@ -67,7 +67,7 @@ jobs:
     needs: [set-version]
     strategy:
       matrix:
-        target: [x64, x86]
+        target: [x64]
     steps:
       - name: Check out
         uses: actions/checkout@v4
