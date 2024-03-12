@@ -18,6 +18,7 @@ runs:
       uses: actions/setup-python@v5
       with:
         python-version: ${{ inputs.python-version }}
+        architecture: ${{ matrix.target }}
 
     - name: Setup Rust toolchain
       uses: dtolnay/rust-toolchain@stable
