@@ -10,6 +10,10 @@ inputs:
     description: 'Target architecture for maturin'
     required: true
     default: 'x86_64'
+  python-target:
+    description: 'Target architecture for python installation'
+    required: true
+    default: 'x64'
 
 runs:
   using: 'composite'
@@ -18,7 +22,7 @@ runs:
       uses: actions/setup-python@v5
       with:
         python-version: ${{ inputs.python-version }}
-        architecture: ${{ matrix.target }}
+        architecture: ${{ matrix.python-target }}
 
     - name: Setup Rust toolchain
       uses: dtolnay/rust-toolchain@stable
