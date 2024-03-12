@@ -182,4 +182,4 @@ jobs:
           target: 'x86_64'
 
       - name: Deploy documentation
-        run: poetry run mkdocs gh-deploy --force
+        run: pdm run mkdocs gh-deploy --force
