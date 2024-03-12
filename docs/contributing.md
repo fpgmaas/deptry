@@ -40,7 +40,7 @@ If you are proposing a new feature:
 
 ## Get started!
 
-Ready to contribute? Here's how to set up _deptry_ for local development. Please note this documentation assumes you already have [Poetry](https://python-poetry.org/) and [Git](https://git-scm.com/) installed and ready to go.
+Ready to contribute? Here's how to set up _deptry_ for local development. Please note this documentation assumes you already have [PDM](https://python-poetry.org/) and [Git](https://git-scm.com/) installed and ready to go.
 
 1. [Fork](https://github.com/fpgmaas/deptry/fork) the _deptry_ repository on GitHub.
 

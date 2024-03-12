@@ -4,9 +4,9 @@ import re
 from pathlib import Path
 
 import pytest
-
 from deptry.dependency_specification_detector import DependencyManagementFormat, DependencySpecificationDetector
 from deptry.exceptions import DependencySpecificationNotFoundError
+
 from tests.utils import run_within_dir
 
 

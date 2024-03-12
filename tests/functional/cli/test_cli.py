@@ -5,8 +5,8 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from click.testing import CliRunner
-
 from deptry.cli import deptry
+
 from tests.utils import get_issues_report, stylize
 
 if TYPE_CHECKING:

@@ -5,7 +5,6 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 import pytest
-
 from deptry.dependency import Dependency
 from deptry.imports.location import Location
 from deptry.module import Module
@@ -17,6 +16,7 @@ from deptry.violations import (
     DEP003TransitiveDependencyViolation,
     DEP004MisplacedDevDependencyViolation,
 )
+
 from tests.utils import stylize
 
 if TYPE_CHECKING:

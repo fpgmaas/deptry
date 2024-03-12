@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import pytest
-
 from deptry.deprecate.ignore_flags import generate_deprecation_warning, get_value_for_per_rule_ignores_argument
 
 if TYPE_CHECKING:

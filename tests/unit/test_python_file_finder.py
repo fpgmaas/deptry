@@ -3,10 +3,10 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
+from deptry.python_file_finder import PythonFileFinder
 from pathspec import PathSpec
 from pathspec.patterns.gitwildmatch import GitWildMatchPattern
 
-from deptry.python_file_finder import PythonFileFinder
 from tests.utils import create_files, run_within_dir
 
 

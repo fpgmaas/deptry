@@ -3,8 +3,8 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
-
 from deptry.dependency_getter.requirements_txt import RequirementsTxtDependencyGetter
+
 from tests.utils import run_within_dir
 
 
