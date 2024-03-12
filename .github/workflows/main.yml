@@ -64,6 +64,8 @@ jobs:
 
       - name: Upload coverage reports to Codecov with GitHub Action on Python 3.11 for Ubuntu
         uses: codecov/codecov-action@v4
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         if: ${{ matrix.python-version == '3.11' && matrix.os == 'Ubuntu' }}
 
   check-docs:
