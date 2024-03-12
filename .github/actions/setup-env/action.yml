@@ -25,9 +25,10 @@ runs:
         architecture: ${{ matrix.python-target }}
 
     - name: Setup Rust toolchain
-      uses: dtolnay/rust-toolchain@stable
-      with:
-        toolchain: 1.75.0
+      run: rustup component add clippy rustfmt
+      shell: bash
+
+    - uses: Swatinem/rust-cache@v2
 
     - name: Install PDM and dependencies
       run: |

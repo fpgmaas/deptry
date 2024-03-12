@@ -53,7 +53,6 @@ jobs:
           args: --release --out dist --find-interpreter
           sccache: 'true'
           manylinux: auto
-          rust-toolchain: 1.75.0
 
       - name: Upload wheels
         uses: actions/upload-artifact@v4
@@ -87,7 +86,6 @@ jobs:
           target: ${{ matrix.target }}
           args: --release --out dist --find-interpreter
           sccache: 'true'
-          rust-toolchain: 1.75.0
 
       - name: Upload wheels
         uses: actions/upload-artifact@v4
@@ -121,7 +119,6 @@ jobs:
           target: ${{ matrix.target }}
           args: --release --out dist --find-interpreter
           sccache: 'true'
-          rust-toolchain: 1.75.0
 
       - name: Upload wheels
         uses: actions/upload-artifact@v4
@@ -145,7 +142,6 @@ jobs:
         with:
           command: sdist
           args: --out dist
-          rust-toolchain: 1.75.0
 
       - name: Upload sdist
         uses: actions/upload-artifact@v4
