@@ -16,8 +16,21 @@ repos:
         args: [--exit-non-zero-on-fix]
       - id: ruff-format
 
-  - repo: https://github.com/doublify/pre-commit-rust
-    rev: v1.0
+  - repo: local
     hooks:
-      - id: fmt
-      - id: cargo-check
+      - id: cargo-fmt
+        name: cargo fmt
+        entry: cargo fmt --
+        language: system
+        types: [rust]
+        pass_filenames: false
+
+  - repo: local
+    hooks:
+      - id: cargo-clippy
+        name: cargo clippy
+        entry: cargo clippy
+        args: ["--all-targets", "--all-features", "--", "-D", "warnings"]
+        language: system
+        types: [rust]
+        pass_filenames: false
