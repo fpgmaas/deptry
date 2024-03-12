@@ -22,21 +22,7 @@ test: ## Test the code with pytest.
 .PHONY: build
 build: clean-build ## Build wheel and sdist files using PDM.
 	@echo "🚀 Creating wheel and sdist files"
-	@pdm build
-
-.PHONY: clean-build
-clean-build: ## clean build artifacts
-	@rm -rf dist
-
-.PHONY: publish
-publish: ## Publish a release to PyPI.
-	@echo "🚀 Publishing: Dry run."
-	@PDM_PYPI_TOKEN=$(PYPI_TOKEN) pdm publish --dry-run
-	@echo "🚀 Publishing."
-	@PDM_PYPI_TOKEN=$(PYPI_TOKEN) pdm publish
-
-.PHONY: build-and-publish
-build-and-publish: build publish ## Build and publish.
+	@maturin build
 
 .PHONY: docs-test
 docs-test: ## Test if documentation can be built without warnings or errors.

@@ -134,5 +134,7 @@ def test_import_parser_file_encodings_warning(tmp_path: Path, caplog: LogCapture
             assert get_imported_modules_from_list_of_files([file_path]) == {}
 
         # //TODO logging from Rust still includes it's own warning and file + line number. Can we get rid of that?
-        pattern = re.compile(r"WARNING  deptry:lib.rs:\d+ Warning: File file1.py could not be read. Skipping...\n")
+        pattern = re.compile(
+            r"WARNING  deptry.imports:imports.rs:\d+ Warning: File file1.py could not be read. Skipping...\n"
+        )
         assert pattern.search(caplog.text) is not None
