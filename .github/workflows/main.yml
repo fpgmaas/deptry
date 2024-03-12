@@ -43,7 +43,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           target: ${{ matrix.target }}
-          python-target: ${{ matrix.target == 'aarch64' && 'amd64' || 'x64' }}
+          python-target: ${{ matrix.target == 'aarch64' && 'arm64' || 'x64' }}
 
       - name: Check typing
         run: pdm run mypy
@@ -90,7 +90,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           target: ${{ matrix.target }}
-          python-target: ${{ matrix.target == 'aarch64' && 'amd64' || 'x64' }}
+          python-target: ${{ matrix.target == 'aarch64' && 'arm64' || 'x64' }}
 
       - name: Run tests
         run: pdm run pytest tests --cov --cov-config=pyproject.toml --cov-report=xml
