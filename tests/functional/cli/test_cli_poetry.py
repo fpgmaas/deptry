@@ -50,7 +50,7 @@ def test_cli_with_poetry(poetry_venv_factory: PoetryVenvFactory) -> None:
                 "location": {
                     "file": str(Path("src/main.py")),
                     "line": 4,
-                    "column": 0,
+                    "column": 8,
                 },
             },
             {
@@ -62,7 +62,7 @@ def test_cli_with_poetry(poetry_venv_factory: PoetryVenvFactory) -> None:
                 "location": {
                     "file": str(Path("src/main.py")),
                     "line": 6,
-                    "column": 0,
+                    "column": 8,
                 },
             },
             {
@@ -74,7 +74,7 @@ def test_cli_with_poetry(poetry_venv_factory: PoetryVenvFactory) -> None:
                 "location": {
                     "file": str(Path("src/main.py")),
                     "line": 7,
-                    "column": 0,
+                    "column": 8,
                 },
             },
             {
@@ -86,7 +86,7 @@ def test_cli_with_poetry(poetry_venv_factory: PoetryVenvFactory) -> None:
                 "location": {
                     "file": str(Path("src/main.py")),
                     "line": 8,
-                    "column": 0,
+                    "column": 8,
                 },
             },
             {
@@ -98,7 +98,7 @@ def test_cli_with_poetry(poetry_venv_factory: PoetryVenvFactory) -> None:
                 "location": {
                     "file": str(Path("src/main.py")),
                     "line": 9,
-                    "column": 0,
+                    "column": 8,
                 },
             },
         ]

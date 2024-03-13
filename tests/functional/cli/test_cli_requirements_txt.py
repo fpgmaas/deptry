@@ -58,7 +58,7 @@ def test_cli_single_requirements_txt(pip_venv_factory: PipVenvFactory) -> None:
                 "location": {
                     "file": str(Path("src/main.py")),
                     "line": 4,
-                    "column": 0,
+                    "column": 8,
                 },
             },
             {
@@ -70,7 +70,7 @@ def test_cli_single_requirements_txt(pip_venv_factory: PipVenvFactory) -> None:
                 "location": {
                     "file": str(Path("src/main.py")),
                     "line": 6,
-                    "column": 0,
+                    "column": 8,
                 },
             },
             {
@@ -82,7 +82,7 @@ def test_cli_single_requirements_txt(pip_venv_factory: PipVenvFactory) -> None:
                 "location": {
                     "file": str(Path("src/main.py")),
                     "line": 7,
-                    "column": 0,
+                    "column": 1,
                 },
             },
             {
@@ -148,7 +148,7 @@ def test_cli_multiple_requirements_txt(pip_venv_factory: PipVenvFactory) -> None
                 "location": {
                     "file": str(Path("src/main.py")),
                     "line": 4,
-                    "column": 0,
+                    "column": 8,
                 },
             },
             {
@@ -160,7 +160,7 @@ def test_cli_multiple_requirements_txt(pip_venv_factory: PipVenvFactory) -> None
                 "location": {
                     "file": str(Path("src/main.py")),
                     "line": 6,
-                    "column": 0,
+                    "column": 8,
                 },
             },
         ]

@@ -25,11 +25,11 @@ def test_cli_with_multiple_source_directories(pip_venv_factory: PipVenvFactory) 
             {
                 "error": {"code": "DEP001", "message": "'httpx' imported but missing from the dependency definitions"},
                 "module": "httpx",
-                "location": {"file": str(Path("src/foo.py")), "line": 1, "column": 0},
+                "location": {"file": str(Path("src/foo.py")), "line": 1, "column": 8},
             },
             {
                 "error": {"code": "DEP001", "message": "'celery' imported but missing from the dependency definitions"},
                 "module": "celery",
-                "location": {"file": str(Path("worker/foo.py")), "line": 1, "column": 0},
+                "location": {"file": str(Path("worker/foo.py")), "line": 1, "column": 8},
             },
         ]
