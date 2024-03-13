@@ -190,7 +190,7 @@ ignore = ["DEP003", "DEP004"]
 deptry . --ignore DEP003,DEP004
 ```
 
-#### Per check ignores
+#### Per rule ignores
 
 A comma-separated mapping of packages or modules to be ignored per [rule](rules-violations.md) .
 
