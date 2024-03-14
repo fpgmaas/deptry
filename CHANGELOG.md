@@ -1,5 +1,30 @@
 # Changelog
 
+## 0.14.0 - 2024-03-14
+
+This release significantly improves the speed of `deptry`, particularly for large projects, by utilizing Rust to manage the parsing of Abstract Syntax Trees (AST) from `.py` files and to extract the import statements. For some benchmarks, see below:
+
+<img src="https://github.com/fpgmaas/deptry/assets/12008199/4f045622-7566-4cc3-a589-dbc6ea12ea5f" width="70%" />
+
+### Changes
+
+Since the changes are all in the back-end, little has changed for the user other than the execution speed. The two minor notable changes are:
+
+- Improved identification of `column` identifier in imports detection. Where earlier the column identifier for an imported module `foo` in the line `import foo` would be `0`, it now points to column `8`.
+- When a file can not be read, the error will be slightly more verbose and include the source file and line pointing to the location in deptry's source code responsible for logging the warning. So instead of `Warning: File file1.py could not be read. Skipping...`, the error will now read `WARNING  deptry.imports:imports.rs:66 Warning: File file1.py could not be read. Skipping...`. This will likely be reverted in the future.
+
+### Available wheels on PyPi
+
+Where earlier releases published a single `.whl` file to PyPi, with the move to Rust we now build and publish wheels for a variety of platforms and architectures. More specifically, wheel files for the following combinations are now available on PyPi:
+
+  - Linux: ABI3 wheels for `x86_64` and `aarch64` architectures.
+  - Windows: ABI3 wheels for the `x64` architecture.
+  - macOS: ABI3 wheels for `x86_64` and `aarch64` (Apple Silicon) architectures.
+
+Alongside the ABI3 wheels, we provide a source distribution (sdist) package.
+
+**Full Changelog**: https://github.com/fpgmaas/deptry/compare/0.13.0...0.14.0
+
 ## 0.13.0 - 2024-03-12
 
 ### Features
