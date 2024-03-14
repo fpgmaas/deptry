@@ -1,0 +1,52 @@
+name: 'Setup Python and Rust Environment'
+description: 'Set up Python and Rust environment for PDM projects with matrix support'
+
+inputs:
+  python-version:
+    description: 'Python version for setup-python'
+    required: true
+    default: 3.11
+  target:
+    description: 'Target architecture for maturin'
+    required: true
+    default: 'x86_64'
+  python-target:
+    description: 'Target architecture for python installation'
+    required: true
+    default: 'x64'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python-version }}
+        architecture: ${{ matrix.python-target }}
+
+    - name: Setup Rust toolchain
+      run: rustup component add clippy rustfmt
+      shell: bash
+
+    - uses: Swatinem/rust-cache@v2
+
+    - name: Install PDM and dependencies
+      run: |
+        python -m pip install pdm
+        python -m venv .venv
+        if [ "${{ runner.os }}" = "Windows" ]; then
+          source .venv/Scripts/Activate
+        else
+          source .venv/bin/activate
+        fi
+        python -m pip install --upgrade pip
+        pdm config python.use_venv true
+        pdm install
+      shell: bash
+
+    - name: Build and install the project using Maturin
+      uses: PyO3/maturin-action@v1
+      with:
+        target: ${{ inputs.target }}
+        command: develop
+        sccache: 'true'

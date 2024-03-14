@@ -53,7 +53,7 @@ def test_cli_returns_error(poetry_venv_factory: PoetryVenvFactory) -> None:
                 "location": {
                     "file": str(Path("src/main.py")),
                     "line": 4,
-                    "column": 0,
+                    "column": 8,
                 },
             },
             {
@@ -65,7 +65,7 @@ def test_cli_returns_error(poetry_venv_factory: PoetryVenvFactory) -> None:
                 "location": {
                     "file": str(Path("src/main.py")),
                     "line": 6,
-                    "column": 0,
+                    "column": 8,
                 },
             },
         ]
@@ -123,7 +123,7 @@ def test_cli_ignore_notebooks(poetry_venv_factory: PoetryVenvFactory) -> None:
                 "location": {
                     "file": str(Path("src/main.py")),
                     "line": 4,
-                    "column": 0,
+                    "column": 8,
                 },
             },
             {
@@ -135,7 +135,7 @@ def test_cli_ignore_notebooks(poetry_venv_factory: PoetryVenvFactory) -> None:
                 "location": {
                     "file": str(Path("src/main.py")),
                     "line": 6,
-                    "column": 0,
+                    "column": 8,
                 },
             },
         ]
@@ -207,7 +207,7 @@ def test_cli_exclude(poetry_venv_factory: PoetryVenvFactory) -> None:
                 "location": {
                     "file": str(Path("src/main.py")),
                     "line": 4,
-                    "column": 0,
+                    "column": 8,
                 },
             },
             {
@@ -219,7 +219,7 @@ def test_cli_exclude(poetry_venv_factory: PoetryVenvFactory) -> None:
                 "location": {
                     "file": str(Path("src/main.py")),
                     "line": 6,
-                    "column": 0,
+                    "column": 8,
                 },
             },
         ]
@@ -277,7 +277,7 @@ def test_cli_extend_exclude(poetry_venv_factory: PoetryVenvFactory) -> None:
                 "location": {
                     "file": str(Path("src/main.py")),
                     "line": 4,
-                    "column": 0,
+                    "column": 8,
                 },
             },
             {
@@ -289,7 +289,7 @@ def test_cli_extend_exclude(poetry_venv_factory: PoetryVenvFactory) -> None:
                 "location": {
                     "file": str(Path("src/main.py")),
                     "line": 6,
-                    "column": 0,
+                    "column": 8,
                 },
             },
         ]
@@ -335,7 +335,7 @@ def test_cli_known_first_party(poetry_venv_factory: PoetryVenvFactory) -> None:
                 "location": {
                     "file": str(Path("src/main.py")),
                     "line": 4,
-                    "column": 0,
+                    "column": 8,
                 },
             },
         ]
@@ -382,7 +382,7 @@ def test_cli_not_verbose(poetry_venv_factory: PoetryVenvFactory) -> None:
                 "location": {
                     "file": str(Path("src/main.py")),
                     "line": 4,
-                    "column": 0,
+                    "column": 8,
                 },
             },
             {
@@ -394,7 +394,7 @@ def test_cli_not_verbose(poetry_venv_factory: PoetryVenvFactory) -> None:
                 "location": {
                     "file": str(Path("src/main.py")),
                     "line": 6,
-                    "column": 0,
+                    "column": 8,
                 },
             },
         ]
@@ -441,7 +441,7 @@ def test_cli_verbose(poetry_venv_factory: PoetryVenvFactory) -> None:
                 "location": {
                     "file": str(Path("src/main.py")),
                     "line": 4,
-                    "column": 0,
+                    "column": 8,
                 },
             },
             {
@@ -453,7 +453,7 @@ def test_cli_verbose(poetry_venv_factory: PoetryVenvFactory) -> None:
                 "location": {
                     "file": str(Path("src/main.py")),
                     "line": 6,
-                    "column": 0,
+                    "column": 8,
                 },
             },
         ]
@@ -468,8 +468,8 @@ def test_cli_with_no_ansi(poetry_venv_factory: PoetryVenvFactory) -> None:
             "",
             f"{Path('pyproject.toml')}: DEP002 'isort' defined as a dependency but not used in the codebase",
             f"{Path('pyproject.toml')}: DEP002 'requests' defined as a dependency but not used in the codebase",
-            f"{Path('src/main.py')}:4:0: DEP004 'black' imported but declared as a dev dependency",
-            f"{Path('src/main.py')}:6:0: DEP001 'white' imported but missing from the dependency definitions",
+            f"{Path('src/main.py')}:4:8: DEP004 'black' imported but declared as a dev dependency",
+            f"{Path('src/main.py')}:6:8: DEP001 'white' imported but missing from the dependency definitions",
             "Found 4 dependency issues.",
             "",
             "For more information, see the documentation: https://fpgmaas.github.io/deptry/",
@@ -500,12 +500,12 @@ def test_cli_with_not_json_output(poetry_venv_factory: PoetryVenvFactory) -> Non
                 file=Path("pyproject.toml"),
             ),
             stylize(
-                "{BOLD}{file}{RESET}{CYAN}:{RESET}4{CYAN}:{RESET}0{CYAN}:{RESET} {BOLD}{RED}DEP004{RESET} 'black'"
+                "{BOLD}{file}{RESET}{CYAN}:{RESET}4{CYAN}:{RESET}8{CYAN}:{RESET} {BOLD}{RED}DEP004{RESET} 'black'"
                 " imported but declared as a dev dependency",
                 file=Path("src/main.py"),
             ),
             stylize(
-                "{BOLD}{file}{RESET}{CYAN}:{RESET}6{CYAN}:{RESET}0{CYAN}:{RESET} {BOLD}{RED}DEP001{RESET} 'white'"
+                "{BOLD}{file}{RESET}{CYAN}:{RESET}6{CYAN}:{RESET}8{CYAN}:{RESET} {BOLD}{RED}DEP001{RESET} 'white'"
                 " imported but missing from the dependency definitions",
                 file=Path("src/main.py"),
             ),
@@ -540,12 +540,12 @@ def test_cli_with_json_output(poetry_venv_factory: PoetryVenvFactory) -> None:
                 file=Path("pyproject.toml"),
             ),
             stylize(
-                "{BOLD}{file}{RESET}{CYAN}:{RESET}4{CYAN}:{RESET}0{CYAN}:{RESET} {BOLD}{RED}DEP004{RESET} 'black'"
+                "{BOLD}{file}{RESET}{CYAN}:{RESET}4{CYAN}:{RESET}8{CYAN}:{RESET} {BOLD}{RED}DEP004{RESET} 'black'"
                 " imported but declared as a dev dependency",
                 file=Path("src/main.py"),
             ),
             stylize(
-                "{BOLD}{file}{RESET}{CYAN}:{RESET}6{CYAN}:{RESET}0{CYAN}:{RESET} {BOLD}{RED}DEP001{RESET} 'white'"
+                "{BOLD}{file}{RESET}{CYAN}:{RESET}6{CYAN}:{RESET}8{CYAN}:{RESET} {BOLD}{RED}DEP001{RESET} 'white'"
                 " imported but missing from the dependency definitions",
                 file=Path("src/main.py"),
             ),
@@ -591,7 +591,7 @@ def test_cli_with_json_output(poetry_venv_factory: PoetryVenvFactory) -> None:
                 "location": {
                     "file": str(Path("src/main.py")),
                     "line": 4,
-                    "column": 0,
+                    "column": 8,
                 },
             },
             {
@@ -603,7 +603,7 @@ def test_cli_with_json_output(poetry_venv_factory: PoetryVenvFactory) -> None:
                 "location": {
                     "file": str(Path("src/main.py")),
                     "line": 6,
-                    "column": 0,
+                    "column": 8,
                 },
             },
         ]

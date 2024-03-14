@@ -74,7 +74,7 @@ def test_cli_with_src_directory(pip_venv_factory: PipVenvFactory) -> None:
                 "location": {
                     "file": str(Path("src/foobar.py")),
                     "line": 1,
-                    "column": 0,
+                    "column": 8,
                 },
             },
             {
@@ -86,7 +86,7 @@ def test_cli_with_src_directory(pip_venv_factory: PipVenvFactory) -> None:
                 "location": {
                     "file": str(Path("src/project_with_src_directory/foo.py")),
                     "line": 6,
-                    "column": 0,
+                    "column": 8,
                 },
             },
         ]

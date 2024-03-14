@@ -1,54 +1,63 @@
-[tool.poetry]
+[project]
 name = "deptry"
 version = "0.0.1"
 description = "A command line utility to check for unused, missing and transitive dependencies in a Python project."
-authors = ["Florian Maas <fpgmaas@gmail.com>"]
-maintainers = ["Mathieu Kniewallner <mathieu.kniewallner@gmail.com>"]
-repository = "https://github.com/fpgmaas/deptry"
-documentation = "https://fpgmaas.github.io/deptry/"
-readme = "README.md"
-license = "MIT"
-packages = [
-    { include = "deptry" }
-]
-keywords = ["dependency", "poetry"]
+authors = [{ name = "Florian Maas", email = "fpgmaas@gmail.com" }]
+maintainers = [{ name = "Mathieu Kniewallner", email = "mathieu.kniewallner@gmail.com" }]
+requires-python = ">=3.8,<4.0"
+license = { file = "LICENSE" }
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Environment :: Console",
     "Intended Audience :: Developers",
-    "Programming Language :: Python",
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: Software Development :: Quality Assurance",
+    "Programming Language :: Rust",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+]
+dependencies = [
+    "chardet>=4.0.0",
+    "click>=8.0.0,<9",
+    "pathspec>=0.9.0",
+    "colorama>=0.4.6; sys_platform == 'win32'",
+    "tomli>=2.0.1; python_version < '3.11'"
 ]
 
-[tool.poetry.urls]
+[tool.pdm.dev-dependencies]
+dev = [
+    "pre-commit==3.5.0",
+    "pytest==8.0.2",
+    "pytest-cov==4.1.0",
+]
+docs = [
+    "mkdocs==1.5.3",
+    "mkdocs-material==9.5.13",
+]
+typing = [
+    "mypy==1.9.0",
+    "types-chardet==5.0.4.6",
+    "types-colorama==0.4.15.20240205; sys_platform == 'win32'",
+]
+
+[project.urls]
+homepage = "https://fpgmaas.github.io/deptry"
+repository = "https://github.com/fpgmaas/deptry"
+documentation = "https://fpgmaas.github.io/deptry"
 changelog = "https://github.com/fpgmaas/deptry/blob/main/CHANGELOG.md"
 
-[tool.poetry.dependencies]
-python = ">=3.8,<4.0"
-chardet = ">=4.0.0"
-click = "^8.0.0"
-colorama = { version = ">=0.4.6", markers = "sys_platform == 'win32'" }
-pathspec = ">=0.9.0"
-tomli = { version = "^2.0.1", python = "<3.11" }
-
-[tool.poetry.group.dev.dependencies]
-pre-commit = "3.5.0"
-pytest = "8.0.2"
-pytest-cov = "4.1.0"
-
-[tool.poetry.group.docs.dependencies]
-mkdocs = "1.5.3"
-mkdocs-material = "9.5.13"
-
-[tool.poetry.group.typing.dependencies]
-mypy = "1.9.0"
-types-chardet = "5.0.4.6"
-types-colorama = { version = "0.4.15.20240205", markers = "sys_platform == 'win32'" }
+[project.scripts]
+deptry = "deptry.cli:deptry"
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["maturin>=1.5,<2.0"]
+build-backend = "maturin"
+
+[tool.maturin]
+features = ["pyo3/extension-module"]
+python-source = "python"
+module-name = "deptry.rust"
 
 [tool.coverage.report]
 skip_empty = true
@@ -75,10 +84,11 @@ exclude_lines = [
 
 [tool.coverage.run]
 branch = true
-source = ["deptry"]
+source = ["python/deptry"]
 
 [tool.mypy]
-files = ["deptry", "scripts", "tests"]
+mypy_path = "python"
+files = ["python/deptry", "scripts", "tests"]
 explicit_package_bases = true
 exclude = ["tests/data"]
 disallow_any_unimported = true
@@ -101,9 +111,6 @@ extend_exclude = [
 
 [tool.deptry.per_rule_ignores]
 DEP001 = ["tomllib"]
-
-[tool.poetry.scripts]
-deptry = "deptry.cli:deptry"
 
 [tool.pytest.ini_options]
 addopts = "--doctest-modules"
@@ -177,6 +184,7 @@ ignore = [
 strict = true
 
 [tool.ruff.lint.isort]
+known-first-party = ["deptry"]
 required-imports = ["from __future__ import annotations"]
 
 [tool.ruff.lint.per-file-ignores]

@@ -12,7 +12,7 @@ from deptry.dependency_getter.poetry import PoetryDependencyGetter
 from deptry.dependency_getter.requirements_txt import RequirementsTxtDependencyGetter
 from deptry.dependency_specification_detector import DependencyManagementFormat, DependencySpecificationDetector
 from deptry.exceptions import IncorrectDependencyFormatError, UnsupportedPythonVersionError
-from deptry.imports.extract import get_imported_modules_for_list_of_files
+from deptry.imports.extract import get_imported_modules_from_list_of_files
 from deptry.module import ModuleBuilder, ModuleLocations
 from deptry.python_file_finder import PythonFileFinder
 from deptry.reporters import JSONReporter, TextReporter
@@ -80,7 +80,7 @@ class Core:
                 ).build(),
                 locations,
             )
-            for module, locations in get_imported_modules_for_list_of_files(all_python_files).items()
+            for module, locations in get_imported_modules_from_list_of_files(all_python_files).items()
         ]
         imported_modules_with_locations = [
             module_with_locations

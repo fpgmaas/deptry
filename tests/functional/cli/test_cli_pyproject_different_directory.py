@@ -76,7 +76,7 @@ def test_cli_with_pyproject_different_directory(pip_venv_factory: PipVenvFactory
                 "location": {
                     "file": str(Path("src/project_with_src_directory/foo.py")),
                     "line": 6,
-                    "column": 0,
+                    "column": 8,
                 },
             },
         ]

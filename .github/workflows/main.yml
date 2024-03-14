@@ -1,10 +1,14 @@
-name: Main
+name: CI
 
 on:
   pull_request:
     types: [opened, synchronize, reopened]
   push:
     branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   quality:
@@ -13,60 +17,90 @@ jobs:
       - name: Check out
         uses: actions/checkout@v4
 
-      - uses: actions/cache@v4
-        with:
-          path: ~/.cache/pre-commit
-          key: pre-commit-${{ hashFiles('.pre-commit-config.yaml') }}
-
       - name: Set up the environment
-        uses: ./.github/actions/setup-poetry-env
+        uses: ./.github/actions/setup-env
+        with:
+          python-version: '3.11'
+          target: 'x86_64'
+          python-target: 'x64'
 
       - name: Run pre-commit
-        run: poetry run pre-commit run -a --show-diff-on-failure
+        run: |
+          rustup component add rustfmt
+          pdm run pre-commit run -a --show-diff-on-failure
 
-      - name: Inspect dependencies
-        run: poetry run deptry .
+      - name: Inspect dependencies with deptry
+        run: |
+          pdm run deptry python
 
-      - name: Check Poetry lock file consistency
-        run: poetry lock --check
-
-  tests-and-type-check:
-    runs-on: ${{ matrix.image }}
+  linux:
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        os: [macOS, Ubuntu, Windows]
-        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
-        include:
-          - os: macOS
-            image: macos-12
-          - os: Ubuntu
-            image: ubuntu-22.04
-          - os: Windows
-            image: windows-2022
-      fail-fast: false
-    defaults:
-      run:
-        shell: bash
+        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
+        target: [x86_64, aarch64]
     steps:
       - name: Check out
         uses: actions/checkout@v4
 
       - name: Set up the environment
-        uses: ./.github/actions/setup-poetry-env
+        uses: ./.github/actions/setup-env
         with:
           python-version: ${{ matrix.python-version }}
-
-      - name: Run tests
-        run: poetry run pytest tests --cov --cov-config=pyproject.toml --cov-report=xml
+          target: ${{ matrix.target }}
+          python-target: 'x64'
 
       - name: Check typing
-        run: poetry run mypy
+        run: pdm run mypy
 
-      - name: Upload coverage reports to Codecov with GitHub Action on Python 3.11 for Ubuntu
+      - name: Run tests
+        run: pdm run pytest tests --cov --cov-config=pyproject.toml --cov-report=xml
+
+      - name: Upload coverage reports to Codecov with GitHub Action on Python 3.11 and x86_64
         uses: codecov/codecov-action@v4
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-        if: ${{ matrix.python-version == '3.11' && matrix.os == 'Ubuntu' }}
+        if: ${{ matrix.python-version == '3.11' && matrix.target == 'x86_64' }}
+
+  windows:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
+        target: [x64]
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up the environment
+        uses: ./.github/actions/setup-env
+        with:
+          python-version: ${{ matrix.python-version }}
+          target: ${{ matrix.target }}
+          python-target: ${{ matrix.target }}
+
+      - name: Run tests
+        run: pdm run pytest tests --cov --cov-config=pyproject.toml --cov-report=xml
+
+  macos:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
+        target: [x86_64, aarch64]
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up the environment
+        uses: ./.github/actions/setup-env
+        with:
+          python-version: ${{ matrix.python-version }}
+          target: ${{ matrix.target }}
+          python-target: ${{ matrix.target == 'aarch64' && 'arm64' || 'x64' }}
+
+      - name: Run tests
+        run: pdm run pytest tests --cov --cov-config=pyproject.toml --cov-report=xml
 
   check-docs:
     runs-on: ubuntu-latest
@@ -75,7 +109,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up the environment
-        uses: ./.github/actions/setup-poetry-env
+        uses: ./.github/actions/setup-env
+        with:
+          python-version: '3.11'
+          target: 'x86_64'
 
       - name: Check if documentation can be built
-        run: poetry run mkdocs build -s
+        run: pdm run mkdocs build -s
