@@ -13,6 +13,7 @@ _deptry_ is a command line tool to check for issues with dependencies in a Pytho
 
 - Projects that use [Poetry](https://python-poetry.org/) and a corresponding _pyproject.toml_ file
 - Projects that use [PDM](https://pdm.fming.dev/latest/) and a corresponding _pyproject.toml_ file
+- Projects that use any package manager that strictly follows [PEP 621](https://peps.python.org/pep-0621/) dependency specification
 - Projects that use a _requirements.txt_ file according to the [pip](https://pip.pypa.io/en/stable/user_guide/) standards
 
 Dependency issues are detected by scanning for imported modules within all Python files in a directory and its subdirectories, and comparing those to the dependencies listed in the project's requirements.
