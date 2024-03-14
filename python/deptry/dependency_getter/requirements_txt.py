@@ -99,7 +99,12 @@ class RequirementsTxtDependencyGetter(DependencyGetter):
 
     @staticmethod
     def _remove_comments_from(line: str) -> str:
-        return re.sub(r"\s*#.*", "", line).strip()
+        """
+        Removes comments from a line. A comment is defined as any text
+        following a '#' that is either at the start of the line or preceded by a space.
+        This ensures that fragments like '#egg=' in URLs are not mistakenly removed.
+        """
+        return re.sub(r"(?<!\S)#.*", "", line).strip()
 
     @staticmethod
     def _remove_newlines_from(line: str) -> str:
