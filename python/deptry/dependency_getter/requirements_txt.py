@@ -99,7 +99,7 @@ class RequirementsTxtDependencyGetter(DependencyGetter):
 
     @staticmethod
     def _remove_comments_from(line: str) -> str:
-        return re.sub(r"\s+#.*", "", line).strip()
+        return re.sub(r"\s*#.*", "", line).strip()
 
     @staticmethod
     def _remove_newlines_from(line: str) -> str:
