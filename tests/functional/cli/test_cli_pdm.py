@@ -4,14 +4,18 @@ import uuid
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+import pytest
+
+from tests.functional.utils import Project
 from tests.utils import get_issues_report
 
 if TYPE_CHECKING:
     from tests.utils import PDMVenvFactory
 
 
+@pytest.mark.xdist_group(name=Project.PDM)
 def test_cli_with_pdm(pdm_venv_factory: PDMVenvFactory) -> None:
-    with pdm_venv_factory("project_with_pdm") as virtual_env:
+    with pdm_venv_factory(Project.PDM) as virtual_env:
         issue_report = f"{uuid.uuid4()}.json"
         result = virtual_env.run(f"deptry . -o {issue_report}")
 

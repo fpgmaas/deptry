@@ -53,8 +53,11 @@ jobs:
       - name: Check typing
         run: pdm run mypy
 
-      - name: Run tests
-        run: pdm run pytest tests --cov --cov-config=pyproject.toml --cov-report=xml
+      - name: Run unit tests
+        run: pdm run pytest tests/unit --cov --cov-config=pyproject.toml --cov-report=xml
+
+      - name: Run functional tests
+        run: pdm run pytest tests/functional -n auto --dist loadgroup
 
       - name: Upload coverage reports to Codecov with GitHub Action on Python 3.11 and x86_64
         uses: codecov/codecov-action@v4
@@ -79,8 +82,11 @@ jobs:
           target: ${{ matrix.target }}
           python-target: ${{ matrix.target }}
 
-      - name: Run tests
-        run: pdm run pytest tests --cov --cov-config=pyproject.toml --cov-report=xml
+      - name: Run unit tests
+        run: pdm run pytest tests/unit --cov --cov-config=pyproject.toml --cov-report=xml
+
+      - name: Run functional tests
+        run: pdm run pytest tests/functional -n auto --dist loadgroup
 
   macos:
     runs-on: macos-latest
@@ -99,8 +105,11 @@ jobs:
           target: ${{ matrix.target }}
           python-target: ${{ matrix.target == 'aarch64' && 'arm64' || 'x64' }}
 
-      - name: Run tests
-        run: pdm run pytest tests --cov --cov-config=pyproject.toml --cov-report=xml
+      - name: Run unit tests
+        run: pdm run pytest tests/unit --cov --cov-config=pyproject.toml --cov-report=xml
+
+      - name: Run functional tests
+        run: pdm run pytest tests/functional -n auto --dist loadgroup
 
   check-docs:
     runs-on: ubuntu-latest

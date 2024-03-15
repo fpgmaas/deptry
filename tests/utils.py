@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Any, Generator
 
 from deptry.reporters.text import COLORS
-from tests.functional.constants import DEPTRY_WHEEL_DIRECTORY
+from tests.functional.utils import DEPTRY_WHEEL_DIRECTORY
 
 
 @dataclass

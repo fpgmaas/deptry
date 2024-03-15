@@ -4,15 +4,19 @@ import uuid
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+import pytest
+
+from tests.functional.utils import Project
 from tests.utils import get_issues_report
 
 if TYPE_CHECKING:
     from tests.utils import PipVenvFactory
 
 
+@pytest.mark.xdist_group(name=Project.REQUIREMENTS_TXT)
 def test_cli_single_requirements_txt(pip_venv_factory: PipVenvFactory) -> None:
     with pip_venv_factory(
-        "project_with_requirements_txt",
+        Project.REQUIREMENTS_TXT,
         install_command=(
             "pip install -r requirements.txt -r requirements-dev.txt -r requirements-2.txt -r requirements-typing.txt"
         ),
@@ -100,9 +104,10 @@ def test_cli_single_requirements_txt(pip_venv_factory: PipVenvFactory) -> None:
         ]
 
 
+@pytest.mark.xdist_group(name=Project.REQUIREMENTS_TXT)
 def test_cli_multiple_requirements_txt(pip_venv_factory: PipVenvFactory) -> None:
     with pip_venv_factory(
-        "project_with_requirements_txt",
+        Project.REQUIREMENTS_TXT,
         install_command=(
             "pip install -r requirements.txt -r requirements-dev.txt -r requirements-2.txt -r requirements-typing.txt"
         ),

@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from tests.functional.constants import DEPTRY_WHEEL_DIRECTORY
+from tests.functional.utils import DEPTRY_WHEEL_DIRECTORY
 from tests.utils import PDMVenvFactory, PipVenvFactory, PoetryVenvFactory
 
 

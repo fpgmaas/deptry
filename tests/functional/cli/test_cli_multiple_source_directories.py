@@ -4,14 +4,18 @@ import uuid
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+import pytest
+
+from tests.functional.utils import Project
 from tests.utils import get_issues_report
 
 if TYPE_CHECKING:
     from tests.utils import PipVenvFactory
 
 
+@pytest.mark.xdist_group(name=Project.MULTIPLE_SOURCE_DIRECTORIES)
 def test_cli_with_multiple_source_directories(pip_venv_factory: PipVenvFactory) -> None:
-    with pip_venv_factory("project_with_multiple_source_directories") as virtual_env:
+    with pip_venv_factory(Project.MULTIPLE_SOURCE_DIRECTORIES) as virtual_env:
         issue_report = f"{uuid.uuid4()}.json"
         result = virtual_env.run(f"deptry src worker -o {issue_report}")
 

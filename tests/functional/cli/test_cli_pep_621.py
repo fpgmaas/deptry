@@ -4,14 +4,18 @@ import uuid
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+import pytest
+
+from tests.functional.utils import Project
 from tests.utils import get_issues_report
 
 if TYPE_CHECKING:
     from tests.utils import PipVenvFactory
 
 
+@pytest.mark.xdist_group(name=Project.PEP_621)
 def test_cli_with_pep_621(pip_venv_factory: PipVenvFactory) -> None:
-    with pip_venv_factory("pep_621_project") as virtual_env:
+    with pip_venv_factory(Project.PEP_621) as virtual_env:
         issue_report = f"{uuid.uuid4()}.json"
         result = virtual_env.run(f"deptry . -o {issue_report}")
 

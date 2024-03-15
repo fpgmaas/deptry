@@ -34,6 +34,7 @@ dev = [
     "pre-commit==3.5.0",
     "pytest==8.1.1",
     "pytest-cov==4.1.0",
+    "pytest-xdist[psutil]==3.5.0",
 ]
 docs = [
     "mkdocs==1.5.3",
