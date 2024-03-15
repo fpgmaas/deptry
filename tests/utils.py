@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Any, Generator
 
 from deptry.reporters.text import COLORS
+from tests.functional.constants import DEPTRY_WHEEL_DIRECTORY
 
 
 @dataclass
@@ -78,7 +79,10 @@ class VirtualEnvironment:
 
         shutil.copytree(deptry_directory / "tests/data" / self.project, self.project_path / "project")
 
-        for setup_command in [f"pip install {deptry_directory}", *setup_commands]:
+        for setup_command in [
+            f"pip install --find-links {deptry_directory / DEPTRY_WHEEL_DIRECTORY} deptry",
+            *setup_commands,
+        ]:
             self.run(setup_command, check=True, cwd=self.project_path / "project")
 
     def run(self, command: str, check: bool = False, cwd: Path | None = None) -> subprocess.CompletedProcess[str]:
