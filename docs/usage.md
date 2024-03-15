@@ -368,7 +368,7 @@ unused packages, and missing packages. A concrete example is deptry reporting un
 `foo-python`, and missing package `foo`, while package `foo-python` would
 install top level module `foo`, if it were installed.
 
-A solution is to pre-define a mapping between the pacakge name and the top
+A solution is to pre-define a mapping between the package name and the top
 level module name(s).
 
 * Type `dict[str, list[str] | str]`
