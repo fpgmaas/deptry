@@ -22,6 +22,7 @@ SomeProject2 == 5.4 ; python_version < '3.8'
 SomeProject3 ; sys_platform == 'win32'
 requests [security] >= 2.8.1, == 2.8.* ; python_version < "2.7"
 # This is a comment, to show how #-prefixed lines are ignored.
+#this is a comment without a space after the `#`, which should also be ignored.
 pytest
 pytest-cov
 beautifulsoup4
