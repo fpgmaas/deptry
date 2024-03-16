@@ -79,7 +79,7 @@ Ready to contribute? Here's how to set up _deptry_ for local development. Please
 
 6. If you are adding a feature or fixing a bug, make sure to add tests in the `tests` directory.
 
-7. Once you're done, validate that all unit tests are passing:
+7. Once you're done, validate that all unit and functional tests are passing:
     ```bash
     make test
     ```

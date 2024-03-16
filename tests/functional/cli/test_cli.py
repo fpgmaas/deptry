@@ -4,17 +4,20 @@ import uuid
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+import pytest
 from click.testing import CliRunner
 
 from deptry.cli import deptry
+from tests.functional.utils import Project
 from tests.utils import get_issues_report, stylize
 
 if TYPE_CHECKING:
     from tests.utils import PoetryVenvFactory
 
 
+@pytest.mark.xdist_group(name=Project.EXAMPLE)
 def test_cli_returns_error(poetry_venv_factory: PoetryVenvFactory) -> None:
-    with poetry_venv_factory("example_project") as virtual_env:
+    with poetry_venv_factory(Project.EXAMPLE) as virtual_env:
         issue_report = f"{uuid.uuid4()}.json"
         result = virtual_env.run(f"deptry . -o {issue_report}")
 
@@ -71,8 +74,9 @@ def test_cli_returns_error(poetry_venv_factory: PoetryVenvFactory) -> None:
         ]
 
 
+@pytest.mark.xdist_group(name=Project.EXAMPLE)
 def test_cli_ignore_notebooks(poetry_venv_factory: PoetryVenvFactory) -> None:
-    with poetry_venv_factory("example_project") as virtual_env:
+    with poetry_venv_factory(Project.EXAMPLE) as virtual_env:
         issue_report = f"{uuid.uuid4()}.json"
         result = virtual_env.run(f"deptry . --ignore-notebooks -o {issue_report}")
 
@@ -141,22 +145,25 @@ def test_cli_ignore_notebooks(poetry_venv_factory: PoetryVenvFactory) -> None:
         ]
 
 
+@pytest.mark.xdist_group(name=Project.EXAMPLE)
 def test_cli_ignore_flags(poetry_venv_factory: PoetryVenvFactory) -> None:
-    with poetry_venv_factory("example_project") as virtual_env:
+    with poetry_venv_factory(Project.EXAMPLE) as virtual_env:
         result = virtual_env.run("deptry . --per-rule-ignores DEP002=isort|pkginfo|requests -im white -id black")
 
         assert result.returncode == 0
 
 
+@pytest.mark.xdist_group(name=Project.EXAMPLE)
 def test_cli_ignore_flag(poetry_venv_factory: PoetryVenvFactory) -> None:
-    with poetry_venv_factory("example_project") as virtual_env:
+    with poetry_venv_factory(Project.EXAMPLE) as virtual_env:
         result = virtual_env.run("deptry . --ignore DEP001,DEP002,DEP003,DEP004")
 
         assert result.returncode == 0
 
 
+@pytest.mark.xdist_group(name=Project.EXAMPLE)
 def test_cli_exclude(poetry_venv_factory: PoetryVenvFactory) -> None:
-    with poetry_venv_factory("example_project") as virtual_env:
+    with poetry_venv_factory(Project.EXAMPLE) as virtual_env:
         issue_report = f"{uuid.uuid4()}.json"
         result = virtual_env.run(f"deptry . --exclude src/notebook.ipynb -o {issue_report}")
 
@@ -225,8 +232,9 @@ def test_cli_exclude(poetry_venv_factory: PoetryVenvFactory) -> None:
         ]
 
 
+@pytest.mark.xdist_group(name=Project.EXAMPLE)
 def test_cli_extend_exclude(poetry_venv_factory: PoetryVenvFactory) -> None:
-    with poetry_venv_factory("example_project") as virtual_env:
+    with poetry_venv_factory(Project.EXAMPLE) as virtual_env:
         issue_report = f"{uuid.uuid4()}.json"
         result = virtual_env.run(f"deptry . -ee src/notebook.ipynb -o {issue_report}")
 
@@ -295,8 +303,9 @@ def test_cli_extend_exclude(poetry_venv_factory: PoetryVenvFactory) -> None:
         ]
 
 
+@pytest.mark.xdist_group(name=Project.EXAMPLE)
 def test_cli_known_first_party(poetry_venv_factory: PoetryVenvFactory) -> None:
-    with poetry_venv_factory("example_project") as virtual_env:
+    with poetry_venv_factory(Project.EXAMPLE) as virtual_env:
         issue_report = f"{uuid.uuid4()}.json"
         result = virtual_env.run(f"deptry . --known-first-party white -o {issue_report}")
 
@@ -341,8 +350,9 @@ def test_cli_known_first_party(poetry_venv_factory: PoetryVenvFactory) -> None:
         ]
 
 
+@pytest.mark.xdist_group(name=Project.EXAMPLE)
 def test_cli_not_verbose(poetry_venv_factory: PoetryVenvFactory) -> None:
-    with poetry_venv_factory("example_project") as virtual_env:
+    with poetry_venv_factory(Project.EXAMPLE) as virtual_env:
         issue_report = f"{uuid.uuid4()}.json"
         result = virtual_env.run(f"deptry . -o {issue_report}")
 
@@ -400,8 +410,9 @@ def test_cli_not_verbose(poetry_venv_factory: PoetryVenvFactory) -> None:
         ]
 
 
+@pytest.mark.xdist_group(name=Project.EXAMPLE)
 def test_cli_verbose(poetry_venv_factory: PoetryVenvFactory) -> None:
-    with poetry_venv_factory("example_project") as virtual_env:
+    with poetry_venv_factory(Project.EXAMPLE) as virtual_env:
         issue_report = f"{uuid.uuid4()}.json"
         result = virtual_env.run(f"deptry . --verbose -o {issue_report}")
 
@@ -459,8 +470,9 @@ def test_cli_verbose(poetry_venv_factory: PoetryVenvFactory) -> None:
         ]
 
 
+@pytest.mark.xdist_group(name=Project.EXAMPLE)
 def test_cli_with_no_ansi(poetry_venv_factory: PoetryVenvFactory) -> None:
-    with poetry_venv_factory("example_project") as virtual_env:
+    with poetry_venv_factory(Project.EXAMPLE) as virtual_env:
         result = virtual_env.run("deptry . --no-ansi")
 
         expected_output = [
@@ -480,8 +492,9 @@ def test_cli_with_no_ansi(poetry_venv_factory: PoetryVenvFactory) -> None:
         assert result.stderr == "\n".join(expected_output)
 
 
+@pytest.mark.xdist_group(name=Project.EXAMPLE)
 def test_cli_with_not_json_output(poetry_venv_factory: PoetryVenvFactory) -> None:
-    with poetry_venv_factory("example_project") as virtual_env:
+    with poetry_venv_factory(Project.EXAMPLE) as virtual_env:
         json_files_count = len(list(Path().glob("*.json")))
 
         result = virtual_env.run("deptry .")
@@ -521,8 +534,9 @@ def test_cli_with_not_json_output(poetry_venv_factory: PoetryVenvFactory) -> Non
         assert result.stderr == "\n".join(expected_output)
 
 
+@pytest.mark.xdist_group(name=Project.EXAMPLE)
 def test_cli_with_json_output(poetry_venv_factory: PoetryVenvFactory) -> None:
-    with poetry_venv_factory("example_project") as virtual_env:
+    with poetry_venv_factory(Project.EXAMPLE) as virtual_env:
         issue_report = f"{uuid.uuid4()}.json"
         result = virtual_env.run(f"deptry . -o {issue_report}")
 
