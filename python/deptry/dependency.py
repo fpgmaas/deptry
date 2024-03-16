@@ -151,4 +151,5 @@ class Dependency:
             raise FileNotFoundError("RECORD")
 
         matches = re.finditer(r"^(?!__)([a-zA-Z0-9-_]+)(?:/|\.py,)", metadata_records, re.MULTILINE)
+
         return {x.group(1) for x in matches}
