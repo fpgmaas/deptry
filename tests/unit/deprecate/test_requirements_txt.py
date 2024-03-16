@@ -26,7 +26,7 @@ DEFAULT_CORE_ARGS = {
 }
 
 
-def test_requirements_txt_deprecated():
+def test_requirements_txt_deprecated() -> None:
     with patch("deptry.cli.Core") as mock_core, patch("logging.warning") as mock_warning:
         result = CliRunner().invoke(deptry, [".", "--requirements-txt", "somefile.txt"])
 
@@ -41,7 +41,7 @@ def test_requirements_txt_deprecated():
         )
 
 
-def test_requirements_txt_dev_deprecated():
+def test_requirements_txt_dev_deprecated() -> None:
     with patch("deptry.cli.Core") as mock_core, patch("logging.warning") as mock_warning:
         result = CliRunner().invoke(deptry, [".", "--requirements-txt-dev", "somefile.txt"])
 
@@ -54,7 +54,7 @@ def test_requirements_txt_dev_deprecated():
         )
 
 
-def test_requirements_file_works_as_expected():
+def test_requirements_file_works_as_expected() -> None:
     with patch("deptry.cli.Core") as mock_core, patch("logging.warning") as mock_warning:
         result = CliRunner().invoke(deptry, [".", "--requirements-file", "somefile.txt"])
 
@@ -69,7 +69,7 @@ def test_requirements_file_works_as_expected():
         )
 
 
-def test_requirements_file_dev_works_as_expected():
+def test_requirements_file_dev_works_as_expected() -> None:
     with patch("deptry.cli.Core") as mock_core, patch("logging.warning") as mock_warning:
         result = CliRunner().invoke(deptry, [".", "--requirements-file-dev", "somefile.txt"])
 

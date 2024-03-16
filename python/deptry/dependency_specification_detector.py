@@ -12,7 +12,7 @@ class DependencyManagementFormat(Enum):
     PDM = "pdm"
     PEP_621 = "pep_621"
     POETRY = "poetry"
-    REQUIREMENTS_TXT = "requirements_file"
+    REQUIREMENTS_FILE = "requirements_file"
 
 
 class DependencySpecificationDetector:
@@ -38,7 +38,7 @@ class DependencySpecificationDetector:
         if pyproject_toml_found and self._project_uses_pep_621():
             return DependencyManagementFormat.PEP_621
         if self._project_uses_requirements_file():
-            return DependencyManagementFormat.REQUIREMENTS_TXT
+            return DependencyManagementFormat.REQUIREMENTS_FILE
 
         raise DependencySpecificationNotFoundError(self.requirements_file)
 

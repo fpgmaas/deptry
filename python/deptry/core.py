@@ -144,7 +144,7 @@ class Core:
             return PDMDependencyGetter(self.config, self.package_module_name_map).get()
         if dependency_management_format is DependencyManagementFormat.PEP_621:
             return PEP621DependencyGetter(self.config, self.package_module_name_map).get()
-        if dependency_management_format is DependencyManagementFormat.requirements_file:
+        if dependency_management_format is DependencyManagementFormat.REQUIREMENTS_FILE:
             return RequirementsTxtDependencyGetter(
                 self.config, self.package_module_name_map, self.requirements_file, self.requirements_file_dev
             ).get()

@@ -27,7 +27,7 @@ def test_requirements_file(tmp_path: Path) -> None:
             f.write('foo >= "1.0"')
 
         spec = DependencySpecificationDetector(Path("pyproject.toml")).detect()
-        assert spec == DependencyManagementFormat.REQUIREMENTS_TXT
+        assert spec == DependencyManagementFormat.REQUIREMENTS_FILE
 
 
 def test_pdm_with_dev_dependencies(tmp_path: Path) -> None:
@@ -90,7 +90,7 @@ def test_requirements_file_with_argument(tmp_path: Path) -> None:
             f.write('foo >= "1.0"')
 
         spec = DependencySpecificationDetector(Path("pyproject.toml"), requirements_file=("req.txt",)).detect()
-        assert spec == DependencyManagementFormat.REQUIREMENTS_TXT
+        assert spec == DependencyManagementFormat.REQUIREMENTS_FILE
 
 
 def test_requirements_file_with_argument_not_root_directory(tmp_path: Path) -> None:
@@ -101,7 +101,7 @@ def test_requirements_file_with_argument_not_root_directory(tmp_path: Path) -> N
             f.write('foo >= "1.0"')
 
         spec = DependencySpecificationDetector(Path("pyproject.toml"), requirements_file=("req/req.txt",)).detect()
-        assert spec == DependencyManagementFormat.REQUIREMENTS_TXT
+        assert spec == DependencyManagementFormat.REQUIREMENTS_FILE
 
 
 def test_dependency_specification_not_found_raises_exception(tmp_path: Path) -> None:
