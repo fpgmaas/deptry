@@ -16,13 +16,13 @@ from deptry.dependency_getter.base import DependenciesExtract, DependencyGetter
 class RequirementsTxtDependencyGetter(DependencyGetter):
     """Extract dependencies from requirements.txt files."""
 
-    requirements_txt: tuple[str, ...] = ("requirements.txt",)
-    requirements_txt_dev: tuple[str, ...] = ("dev-requirements.txt", "requirements-dev.txt")
+    requirements_file: tuple[str, ...] = ("requirements.txt",)
+    requirements_file_dev: tuple[str, ...] = ("dev-requirements.txt", "requirements-dev.txt")
 
     def get(self) -> DependenciesExtract:
         dependencies = list(
             itertools.chain(
-                *(self._get_dependencies_from_requirements_file(file_name) for file_name in self.requirements_txt)
+                *(self._get_dependencies_from_requirements_file(file_name) for file_name in self.requirements_file)
             )
         )
         self._log_dependencies(dependencies=dependencies)
@@ -41,9 +41,9 @@ class RequirementsTxtDependencyGetter(DependencyGetter):
 
     def _scan_for_dev_requirements_files(self) -> list[str]:
         """
-        Check if any of the files passed as requirements_txt_dev exist, and if so; return them.
+        Check if any of the files passed as requirements_file_dev exist, and if so; return them.
         """
-        dev_requirements_files = [file_name for file_name in self.requirements_txt_dev if file_name in os.listdir()]
+        dev_requirements_files = [file_name for file_name in self.requirements_file_dev if file_name in os.listdir()]
         if dev_requirements_files:
             logging.debug("Found files with development requirements! %s", dev_requirements_files)
         return dev_requirements_files

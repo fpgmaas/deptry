@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING
 from deptry.dependency_getter.pdm import PDMDependencyGetter
 from deptry.dependency_getter.pep_621 import PEP621DependencyGetter
 from deptry.dependency_getter.poetry import PoetryDependencyGetter
-from deptry.dependency_getter.requirements_txt import RequirementsTxtDependencyGetter
+from deptry.dependency_getter.requirements_file import RequirementsTxtDependencyGetter
 from deptry.dependency_specification_detector import DependencyManagementFormat, DependencySpecificationDetector
 from deptry.exceptions import IncorrectDependencyFormatError, UnsupportedPythonVersionError
 from deptry.imports.extract import get_imported_modules_from_list_of_files
@@ -48,8 +48,8 @@ class Core:
     extend_exclude: tuple[str, ...]
     using_default_exclude: bool
     ignore_notebooks: bool
-    requirements_txt: tuple[str, ...]
-    requirements_txt_dev: tuple[str, ...]
+    requirements_file: tuple[str, ...]
+    requirements_file_dev: tuple[str, ...]
     known_first_party: tuple[str, ...]
     json_output: str
     package_module_name_map: Mapping[str, tuple[str, ...]]
@@ -58,7 +58,7 @@ class Core:
         self._log_config()
 
         dependency_management_format = DependencySpecificationDetector(
-            self.config, requirements_txt=self.requirements_txt
+            self.config, requirements_file=self.requirements_file
         ).detect()
         dependencies_extract = self._get_dependencies(dependency_management_format)
 
@@ -144,9 +144,9 @@ class Core:
             return PDMDependencyGetter(self.config, self.package_module_name_map).get()
         if dependency_management_format is DependencyManagementFormat.PEP_621:
             return PEP621DependencyGetter(self.config, self.package_module_name_map).get()
-        if dependency_management_format is DependencyManagementFormat.REQUIREMENTS_TXT:
+        if dependency_management_format is DependencyManagementFormat.requirements_file:
             return RequirementsTxtDependencyGetter(
-                self.config, self.package_module_name_map, self.requirements_txt, self.requirements_txt_dev
+                self.config, self.package_module_name_map, self.requirements_file, self.requirements_file_dev
             ).get()
         raise IncorrectDependencyFormatError
 

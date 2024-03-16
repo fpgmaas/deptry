@@ -227,36 +227,36 @@ ignore_notebooks = true
 deptry . --ignore-notebooks
 ```
 
-#### Requirements txt
+#### Requirements file
 
 List of [`pip` requirements files](https://pip.pypa.io/en/stable/user_guide/#requirements-files) that contain the source dependencies.
 
 - Type: `List[str]`
 - Default: `["requirements.txt"]`
-- `pyproject.toml` option name: `requirements_txt`
+- `pyproject.toml` option name: `requirements_file`
 - CLI option name: `--requirements-txt` (short: `-rt`)
 - `pyproject.toml` example:
 ```toml
 [tool.deptry]
-requirements_txt = ["requirements.txt", "requirements-private.txt"]
+requirements_file = ["requirements.txt", "requirements-private.txt"]
 ```
 - CLI example:
 ```shell
 deptry . --requirements-txt requirements.txt,requirements-private.txt
 ```
 
-#### Requirements txt dev
+#### Requirements file dev
 
 List of [`pip` requirements files](https://pip.pypa.io/en/stable/user_guide/#requirements-files) that contain the source development dependencies.
 
 - Type: `List[str]`
 - Default: `["dev-requirements.txt", "requirements-dev.txt"]`
-- `pyproject.toml` option name: `requirements_txt_dev`
+- `pyproject.toml` option name: `requirements_file_dev`
 - CLI option name: `--requirements-txt-dev` (short: `-rtd`)
 - `pyproject.toml` example:
 ```toml
 [tool.deptry]
-requirements_txt_dev = ["requirements-dev.txt", "requirements-tests.txt"]
+requirements_file_dev = ["requirements-dev.txt", "requirements-tests.txt"]
 ```
 - CLI example:
 ```shell

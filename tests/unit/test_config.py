@@ -24,8 +24,8 @@ click_command = click.Command(
         Argument(param_decls=["per_rule_ignores"]),
         Argument(param_decls=["ignore"]),
         Argument(param_decls=["ignore_notebooks"]),
-        Argument(param_decls=["requirements_txt"]),
-        Argument(param_decls=["requirements_txt_dev"]),
+        Argument(param_decls=["requirements_file"]),
+        Argument(param_decls=["requirements_file_dev"]),
     ],
 )
 
@@ -40,8 +40,8 @@ def test_read_configuration_from_pyproject_toml_exists(tmp_path: Path) -> None:
                 "DEP002": ["baz", "bar"],
             },
             "ignore": [],
-            "requirements_txt": "requirements.txt",
-            "requirements_txt_dev": ["requirements-dev.txt"],
+            "requirements_file": "requirements.txt",
+            "requirements_file_dev": ["requirements-dev.txt"],
         },
     )
 
@@ -51,8 +51,8 @@ def test_read_configuration_from_pyproject_toml_exists(tmp_path: Path) -> None:
         extend_exclude = ["bar", "foo"]
         ignore_notebooks = true
         ignore = ["DEP001", "DEP002", "DEP003", "DEP004"]
-        requirements_txt = "foo.txt"
-        requirements_txt_dev = ["dev.txt", "tests.txt"]
+        requirements_file = "foo.txt"
+        requirements_file_dev = ["dev.txt", "tests.txt"]
 
         [tool.deptry.per_rule_ignores]
         DEP001 = ["baz", "foobar"]
@@ -83,8 +83,8 @@ def test_read_configuration_from_pyproject_toml_exists(tmp_path: Path) -> None:
             "DEP004": ["barfoo"],
         },
         "ignore": ["DEP001", "DEP002", "DEP003", "DEP004"],
-        "requirements_txt": "foo.txt",
-        "requirements_txt_dev": ["dev.txt", "tests.txt"],
+        "requirements_file": "foo.txt",
+        "requirements_file_dev": ["dev.txt", "tests.txt"],
     }
 
 

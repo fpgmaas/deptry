@@ -12,6 +12,10 @@ import click
 from deptry.config import read_configuration_from_pyproject_toml
 from deptry.core import Core
 from deptry.deprecate.ignore_flags import get_value_for_per_rule_ignores_argument
+from deptry.deprecate.requirements_txt import (
+    REQUIREMENTS_TXT_DEPRECATION_MESSAGE,
+    REQUIREMENTS_TXT_DEV_DEPRECATION_MESSAGE,
+)
 from deptry.deprecate.skip_flags import get_value_for_ignore_argument
 
 if TYPE_CHECKING:
@@ -243,19 +247,25 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
     help="Display the current version and exit.",
 )
 @click.option(
-    "--requirements-txt",
-    "-rt",
+    "--requirements-txt", "-rt", type=COMMA_SEPARATED_TUPLE, help="To be deprecated.", hidden=True, default=()
+)
+@click.option(
+    "--requirements-txt-dev", "-rtd", type=COMMA_SEPARATED_TUPLE, help="To be deprecated.", hidden=True, default=()
+)
+@click.option(
+    "--requirements-file",
+    "-rf",
     type=COMMA_SEPARATED_TUPLE,
-    help=""".txt files to scan for dependencies. If a file called pyproject.toml with a [tool.poetry.dependencies] section is found, this argument is ignored
+    help=""".txt files to scan for dependencies. If a file called pyproject.toml with a [tool.poetry.dependencies] or [project] section is found, this argument is ignored
     and the dependencies are extracted from the pyproject.toml file instead. Can be multiple e.g. `deptry . --requirements-txt req/prod.txt,req/extra.txt`""",
     default=("requirements.txt",),
     show_default=True,
 )
 @click.option(
-    "--requirements-txt-dev",
-    "-rtd",
+    "--requirements-file-dev",
+    "-rfd",
     type=COMMA_SEPARATED_TUPLE,
-    help=""".txt files to scan for additional development dependencies. If a file called pyproject.toml with a [tool.poetry.dependencies] section is found, this argument is ignored
+    help=""".txt files to scan for additional development dependencies. If a file called pyproject.toml with a [tool.poetry.dependencies] or [project] section is found, this argument is ignored
     and the dependencies are extracted from the pyproject.toml file instead. Can be multiple e.g. `deptry . --requirements-txt-dev req/dev.txt,req/test.txt`""",
     default=("dev-requirements.txt", "requirements-dev.txt"),
     show_default=True,
@@ -305,6 +315,8 @@ def deptry(
     ignore_notebooks: bool,
     requirements_txt: tuple[str, ...],
     requirements_txt_dev: tuple[str, ...],
+    requirements_file: tuple[str, ...],
+    requirements_file_dev: tuple[str, ...],
     known_first_party: tuple[str, ...],
     json_output: str,
     package_module_name_map: MutableMapping[str, tuple[str, ...]],
@@ -322,6 +334,12 @@ def deptry(
         deptry src worker
 
     """
+    if requirements_txt:
+        logging.warning(REQUIREMENTS_TXT_DEPRECATION_MESSAGE)
+
+    if requirements_txt_dev:
+        logging.warning(REQUIREMENTS_TXT_DEV_DEPRECATION_MESSAGE)
+
     ignore = get_value_for_ignore_argument(
         ignore,
         skip_missing=skip_missing,
@@ -348,8 +366,8 @@ def deptry(
         ignore_notebooks=ignore_notebooks,
         ignore=ignore,
         per_rule_ignores=per_rule_ignores,
-        requirements_txt=requirements_txt,
-        requirements_txt_dev=requirements_txt_dev,
+        requirements_file=requirements_txt if requirements_txt else requirements_file,
+        requirements_file_dev=requirements_txt_dev if requirements_txt_dev else requirements_file_dev,
         known_first_party=known_first_party,
         json_output=json_output,
         package_module_name_map=package_module_name_map,

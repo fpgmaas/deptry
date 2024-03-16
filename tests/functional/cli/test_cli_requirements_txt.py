@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 
 @pytest.mark.xdist_group(name=Project.REQUIREMENTS_TXT)
-def test_cli_single_requirements_txt(pip_venv_factory: PipVenvFactory) -> None:
+def test_cli_single_requirements_file(pip_venv_factory: PipVenvFactory) -> None:
     with pip_venv_factory(
         Project.REQUIREMENTS_TXT,
         install_command=(
@@ -105,7 +105,7 @@ def test_cli_single_requirements_txt(pip_venv_factory: PipVenvFactory) -> None:
 
 
 @pytest.mark.xdist_group(name=Project.REQUIREMENTS_TXT)
-def test_cli_multiple_requirements_txt(pip_venv_factory: PipVenvFactory) -> None:
+def test_cli_multiple_requirements_file(pip_venv_factory: PipVenvFactory) -> None:
     with pip_venv_factory(
         Project.REQUIREMENTS_TXT,
         install_command=(
