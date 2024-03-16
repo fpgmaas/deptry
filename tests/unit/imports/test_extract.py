@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from deptry.imports.extract import get_imported_modules_from_ipynb_file, get_imported_modules_from_list_of_files
+from deptry.imports.extract import get_imported_modules_from_list_of_files
 from deptry.imports.location import Location
 from tests.utils import run_within_dir
 
@@ -44,10 +44,10 @@ def test_import_parser_py() -> None:
 def test_import_parser_ipynb() -> None:
     notebook_path = Path("tests/data/example_project/src/notebook.ipynb")
 
-    assert get_imported_modules_from_ipynb_file(notebook_path) == {
-        "click": [Location(notebook_path, 1, 0)],
-        "toml": [Location(notebook_path, 5, 0)],
-        "urllib3": [Location(notebook_path, 3, 0)],
+    assert get_imported_modules_from_list_of_files([notebook_path]) == {
+        "click": [Location(notebook_path, 2, 6)],
+        "toml": [Location(notebook_path, 5, 9)],
+        "urllib3": [Location(notebook_path, 3, 1)],
     }
 
 
