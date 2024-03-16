@@ -15,7 +15,7 @@ use super::shared::{
     extract_imports_from_ast, get_ast_from_file_content,
 };
 
-/// Processes multiple Python files in parallel to extract import statements and their locations.
+/// Processes multiple .ipynb files in parallel to extract import statements and their locations.
 /// Accepts a list of file paths and returns a dictionary mapping module names to their import locations.
 #[pyfunction]
 pub fn get_imports_from_ipynb_files(py: Python, file_paths: Vec<&PyString>) -> PyResult<PyObject> {
@@ -46,7 +46,7 @@ pub fn get_imports_from_ipynb_files(py: Python, file_paths: Vec<&PyString>) -> P
     convert_to_python_dict(py, all_imports)
 }
 
-/// Processes a single Python file to extract import statements and their locations.
+/// Processes a single .ipynb file to extract import statements and their locations.
 /// Accepts a single file path and returns a dictionary mapping module names to their import locations.
 #[pyfunction]
 pub fn get_imports_from_ipynb_file(py: Python, file_path: &PyString) -> PyResult<PyObject> {
@@ -56,8 +56,24 @@ pub fn get_imports_from_ipynb_file(py: Python, file_path: &PyString) -> PyResult
     convert_to_python_dict(py, result)
 }
 
-/// Core helper function that extracts import statements and their locations from the content of a single Python file.
-/// Used internally by both parallel and single file processing functions.
+fn _extract_import_statements_from_notebook_cells(cells: &[serde_json::Value]) -> String {
+    let import_regex =
+        Regex::new(r"^(?:from\s+(\w+)(?:\.\w+)?\s+)?import\s+([^\s,.]+)(?:\.\w+)?").unwrap();
+
+    let import_statements: Vec<String> = cells
+        .iter()
+        .filter(|cell| cell["cell_type"] == "code")
+        .flat_map(|cell| cell["source"].as_array())
+        .flatten()
+        .filter_map(|line| line.as_str())
+        .filter(|line| import_regex.is_match(line))
+        .map(|line| line.to_string())
+        .collect();
+
+    import_statements.join("\n")
+}
+
+/// Core helper function that extracts import statements and their locations from the content of a single .ipynb file.
 fn _get_imports_from_ipynb_file(path_str: &str) -> PyResult<HashMap<String, Vec<Location>>> {
     let file_content = match read_file(path_str) {
         Ok(content) => content,
@@ -75,24 +91,18 @@ fn _get_imports_from_ipynb_file(path_str: &str) -> PyResult<HashMap<String, Vec<
         }
     };
 
-    let cells = notebook["cells"].as_array().ok_or_else(|| {
-        PySyntaxError::new_err("Invalid notebook structure: 'cells' is not an array")
-    })?;
+    let cells = match notebook["cells"].as_array() {
+        Some(cells) => cells,
+        None => {
+            log::warn!(
+                "Warning: File {} is not a valid notebook: 'cells' is not an array. Skipping...",
+                path_str
+            );
+            return Ok(HashMap::new());
+        }
+    };
 
-    let import_regex =
-        Regex::new(r"^(?:from\s+(\w+)(?:\.\w+)?\s+)?import\s+([^\s,.]+)(?:\.\w+)?").unwrap();
-
-    let import_statements: Vec<String> = cells
-        .iter()
-        .filter(|cell| cell["cell_type"] == "code")
-        .flat_map(|cell| cell["source"].as_array())
-        .flatten()
-        .filter_map(|line| line.as_str())
-        .filter(|line| import_regex.is_match(line))
-        .map(|line| line.to_string())
-        .collect();
-
-    let imports_script = import_statements.join("\n");
+    let imports_script = _extract_import_statements_from_notebook_cells(cells);
 
     let ast = get_ast_from_file_content(&imports_script, path_str)
         .map_err(|e| PySyntaxError::new_err(format!("Error parsing file {}: {}", path_str, e)))?;
