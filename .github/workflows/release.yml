@@ -32,6 +32,7 @@ jobs:
     strategy:
       matrix:
         target: [x86_64, aarch64]
+        python: ['3.11', 'pypy3.10']
     steps:
       - name: Check out
         uses: actions/checkout@v4
@@ -43,21 +44,21 @@ jobs:
 
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: ${{ matrix.python }}
           architecture: 'x64'
 
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.target }}
-          args: --release --out dist --find-interpreter
+          args: --release --out dist --interpreter ${{ startsWith(matrix.python, 'pypy') && matrix.python || format('python{0}', matrix.python) }}
           sccache: 'true'
           manylinux: auto
 
       - name: Upload wheels
         uses: actions/upload-artifact@v4
         with:
-          name: wheels-linux-${{ matrix.target }}
+          name: wheels-linux-${{ matrix.target }}-${{ matrix.python }}
           path: dist
 
   windows:
@@ -66,6 +67,7 @@ jobs:
     strategy:
       matrix:
         target: [x64]
+        python: ['3.11', 'pypy3.10']
     steps:
       - name: Check out
         uses: actions/checkout@v4
@@ -76,21 +78,22 @@ jobs:
           name: pyproject-toml
 
       - uses: actions/setup-python@v5
+        id: setup-python
         with:
-          python-version: '3.11'
+          python-version: ${{ matrix.python }}
           architecture: ${{ matrix.target }}
 
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.target }}
-          args: --release --out dist --find-interpreter
+          args: --release --out dist --interpreter ${{ steps.setup-python.outputs.python-path }}
           sccache: 'true'
 
       - name: Upload wheels
         uses: actions/upload-artifact@v4
         with:
-          name: wheels-windows-${{ matrix.target }}
+          name: wheels-windows-${{ matrix.target }}-${{ matrix.python }}
           path: dist
 
   macos:
@@ -99,6 +102,11 @@ jobs:
     strategy:
       matrix:
         target: [x86_64, aarch64]
+        python: ['3.11']
+        include:
+          # It seems PyPy3.10 is not available on macOS arm64 yet
+          - target: x86_64
+            python: pypy3.10
     steps:
       - name: Check out
         uses: actions/checkout@v4
@@ -109,21 +117,22 @@ jobs:
           name: pyproject-toml
 
       - uses: actions/setup-python@v5
+        id: setup-python
         with:
-          python-version: '3.11'
+          python-version: ${{ matrix.python }}
           architecture: ${{ matrix.target == 'aarch64' && 'arm64' || 'x64' }}
 
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.target }}
-          args: --release --out dist --find-interpreter
+          args: --release --out dist --interpreter ${{ steps.setup-python.outputs.python-path }}
           sccache: 'true'
 
       - name: Upload wheels
         uses: actions/upload-artifact@v4
         with:
-          name: wheels-macos-${{ matrix.target }}
+          name: wheels-macos-${{ matrix.target }}-${{ matrix.python }}
           path: dist
 
   sdist:
