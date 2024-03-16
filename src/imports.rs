@@ -25,36 +25,23 @@ pub fn get_imports_from_py_files(py: Python, file_paths: Vec<&PyString>) -> PyRe
         .map(|py_str| py_str.to_str().unwrap().to_owned())
         .collect();
 
-    // Process each file in parallel, collecting results and errors
-    let results_and_errors: Vec<_> = rust_file_paths
+    // Process each file in parallel and collect results
+    let results: PyResult<Vec<_>> = rust_file_paths
         .par_iter()
-        .map(|path_str| match _get_imports_from_py_file(path_str) {
-            Ok(result) => (path_str, Ok(result)),
-            Err(e) => (path_str, Err(e)),
-        })
+        .map(|path_str| _get_imports_from_py_file(path_str))
         .collect();
 
+    let results = results?;
+
+    // Merge results from each thread
     let mut all_imports = HashMap::new();
-    let mut errors = Vec::new();
-
-    // Separate results and errors
-    for (path_str, result) in results_and_errors {
-        match result {
-            Ok(file_result) => {
-                for (module, locations) in file_result {
-                    all_imports
-                        .entry(module)
-                        .or_insert_with(Vec::new)
-                        .extend(locations);
-                }
-            }
-            Err(e) => errors.push((path_str.to_string(), e)),
+    for file_result in results {
+        for (module, locations) in file_result {
+            all_imports
+                .entry(module)
+                .or_insert_with(Vec::new)
+                .extend(locations);
         }
-    }
-
-    // Log errors after parallel processing is complete
-    for (path_str, e) in errors {
-        log::error!("Error: Unable to process {}: {}. Skipping...", path_str, e);
     }
 
     convert_to_python_dict(py, all_imports)
