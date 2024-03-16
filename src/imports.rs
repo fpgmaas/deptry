@@ -8,11 +8,11 @@ use pyo3::exceptions::PySyntaxError;
 use pyo3::prelude::*;
 use pyo3::types::{PyDict, PyList, PyString};
 use rayon::prelude::*;
-use rustpython_ast::Mod;
-use rustpython_ast::Visitor;
-use rustpython_parser::source_code::LineIndex;
-use rustpython_parser::text_size::TextRange;
-use rustpython_parser::{parse, Mode};
+use ruff_python_ast::visitor::Visitor;
+use ruff_python_ast::Mod;
+use ruff_python_parser::{parse, Mode};
+use ruff_source_file::LineIndex;
+use ruff_text_size::TextRange;
 use std::collections::HashMap;
 use visitor::ImportVisitor;
 
@@ -25,23 +25,36 @@ pub fn get_imports_from_py_files(py: Python, file_paths: Vec<&PyString>) -> PyRe
         .map(|py_str| py_str.to_str().unwrap().to_owned())
         .collect();
 
-    // Process each file in parallel and collect results
-    let results: PyResult<Vec<_>> = rust_file_paths
+    // Process each file in parallel, collecting results and errors
+    let results_and_errors: Vec<_> = rust_file_paths
         .par_iter()
-        .map(|path_str| _get_imports_from_py_file(path_str))
+        .map(|path_str| match _get_imports_from_py_file(path_str) {
+            Ok(result) => (path_str, Ok(result)),
+            Err(e) => (path_str, Err(e)),
+        })
         .collect();
 
-    let results = results?;
-
-    // Merge results from each thread
     let mut all_imports = HashMap::new();
-    for file_result in results {
-        for (module, locations) in file_result {
-            all_imports
-                .entry(module)
-                .or_insert_with(Vec::new)
-                .extend(locations);
+    let mut errors = Vec::new();
+
+    // Separate results and errors
+    for (path_str, result) in results_and_errors {
+        match result {
+            Ok(file_result) => {
+                for (module, locations) in file_result {
+                    all_imports
+                        .entry(module)
+                        .or_insert_with(Vec::new)
+                        .extend(locations);
+                }
+            }
+            Err(e) => errors.push((path_str.to_string(), e)),
         }
+    }
+
+    // Log errors after parallel processing is complete
+    for (path_str, e) in errors {
+        log::error!("Error: Unable to process {}: {}. Skipping...", path_str, e);
     }
 
     convert_to_python_dict(py, all_imports)
@@ -82,7 +95,7 @@ fn _get_imports_from_py_file(path_str: &str) -> PyResult<HashMap<String, Vec<Loc
 
 /// Parses the content of a Python file into an abstract syntax tree (AST).
 pub fn get_ast_from_file_content(file_content: &str, file_path: &str) -> PyResult<Mod> {
-    parse(file_content, Mode::Module, file_path)
+    parse(file_content, Mode::Module)
         .map_err(|e| PySyntaxError::new_err(format!("Error parsing file {}: {}", file_path, e)))
 }
 
@@ -93,7 +106,7 @@ fn extract_imports_from_ast(ast: Mod) -> HashMap<String, Vec<TextRange>> {
 
     if let Mod::Module(module) = ast {
         for stmt in module.body {
-            visitor.visit_stmt(stmt);
+            visitor.visit_stmt(&stmt);
         }
     }
 
@@ -114,11 +127,11 @@ fn convert_imports_with_textranges_to_location_objects(
         let locations: Vec<Location> = ranges
             .iter()
             .map(|range| {
-                let start_line = line_index.line_index(range.start()).get() as usize;
+                let start_line = line_index.line_index(range.start()).get();
                 let start_col = line_index
                     .source_location(range.start(), source_code)
                     .column
-                    .get() as usize;
+                    .get();
                 Location {
                     file: file_path.to_string(),
                     line: Some(start_line),
