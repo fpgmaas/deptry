@@ -14,6 +14,9 @@ check: ## Run code quality tools.
 	@echo "🚀 Checking for dependency issues: Running deptry"
 	@pdm run deptry python
 
+.PHONY: test
+test: test-unit test-functional
+
 .PHONY: test-unit
 test-unit: ## Run unit tests.
 	@echo "🚀 Running unit tests"
@@ -22,7 +25,7 @@ test-unit: ## Run unit tests.
 .PHONY: test-functional
 test-functional: ## Run functional tests.
 	@echo "🚀 Running functional tests"
-	@pdm run pytest tests/functional -n auto
+	@pdm run pytest tests/functional -n auto --dist loadgroup
 
 .PHONY: build
 build: ## Build wheel and sdist files using PDM.
