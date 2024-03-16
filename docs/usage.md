@@ -35,7 +35,7 @@ To determine the project's dependencies, _deptry_ will scan the directory it is 
     - development dependencies from `dev-dependencies.txt` and `dependencies-dev.txt`, if any exist
 
 _deptry_ can be configured to look for `pip` requirements files with other names or in other directories.
-See [Requirements txt](#requirements-txt) and [Requirements txt dev](#requirements-txt-dev).
+See [Requirements txt](#requirements-file) and [Requirements txt dev](#requirements-file-dev).
 
 ## Excluding files and directories
 
@@ -234,7 +234,7 @@ List of [`pip` requirements files](https://pip.pypa.io/en/stable/user_guide/#req
 - Type: `List[str]`
 - Default: `["requirements.txt"]`
 - `pyproject.toml` option name: `requirements_file`
-- CLI option name: `--requirements-txt` (short: `-rt`)
+- CLI option name: `--requirements-file` (short: `-rt`)
 - `pyproject.toml` example:
 ```toml
 [tool.deptry]
@@ -242,7 +242,7 @@ requirements_file = ["requirements.txt", "requirements-private.txt"]
 ```
 - CLI example:
 ```shell
-deptry . --requirements-txt requirements.txt,requirements-private.txt
+deptry . --requirements-file requirements.txt,requirements-private.txt
 ```
 
 #### Requirements file dev
@@ -252,7 +252,7 @@ List of [`pip` requirements files](https://pip.pypa.io/en/stable/user_guide/#req
 - Type: `List[str]`
 - Default: `["dev-requirements.txt", "requirements-dev.txt"]`
 - `pyproject.toml` option name: `requirements_file_dev`
-- CLI option name: `--requirements-txt-dev` (short: `-rtd`)
+- CLI option name: `--requirements-file-dev` (short: `-rtd`)
 - `pyproject.toml` example:
 ```toml
 [tool.deptry]
@@ -260,7 +260,7 @@ requirements_file_dev = ["requirements-dev.txt", "requirements-tests.txt"]
 ```
 - CLI example:
 ```shell
-deptry . --requirements-txt-dev requirements-dev.txt,requirements-tests.txt
+deptry . --requirements-file-dev requirements-dev.txt,requirements-tests.txt
 ```
 
 #### Known first party
