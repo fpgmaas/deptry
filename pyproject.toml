@@ -42,7 +42,7 @@ docs = [
 typing = [
     "mypy==1.9.0",
     "types-chardet==5.0.4.6",
-    "types-colorama==0.4.15.20240205; sys_platform == 'win32'",
+    "types-colorama==0.4.15.20240311; sys_platform == 'win32'",
 ]
 
 [project.urls]
