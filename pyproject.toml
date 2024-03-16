@@ -32,7 +32,7 @@ dependencies = [
 [tool.pdm.dev-dependencies]
 dev = [
     "pre-commit==3.5.0",
-    "pytest==8.0.2",
+    "pytest==8.1.1",
     "pytest-cov==4.1.0",
 ]
 docs = [
