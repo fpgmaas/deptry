@@ -45,8 +45,8 @@ def test_import_parser_ipynb() -> None:
     notebook_path = Path("tests/data/example_project/src/notebook.ipynb")
 
     assert get_imported_modules_from_list_of_files([notebook_path]) == {
-        "click": [Location(notebook_path, 2, 6)],
-        "toml": [Location(notebook_path, 5, 9)],
+        "click": [Location(notebook_path, 1, 8)],
+        "toml": [Location(notebook_path, 5, 8)],
         "urllib3": [Location(notebook_path, 3, 1)],
     }
 

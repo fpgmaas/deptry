@@ -7,7 +7,6 @@ use pyo3::exceptions::PySyntaxError;
 use pyo3::prelude::*;
 use pyo3::types::PyString;
 use rayon::prelude::*;
-use regex::Regex;
 use std::collections::HashMap;
 
 use super::shared::{
@@ -56,21 +55,17 @@ pub fn get_imports_from_ipynb_file(py: Python, file_path: &PyString) -> PyResult
     convert_to_python_dict(py, result)
 }
 
-fn _extract_import_statements_from_notebook_cells(cells: &[serde_json::Value]) -> String {
-    let import_regex =
-        Regex::new(r"^(?:from\s+(\w+)(?:\.\w+)?\s+)?import\s+([^\s,.]+)(?:\.\w+)?").unwrap();
-
-    let import_statements: Vec<String> = cells
+fn _extract_code_from_notebook_cells(cells: &[serde_json::Value]) -> String {
+    let code_lines: Vec<String> = cells
         .iter()
         .filter(|cell| cell["cell_type"] == "code")
         .flat_map(|cell| cell["source"].as_array())
         .flatten()
         .filter_map(|line| line.as_str())
-        .filter(|line| import_regex.is_match(line))
         .map(|line| line.to_string())
         .collect();
 
-    import_statements.join("\n")
+    code_lines.join("\n")
 }
 
 /// Core helper function that extracts import statements and their locations from the content of a single .ipynb file.
@@ -102,9 +97,9 @@ fn _get_imports_from_ipynb_file(path_str: &str) -> PyResult<HashMap<String, Vec<
         }
     };
 
-    let imports_script = _extract_import_statements_from_notebook_cells(cells);
+    let python_code = _extract_code_from_notebook_cells(cells);
 
-    let ast = get_ast_from_file_content(&imports_script, path_str)
+    let ast = get_ast_from_file_content(&python_code, path_str)
         .map_err(|e| PySyntaxError::new_err(format!("Error parsing file {}: {}", path_str, e)))?;
 
     let imported_modules = extract_imports_from_ast(ast);
@@ -112,6 +107,6 @@ fn _get_imports_from_ipynb_file(path_str: &str) -> PyResult<HashMap<String, Vec<
     Ok(convert_imports_with_textranges_to_location_objects(
         imported_modules,
         path_str,
-        &file_content,
+        &python_code,
     ))
 }
