@@ -138,3 +138,13 @@ def test_import_parser_file_encodings_warning(tmp_path: Path, caplog: LogCapture
             r"WARNING  deptry.imports:imports.rs:\d+ Warning: File file1.py could not be read. Skipping...\n"
         )
         assert pattern.search(caplog.text) is not None
+
+
+def test_python_3_12_f_string_syntax(tmp_path: Path) -> None:
+    file_path = Path("file1.py")
+
+    with run_within_dir(tmp_path):
+        with file_path.open("w") as f:
+            f.write('import foo\nprint(f"abc{"def"}")')
+
+        assert get_imported_modules_from_list_of_files([file_path]) == {"foo": [Location(file_path, 1, 8)]}
