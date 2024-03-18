@@ -26,22 +26,38 @@ pub fn get_imports_from_py_files(py: Python, file_paths: Vec<&PyString>) -> PyRe
         .collect();
 
     // Process each file in parallel and collect results
-    let results: PyResult<Vec<_>> = rust_file_paths
+    let results: Vec<_> = rust_file_paths
         .par_iter()
-        .map(|path_str| _get_imports_from_py_file(path_str))
+        .map(|path_str| match _get_imports_from_py_file(path_str) {
+            Ok(result) => (path_str, Ok(result)),
+            Err(e) => (path_str, Err(e)),
+        })
         .collect();
-
-    let results = results?;
 
     // Merge results from each thread
     let mut all_imports = HashMap::new();
-    for file_result in results {
-        for (module, locations) in file_result {
-            all_imports
-                .entry(module)
-                .or_insert_with(Vec::new)
-                .extend(locations);
+    let mut errors = Vec::new();
+
+    for (path, file_result) in results {
+        match file_result {
+            Ok(file_result) => {
+                for (module, locations) in file_result {
+                    all_imports
+                        .entry(module)
+                        .or_insert_with(Vec::new)
+                        .extend(locations);
+                }
+            }
+            Err(e) => errors.push((path.to_string(), e)),
         }
+    }
+
+    for (path, error) in errors {
+        log::warn!(
+            "Warning: Skipping processing of {} because of the following error: \"{}\".",
+            path,
+            error
+        );
     }
 
     convert_to_python_dict(py, all_imports)
@@ -60,30 +76,17 @@ pub fn get_imports_from_py_file(py: Python, file_path: &PyString) -> PyResult<Py
 /// Core helper function that extracts import statements and their locations from the content of a single Python file.
 /// Used internally by both parallel and single file processing functions.
 fn _get_imports_from_py_file(path_str: &str) -> PyResult<HashMap<String, Vec<Location>>> {
-    let file_content = match read_file(path_str) {
-        Ok(content) => content,
-        Err(_) => {
-            log::warn!("Warning: File {} could not be read. Skipping...", path_str);
-            return Ok(HashMap::new());
-        }
-    };
+    let file_content = read_file(path_str)?;
 
-    let ast = get_ast_from_file_content(&file_content, path_str)
-        .map_err(|e| PySyntaxError::new_err(format!("Error parsing file {}: {}", path_str, e)))?;
+    let ast = parse(&file_content, Mode::Module, path_str)
+        .map_err(|e| PySyntaxError::new_err(e.to_string()))?;
 
     let imported_modules = extract_imports_from_ast(ast);
-
     Ok(convert_imports_with_textranges_to_location_objects(
         imported_modules,
         path_str,
         &file_content,
     ))
-}
-
-/// Parses the content of a Python file into an abstract syntax tree (AST).
-pub fn get_ast_from_file_content(file_content: &str, file_path: &str) -> PyResult<Mod> {
-    parse(file_content, Mode::Module, file_path)
-        .map_err(|e| PySyntaxError::new_err(format!("Error parsing file {}: {}", file_path, e)))
 }
 
 /// Iterates through an AST to identify and collect import statements, and returns them together with their
