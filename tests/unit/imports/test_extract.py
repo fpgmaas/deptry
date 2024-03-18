@@ -158,38 +158,39 @@ def test_import_parser_for_ipynb_errors(tmp_path: Path, caplog: LogCaptureFixtur
     notebook_ok = Path("notebook_ok.ipynb")
     notebook_with_syntax_error = Path("notebook_with_syntax_error.ipynb")
 
-    # Create a well-formed notebook
-    with notebook_ok.open("w") as f:
-        json.dump(
-            {
-                "cells": [{"cell_type": "code", "source": ["import numpy\n"]}],
-                "metadata": {},
-                "nbformat": 4,
-                "nbformat_minor": 2,
-            },
-            f,
+    with run_within_dir(tmp_path):
+        # Create a well-formed notebook
+        with notebook_ok.open("w") as f:
+            json.dump(
+                {
+                    "cells": [{"cell_type": "code", "source": ["import numpy\n"]}],
+                    "metadata": {},
+                    "nbformat": 4,
+                    "nbformat_minor": 2,
+                },
+                f,
+            )
+
+        # Create a notebook with invalid Python syntax in a code cell
+        with notebook_with_syntax_error.open("w") as f:
+            json.dump(
+                {
+                    "cells": [{"cell_type": "code", "source": ["import n invalid_syntax:::\n"]}],
+                    "metadata": {},
+                    "nbformat": 4,
+                    "nbformat_minor": 2,
+                },
+                f,
+            )
+
+        # Execute function and assert the result for well-formed notebook
+        with caplog.at_level(logging.WARNING):
+            assert get_imported_modules_from_list_of_files([
+                notebook_ok,
+                notebook_with_syntax_error,
+            ]) == {"numpy": [Location(file=Path("notebook_ok.ipynb"), line=1, column=8)]}
+
+        assert re.search(
+            r"WARNING  .*:ipynb.rs:\d+ Warning: Skipping processing of notebook_with_syntax_error.ipynb because of the following error: \"SyntaxError: invalid syntax. Got unexpected token 'invalid_syntax' at byte offset 9\"",
+            caplog.text,
         )
-
-    # Create a notebook with invalid Python syntax in a code cell
-    with notebook_with_syntax_error.open("w") as f:
-        json.dump(
-            {
-                "cells": [{"cell_type": "code", "source": ["import n invalid_syntax:::\n"]}],
-                "metadata": {},
-                "nbformat": 4,
-                "nbformat_minor": 2,
-            },
-            f,
-        )
-
-    # Execute function and assert the result for well-formed notebook
-    with caplog.at_level(logging.WARNING):
-        assert get_imported_modules_from_list_of_files([
-            notebook_ok,
-            notebook_with_syntax_error,
-        ]) == {"numpy": [Location(file=Path("notebook_ok.ipynb"), line=1, column=8)]}
-
-    assert re.search(
-        r"WARNING  .*:ipynb.rs:\d+ Warning: Skipping processing of notebook_with_syntax_error.ipynb because of the following error: \"SyntaxError: invalid syntax. Got unexpected token 'invalid_syntax' at byte offset 9\"",
-        caplog.text,
-    )
