@@ -122,19 +122,33 @@ def test_import_parser_file_encodings_ipynb(code_cell_content: list[str], encodi
         assert get_imported_modules_from_list_of_files([random_file]) == {"foo": [Location(random_file, 1, 0)]}
 
 
-def test_import_parser_file_encodings_warning(tmp_path: Path, caplog: LogCaptureFixture) -> None:
-    file_path = Path("file1.py")
+def test_import_parser_errors(tmp_path: Path, caplog: LogCaptureFixture) -> None:
+    file_ok = Path("file_ok.py")
+    file_with_bad_encoding = Path("file_with_bad_encoding.py")
+    file_with_syntax_error = Path("file_with_syntax_error.py")
 
     with run_within_dir(tmp_path):
-        # The characters below are represented differently in ISO-8859-1 and UTF-8, so this should raise an error.
-        with file_path.open("w", encoding="ISO-8859-1") as f:
+        with file_ok.open("w") as f:
+            f.write("import black")
+
+        with file_with_bad_encoding.open("w", encoding="ISO-8859-1") as f:
             f.write("# -*- coding: utf-8 -*-\nprint('ÆØÅ')")
 
-        with caplog.at_level(logging.WARNING):
-            assert get_imported_modules_from_list_of_files([file_path]) == {}
+        with file_with_syntax_error.open("w") as f:
+            f.write("invalid_syntax:::")
 
-        # //TODO logging from Rust still includes it's own warning and file + line number. Can we get rid of that?
-        pattern = re.compile(
-            r"WARNING  deptry.imports:imports.rs:\d+ Warning: File file1.py could not be read. Skipping...\n"
+        with caplog.at_level(logging.WARNING):
+            assert get_imported_modules_from_list_of_files([
+                file_ok,
+                file_with_bad_encoding,
+                file_with_syntax_error,
+            ]) == {"black": [Location(file=Path("file_ok.py"), line=1, column=8)]}
+
+        assert re.search(
+            r"WARNING  deptry.imports:imports.rs:\d+ Warning: Skipping processing of file_with_bad_encoding.py because of the following error: \"OSError: Failed to decode file content with the detected encoding.\".",
+            caplog.text,
         )
-        assert pattern.search(caplog.text) is not None
+        assert re.search(
+            r"WARNING  deptry.imports:imports.rs:\d+ Warning: Skipping processing of file_with_syntax_error.py because of the following error: \"SyntaxError: invalid syntax. Got unexpected token ':' at byte offset 15\".",
+            caplog.text,
+        )
