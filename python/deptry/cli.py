@@ -11,11 +11,9 @@ import click
 
 from deptry.config import read_configuration_from_pyproject_toml
 from deptry.core import Core
-from deptry.deprecate.ignore_flags import get_value_for_per_rule_ignores_argument
-from deptry.deprecate.skip_flags import get_value_for_ignore_argument
 
 if TYPE_CHECKING:
-    from collections.abc import MutableMapping, Sequence
+    from collections.abc import Mapping, MutableMapping, Sequence
 
 if sys.platform == "win32":
     from colorama import just_fix_windows_console
@@ -132,64 +130,6 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
     is_flag=True,
     help="Disable ANSI characters in terminal output.",
 )
-@click.option("--skip-obsolete", is_flag=True, hidden=True)
-@click.option(
-    "--skip-unused",
-    is_flag=True,
-    help="To be deprecated.",
-    hidden=True,
-)
-@click.option(
-    "--skip-missing",
-    is_flag=True,
-    help="To be deprecated.",
-    hidden=True,
-)
-@click.option(
-    "--skip-transitive",
-    is_flag=True,
-    help="To be deprecated.",
-    hidden=True,
-)
-@click.option(
-    "--skip-misplaced-dev",
-    is_flag=True,
-    help="To be deprecated.",
-    hidden=True,
-)
-@click.option("--ignore-obsolete", "-io", help="To be deprecated.", type=COMMA_SEPARATED_TUPLE, default=(), hidden=True)
-@click.option(
-    "--ignore-unused",
-    "-iu",
-    type=COMMA_SEPARATED_TUPLE,
-    hidden=True,
-    help="To be deprecated.",
-    default=(),
-)
-@click.option(
-    "--ignore-missing",
-    "-im",
-    type=COMMA_SEPARATED_TUPLE,
-    hidden=True,
-    help="To be deprecated.",
-    default=(),
-)
-@click.option(
-    "--ignore-transitive",
-    "-it",
-    type=COMMA_SEPARATED_TUPLE,
-    hidden=True,
-    help="To be deprecated.",
-    default=(),
-)
-@click.option(
-    "--ignore-misplaced-dev",
-    "-id",
-    type=COMMA_SEPARATED_TUPLE,
-    hidden=True,
-    help="To be deprecated.",
-    default=(),
-)
 @click.option(
     "--ignore",
     "-i",
@@ -288,18 +228,8 @@ def deptry(
     root: tuple[Path, ...],
     config: Path,
     no_ansi: bool,
-    ignore_unused: tuple[str, ...],
-    ignore_obsolete: tuple[str, ...],
-    ignore_missing: tuple[str, ...],
-    ignore_transitive: tuple[str, ...],
-    ignore_misplaced_dev: tuple[str, ...],
-    skip_unused: bool,
-    skip_obsolete: bool,
-    skip_missing: bool,
-    skip_transitive: bool,
-    skip_misplaced_dev: bool,
     ignore: tuple[str, ...],
-    per_rule_ignores: MutableMapping[str, tuple[str, ...]],
+    per_rule_ignores: Mapping[str, tuple[str, ...]],
     exclude: tuple[str, ...],
     extend_exclude: tuple[str, ...],
     ignore_notebooks: bool,
@@ -322,22 +252,6 @@ def deptry(
         deptry src worker
 
     """
-    ignore = get_value_for_ignore_argument(
-        ignore,
-        skip_missing=skip_missing,
-        skip_obsolete=skip_obsolete,
-        skip_unused=skip_unused,
-        skip_transitive=skip_transitive,
-        skip_misplaced_dev=skip_misplaced_dev,
-    )
-    per_rule_ignores = get_value_for_per_rule_ignores_argument(
-        per_rule_ignores=per_rule_ignores,
-        ignore_missing=ignore_missing,
-        ignore_obsolete=ignore_obsolete,
-        ignore_unused=ignore_unused,
-        ignore_misplaced_dev=ignore_misplaced_dev,
-        ignore_transitive=ignore_transitive,
-    )
     Core(
         root=root,
         config=config,
