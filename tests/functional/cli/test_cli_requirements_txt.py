@@ -98,7 +98,7 @@ def test_cli_single_requirements_txt(pip_venv_factory: PipVenvFactory) -> None:
                 "location": {
                     "file": str(Path("src/notebook.ipynb")),
                     "line": 3,
-                    "column": 0,
+                    "column": 1,
                 },
             },
         ]
