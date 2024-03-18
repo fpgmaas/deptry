@@ -23,7 +23,6 @@ classifiers = [
     "Programming Language :: Python :: Implementation :: PyPy",
 ]
 dependencies = [
-    "chardet>=4.0.0",
     "click>=8.0.0,<9",
     "pathspec>=0.9.0",
     "colorama>=0.4.6; sys_platform == 'win32'",
