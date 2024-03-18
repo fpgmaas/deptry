@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from deptry.imports.extract import get_imported_modules_from_ipynb_file, get_imported_modules_from_list_of_files
+from deptry.imports.extract import get_imported_modules_from_list_of_files
 from deptry.imports.location import Location
 from tests.utils import run_within_dir
 
@@ -44,10 +44,10 @@ def test_import_parser_py() -> None:
 def test_import_parser_ipynb() -> None:
     notebook_path = Path("tests/data/example_project/src/notebook.ipynb")
 
-    assert get_imported_modules_from_ipynb_file(notebook_path) == {
-        "click": [Location(notebook_path, 1, 0)],
-        "toml": [Location(notebook_path, 5, 0)],
-        "urllib3": [Location(notebook_path, 3, 0)],
+    assert get_imported_modules_from_list_of_files([notebook_path]) == {
+        "click": [Location(notebook_path, 1, 8)],
+        "toml": [Location(notebook_path, 5, 8)],
+        "urllib3": [Location(notebook_path, 3, 1)],
     }
 
 
@@ -119,7 +119,7 @@ def test_import_parser_file_encodings_ipynb(code_cell_content: list[str], encodi
             }
             f.write(json.dumps(file_content))
 
-        assert get_imported_modules_from_list_of_files([random_file]) == {"foo": [Location(random_file, 1, 0)]}
+        assert get_imported_modules_from_list_of_files([random_file]) == {"foo": [Location(random_file, 1, 8)]}
 
 
 def test_import_parser_errors(tmp_path: Path, caplog: LogCaptureFixture) -> None:
@@ -145,10 +145,52 @@ def test_import_parser_errors(tmp_path: Path, caplog: LogCaptureFixture) -> None
             ]) == {"black": [Location(file=Path("file_ok.py"), line=1, column=8)]}
 
         assert re.search(
-            r"WARNING  deptry.imports:imports.rs:\d+ Warning: Skipping processing of file_with_bad_encoding.py because of the following error: \"OSError: Failed to decode file content with the detected encoding.\".",
+            r"WARNING  .*:shared.rs:\d+ Warning: Skipping processing of file_with_bad_encoding.py because of the following error: \"OSError: Failed to decode file content with the detected encoding.\".",
             caplog.text,
         )
         assert re.search(
-            r"WARNING  deptry.imports:imports.rs:\d+ Warning: Skipping processing of file_with_syntax_error.py because of the following error: \"SyntaxError: invalid syntax. Got unexpected token ':' at byte offset 15\".",
+            r"WARNING  .*:shared.rs:\d+ Warning: Skipping processing of file_with_syntax_error.py because of the following error: \"SyntaxError: invalid syntax. Got unexpected token ':' at byte offset 15\".",
+            caplog.text,
+        )
+
+
+def test_import_parser_for_ipynb_errors(tmp_path: Path, caplog: LogCaptureFixture) -> None:
+    notebook_ok = Path("notebook_ok.ipynb")
+    notebook_with_syntax_error = Path("notebook_with_syntax_error.ipynb")
+
+    with run_within_dir(tmp_path):
+        # Create a well-formed notebook
+        with notebook_ok.open("w") as f:
+            json.dump(
+                {
+                    "cells": [{"cell_type": "code", "source": ["import numpy\n"]}],
+                    "metadata": {},
+                    "nbformat": 4,
+                    "nbformat_minor": 2,
+                },
+                f,
+            )
+
+        # Create a notebook with invalid Python syntax in a code cell
+        with notebook_with_syntax_error.open("w") as f:
+            json.dump(
+                {
+                    "cells": [{"cell_type": "code", "source": ["import n invalid_syntax:::\n"]}],
+                    "metadata": {},
+                    "nbformat": 4,
+                    "nbformat_minor": 2,
+                },
+                f,
+            )
+
+        # Execute function and assert the result for well-formed notebook
+        with caplog.at_level(logging.WARNING):
+            assert get_imported_modules_from_list_of_files([
+                notebook_ok,
+                notebook_with_syntax_error,
+            ]) == {"numpy": [Location(file=Path("notebook_ok.ipynb"), line=1, column=8)]}
+
+        assert re.search(
+            r"WARNING  .*:shared.rs:\d+ Warning: Skipping processing of notebook_with_syntax_error.ipynb because of the following error: \"SyntaxError: invalid syntax. Got unexpected token 'invalid_syntax' at byte offset 9\"",
             caplog.text,
         )
