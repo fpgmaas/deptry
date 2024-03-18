@@ -13,6 +13,14 @@ use rustpython_parser::{parse, Mode};
 use std::collections::HashMap;
 use visitor::ImportVisitor;
 
+pub type FileToImportsMap = HashMap<String, Vec<Location>>;
+pub type ErrorList = Vec<(String, PyErr)>;
+
+pub struct ThreadResult {
+    pub file: String,
+    pub result: PyResult<FileToImportsMap>,
+}
+
 /// Parses the content of a Python file into an abstract syntax tree (AST).
 pub fn get_ast_from_file_content(file_content: &str, file_path: &str) -> PyResult<Mod> {
     let ast = parse(file_content, Mode::Module, file_path)
@@ -40,7 +48,7 @@ pub fn convert_imports_with_textranges_to_location_objects(
     imports: HashMap<String, Vec<TextRange>>,
     file_path: &str,
     source_code: &str,
-) -> HashMap<String, Vec<Location>> {
+) -> FileToImportsMap {
     let line_index = LineIndex::from_source_text(source_code);
     let mut imports_with_locations = HashMap::<String, Vec<Location>>::new();
 
@@ -68,7 +76,7 @@ pub fn convert_imports_with_textranges_to_location_objects(
 /// Transforms a Rust HashMap containing import data into a Python dictionary suitable for Python-side consumption.
 pub fn convert_to_python_dict(
     py: Python<'_>,
-    imports_with_locations: HashMap<String, Vec<Location>>,
+    imports_with_locations: FileToImportsMap,
 ) -> PyResult<PyObject> {
     let imports_dict = PyDict::new(py);
 
@@ -82,4 +90,37 @@ pub fn convert_to_python_dict(
     }
 
     Ok(imports_dict.into())
+}
+
+// Shared logic for merging results from different threads.
+pub fn merge_results_from_threads(results: Vec<ThreadResult>) -> (FileToImportsMap, ErrorList) {
+    let mut all_imports = HashMap::new();
+    let mut errors = Vec::new();
+
+    for thread_result in results {
+        match thread_result.result {
+            Ok(file_result) => {
+                for (module, locations) in file_result {
+                    all_imports
+                        .entry(module)
+                        .or_insert_with(Vec::new)
+                        .extend(locations);
+                }
+            }
+            Err(e) => errors.push((thread_result.file, e)),
+        }
+    }
+
+    (all_imports, errors)
+}
+
+// Shared logic for logging errors.
+pub fn log_python_errors_as_warnings(errors: &[(String, PyErr)]) {
+    for (path, error) in errors {
+        log::warn!(
+            "Warning: Skipping processing of {} because of the following error: \"{}\".",
+            path,
+            error
+        );
+    }
 }

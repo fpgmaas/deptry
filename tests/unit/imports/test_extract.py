@@ -145,11 +145,11 @@ def test_import_parser_errors(tmp_path: Path, caplog: LogCaptureFixture) -> None
             ]) == {"black": [Location(file=Path("file_ok.py"), line=1, column=8)]}
 
         assert re.search(
-            r"WARNING  deptry.imports.py:py.rs:\d+ Warning: Skipping processing of file_with_bad_encoding.py because of the following error: \"OSError: Failed to decode file content with the detected encoding.\".",
+            r"WARNING  .*:shared.rs:\d+ Warning: Skipping processing of file_with_bad_encoding.py because of the following error: \"OSError: Failed to decode file content with the detected encoding.\".",
             caplog.text,
         )
         assert re.search(
-            r"WARNING  deptry.imports.py:py.rs:\d+ Warning: Skipping processing of file_with_syntax_error.py because of the following error: \"SyntaxError: invalid syntax. Got unexpected token ':' at byte offset 15\".",
+            r"WARNING  .*:shared.rs:\d+ Warning: Skipping processing of file_with_syntax_error.py because of the following error: \"SyntaxError: invalid syntax. Got unexpected token ':' at byte offset 15\".",
             caplog.text,
         )
 
@@ -191,6 +191,6 @@ def test_import_parser_for_ipynb_errors(tmp_path: Path, caplog: LogCaptureFixtur
             ]) == {"numpy": [Location(file=Path("notebook_ok.ipynb"), line=1, column=8)]}
 
         assert re.search(
-            r"WARNING  .*:ipynb.rs:\d+ Warning: Skipping processing of notebook_with_syntax_error.ipynb because of the following error: \"SyntaxError: invalid syntax. Got unexpected token 'invalid_syntax' at byte offset 9\"",
+            r"WARNING  .*:shared.rs:\d+ Warning: Skipping processing of notebook_with_syntax_error.ipynb because of the following error: \"SyntaxError: invalid syntax. Got unexpected token 'invalid_syntax' at byte offset 9\"",
             caplog.text,
         )
