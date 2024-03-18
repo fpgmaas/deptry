@@ -15,12 +15,20 @@ check: ## Run code quality tools.
 	@pdm run deptry python
 
 .PHONY: test
-test: ## Test the code with pytest.
-	@echo "🚀 Testing code: Running pytest"
-	@pdm run pytest --cov --cov-config=pyproject.toml --cov-report=xml
+test: test-unit test-functional
+
+.PHONY: test-unit
+test-unit: ## Run unit tests.
+	@echo "🚀 Running unit tests"
+	@pdm run pytest tests/unit
+
+.PHONY: test-functional
+test-functional: ## Run functional tests.
+	@echo "🚀 Running functional tests"
+	@pdm run pytest tests/functional -n auto --dist loadgroup
 
 .PHONY: build
-build: clean-build ## Build wheel and sdist files using PDM.
+build: ## Build wheel and sdist files using PDM.
 	@echo "🚀 Creating wheel and sdist files"
 	@maturin build
 

@@ -20,9 +20,9 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Rust",
     "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
 ]
 dependencies = [
-    "chardet>=4.0.0",
     "click>=8.0.0,<9",
     "pathspec>=0.9.0",
     "colorama>=0.4.6; sys_platform == 'win32'",
@@ -32,8 +32,9 @@ dependencies = [
 [tool.pdm.dev-dependencies]
 dev = [
     "pre-commit==3.5.0",
-    "pytest==8.0.2",
+    "pytest==8.1.1",
     "pytest-cov==4.1.0",
+    "pytest-xdist[psutil]==3.5.0",
 ]
 docs = [
     "mkdocs==1.5.3",
@@ -42,7 +43,7 @@ docs = [
 typing = [
     "mypy==1.9.0",
     "types-chardet==5.0.4.6",
-    "types-colorama==0.4.15.20240205; sys_platform == 'win32'",
+    "types-colorama==0.4.15.20240311; sys_platform == 'win32'",
 ]
 
 [project.urls]

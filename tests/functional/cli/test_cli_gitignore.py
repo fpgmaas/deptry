@@ -4,14 +4,18 @@ import uuid
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+import pytest
+
+from tests.functional.utils import Project
 from tests.utils import get_issues_report
 
 if TYPE_CHECKING:
     from tests.utils import PipVenvFactory
 
 
+@pytest.mark.xdist_group(name=Project.GITIGNORE)
 def test_cli_gitignore_is_used(pip_venv_factory: PipVenvFactory) -> None:
-    with pip_venv_factory("project_with_gitignore") as virtual_env:
+    with pip_venv_factory(Project.GITIGNORE) as virtual_env:
         issue_report = f"{uuid.uuid4()}.json"
         result = virtual_env.run(f"deptry . -o {issue_report}")
 
@@ -56,8 +60,9 @@ def test_cli_gitignore_is_used(pip_venv_factory: PipVenvFactory) -> None:
         ]
 
 
+@pytest.mark.xdist_group(name=Project.GITIGNORE)
 def test_cli_gitignore_is_not_used(pip_venv_factory: PipVenvFactory) -> None:
-    with pip_venv_factory("project_with_gitignore") as virtual_env:
+    with pip_venv_factory(Project.GITIGNORE) as virtual_env:
         issue_report = f"{uuid.uuid4()}.json"
         result = virtual_env.run(f"deptry . --exclude build/|src/bar.py -o {issue_report}")
 

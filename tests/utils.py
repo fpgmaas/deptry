@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Any, Generator
 
 from deptry.reporters.text import COLORS
+from tests.functional.utils import DEPTRY_WHEEL_DIRECTORY
 
 
 @dataclass
@@ -78,7 +79,12 @@ class VirtualEnvironment:
 
         shutil.copytree(deptry_directory / "tests/data" / self.project, self.project_path / "project")
 
-        for setup_command in [f"pip install {deptry_directory}", *setup_commands]:
+        path_to_wheel_file = self._get_path_to_wheel_file(deptry_directory / DEPTRY_WHEEL_DIRECTORY)
+
+        for setup_command in [
+            f"pip install --no-cache-dir {path_to_wheel_file}",
+            *setup_commands,
+        ]:
             self.run(setup_command, check=True, cwd=self.project_path / "project")
 
     def run(self, command: str, check: bool = False, cwd: Path | None = None) -> subprocess.CompletedProcess[str]:
@@ -90,6 +96,16 @@ class VirtualEnvironment:
             check=check,
             cwd=cwd,
         )
+
+    @staticmethod
+    def _get_path_to_wheel_file(directory: Path) -> Path:
+        """
+        Get the path to a single wheel file in the specified directory. If there is not exactly one wheel file, raise an error.
+        """
+        wheel_files = list(directory.glob("*.whl"))
+        if len(wheel_files) != 1:
+            raise ValueError(f"Expected exactly one wheel file in {directory}, but found {len(wheel_files)}.")  # noqa: TRY003
+        return wheel_files[0]
 
 
 @contextmanager

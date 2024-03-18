@@ -4,15 +4,19 @@ import uuid
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+import pytest
+
+from tests.functional.utils import Project
 from tests.utils import get_issues_report
 
 if TYPE_CHECKING:
     from tests.utils import PipVenvFactory
 
 
+@pytest.mark.xdist_group(name=Project.PYPROJECT_DIFFERENT_DIRECTORY)
 def test_cli_with_pyproject_different_directory(pip_venv_factory: PipVenvFactory) -> None:
     with pip_venv_factory(
-        "project_with_pyproject_different_directory", install_command="pip install ./a_sub_directory"
+        Project.PYPROJECT_DIFFERENT_DIRECTORY, install_command="pip install ./a_sub_directory"
     ) as virtual_env:
         issue_report = f"{uuid.uuid4()}.json"
         result = virtual_env.run(f"deptry src --config a_sub_directory/pyproject.toml -o {issue_report}")
