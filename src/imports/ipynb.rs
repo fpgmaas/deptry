@@ -24,37 +24,74 @@ pub fn get_imports_from_ipynb_files(py: Python, file_paths: Vec<&PyString>) -> P
         .collect();
 
     // Process each file in parallel and collect results
-    let results: PyResult<Vec<_>> = rust_file_paths
+    let results: Vec<_> = rust_file_paths
         .par_iter()
-        .map(|path_str| _get_imports_from_ipynb_file(path_str))
+        .map(|path_str| match _get_imports_from_ipynb_file(path_str) {
+            Ok(result) => (path_str, Ok(result)),
+            Err(e) => (path_str, Err(e)),
+        })
         .collect();
-
-    let results = results?;
 
     // Merge results from each thread
     let mut all_imports = HashMap::new();
-    for file_result in results {
-        for (module, locations) in file_result {
-            all_imports
-                .entry(module)
-                .or_insert_with(Vec::new)
-                .extend(locations);
+    let mut errors = Vec::new();
+
+    for (path, file_result) in results {
+        match file_result {
+            Ok(file_result) => {
+                for (module, locations) in file_result {
+                    all_imports
+                        .entry(module)
+                        .or_insert_with(Vec::new)
+                        .extend(locations);
+                }
+            }
+            Err(e) => errors.push((path.to_string(), e)),
         }
+    }
+
+    for (path, error) in errors {
+        log::warn!(
+            "Warning: Skipping processing of {} because of the following error: \"{}\".",
+            path,
+            error
+        );
     }
 
     convert_to_python_dict(py, all_imports)
 }
 
-/// Processes a single .ipynb file to extract import statements and their locations.
-/// Accepts a single file path and returns a dictionary mapping module names to their import locations.
-#[pyfunction]
-pub fn get_imports_from_ipynb_file(py: Python, file_path: &PyString) -> PyResult<PyObject> {
-    let path_str = file_path.to_str()?;
-    let result = _get_imports_from_ipynb_file(path_str)?;
+/// Core helper function that extracts import statements and their locations from a single .ipynb file.
+/// Ensures robust error handling and provides clearer, more detailed comments.
+fn _get_imports_from_ipynb_file(path_str: &str) -> PyResult<HashMap<String, Vec<Location>>> {
+    // Read the content of the .ipynb file, handling potential IO errors.
+    let file_content = read_file(path_str)?;
 
-    convert_to_python_dict(py, result)
+    // Deserialize the JSON content of the notebook, handling syntax errors.
+    let notebook: serde_json::Value =
+        serde_json::from_str(&file_content).map_err(|e| PySyntaxError::new_err(e.to_string()))?;
+
+    // Extract the code cells from the notebook, handling unexpected data structures.
+    let cells = notebook["cells"]
+        .as_array()
+        .ok_or_else(|| PySyntaxError::new_err("Expected 'cells' to be an array"))?;
+
+    // Concatenate the code from all code cells into a single string.
+    let python_code = _extract_code_from_notebook_cells(cells);
+
+    // Parse the Python code to AST and extract import statements.
+    let ast = get_ast_from_file_content(&python_code, path_str)?;
+    let imported_modules = extract_imports_from_ast(ast);
+
+    // Convert the extracted import data into location objects.
+    Ok(convert_imports_with_textranges_to_location_objects(
+        imported_modules,
+        path_str,
+        &python_code,
+    ))
 }
 
+/// Extracts and concatenates code from notebook code cells.
 fn _extract_code_from_notebook_cells(cells: &[serde_json::Value]) -> String {
     let code_lines: Vec<String> = cells
         .iter()
@@ -62,51 +99,8 @@ fn _extract_code_from_notebook_cells(cells: &[serde_json::Value]) -> String {
         .flat_map(|cell| cell["source"].as_array())
         .flatten()
         .filter_map(|line| line.as_str())
-        .map(|line| line.to_string())
+        .map(str::to_owned)
         .collect();
 
     code_lines.join("\n")
-}
-
-/// Core helper function that extracts import statements and their locations from the content of a single .ipynb file.
-fn _get_imports_from_ipynb_file(path_str: &str) -> PyResult<HashMap<String, Vec<Location>>> {
-    let file_content = match read_file(path_str) {
-        Ok(content) => content,
-        Err(_) => {
-            log::warn!("Warning: File {} could not be read. Skipping...", path_str);
-            return Ok(HashMap::new());
-        }
-    };
-
-    let notebook: serde_json::Value = match serde_json::from_str(&file_content) {
-        Ok(content) => content,
-        Err(_) => {
-            log::warn!("Warning: File {} is not valid JSON. Skipping...", path_str);
-            return Ok(HashMap::new());
-        }
-    };
-
-    let cells = match notebook["cells"].as_array() {
-        Some(cells) => cells,
-        None => {
-            log::warn!(
-                "Warning: File {} is not a valid notebook: 'cells' is not an array. Skipping...",
-                path_str
-            );
-            return Ok(HashMap::new());
-        }
-    };
-
-    let python_code = _extract_code_from_notebook_cells(cells);
-
-    let ast = get_ast_from_file_content(&python_code, path_str)
-        .map_err(|e| PySyntaxError::new_err(format!("Error parsing file {}: {}", path_str, e)))?;
-
-    let imported_modules = extract_imports_from_ast(ast);
-
-    Ok(convert_imports_with_textranges_to_location_objects(
-        imported_modules,
-        path_str,
-        &python_code,
-    ))
 }

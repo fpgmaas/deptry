@@ -3,7 +3,6 @@ use crate::location;
 
 use file_utils::read_file;
 use location::Location;
-use pyo3::exceptions::PySyntaxError;
 use pyo3::prelude::*;
 use pyo3::types::PyString;
 use rayon::prelude::*;
@@ -24,50 +23,49 @@ pub fn get_imports_from_py_files(py: Python, file_paths: Vec<&PyString>) -> PyRe
         .collect();
 
     // Process each file in parallel and collect results
-    let results: PyResult<Vec<_>> = rust_file_paths
+    let results: Vec<_> = rust_file_paths
         .par_iter()
-        .map(|path_str| _get_imports_from_py_file(path_str))
+        .map(|path_str| match _get_imports_from_py_file(path_str) {
+            Ok(result) => (path_str, Ok(result)),
+            Err(e) => (path_str, Err(e)),
+        })
         .collect();
-
-    let results = results?;
 
     // Merge results from each thread
     let mut all_imports = HashMap::new();
-    for file_result in results {
-        for (module, locations) in file_result {
-            all_imports
-                .entry(module)
-                .or_insert_with(Vec::new)
-                .extend(locations);
+    let mut errors = Vec::new();
+
+    for (path, file_result) in results {
+        match file_result {
+            Ok(file_result) => {
+                for (module, locations) in file_result {
+                    all_imports
+                        .entry(module)
+                        .or_insert_with(Vec::new)
+                        .extend(locations);
+                }
+            }
+            Err(e) => errors.push((path.to_string(), e)),
         }
+    }
+
+    for (path, error) in errors {
+        log::warn!(
+            "Warning: Skipping processing of {} because of the following error: \"{}\".",
+            path,
+            error
+        );
     }
 
     convert_to_python_dict(py, all_imports)
 }
 
-/// Processes a single Python file to extract import statements and their locations.
-/// Accepts a single file path and returns a dictionary mapping module names to their import locations.
-#[pyfunction]
-pub fn get_imports_from_py_file(py: Python, file_path: &PyString) -> PyResult<PyObject> {
-    let path_str = file_path.to_str()?;
-    let result = _get_imports_from_py_file(path_str)?;
-
-    convert_to_python_dict(py, result)
-}
-
 /// Core helper function that extracts import statements and their locations from the content of a single Python file.
 /// Used internally by both parallel and single file processing functions.
 fn _get_imports_from_py_file(path_str: &str) -> PyResult<HashMap<String, Vec<Location>>> {
-    let file_content = match read_file(path_str) {
-        Ok(content) => content,
-        Err(_) => {
-            log::warn!("Warning: File {} could not be read. Skipping...", path_str);
-            return Ok(HashMap::new());
-        }
-    };
+    let file_content = read_file(path_str)?;
 
-    let ast = get_ast_from_file_content(&file_content, path_str)
-        .map_err(|e| PySyntaxError::new_err(format!("Error parsing file {}: {}", path_str, e)))?;
+    let ast = get_ast_from_file_content(&file_content, path_str)?;
 
     let imported_modules = extract_imports_from_ast(ast);
 

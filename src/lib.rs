@@ -14,13 +14,8 @@ fn rust(_py: Python, m: &PyModule) -> PyResult<()> {
     pyo3_log::init(); // Initialize logging to forward to Python's logger
 
     m.add_function(wrap_pyfunction!(imports::py::get_imports_from_py_files, m)?)?;
-    m.add_function(wrap_pyfunction!(imports::py::get_imports_from_py_file, m)?)?;
     m.add_function(wrap_pyfunction!(
         imports::ipynb::get_imports_from_ipynb_files,
-        m
-    )?)?;
-    m.add_function(wrap_pyfunction!(
-        imports::ipynb::get_imports_from_ipynb_file,
         m
     )?)?;
     m.add_class::<Location>()?;

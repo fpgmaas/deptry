@@ -15,8 +15,9 @@ use visitor::ImportVisitor;
 
 /// Parses the content of a Python file into an abstract syntax tree (AST).
 pub fn get_ast_from_file_content(file_content: &str, file_path: &str) -> PyResult<Mod> {
-    parse(file_content, Mode::Module, file_path)
-        .map_err(|e| PySyntaxError::new_err(format!("Error parsing file {}: {}", file_path, e)))
+    let ast = parse(file_content, Mode::Module, file_path)
+        .map_err(|e| PySyntaxError::new_err(e.to_string()))?;
+    Ok(ast)
 }
 
 /// Iterates through an AST to identify and collect import statements, and returns them together with their
