@@ -148,7 +148,7 @@ def test_cli_ignore_notebooks(poetry_venv_factory: PoetryVenvFactory) -> None:
 @pytest.mark.xdist_group(name=Project.EXAMPLE)
 def test_cli_ignore_flags(poetry_venv_factory: PoetryVenvFactory) -> None:
     with poetry_venv_factory(Project.EXAMPLE) as virtual_env:
-        result = virtual_env.run("deptry . --per-rule-ignores DEP002=isort|pkginfo|requests -im white -id black")
+        result = virtual_env.run("deptry . --per-rule-ignores DEP001=white,DEP002=isort|pkginfo|requests,DEP004=black")
 
         assert result.returncode == 0
 

@@ -10,5 +10,5 @@ dependencies = ["toml"]
 requires = ["setuptools>=61.0.0"]
 build-backend = "setuptools.build_meta"
 
-[tool.deptry]
-ignore_obsolete = ["pkginfo"]
+[tool.deptry.per_rule_ignores]
+DEP002 = ["pkginfo"]
