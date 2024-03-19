@@ -41,7 +41,7 @@ class ImportExtractor:
         return sorted_modules
 
     @staticmethod
-    def _log_modules_with_locations(modules):
+    def _log_modules_with_locations(modules: dict[str, list[Location]]) -> None:
         modules_dict = {
             module_name: [str(location) for location in locations] for module_name, locations in modules.items()
         }
