@@ -1,9 +1,10 @@
 from __future__ import annotations
 
+import json
 import logging
 import operator
 import sys
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from typing import TYPE_CHECKING
 
 from deptry.dependency_getter.pdm import PDMDependencyGetter
@@ -12,7 +13,7 @@ from deptry.dependency_getter.poetry import PoetryDependencyGetter
 from deptry.dependency_getter.requirements_txt import RequirementsTxtDependencyGetter
 from deptry.dependency_specification_detector import DependencyManagementFormat, DependencySpecificationDetector
 from deptry.exceptions import IncorrectDependencyFormatError, UnsupportedPythonVersionError
-from deptry.imports.extract import get_imported_modules_from_list_of_files
+from deptry.imports.extract import ImportExtractor
 from deptry.module import ModuleBuilder, ModuleLocations
 from deptry.python_file_finder import PythonFileFinder
 from deptry.reporters import JSONReporter, TextReporter
@@ -34,6 +35,7 @@ if TYPE_CHECKING:
 
     from deptry.dependency import Dependency
     from deptry.dependency_getter.base import DependenciesExtract
+    from deptry.module import Module
     from deptry.violations import Violation
 
 
@@ -80,8 +82,9 @@ class Core:
                 ).build(),
                 locations,
             )
-            for module, locations in get_imported_modules_from_list_of_files(all_python_files).items()
+            for module, locations in ImportExtractor().get_imported_modules_from_list_of_files(all_python_files).items()
         ]
+        self._log_detected_modules([module.module for module in imported_modules_with_locations])
         imported_modules_with_locations = [
             module_with_locations
             for module_with_locations in imported_modules_with_locations
@@ -163,6 +166,13 @@ class Core:
         }
 
         return guessed_local_modules | set(self.known_first_party)
+
+    @staticmethod
+    def _log_detected_modules(modules: list[Module]) -> None:
+        logging.debug(
+            "\nFound the following modules:\n%s",
+            json.dumps([asdict(module) for module in modules], indent=2),
+        )
 
     @staticmethod
     def _is_local_module(path: Path) -> bool:

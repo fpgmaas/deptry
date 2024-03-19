@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from deptry.imports.extract import get_imported_modules_from_list_of_files
+from deptry.imports.extract import ImportExtractor
 from deptry.imports.location import Location
 from tests.utils import run_within_dir
 
@@ -20,7 +20,7 @@ if TYPE_CHECKING:
 def test_import_parser_py() -> None:
     some_imports_path = Path("tests/data/some_imports.py")
 
-    assert get_imported_modules_from_list_of_files([some_imports_path]) == {
+    assert ImportExtractor().get_imported_modules_from_list_of_files([some_imports_path]) == {
         "barfoo": [Location(some_imports_path, 20, 8)],
         "baz": [Location(some_imports_path, 16, 5)],
         "click": [Location(some_imports_path, 24, 12)],
@@ -44,7 +44,7 @@ def test_import_parser_py() -> None:
 def test_import_parser_ipynb() -> None:
     notebook_path = Path("tests/data/example_project/src/notebook.ipynb")
 
-    assert get_imported_modules_from_list_of_files([notebook_path]) == {
+    assert ImportExtractor().get_imported_modules_from_list_of_files([notebook_path]) == {
         "click": [Location(notebook_path, 1, 8)],
         "toml": [Location(notebook_path, 5, 8)],
         "urllib3": [Location(notebook_path, 3, 1)],
@@ -79,7 +79,9 @@ def test_import_parser_file_encodings(file_content: str, encoding: str | None, t
         with random_file.open("w", encoding=encoding) as f:
             f.write(file_content)
 
-        assert get_imported_modules_from_list_of_files([random_file]) == {"foo": [Location(random_file, 2, 8)]}
+        assert ImportExtractor().get_imported_modules_from_list_of_files([random_file]) == {
+            "foo": [Location(random_file, 2, 8)]
+        }
 
 
 @pytest.mark.parametrize(
@@ -119,7 +121,9 @@ def test_import_parser_file_encodings_ipynb(code_cell_content: list[str], encodi
             }
             f.write(json.dumps(file_content))
 
-        assert get_imported_modules_from_list_of_files([random_file]) == {"foo": [Location(random_file, 1, 8)]}
+        assert ImportExtractor().get_imported_modules_from_list_of_files([random_file]) == {
+            "foo": [Location(random_file, 1, 8)]
+        }
 
 
 def test_import_parser_errors(tmp_path: Path, caplog: LogCaptureFixture) -> None:
@@ -138,7 +142,7 @@ def test_import_parser_errors(tmp_path: Path, caplog: LogCaptureFixture) -> None
             f.write("invalid_syntax:::")
 
         with caplog.at_level(logging.WARNING):
-            assert get_imported_modules_from_list_of_files([
+            assert ImportExtractor().get_imported_modules_from_list_of_files([
                 file_ok,
                 file_with_bad_encoding,
                 file_with_syntax_error,
@@ -185,7 +189,7 @@ def test_import_parser_for_ipynb_errors(tmp_path: Path, caplog: LogCaptureFixtur
 
         # Execute function and assert the result for well-formed notebook
         with caplog.at_level(logging.WARNING):
-            assert get_imported_modules_from_list_of_files([
+            assert ImportExtractor().get_imported_modules_from_list_of_files([
                 notebook_ok,
                 notebook_with_syntax_error,
             ]) == {"numpy": [Location(file=Path("notebook_ok.ipynb"), line=1, column=8)]}

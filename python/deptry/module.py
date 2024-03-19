@@ -1,7 +1,8 @@
 from __future__ import annotations
 
+import json
 import logging
-from dataclasses import dataclass, field
+from dataclasses import asdict, dataclass, field
 from importlib.metadata import PackageNotFoundError, metadata
 from typing import TYPE_CHECKING
 
@@ -38,13 +39,12 @@ class Module:
     is_provided_by_dependency: bool | None = None
     is_provided_by_dev_dependency: bool | None = None
 
-    def __post_init__(self) -> None:
-        self._log()
-
     def _log(self) -> None:
-        logging.debug("--- MODULE ---")
-        logging.debug(self.__str__())
-        logging.debug("")
+        # Convert the module data to a dictionary and then to a formatted JSON string
+        module_info = asdict(self)
+        formatted_info = json.dumps(module_info, indent=2)
+        # Log the formatted module information
+        logging.debug(formatted_info)
 
     def __repr__(self) -> str:
         return f"Module '{self.name}'"
