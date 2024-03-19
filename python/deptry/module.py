@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass, field
 from importlib.metadata import PackageNotFoundError, metadata
 from typing import TYPE_CHECKING
@@ -36,6 +37,14 @@ class Module:
     dev_top_levels: list[str] | None = None
     is_provided_by_dependency: bool | None = None
     is_provided_by_dev_dependency: bool | None = None
+
+    def __post_init__(self) -> None:
+        self._log()
+
+    def _log(self) -> None:
+        logging.debug("--- MODULE ---")
+        logging.debug(self.__str__())
+        logging.debug("")
 
     def __repr__(self) -> str:
         return f"Module '{self.name}'"
