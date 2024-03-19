@@ -207,4 +207,6 @@ def test_python_3_12_f_string_syntax(tmp_path: Path) -> None:
         with file_path.open("w") as f:
             f.write('import foo\nprint(f"abc{"def"}")')
 
-        assert get_imported_modules_from_list_of_files([file_path]) == {"foo": [Location(file_path, 1, 8)]}
+        assert ImportExtractor().get_imported_modules_from_list_of_files([file_path]) == {
+            "foo": [Location(file_path, 1, 8)]
+        }
