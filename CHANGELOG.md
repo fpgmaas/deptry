@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.14.2 - 2024-03-19
+
+This release adds back MIT license classifier in package metadata, that was lost when changing the build backend ([#623](https://github.com/fpgmaas/deptry/pull/623)).
+
+### Full Changelog
+
+https://github.com/fpgmaas/deptry/compare/0.14.1...0.14.2
+
+
 ## 0.14.1 - 2024-03-18
 
 This release improves runtime performance of built wheels by about 5%, and reduces their size ([#594](https://github.com/fpgmaas/deptry/pull/594)).
