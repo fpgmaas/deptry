@@ -5,7 +5,7 @@
 groups = ["default", "dev", "docs", "typing"]
 strategy = ["cross_platform", "inherit_metadata"]
 lock_version = "4.4.1"
-content_hash = "sha256:075a94a78d7250b4bdc64a8e66445f285b6afec47004ca0e45aab3b0744eec29"
+content_hash = "sha256:8ebb6c1f321887e2f1b32d8b0cd92c661e9a8879b57df2f1a5aa777ac884bd32"
 
 [[package]]
 name = "babel"
