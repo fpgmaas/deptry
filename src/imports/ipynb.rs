@@ -48,7 +48,7 @@ fn _get_imports_from_ipynb_file(path_str: &str) -> PyResult<HashMap<String, Vec<
         .ok_or_else(|| PySyntaxError::new_err("Expected 'cells' to be an array"))?;
     let python_code = _extract_code_from_notebook_cells(cells);
 
-    let ast = shared::get_ast_from_file_content(&python_code, path_str)?;
+    let ast = shared::get_ast_from_file_content(&python_code)?;
     let imported_modules = shared::extract_imports_from_ast(ast);
 
     Ok(shared::convert_imports_with_textranges_to_location_objects(

@@ -5,11 +5,11 @@ use location::Location;
 use pyo3::exceptions::PySyntaxError;
 use pyo3::prelude::*;
 use pyo3::types::{PyDict, PyList};
-use rustpython_ast::Mod;
-use rustpython_ast::Visitor;
-use rustpython_parser::source_code::LineIndex;
-use rustpython_parser::text_size::TextRange;
-use rustpython_parser::{parse, Mode};
+use ruff_python_ast::visitor::Visitor;
+use ruff_python_ast::Mod;
+use ruff_python_parser::{parse, Mode};
+use ruff_source_file::LineIndex;
+use ruff_text_size::TextRange;
 use std::collections::HashMap;
 use visitor::ImportVisitor;
 
@@ -22,9 +22,9 @@ pub struct ThreadResult {
 }
 
 /// Parses the content of a Python file into an abstract syntax tree (AST).
-pub fn get_ast_from_file_content(file_content: &str, file_path: &str) -> PyResult<Mod> {
-    let ast = parse(file_content, Mode::Module, file_path)
-        .map_err(|e| PySyntaxError::new_err(e.to_string()))?;
+pub fn get_ast_from_file_content(file_content: &str) -> PyResult<Mod> {
+    let ast =
+        parse(file_content, Mode::Module).map_err(|e| PySyntaxError::new_err(e.to_string()))?;
     Ok(ast)
 }
 
@@ -35,7 +35,7 @@ pub fn extract_imports_from_ast(ast: Mod) -> HashMap<String, Vec<TextRange>> {
 
     if let Mod::Module(module) = ast {
         for stmt in module.body {
-            visitor.visit_stmt(stmt);
+            visitor.visit_stmt(&stmt);
         }
     }
 
@@ -56,11 +56,11 @@ pub fn convert_imports_with_textranges_to_location_objects(
         let locations: Vec<Location> = ranges
             .iter()
             .map(|range| {
-                let start_line = line_index.line_index(range.start()).get() as usize;
+                let start_line = line_index.line_index(range.start()).get();
                 let start_col = line_index
                     .source_location(range.start(), source_code)
                     .column
-                    .get() as usize;
+                    .get();
                 Location {
                     file: file_path.to_string(),
                     line: Some(start_line),
