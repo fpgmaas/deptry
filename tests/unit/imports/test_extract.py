@@ -194,3 +194,13 @@ def test_import_parser_for_ipynb_errors(tmp_path: Path, caplog: LogCaptureFixtur
             r"WARNING  .*:shared.rs:\d+ Warning: Skipping processing of notebook_with_syntax_error.ipynb because of the following error: \"SyntaxError: invalid syntax. Got unexpected token 'invalid_syntax' at byte offset 9\"",
             caplog.text,
         )
+
+
+def test_python_3_12_f_string_syntax(tmp_path: Path) -> None:
+    file_path = Path("file1.py")
+
+    with run_within_dir(tmp_path):
+        with file_path.open("w") as f:
+            f.write('import foo\nprint(f"abc{"def"}")')
+
+        assert get_imported_modules_from_list_of_files([file_path]) == {"foo": [Location(file_path, 1, 8)]}
