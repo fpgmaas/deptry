@@ -102,7 +102,7 @@ group2 = [
         with Path("pyproject.toml").open("w") as f:
             f.write(fake_pyproject_toml)
 
-        getter = PEP621DependencyGetter(config=Path("pyproject.toml"), pep621_dev_dependency_groups=("group2"))
+        getter = PEP621DependencyGetter(config=Path("pyproject.toml"), pep621_dev_dependency_groups=("group2",))
         dependencies = getter.get().dependencies
         dev_dependencies = getter.get().dev_dependencies
 

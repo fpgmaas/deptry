@@ -45,10 +45,10 @@ class PEP621DependencyGetter(DependencyGetter):
         optional_dependencies = self._get_optional_dependencies()
 
         if self.pep621_dev_dependency_groups:
-            dev_dependencies, optional_dependencies = self._split_development_dependencies_from_optional_dependencies(
-                optional_dependencies
+            dev_dependencies, leftover_optional_dependencies = (
+                self._split_development_dependencies_from_optional_dependencies(optional_dependencies)
             )
-            dependencies = [*dependencies, *optional_dependencies]
+            dependencies = [*dependencies, *leftover_optional_dependencies]
             self._log_dependencies(dependencies)
             self._log_dependencies(dev_dependencies, is_dev=True)
             return DependenciesExtract(dependencies, dev_dependencies)
