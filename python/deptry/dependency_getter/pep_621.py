@@ -15,6 +15,7 @@ if TYPE_CHECKING:
 
 @dataclass
 class PEP621DependencyGetter(DependencyGetter):
+    pep621_dev_dependency_groups: tuple[str, ...] = ()
     """
     Class to extract dependencies from a pyproject.toml file in which dependencies are specified according to PEP 621. For example:
 
@@ -39,8 +40,21 @@ class PEP621DependencyGetter(DependencyGetter):
 
     def get(self) -> DependenciesExtract:
         dependencies = [*self._get_dependencies(), *itertools.chain(*self._get_optional_dependencies().values())]
-        self._log_dependencies(dependencies)
 
+        dependencies = self._get_dependencies()
+        optional_dependencies = self._get_optional_dependencies()
+
+        if self.pep621_dev_dependency_groups:
+            dev_dependencies, optional_dependencies = self._split_development_dependencies_from_optional_dependencies(
+                optional_dependencies
+            )
+            dependencies = [*dependencies, *optional_dependencies]
+            self._log_dependencies(dependencies)
+            self._log_dependencies(dev_dependencies, is_dev=True)
+            return DependenciesExtract(dependencies, dev_dependencies)
+
+        dependencies = [*dependencies, *itertools.chain(*optional_dependencies.values())]
+        self._log_dependencies(dependencies)
         return DependenciesExtract(dependencies, [])
 
     def _get_dependencies(self) -> list[Dependency]:
@@ -55,6 +69,25 @@ class PEP621DependencyGetter(DependencyGetter):
             group: self._extract_pep_508_dependencies(dependencies, self.package_module_name_map)
             for group, dependencies in pyproject_data["project"].get("optional-dependencies", {}).items()
         }
+
+    def _split_development_dependencies_from_optional_dependencies(
+        self, optional_dependencies: dict[str, list[Dependency]]
+    ) -> tuple[list[Dependency], list[Dependency]]:
+        """
+        Split the optional dependencies into optional dependencies and development dependencies based on the `pep621_dev_dependency_groups`
+        parameter. Return a tuple with two values: a list of the development dependencies and a list of the remaining 'true' optional dependencies.
+        """
+        dev_dependencies = list(
+            itertools.chain.from_iterable(
+                deps for group, deps in optional_dependencies.items() if group in self.pep621_dev_dependency_groups
+            )
+        )
+        regular_dependencies = list(
+            itertools.chain.from_iterable(
+                deps for group, deps in optional_dependencies.items() if group not in self.pep621_dev_dependency_groups
+            )
+        )
+        return dev_dependencies, regular_dependencies
 
     def _extract_pep_508_dependencies(
         self, dependencies: list[str], package_module_name_map: Mapping[str, Sequence[str]]

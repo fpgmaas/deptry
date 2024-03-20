@@ -91,6 +91,7 @@ def test__get_local_modules(
                 known_first_party=known_first_party,
                 json_output="",
                 package_module_name_map={},
+                pep621_dev_dependency_groups=(),
             )._get_local_modules()
             == expected
         )

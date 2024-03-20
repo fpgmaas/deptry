@@ -53,6 +53,7 @@ class Core:
     known_first_party: tuple[str, ...]
     json_output: str
     package_module_name_map: Mapping[str, tuple[str, ...]]
+    pep621_dev_dependency_groups: tuple[str, ...]
 
     def run(self) -> None:
         self._log_config()
@@ -143,7 +144,9 @@ class Core:
         if dependency_management_format is DependencyManagementFormat.PDM:
             return PDMDependencyGetter(self.config, self.package_module_name_map).get()
         if dependency_management_format is DependencyManagementFormat.PEP_621:
-            return PEP621DependencyGetter(self.config, self.package_module_name_map).get()
+            return PEP621DependencyGetter(
+                self.config, self.package_module_name_map, self.pep621_dev_dependency_groups
+            ).get()
         if dependency_management_format is DependencyManagementFormat.REQUIREMENTS_TXT:
             return RequirementsTxtDependencyGetter(
                 self.config, self.package_module_name_map, self.requirements_txt, self.requirements_txt_dev

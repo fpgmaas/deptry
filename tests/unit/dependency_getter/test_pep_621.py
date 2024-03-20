@@ -79,3 +79,47 @@ group2 = [
         assert not dependencies[7].is_conditional
         assert not dependencies[7].is_optional
         assert "dep" in dependencies[7].top_levels
+
+
+def test_dependency_getter_with_dev_dependencies(tmp_path: Path) -> None:
+    fake_pyproject_toml = """[project]
+# PEP 621 project metadata
+# See https://www.python.org/dev/peps/pep-0621/
+dependencies = [
+"qux",
+]
+
+[project.optional-dependencies]
+group1 = [
+    "foobar",
+]
+group2 = [
+    "barfoo",
+]
+"""
+
+    with run_within_dir(tmp_path):
+        with Path("pyproject.toml").open("w") as f:
+            f.write(fake_pyproject_toml)
+
+        getter = PEP621DependencyGetter(config=Path("pyproject.toml"), pep621_dev_dependency_groups=("group2"))
+        dependencies = getter.get().dependencies
+        dev_dependencies = getter.get().dev_dependencies
+
+        assert len(dependencies) == 2
+
+        assert dependencies[0].name == "qux"
+        assert not dependencies[0].is_conditional
+        assert not dependencies[0].is_optional
+        assert "qux" in dependencies[0].top_levels
+
+        assert dependencies[1].name == "foobar"
+        assert not dependencies[1].is_conditional
+        assert not dependencies[1].is_optional
+        assert "foobar" in dependencies[1].top_levels
+
+        assert len(dev_dependencies) == 1
+        assert dev_dependencies[0].name == "barfoo"
+        assert not dev_dependencies[0].is_conditional
+        assert not dev_dependencies[0].is_optional
+        assert "barfoo" in dev_dependencies[0].top_levels

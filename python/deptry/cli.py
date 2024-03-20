@@ -224,6 +224,16 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
     default={},
     show_default=False,
 )
+@click.option(
+    "--pep621-dev-dependency-groups",
+    "-ddg",
+    type=COMMA_SEPARATED_TUPLE,
+    help="""For projects that use PEP621 and that do not use a build tool that has it's own method of declaring development dependencies,
+    the --pep621-dev-dependency-groups (-ddg) provides the option to specify which groups under [project.optional-dependencies] in pyproject.toml
+    should be considered development dependencies. For example, use `--pep621-dev-dependency-groups tests,docs` to mark 'tests' and 'docs' as development groups.""",
+    default=(),
+    show_default=False,
+)
 def deptry(
     root: tuple[Path, ...],
     config: Path,
@@ -238,6 +248,7 @@ def deptry(
     known_first_party: tuple[str, ...],
     json_output: str,
     package_module_name_map: MutableMapping[str, tuple[str, ...]],
+    pep621_dev_dependency_groups: tuple[str, ...],
 ) -> None:
     """Find dependency issues in your Python project.
 
@@ -267,4 +278,5 @@ def deptry(
         known_first_party=known_first_party,
         json_output=json_output,
         package_module_name_map=package_module_name_map,
+        pep621_dev_dependency_groups=pep621_dev_dependency_groups,
     ).run()
