@@ -20,7 +20,7 @@ Dependency issues are detected by scanning for imported modules within all Pytho
 
 ---
 <p align="center">
-  <a href="https://deptry.com/deptry">Documentation</a> - <a href="https://deptry.com/deptry/contributing/">Contributing</a>
+  <a href="https://deptry.com">Documentation</a> - <a href="https://deptry.com/contributing/">Contributing</a>
 </p>
 
 ---
@@ -66,7 +66,7 @@ Found 3 dependency issues.
 
 ### Configuration
 
-_deptry_ can be configured by using additional command line arguments, or by adding a `[tool.deptry]` section in _pyproject.toml_. For more information, see the [Usage and Configuration](https://deptry.com/deptry/usage/) section of the documentation..
+_deptry_ can be configured by using additional command line arguments, or by adding a `[tool.deptry]` section in _pyproject.toml_. For more information, see the [Usage and Configuration](https://deptry.com/usage/) section of the documentation..
 
 ---
 
