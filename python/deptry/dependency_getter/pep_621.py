@@ -42,8 +42,6 @@ class PEP621DependencyGetter(DependencyGetter):
     """
 
     def get(self) -> DependenciesExtract:
-        dependencies = [*self._get_dependencies(), *itertools.chain(*self._get_optional_dependencies().values())]
-
         dependencies = self._get_dependencies()
         optional_dependencies = self._get_optional_dependencies()
 
