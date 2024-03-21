@@ -64,7 +64,7 @@ def test_logging_number_multiple(caplog: LogCaptureFixture) -> None:
             file=Path("foo.py"),
         ),
         stylize("{BOLD}{RED}Found 4 dependency issues.{RESET}"),
-        "\nFor more information, see the documentation: https://fpgmaas.github.io/deptry/",
+        "\nFor more information, see the documentation: https://deptry.com/",
     ]
 
 
@@ -82,7 +82,7 @@ def test_logging_number_single(caplog: LogCaptureFixture) -> None:
             file=Path("foo.py"),
         ),
         stylize("{BOLD}{RED}Found 1 dependency issue.{RESET}"),
-        "\nFor more information, see the documentation: https://fpgmaas.github.io/deptry/",
+        "\nFor more information, see the documentation: https://deptry.com/",
     ]
 
 
@@ -121,7 +121,7 @@ def test_logging_no_ansi(caplog: LogCaptureFixture) -> None:
         f"{Path('foo/bar.py')}:1:2: DEP003 'foo_package' imported but it is a transitive dependency",
         f"{Path('foo.py')}:1:2: DEP004 'foo' imported but declared as a dev dependency",
         "Found 4 dependency issues.",
-        "\nFor more information, see the documentation: https://fpgmaas.github.io/deptry/",
+        "\nFor more information, see the documentation: https://deptry.com/",
     ]
 
 
