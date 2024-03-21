@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import itertools
+import logging
 import re
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
@@ -47,6 +48,7 @@ class PEP621DependencyGetter(DependencyGetter):
         optional_dependencies = self._get_optional_dependencies()
 
         if self.pep621_dev_dependency_groups:
+            self._check_for_invalid_group_names(optional_dependencies)
             dev_dependencies, leftover_optional_dependencies = (
                 self._split_development_dependencies_from_optional_dependencies(optional_dependencies)
             )
@@ -71,6 +73,16 @@ class PEP621DependencyGetter(DependencyGetter):
             group: self._extract_pep_508_dependencies(dependencies, self.package_module_name_map)
             for group, dependencies in pyproject_data["project"].get("optional-dependencies", {}).items()
         }
+
+    def _check_for_invalid_group_names(self, optional_dependencies: dict[str, list[Dependency]]) -> None:
+        missing_groups = set(self.pep621_dev_dependency_groups) - set(optional_dependencies.keys())
+        if missing_groups:
+            logging.warning(
+                "Warning: Trying to extract the dependencies from the optional dependency groups %s as development dependencies, "
+                "but the following groups were not found: %s",
+                list(self.pep621_dev_dependency_groups),
+                list(missing_groups),
+            )
 
     def _split_development_dependencies_from_optional_dependencies(
         self, optional_dependencies: dict[str, list[Dependency]]
