@@ -34,8 +34,10 @@ class PEP621DependencyGetter(DependencyGetter):
             "pytest-cov[all]"
         ]
 
-    Note that both dependencies and optional-dependencies are extracted as regular dependencies. Since PEP-621 does not specify
-    a recommended way to extract development dependencies, we do not attempt to extract any from the pyproject.toml file.
+    Note that by default both dependencies and optional-dependencies are extracted as regular dependencies, since PEP-621 does not specify
+    a recommended way to extract development dependencies. However, if a value is passed for the `pep621_dev_dependency_groups`
+    argument, all dependencies from groups in that argument are considered to be development dependencies. e.g. in the example above, when
+    `pep621_dev_dependency_groups=(test,)`, both `pytest` and `pytest-cov` are returned as development dependencies.
     """
 
     def get(self) -> DependenciesExtract:

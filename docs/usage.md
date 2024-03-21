@@ -29,7 +29,8 @@ To determine the project's dependencies, _deptry_ will scan the directory it is 
     - dependencies from `[project.dependencies]` and `[project.optional-dependencies]` sections
     - development dependencies from `[tool.pdm.dev-dependencies]` section.
 3. If a `pyproject.toml` file with a `[project]` section is found, _deptry_ will assume it uses [PEP 621](https://peps.python.org/pep-0621/) for dependency specification and extract:
-    - dependencies from `[project.dependencies]` and `[project.optional-dependencies]` sections
+    - dependencies from `[project.dependencies]` and `[project.optional-dependencies]`.
+    - development dependecies from the groups under `[project.optional-dependencies]` passed via the [`--pep621-dev-dependency-groups`](#pep-621-dev-dependency-groups) argument.
 4. If a `requirements.txt` file is found, _deptry_ will extract:
     - dependencies from it
     - development dependencies from `dev-dependencies.txt` and `dependencies-dev.txt`, if any exist
@@ -399,4 +400,45 @@ deptry . --package-module-name-map 'foo-python=foo|bar'
 Multiple package name to module name mappings are joined by a comma (`,`):
 ```shell
 deptry . --package-module-name-map 'foo-python=foo,bar-python=bar'
+```
+
+#### PEP 621 dev dependency groups
+
+PEP 621 does [not define](https://peps.python.org/pep-0621/#recommend-that-tools-put-development-related-dependencies-into-a-dev-extra) a standard convention for specifying development dependencies. However, deptry offers a mechanism to interpret specific optional dependency groups as development dependencies.
+
+By default, all dependencies under `[project.dependencies]` and `[project.optional-dependencies]` are extracted as regular dependencies. By using the `--pep621-dev-dependency-groups` argument, users can specify which groups defined under `[project.optional-dependencies]` should be treated as development dependencies instead. This is particularly useful for projects that adhere to PEP 621 but do not employ a separate build tool for declaring development dependencies.
+
+For example, consider a project with the following `pyproject.toml`:
+
+```
+[project]
+...
+dependencies = [
+    "httpx",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest < 5.0.0",
+]
+plot = [
+    "matplotlib",
+]
+```
+
+By default, `https`, `pytest` and `matplotlib` are extracted as regular dependencies. By specifying `--pep621-dev-dependency-groups=test`,
+the dependency `pytest` will be considered a development dependency instead.
+
+- Type: `List[str]`
+- Default: `[]`
+- `pyproject.toml` option name: `pep621_dev_dependency_groups`
+- CLI option name: `--pep621-dev-dependency-groups` (short: `-ddg`)
+- `pyproject.toml` example:
+```toml
+[tool.deptry]
+pep621_dev_dependency_groups = ["test", "docs"]
+```
+- CLI example:
+```shell
+deptry . --pep621-dev-dependency-groups "test,docs"
 ```
