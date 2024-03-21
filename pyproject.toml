@@ -48,9 +48,9 @@ typing = [
 ]
 
 [project.urls]
-homepage = "https://fpgmaas.github.io/deptry"
+homepage = "https://deptry.com/deptry"
 repository = "https://github.com/fpgmaas/deptry"
-documentation = "https://fpgmaas.github.io/deptry"
+documentation = "https://deptry.com/deptry"
 changelog = "https://github.com/fpgmaas/deptry/blob/main/CHANGELOG.md"
 
 [project.scripts]

@@ -42,7 +42,7 @@ class TextReporter(Reporter):
                     issue_word="issues" if len(violations) > 1 else "issue",
                 )
             )
-            logging.info("\nFor more information, see the documentation: https://fpgmaas.github.io/deptry/")
+            logging.info("\nFor more information, see the documentation: https://deptry.com/deptry/")
         else:
             logging.info(self._stylize("{BOLD}{GREEN}Success! No dependency issues found.{RESET}"))
 
