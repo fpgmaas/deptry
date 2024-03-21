@@ -484,7 +484,7 @@ def test_cli_with_no_ansi(poetry_venv_factory: PoetryVenvFactory) -> None:
             f"{Path('src/main.py')}:6:8: DEP001 'white' imported but missing from the dependency definitions",
             "Found 4 dependency issues.",
             "",
-            "For more information, see the documentation: https://fpgmaas.github.io/deptry/",
+            "For more information, see the documentation: https://deptry.com/",
             "",
         ]
 
@@ -524,7 +524,7 @@ def test_cli_with_not_json_output(poetry_venv_factory: PoetryVenvFactory) -> Non
             ),
             stylize("{BOLD}{RED}Found 4 dependency issues.{RESET}"),
             "",
-            "For more information, see the documentation: https://fpgmaas.github.io/deptry/",
+            "For more information, see the documentation: https://deptry.com/",
             "",
         ]
 
@@ -565,7 +565,7 @@ def test_cli_with_json_output(poetry_venv_factory: PoetryVenvFactory) -> None:
             ),
             stylize("{BOLD}{RED}Found 4 dependency issues.{RESET}"),
             "",
-            "For more information, see the documentation: https://fpgmaas.github.io/deptry/",
+            "For more information, see the documentation: https://deptry.com/",
             "",
         ]
 
