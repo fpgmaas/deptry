@@ -22,7 +22,7 @@
 
 ### Features
 
-* Implement the collection of all Python files to be scanned by *deptry* in Rust. ([#591](https://github.com/fpgmaas/deptry/pull/591))
+* Implement the collection of all Python files to be scanned by *deptry* in Rust ([#591](https://github.com/fpgmaas/deptry/pull/591))
 * Implement import extraction for notebooks in Rust ([#606](https://github.com/fpgmaas/deptry/pull/606))
 * Use ruff's AST parser for import extraction from Python files. This also adds support for files with Python 3.12 f-string syntax, see [PEP 701](https://docs.python.org/3/whatsnew/3.12.html#pep-701-syntactic-formalization-of-f-strings). ([#615](https://github.com/fpgmaas/deptry/pull/615))
 * Improved logging of the detected imports and their locations when *deptry* is run in verbose mode ([#627](https://github.com/fpgmaas/deptry/pull/627))
@@ -36,6 +36,8 @@
 ### Miscellaneous
 
 * Moved the documentation to [deptry.com](https://deptry.com) ([#630](https://github.com/fpgmaas/deptry/pull/630))
+
+**Full Changelog**: https://github.com/fpgmaas/deptry/compare/0.14.1...0.14.2
 
 
 ## 0.14.1 - 2024-03-18
@@ -51,7 +53,7 @@ PyPy wheels are now also published on PyPI ([#612](https://github.com/fpgmaas/de
 
 ### Full Changelog
 
-https://github.com/fpgmaas/deptry/compare/0.14.0...0.14.1
+https://github.com/fpgmaas/deptry/compare/0.14.2...0.15.0
 
 
 ## 0.14.0 - 2024-03-14
