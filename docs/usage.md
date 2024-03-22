@@ -426,7 +426,7 @@ plot = [
 ]
 ```
 
-By default, `https`, `pytest` and `matplotlib` are extracted as regular dependencies. By specifying `--pep621-dev-dependency-groups=test`,
+By default, `httpx`, `pytest` and `matplotlib` are extracted as regular dependencies. By specifying `--pep621-dev-dependency-groups=test`,
 the dependency `pytest` will be considered a development dependency instead.
 
 - Type: `list[str]`
