@@ -14,7 +14,7 @@
   * `--skip-missing`
   * `--skip-misplaced-dev`
 
-  These flags are now deprecated. If you are still using these flags and are planning to upgrade to this release, please refer to the release notes of [0.12.0](https://github.com/fpgmaas/deptry/releases/tag/0.12.0) for instructions on how to migrate to the new method of configuration. ([#586](https://github.com/fpgmaas/deptry/pull/596))
+  These flags are now no longer supported. If you are still using these flags and are planning to upgrade to this release, please refer to the release notes of [0.12.0](https://github.com/fpgmaas/deptry/releases/tag/0.12.0) for instructions on how to migrate to the new method of configuration. ([#586](https://github.com/fpgmaas/deptry/pull/596))
 
 ### Deprecations
 
@@ -22,6 +22,7 @@
 
 ### Features
 
+* Implement the collection of all Python files to be scanned by *deptry* in Rust. ([#591](https://github.com/fpgmaas/deptry/pull/591))
 * Implement import extraction for notebooks in Rust ([#606](https://github.com/fpgmaas/deptry/pull/606))
 * Use ruff's AST parser for import extraction from Python files. This also adds support for files with Python 3.12 f-string syntax, see [PEP 701](https://docs.python.org/3/whatsnew/3.12.html#pep-701-syntactic-formalization-of-f-strings). ([#615](https://github.com/fpgmaas/deptry/pull/615))
 * Improved logging of the detected imports and their locations when *deptry* is run in verbose mode ([#627](https://github.com/fpgmaas/deptry/pull/627))
