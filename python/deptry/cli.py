@@ -139,7 +139,7 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
     "-i",
     type=COMMA_SEPARATED_TUPLE,
     help="""A comma-separated list of error codes to ignore. e.g. `deptry --ignore DEP001,DEP002`
-    For more information regarding the error codes, see https://fpgmaas.github.io/deptry/issue-codes/""",
+    For more information regarding the error codes, see https://deptry.com/issue-codes/""",
     default=(),
 )
 @click.option(
@@ -148,7 +148,7 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
     type=COMMA_SEPARATED_MAPPING,
     help="""A comma-separated mapping of packages or modules to be ignored per error code.
     . e.g. ``deptry . --per-rule-ignores DEP001=matplotlib,DEP002=pandas|numpy``
-    For more information regarding the error codes, see https://fpgmaas.github.io/deptry/issue-codes/""",
+    For more information regarding the error codes, see https://deptry.com/issue-codes/""",
     default={},
 )
 @click.option(
