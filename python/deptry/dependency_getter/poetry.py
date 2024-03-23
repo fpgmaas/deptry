@@ -17,13 +17,7 @@ class PoetryDependencyGetter(DependencyGetter):
     """Extract Poetry dependencies from pyproject.toml."""
 
     def get(self) -> DependenciesExtract:
-        dependencies = self._get_poetry_dependencies()
-        self._log_dependencies(dependencies)
-
-        dev_dependencies = self._get_poetry_dev_dependencies()
-        self._log_dependencies(dev_dependencies, is_dev=True)
-
-        return DependenciesExtract(dependencies, dev_dependencies)
+        return DependenciesExtract(self._get_poetry_dependencies(), self._get_poetry_dev_dependencies())
 
     def _get_poetry_dependencies(self) -> list[Dependency]:
         pyproject_data = load_pyproject_toml(self.config)

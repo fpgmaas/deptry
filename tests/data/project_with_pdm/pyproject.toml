@@ -28,5 +28,8 @@ test = [
     "pytest-cov>=4.0.0",
 ]
 
+[tool.deptry]
+pep621_dev_dependency_groups = ["bar"]
+
 [tool.deptry.per_rule_ignores]
 DEP002 = ["pkginfo"]

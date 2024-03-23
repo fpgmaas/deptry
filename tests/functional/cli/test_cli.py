@@ -418,6 +418,7 @@ def test_cli_verbose(poetry_venv_factory: PoetryVenvFactory) -> None:
 
         assert result.returncode == 1
         assert "The project contains the following dependencies:" in result.stderr
+        assert "The project contains the following dev dependencies:" in result.stderr
         assert get_issues_report(Path(issue_report)) == [
             {
                 "error": {

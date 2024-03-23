@@ -53,6 +53,7 @@ class Core:
     known_first_party: tuple[str, ...]
     json_output: str
     package_module_name_map: Mapping[str, tuple[str, ...]]
+    pep621_dev_dependency_groups: tuple[str, ...]
 
     def run(self) -> None:
         self._log_config()
@@ -61,6 +62,8 @@ class Core:
             self.config, requirements_txt=self.requirements_txt
         ).detect()
         dependencies_extract = self._get_dependencies(dependency_management_format)
+
+        self._log_dependencies(dependencies_extract)
 
         all_python_files = PythonFileFinder(
             self.exclude, self.extend_exclude, self.using_default_exclude, self.ignore_notebooks
@@ -141,9 +144,13 @@ class Core:
         if dependency_management_format is DependencyManagementFormat.POETRY:
             return PoetryDependencyGetter(self.config, self.package_module_name_map).get()
         if dependency_management_format is DependencyManagementFormat.PDM:
-            return PDMDependencyGetter(self.config, self.package_module_name_map).get()
+            return PDMDependencyGetter(
+                self.config, self.package_module_name_map, self.pep621_dev_dependency_groups
+            ).get()
         if dependency_management_format is DependencyManagementFormat.PEP_621:
-            return PEP621DependencyGetter(self.config, self.package_module_name_map).get()
+            return PEP621DependencyGetter(
+                self.config, self.package_module_name_map, self.pep621_dev_dependency_groups
+            ).get()
         if dependency_management_format is DependencyManagementFormat.REQUIREMENTS_TXT:
             return RequirementsTxtDependencyGetter(
                 self.config, self.package_module_name_map, self.requirements_txt, self.requirements_txt_dev
@@ -187,6 +194,20 @@ class Core:
         for key, value in vars(self).items():
             logging.debug("%s: %s", key, value)
         logging.debug("")
+
+    @staticmethod
+    def _log_dependencies(dependencies_extract: DependenciesExtract) -> None:
+        if dependencies_extract.dependencies:
+            logging.debug("The project contains the following dependencies:")
+            for dependency in dependencies_extract.dependencies:
+                logging.debug(dependency)
+            logging.debug("")
+
+        if dependencies_extract.dev_dependencies:
+            logging.debug("The project contains the following dev dependencies:")
+            for dependency in dependencies_extract.dev_dependencies:
+                logging.debug(dependency)
+            logging.debug("")
 
     @staticmethod
     def _exit(violations: list[Violation]) -> None:
