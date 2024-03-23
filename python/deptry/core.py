@@ -144,7 +144,9 @@ class Core:
         if dependency_management_format is DependencyManagementFormat.POETRY:
             return PoetryDependencyGetter(self.config, self.package_module_name_map).get()
         if dependency_management_format is DependencyManagementFormat.PDM:
-            return PDMDependencyGetter(self.config, self.package_module_name_map).get()
+            return PDMDependencyGetter(
+                self.config, self.package_module_name_map, self.pep621_dev_dependency_groups
+            ).get()
         if dependency_management_format is DependencyManagementFormat.PEP_621:
             return PEP621DependencyGetter(
                 self.config, self.package_module_name_map, self.pep621_dev_dependency_groups
