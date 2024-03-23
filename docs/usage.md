@@ -410,7 +410,7 @@ By default, all dependencies under `[project.dependencies]` and `[project.option
 
 For example, consider a project with the following `pyproject.toml`:
 
-```
+```toml
 [project]
 ...
 dependencies = [
