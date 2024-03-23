@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import logging
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
@@ -36,12 +35,3 @@ class DependencyGetter(ABC):
     def get(self) -> DependenciesExtract:
         """Get extracted dependencies and dev dependencies."""
         raise NotImplementedError()
-
-    @staticmethod
-    def _log_dependencies(dependencies: list[Dependency], is_dev: bool = False) -> None:
-        logging.debug("The project contains the following %s:", "dev dependencies" if is_dev else "dependencies")
-
-        for dependency in dependencies:
-            logging.debug(dependency)
-
-        logging.debug("")

@@ -25,7 +25,6 @@ class RequirementsTxtDependencyGetter(DependencyGetter):
                 *(self._get_dependencies_from_requirements_file(file_name) for file_name in self.requirements_file)
             )
         )
-        self._log_dependencies(dependencies=dependencies)
 
         dev_dependencies = list(
             itertools.chain(
@@ -35,7 +34,6 @@ class RequirementsTxtDependencyGetter(DependencyGetter):
                 )
             )
         )
-        self._log_dependencies(dependencies=dev_dependencies, is_dev=True)
 
         return DependenciesExtract(dependencies, dev_dependencies)
 

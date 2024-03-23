@@ -23,6 +23,7 @@ DEFAULT_CORE_ARGS = {
     "known_first_party": ANY,
     "json_output": ANY,
     "package_module_name_map": ANY,
+    "pep621_dev_dependency_groups": ANY,
 }
 
 
