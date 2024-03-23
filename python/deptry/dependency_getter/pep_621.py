@@ -51,12 +51,9 @@ class PEP621DependencyGetter(DependencyGetter):
                 self._split_development_dependencies_from_optional_dependencies(optional_dependencies)
             )
             dependencies = [*dependencies, *leftover_optional_dependencies]
-            self._log_dependencies(dependencies)
-            self._log_dependencies(dev_dependencies, is_dev=True)
             return DependenciesExtract(dependencies, dev_dependencies)
 
         dependencies = [*dependencies, *itertools.chain(*optional_dependencies.values())]
-        self._log_dependencies(dependencies)
         return DependenciesExtract(dependencies, [])
 
     def _get_dependencies(self) -> list[Dependency]:

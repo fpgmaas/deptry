@@ -21,10 +21,7 @@ class PDMDependencyGetter(PEP621DependencyGetter):
     def get(self) -> DependenciesExtract:
         pep_621_dependencies_extract = super().get()
 
-        dev_dependencies = self._get_pdm_dev_dependencies()
-        self._log_dependencies(dev_dependencies, is_dev=True)
-
-        return DependenciesExtract(pep_621_dependencies_extract.dependencies, dev_dependencies)
+        return DependenciesExtract(pep_621_dependencies_extract.dependencies, self._get_pdm_dev_dependencies())
 
     def _get_pdm_dev_dependencies(self) -> list[Dependency]:
         """

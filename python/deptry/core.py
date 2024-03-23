@@ -63,6 +63,8 @@ class Core:
         ).detect()
         dependencies_extract = self._get_dependencies(dependency_management_format)
 
+        self._log_dependencies(dependencies_extract)
+
         all_python_files = PythonFileFinder(
             self.exclude, self.extend_exclude, self.using_default_exclude, self.ignore_notebooks
         ).get_all_python_files_in(self.root)
@@ -190,6 +192,20 @@ class Core:
         for key, value in vars(self).items():
             logging.debug("%s: %s", key, value)
         logging.debug("")
+
+    @staticmethod
+    def _log_dependencies(dependencies_extract: DependenciesExtract) -> None:
+        if dependencies_extract.dependencies:
+            logging.debug("The project contains the following dependencies:")
+            for dependency in dependencies_extract.dependencies:
+                logging.debug(dependency)
+            logging.debug("")
+
+        if dependencies_extract.dev_dependencies:
+            logging.debug("The project contains the following dev dependencies:")
+            for dependency in dependencies_extract.dev_dependencies:
+                logging.debug(dependency)
+            logging.debug("")
 
     @staticmethod
     def _exit(violations: list[Violation]) -> None:
