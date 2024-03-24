@@ -63,7 +63,7 @@ PyPy wheels are now also published on PyPI ([#612](https://github.com/fpgmaas/de
 
 ### Full Changelog
 
-https://github.com/fpgmaas/deptry/compare/0.14.2...0.15.0
+https://github.com/fpgmaas/deptry/compare/0.14.0...0.14.1
 
 
 ## 0.14.0 - 2024-03-14
