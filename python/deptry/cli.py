@@ -11,6 +11,10 @@ import click
 
 from deptry.config import read_configuration_from_pyproject_toml
 from deptry.core import Core
+from deptry.deprecate.requirements_txt import (
+    REQUIREMENTS_TXT_DEPRECATION_MESSAGE,
+    REQUIREMENTS_TXT_DEV_DEPRECATION_MESSAGE,
+)
 
 if TYPE_CHECKING:
     from collections.abc import Mapping, MutableMapping, Sequence
@@ -183,19 +187,25 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
     help="Display the current version and exit.",
 )
 @click.option(
-    "--requirements-txt",
-    "-rt",
+    "--requirements-txt", "-rt", type=COMMA_SEPARATED_TUPLE, help="To be deprecated.", hidden=True, default=()
+)
+@click.option(
+    "--requirements-txt-dev", "-rtd", type=COMMA_SEPARATED_TUPLE, help="To be deprecated.", hidden=True, default=()
+)
+@click.option(
+    "--requirements-files",
+    "-rf",
     type=COMMA_SEPARATED_TUPLE,
-    help=""".txt files to scan for dependencies. If a file called pyproject.toml with a [tool.poetry.dependencies] section is found, this argument is ignored
+    help=""".txt files to scan for dependencies. If a file called pyproject.toml with a [tool.poetry.dependencies] or [project] section is found, this argument is ignored
     and the dependencies are extracted from the pyproject.toml file instead. Can be multiple e.g. `deptry . --requirements-txt req/prod.txt,req/extra.txt`""",
     default=("requirements.txt",),
     show_default=True,
 )
 @click.option(
-    "--requirements-txt-dev",
-    "-rtd",
+    "--requirements-files-dev",
+    "-rfd",
     type=COMMA_SEPARATED_TUPLE,
-    help=""".txt files to scan for additional development dependencies. If a file called pyproject.toml with a [tool.poetry.dependencies] section is found, this argument is ignored
+    help=""".txt files to scan for additional development dependencies. If a file called pyproject.toml with a [tool.poetry.dependencies] or [project] section is found, this argument is ignored
     and the dependencies are extracted from the pyproject.toml file instead. Can be multiple e.g. `deptry . --requirements-txt-dev req/dev.txt,req/test.txt`""",
     default=("dev-requirements.txt", "requirements-dev.txt"),
     show_default=True,
@@ -246,6 +256,8 @@ def deptry(
     ignore_notebooks: bool,
     requirements_txt: tuple[str, ...],
     requirements_txt_dev: tuple[str, ...],
+    requirements_files: tuple[str, ...],
+    requirements_files_dev: tuple[str, ...],
     known_first_party: tuple[str, ...],
     json_output: str,
     package_module_name_map: MutableMapping[str, tuple[str, ...]],
@@ -264,6 +276,12 @@ def deptry(
         deptry src worker
 
     """
+
+    if requirements_txt:
+        logging.warning(REQUIREMENTS_TXT_DEPRECATION_MESSAGE)
+
+    if requirements_txt_dev:
+        logging.warning(REQUIREMENTS_TXT_DEV_DEPRECATION_MESSAGE)
     Core(
         root=root,
         config=config,
@@ -274,8 +292,8 @@ def deptry(
         ignore_notebooks=ignore_notebooks,
         ignore=ignore,
         per_rule_ignores=per_rule_ignores,
-        requirements_txt=requirements_txt,
-        requirements_txt_dev=requirements_txt_dev,
+        requirements_files=requirements_txt or requirements_files,
+        requirements_files_dev=requirements_txt_dev or requirements_files_dev,
         known_first_party=known_first_party,
         json_output=json_output,
         package_module_name_map=package_module_name_map,

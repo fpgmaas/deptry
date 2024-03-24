@@ -9,12 +9,12 @@ from typing import TYPE_CHECKING
 from deptry.dependency_getter.pdm import PDMDependencyGetter
 from deptry.dependency_getter.pep_621 import PEP621DependencyGetter
 from deptry.dependency_getter.poetry import PoetryDependencyGetter
-from deptry.dependency_getter.requirements_txt import RequirementsTxtDependencyGetter
+from deptry.dependency_getter.requirements_files import RequirementsTxtDependencyGetter
 from deptry.dependency_specification_detector import DependencyManagementFormat, DependencySpecificationDetector
 from deptry.exceptions import IncorrectDependencyFormatError, UnsupportedPythonVersionError
 from deptry.imports.extract import get_imported_modules_from_list_of_files
 from deptry.module import ModuleBuilder, ModuleLocations
-from deptry.python_file_finder import PythonFileFinder
+from deptry.python_file_finder import get_all_python_files_in
 from deptry.reporters import JSONReporter, TextReporter
 from deptry.stdlibs import STDLIBS_PYTHON
 from deptry.violations import (
@@ -48,8 +48,8 @@ class Core:
     extend_exclude: tuple[str, ...]
     using_default_exclude: bool
     ignore_notebooks: bool
-    requirements_txt: tuple[str, ...]
-    requirements_txt_dev: tuple[str, ...]
+    requirements_files: tuple[str, ...]
+    requirements_files_dev: tuple[str, ...]
     known_first_party: tuple[str, ...]
     json_output: str
     package_module_name_map: Mapping[str, tuple[str, ...]]
@@ -59,16 +59,13 @@ class Core:
         self._log_config()
 
         dependency_management_format = DependencySpecificationDetector(
-            self.config, requirements_txt=self.requirements_txt
+            self.config, requirements_files=self.requirements_files
         ).detect()
         dependencies_extract = self._get_dependencies(dependency_management_format)
 
         self._log_dependencies(dependencies_extract)
 
-        all_python_files = PythonFileFinder(
-            self.exclude, self.extend_exclude, self.using_default_exclude, self.ignore_notebooks
-        ).get_all_python_files_in(self.root)
-
+        python_files = self._find_python_files()
         local_modules = self._get_local_modules()
         stdlib_modules = self._get_stdlib_modules()
 
@@ -83,7 +80,7 @@ class Core:
                 ).build(),
                 locations,
             )
-            for module, locations in get_imported_modules_from_list_of_files(all_python_files).items()
+            for module, locations in get_imported_modules_from_list_of_files(python_files).items()
         ]
         imported_modules_with_locations = [
             module_with_locations
@@ -98,6 +95,19 @@ class Core:
             JSONReporter(violations, self.json_output).report()
 
         self._exit(violations)
+
+    def _find_python_files(self) -> list[Path]:
+        logging.debug("Collecting Python files to scan...")
+
+        python_files = get_all_python_files_in(
+            self.root, self.exclude, self.extend_exclude, self.using_default_exclude, self.ignore_notebooks
+        )
+
+        logging.debug(
+            "Python files to scan for imports:\n%s\n", "\n".join(str(python_file) for python_file in python_files)
+        )
+
+        return python_files
 
     def _find_violations(
         self, imported_modules_with_locations: list[ModuleLocations], dependencies: list[Dependency]
@@ -151,9 +161,9 @@ class Core:
             return PEP621DependencyGetter(
                 self.config, self.package_module_name_map, self.pep621_dev_dependency_groups
             ).get()
-        if dependency_management_format is DependencyManagementFormat.REQUIREMENTS_TXT:
+        if dependency_management_format is DependencyManagementFormat.REQUIREMENTS_FILE:
             return RequirementsTxtDependencyGetter(
-                self.config, self.package_module_name_map, self.requirements_txt, self.requirements_txt_dev
+                self.config, self.package_module_name_map, self.requirements_files, self.requirements_files_dev
             ).get()
         raise IncorrectDependencyFormatError
 
