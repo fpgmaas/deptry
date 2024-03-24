@@ -503,7 +503,7 @@ checksum = "c08c74e62047bb2de4ff487b251e4a92e24f48745648451635cec7d591162d9f"
 [[package]]
 name = "ruff_python_ast"
 version = "0.0.0"
-source = "git+https://github.com/astral-sh/ruff?tag=v0.3.3#608df9a1bc0e6025049add877d1d833f1739e966"
+source = "git+https://github.com/astral-sh/ruff?tag=v0.3.4#5062572aca9413670aafd018cb65037bcb4d6acb"
 dependencies = [
  "aho-corasick",
  "bitflags 2.5.0",
@@ -519,7 +519,7 @@ dependencies = [
 [[package]]
 name = "ruff_python_parser"
 version = "0.0.0"
-source = "git+https://github.com/astral-sh/ruff?tag=v0.3.3#608df9a1bc0e6025049add877d1d833f1739e966"
+source = "git+https://github.com/astral-sh/ruff?tag=v0.3.4#5062572aca9413670aafd018cb65037bcb4d6acb"
 dependencies = [
  "anyhow",
  "bitflags 2.5.0",
@@ -534,13 +534,14 @@ dependencies = [
  "static_assertions",
  "tiny-keccak",
  "unicode-ident",
+ "unicode-normalization",
  "unicode_names2",
 ]
 
 [[package]]
 name = "ruff_python_trivia"
 version = "0.0.0"
-source = "git+https://github.com/astral-sh/ruff?tag=v0.3.3#608df9a1bc0e6025049add877d1d833f1739e966"
+source = "git+https://github.com/astral-sh/ruff?tag=v0.3.4#5062572aca9413670aafd018cb65037bcb4d6acb"
 dependencies = [
  "itertools",
  "ruff_source_file",
@@ -551,7 +552,7 @@ dependencies = [
 [[package]]
 name = "ruff_source_file"
 version = "0.0.0"
-source = "git+https://github.com/astral-sh/ruff?tag=v0.3.3#608df9a1bc0e6025049add877d1d833f1739e966"
+source = "git+https://github.com/astral-sh/ruff?tag=v0.3.4#5062572aca9413670aafd018cb65037bcb4d6acb"
 dependencies = [
  "memchr",
  "once_cell",
@@ -561,7 +562,7 @@ dependencies = [
 [[package]]
 name = "ruff_text_size"
 version = "0.0.0"
-source = "git+https://github.com/astral-sh/ruff?tag=v0.3.3#608df9a1bc0e6025049add877d1d833f1739e966"
+source = "git+https://github.com/astral-sh/ruff?tag=v0.3.4#5062572aca9413670aafd018cb65037bcb4d6acb"
 
 [[package]]
 name = "rustc-hash"
@@ -657,10 +658,34 @@ dependencies = [
 ]
 
 [[package]]
+name = "tinyvec"
+version = "1.6.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "87cc5ceb3875bb20c2890005a4e226a4651264a5c75edb2421b52861a0a0cb50"
+dependencies = [
+ "tinyvec_macros",
+]
+
+[[package]]
+name = "tinyvec_macros"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1f3ccbac311fea05f86f61904b462b55fb3df8837a366dfc601a0161d0532f20"
+
+[[package]]
 name = "unicode-ident"
 version = "1.0.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3354b9ac3fae1ff6755cb6db53683adb661634f67557942dea4facebec0fee4b"
+
+[[package]]
+name = "unicode-normalization"
+version = "0.1.23"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a56d1686db2308d901306f92a263857ef59ea39678a5458e7cb17f01415101f5"
+dependencies = [
+ "tinyvec",
+]
 
 [[package]]
 name = "unicode-width"
