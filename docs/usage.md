@@ -36,7 +36,7 @@ To determine the project's dependencies, _deptry_ will scan the directory it is 
     - development dependencies from `dev-dependencies.txt` and `dependencies-dev.txt`, if any exist
 
 _deptry_ can be configured to look for `pip` requirements files with other names or in other directories.
-See [Requirements file](#requirements-files) and [Requirements file dev](#requirements-files-dev).
+See [Requirements files](#requirements-files) and [Requirements files dev](#requirements-files-dev).
 
 ## Excluding files and directories
 
