@@ -20,8 +20,7 @@ pub fn read_file(file_path: &str) -> PyResult<String> {
         Ok(content) => Ok(content),
         Err(e) => match e.kind() {
             ErrorKind::NotFound => Err(PyFileNotFoundError::new_err(format!(
-                "File not found: '{}'",
-                file_path
+                "File not found: '{file_path}'",
             ))),
             ErrorKind::InvalidData => {
                 let file = File::open(path).unwrap();
@@ -32,7 +31,7 @@ pub fn read_file(file_path: &str) -> PyResult<String> {
                     .unwrap_or_else(|| guess_encoding(&buffer));
                 read_with_encoding(&buffer, encoding)
             }
-            _ => Err(PyIOError::new_err(format!("An error occurred: '{}'", e))),
+            _ => Err(PyIOError::new_err(format!("An error occurred: '{e}'"))),
         },
     }
 }

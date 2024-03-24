@@ -63,7 +63,7 @@ fn _extract_code_from_notebook_cells(cells: &[serde_json::Value]) -> String {
     let code_lines: Vec<String> = cells
         .iter()
         .filter(|cell| cell["cell_type"] == "code")
-        .flat_map(|cell| cell["source"].as_array())
+        .filter_map(|cell| cell["source"].as_array())
         .flatten()
         .filter_map(|line| line.as_str())
         .map(str::to_owned)

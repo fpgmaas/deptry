@@ -5,6 +5,7 @@ use pyo3::prelude::*;
 mod file_utils;
 mod imports;
 mod location;
+mod python_file_finder;
 mod visitor;
 
 use location::Location;
@@ -18,6 +19,7 @@ fn rust(_py: Python, m: &PyModule) -> PyResult<()> {
         imports::ipynb::get_imports_from_ipynb_files,
         m
     )?)?;
+    m.add_function(wrap_pyfunction!(python_file_finder::find_python_files, m)?)?;
     m.add_class::<Location>()?;
     Ok(())
 }
