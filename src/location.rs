@@ -14,14 +14,14 @@ pub struct Location {
 #[pymethods]
 impl Location {
     #[new]
-    pub fn new(file: String, line: Option<usize>, column: Option<usize>) -> Self {
-        Location { file, line, column }
+    fn new(file: String, line: Option<usize>, column: Option<usize>) -> Self {
+        Self { file, line, column }
     }
 
-    fn __repr__(&self) -> PyResult<String> {
-        Ok(format!(
+    fn __repr__(&self) -> String {
+        format!(
             "Location(file='{}', line={:?}, column={:?})",
             self.file, self.line, self.column
-        ))
+        )
     }
 }
