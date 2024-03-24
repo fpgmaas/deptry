@@ -12,7 +12,6 @@ import pytest
 from deptry.core import Core
 from deptry.dependency import Dependency
 from deptry.dependency_getter.base import DependenciesExtract
-from deptry.dependency_specification_detector import DependencyManagementFormat
 from deptry.exceptions import UnsupportedPythonVersionError
 from deptry.imports.location import Location
 from deptry.module import Module
@@ -224,6 +223,8 @@ def test_check_for_requirements_in_file_with_requirements_in(tmp_path: Path, cap
         # Setup: Create a requirements.in file in the temporary directory
         requirements_in_path = Path("requirements.in")
         requirements_in_path.touch()
+        requirements_txt_path = Path("requirements.txt")
+        requirements_txt_path.touch()
 
         # Initialize Core object with the temporary path as the root, and simulate the default usage of requirements files
         core_instance = Core(
@@ -247,7 +248,7 @@ def test_check_for_requirements_in_file_with_requirements_in(tmp_path: Path, cap
 
         # Use caplog to capture logging at the INFO level
         with caplog.at_level(logging.INFO):
-            core_instance._check_for_requirements_in_file(DependencyManagementFormat.REQUIREMENTS_FILE)
+            core_instance._check_for_requirements_in_file()
 
         # Assert that requirements_files is updated correctly
         assert core_instance.requirements_files == ("requirements.in",)

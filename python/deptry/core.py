@@ -64,7 +64,8 @@ class Core:
             requirements_files=self.requirements_files,
         ).detect()
 
-        self._check_for_requirements_in_file(dependency_management_format)
+        if dependency_management_format == DependencyManagementFormat.REQUIREMENTS_FILE:
+            self._check_for_requirements_in_file()
 
         dependencies_extract = self._get_dependencies(dependency_management_format)
 
@@ -101,12 +102,14 @@ class Core:
 
         self._exit(violations)
 
-    def _check_for_requirements_in_file(self, dependency_management_format: DependencyManagementFormat) -> None:
-        if (
-            dependency_management_format == DependencyManagementFormat.REQUIREMENTS_FILE
-            and self.using_default_requirements_files
-            and Path("requirements.in").is_file()
-        ):
+    def _check_for_requirements_in_file(self) -> None:
+        """
+        Tools like `pip-tools` and `uv` work with a setup in which a `requirements.in` is compiled into a `requirements.txt`, which then
+        contains pinned versions for all transitive dependencies. If the user did not explicitly specify the argument `requirements-files`,
+        but there is a `requirements.in present`, it is highly likely that the user wants to use the `requirements.in` file so we set
+        `requirements-files` to that instead.
+        """
+        if self.using_default_requirements_files and Path("requirements.in").is_file():
             logging.info(
                 "Detected a 'requirements.in' file in the project and no 'requirements-files' were explicitly specified. "
                 "Automatically using 'requirements.in' as the source for the project's dependencies. To specify a different source for "

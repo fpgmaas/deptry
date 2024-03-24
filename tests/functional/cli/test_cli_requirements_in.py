@@ -31,27 +31,27 @@ def test_cli_single_requirements_files(pip_venv_factory: PipVenvFactory) -> None
             {
                 "error": {"code": "DEP002", "message": "'isort' defined as a dependency but not used in the codebase"},
                 "module": "isort",
-                "location": {"file": "requirements.in", "line": None, "column": None},
+                "location": {"file": str(Path("requirements.in")), "line": None, "column": None},
             },
             {
                 "error": {"code": "DEP002", "message": "'pandas' defined as a dependency but not used in the codebase"},
                 "module": "pandas",
-                "location": {"file": "requirements.in", "line": None, "column": None},
+                "location": {"file": str(Path("requirements.in")), "line": None, "column": None},
             },
             {
                 "error": {"code": "DEP004", "message": "'black' imported but declared as a dev dependency"},
                 "module": "black",
-                "location": {"file": "src/main.py", "line": 4, "column": 8},
+                "location": {"file": str(Path("src/main.py")), "line": 4, "column": 8},
             },
             {
                 "error": {"code": "DEP001", "message": "'white' imported but missing from the dependency definitions"},
                 "module": "white",
-                "location": {"file": "src/main.py", "line": 6, "column": 8},
+                "location": {"file": str(Path("src/main.py")), "line": 6, "column": 8},
             },
             {
                 "error": {"code": "DEP003", "message": "'requests' imported but it is a transitive dependency"},
                 "module": "requests",
-                "location": {"file": "src/main.py", "line": 8, "column": 8},
+                "location": {"file": str(Path("src/main.py")), "line": 8, "column": 8},
             },
         ]
 
@@ -75,26 +75,26 @@ def test_cli_multiple_requirements_files(pip_venv_factory: PipVenvFactory) -> No
             {
                 "error": {"code": "DEP002", "message": "'isort' defined as a dependency but not used in the codebase"},
                 "module": "isort",
-                "location": {"file": "requirements.txt", "line": None, "column": None},
+                "location": {"file": str(Path("requirements.txt")), "line": None, "column": None},
             },
             {
                 "error": {"code": "DEP002", "message": "'pandas' defined as a dependency but not used in the codebase"},
                 "module": "pandas",
-                "location": {"file": "requirements.txt", "line": None, "column": None},
+                "location": {"file": str(Path("requirements.txt")), "line": None, "column": None},
             },
             {
                 "error": {"code": "DEP002", "message": "'numpy' defined as a dependency but not used in the codebase"},
                 "module": "numpy",
-                "location": {"file": "requirements.txt", "line": None, "column": None},
+                "location": {"file": str(Path("requirements.txt")), "line": None, "column": None},
             },
             {
                 "error": {"code": "DEP004", "message": "'black' imported but declared as a dev dependency"},
                 "module": "black",
-                "location": {"file": "src/main.py", "line": 4, "column": 8},
+                "location": {"file": str(Path("src/main.py")), "line": 4, "column": 8},
             },
             {
                 "error": {"code": "DEP001", "message": "'white' imported but missing from the dependency definitions"},
                 "module": "white",
-                "location": {"file": "src/main.py", "line": 6, "column": 8},
+                "location": {"file": str(Path("src/main.py")), "line": 6, "column": 8},
             },
         ]
