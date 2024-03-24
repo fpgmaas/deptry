@@ -11,6 +11,7 @@ import pytest
 from deptry.core import Core
 from deptry.dependency import Dependency
 from deptry.dependency_getter.base import DependenciesExtract
+from deptry.dependency_specification_detector import DependencyManagementFormat
 from deptry.exceptions import UnsupportedPythonVersionError
 from deptry.imports.location import Location
 from deptry.module import Module
@@ -212,3 +213,45 @@ def test__log_dependencies(
         Core._log_dependencies(DependenciesExtract(dependencies, dev_dependencies))
 
     assert caplog.messages == expected_logs
+
+
+def test_check_for_requirements_in_file_with_requirements_in(tmp_path: Path, caplog):
+    with run_within_dir(tmp_path):
+        # Setup: Create a requirements.in file in the temporary directory
+        requirements_in_path = Path("requirements.in")
+        requirements_in_path.touch()
+
+        # Initialize Core object with the temporary path as the root, and simulate the default usage of requirements files
+        core_instance = Core(
+            root=(tmp_path,),
+            config="pyproject.toml",
+            no_ansi=False,
+            per_rule_ignores={},
+            ignore=(),
+            exclude=(),
+            extend_exclude=(),
+            using_default_exclude=True,
+            ignore_notebooks=False,
+            requirements_files=(),
+            using_default_requirements_files=True,  # Important for this test
+            requirements_files_dev=(),
+            known_first_party=(),
+            json_output="",
+            package_module_name_map={},
+            pep621_dev_dependency_groups=(),
+        )
+
+        # Use caplog to capture logging at the INFO level
+        with caplog.at_level(logging.INFO):
+            core_instance._check_for_requirements_in_file(DependencyManagementFormat.REQUIREMENTS_FILE)
+
+        # Assert that requirements_files is updated correctly
+        assert core_instance.requirements_files == ("requirements.in",)
+
+        # Assert that the expected log message is present
+        expected_log = (
+            "Detected a 'requirements.in' file in the project and no 'requirements-files' were explicitly specified. "
+            "Automatically using 'requirements.in' as the source for the project's dependencies. To specify a different source for "
+            "the project's dependencies, use the '--requirements-files' option."
+        )
+        assert expected_log in caplog.text

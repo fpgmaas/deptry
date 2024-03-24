@@ -64,17 +64,7 @@ class Core:
             requirements_files=self.requirements_files,
         ).detect()
 
-        if (
-            dependency_management_format == DependencyManagementFormat.REQUIREMENTS_FILE
-            and self.using_default_requirements_files
-            and Path("requirements.in").is_file()
-        ):
-            logging.info(
-                "Detected a 'requirements.in' file in the project and no 'requirements-files' were explicitly specified. "
-                "Automatically using 'requirements.in' as the source for the project's dependencies. To specify a different source for "
-                "the project's dependencies, use the '--requirements-files' option."
-            )
-            self.requirements_files = ("requirements.in",)
+        self._check_for_requirements_in_file()
 
         dependencies_extract = self._get_dependencies(dependency_management_format)
 
@@ -110,6 +100,19 @@ class Core:
             JSONReporter(violations, self.json_output).report()
 
         self._exit(violations)
+
+    def _check_for_requirements_in_file(self, dependency_management_format):
+        if (
+            dependency_management_format == DependencyManagementFormat.REQUIREMENTS_FILE
+            and self.using_default_requirements_files
+            and Path("requirements.in").is_file()
+        ):
+            logging.info(
+                "Detected a 'requirements.in' file in the project and no 'requirements-files' were explicitly specified. "
+                "Automatically using 'requirements.in' as the source for the project's dependencies. To specify a different source for "
+                "the project's dependencies, use the '--requirements-files' option."
+            )
+            self.requirements_files = ("requirements.in",)
 
     def _find_python_files(self) -> list[Path]:
         logging.debug("Collecting Python files to scan...")
