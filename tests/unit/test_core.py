@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 import re
 import sys
 from pathlib import Path
@@ -9,6 +10,7 @@ import pytest
 
 from deptry.core import Core
 from deptry.dependency import Dependency
+from deptry.dependency_getter.base import DependenciesExtract
 from deptry.exceptions import UnsupportedPythonVersionError
 from deptry.imports.location import Location
 from deptry.module import Module
@@ -86,11 +88,12 @@ def test__get_local_modules(
                 extend_exclude=(),
                 using_default_exclude=True,
                 ignore_notebooks=False,
-                requirements_txt=(),
-                requirements_txt_dev=(),
+                requirements_files=(),
+                requirements_files_dev=(),
                 known_first_party=known_first_party,
                 json_output="",
                 package_module_name_map={},
+                pep621_dev_dependency_groups=(),
             )._get_local_modules()
             == expected
         )
@@ -166,3 +169,45 @@ def test__exit_without_violations() -> None:
 
     assert e.type == SystemExit
     assert e.value.code == 0
+
+
+@pytest.mark.parametrize(
+    ("dependencies", "dev_dependencies", "expected_logs"),
+    [
+        (
+            [],
+            [],
+            [],
+        ),
+        (
+            [
+                Dependency("foo", Path("pyproject.toml")),
+                Dependency("bar", Path("pyproject.toml")),
+            ],
+            [
+                Dependency("dev", Path("pyproject.toml")),
+                Dependency("another-dev", Path("pyproject.toml")),
+            ],
+            [
+                "The project contains the following dependencies:",
+                "Dependency 'foo' with top-levels: {'foo'}.",
+                "Dependency 'bar' with top-levels: {'bar'}.",
+                "",
+                "The project contains the following dev dependencies:",
+                "Dependency 'dev' with top-levels: {'dev'}.",
+                "Dependency 'another-dev' with top-levels: {'another_dev'}.",
+                "",
+            ],
+        ),
+    ],
+)
+def test__log_dependencies(
+    dependencies: list[Dependency],
+    dev_dependencies: list[Dependency],
+    expected_logs: list[str],
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    with caplog.at_level(logging.DEBUG):
+        Core._log_dependencies(DependenciesExtract(dependencies, dev_dependencies))
+
+    assert caplog.messages == expected_logs

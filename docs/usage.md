@@ -27,15 +27,16 @@ To determine the project's dependencies, _deptry_ will scan the directory it is 
     - development dependencies from `[tool.poetry.group.dev.dependencies]` or `[tool.poetry.dev-dependencies]` section
 2. If a `pyproject.toml` file with a `[tool.pdm.dev-dependencies]` section is found, _deptry_ will assume it uses PDM and extract:
     - dependencies from `[project.dependencies]` and `[project.optional-dependencies]` sections
-    - development dependencies from `[tool.pdm.dev-dependencies]` section.
+    - development dependencies from `[tool.pdm.dev-dependencies]` section and from the groups under `[project.optional-dependencies]` passed via the [`--pep621-dev-dependency-groups`](#pep-621-dev-dependency-groups) argument.
 3. If a `pyproject.toml` file with a `[project]` section is found, _deptry_ will assume it uses [PEP 621](https://peps.python.org/pep-0621/) for dependency specification and extract:
-    - dependencies from `[project.dependencies]` and `[project.optional-dependencies]` sections
+    - dependencies from `[project.dependencies]` and `[project.optional-dependencies]`.
+    - development dependencies from the groups under `[project.optional-dependencies]` passed via the [`--pep621-dev-dependency-groups`](#pep-621-dev-dependency-groups) argument.
 4. If a `requirements.txt` file is found, _deptry_ will extract:
     - dependencies from it
     - development dependencies from `dev-dependencies.txt` and `dependencies-dev.txt`, if any exist
 
 _deptry_ can be configured to look for `pip` requirements files with other names or in other directories.
-See [Requirements txt](#requirements-txt) and [Requirements txt dev](#requirements-txt-dev).
+See [Requirements files](#requirements-files) and [Requirements files dev](#requirements-files-dev).
 
 ## Excluding files and directories
 
@@ -139,7 +140,7 @@ deptry . --no-ansi
 
 List of patterns to exclude when searching for source files.
 
-- Type: `List[str]`
+- Type: `list[str]`
 - Default: `["venv", "\.venv", "\.direnv", "tests", "\.git", "setup\.py"]`
 - `pyproject.toml` option name: `exclude`
 - CLI option name: `--exclude` (short: `-e`)
@@ -158,7 +159,7 @@ deptry . --exclude "a_directory|a_python_file\.py|a_pattern/.*"
 Additional list of patterns to exclude when searching for source files.
 This extends the patterns set in [Exclude](#exclude), to allow defining patterns while keeping the default list.
 
-- Type: `List[str]`
+- Type: `list[str]`
 - Default: `[]`
 - `pyproject.toml` option name: `extend_exclude`
 - CLI option name: `--extend-exclude` (short: `-ee`)
@@ -176,7 +177,7 @@ deptry . --extend-exclude "a_directory|a_python_file\.py|a_pattern/.*"
 
 A comma-separated list of [rules](rules-violations.md) to ignore.
 
-- Type: `List[str]`
+- Type: `list[str]`
 - Default: `[]`
 - `pyproject.toml` option name: `ignore`
 - CLI option name: `--ignore` (short: `-i`)
@@ -227,47 +228,47 @@ ignore_notebooks = true
 deptry . --ignore-notebooks
 ```
 
-#### Requirements txt
+#### Requirements files
 
 List of [`pip` requirements files](https://pip.pypa.io/en/stable/user_guide/#requirements-files) that contain the source dependencies.
 
-- Type: `List[str]`
+- Type: `list[str]`
 - Default: `["requirements.txt"]`
-- `pyproject.toml` option name: `requirements_txt`
-- CLI option name: `--requirements-txt` (short: `-rt`)
+- `pyproject.toml` option name: `requirements_files`
+- CLI option name: `--requirements-files` (short: `-rt`)
 - `pyproject.toml` example:
 ```toml
 [tool.deptry]
-requirements_txt = ["requirements.txt", "requirements-private.txt"]
+requirements_files = ["requirements.txt", "requirements-private.txt"]
 ```
 - CLI example:
 ```shell
-deptry . --requirements-txt requirements.txt,requirements-private.txt
+deptry . --requirements-files requirements.txt,requirements-private.txt
 ```
 
-#### Requirements txt dev
+#### Requirements files dev
 
 List of [`pip` requirements files](https://pip.pypa.io/en/stable/user_guide/#requirements-files) that contain the source development dependencies.
 
-- Type: `List[str]`
+- Type: `list[str]`
 - Default: `["dev-requirements.txt", "requirements-dev.txt"]`
-- `pyproject.toml` option name: `requirements_txt_dev`
-- CLI option name: `--requirements-txt-dev` (short: `-rtd`)
+- `pyproject.toml` option name: `requirements_files_dev`
+- CLI option name: `--requirements-files-dev` (short: `-rtd`)
 - `pyproject.toml` example:
 ```toml
 [tool.deptry]
-requirements_txt_dev = ["requirements-dev.txt", "requirements-tests.txt"]
+requirements_files_dev = ["requirements-dev.txt", "requirements-tests.txt"]
 ```
 - CLI example:
 ```shell
-deptry . --requirements-txt-dev requirements-dev.txt,requirements-tests.txt
+deptry . --requirements-files-dev requirements-dev.txt,requirements-tests.txt
 ```
 
 #### Known first party
 
 List of Python modules that should be considered as first party ones. This is useful in case _deptry_ is not able to automatically detect modules that should be considered as local ones.
 
-- Type: `List[str]`
+- Type: `list[str]`
 - Default: `[]`
 - `pyproject.toml` option name: `known_first_party`
 - CLI option name: `--known-first-party` (short: `-kf`)
@@ -399,4 +400,45 @@ deptry . --package-module-name-map 'foo-python=foo|bar'
 Multiple package name to module name mappings are joined by a comma (`,`):
 ```shell
 deptry . --package-module-name-map 'foo-python=foo,bar-python=bar'
+```
+
+#### PEP 621 dev dependency groups
+
+PEP 621 does [not define](https://peps.python.org/pep-0621/#recommend-that-tools-put-development-related-dependencies-into-a-dev-extra) a standard convention for specifying development dependencies. However, deptry offers a mechanism to interpret specific optional dependency groups as development dependencies.
+
+By default, all dependencies under `[project.dependencies]` and `[project.optional-dependencies]` are extracted as regular dependencies. By using the `--pep621-dev-dependency-groups` argument, users can specify which groups defined under `[project.optional-dependencies]` should be treated as development dependencies instead. This is particularly useful for projects that adhere to PEP 621 but do not employ a separate build tool for declaring development dependencies.
+
+For example, consider a project with the following `pyproject.toml`:
+
+```toml
+[project]
+...
+dependencies = [
+    "httpx",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest < 5.0.0",
+]
+plot = [
+    "matplotlib",
+]
+```
+
+By default, `httpx`, `pytest` and `matplotlib` are extracted as regular dependencies. By specifying `--pep621-dev-dependency-groups=test`,
+the dependency `pytest` will be considered a development dependency instead.
+
+- Type: `list[str]`
+- Default: `[]`
+- `pyproject.toml` option name: `pep621_dev_dependency_groups`
+- CLI option name: `--pep621-dev-dependency-groups` (short: `-ddg`)
+- `pyproject.toml` example:
+```toml
+[tool.deptry]
+pep621_dev_dependency_groups = ["test", "docs"]
+```
+- CLI example:
+```shell
+deptry . --pep621-dev-dependency-groups "test,docs"
 ```

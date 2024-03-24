@@ -22,16 +22,9 @@ def test_cli_with_pep_621(pip_venv_factory: PipVenvFactory) -> None:
         assert result.returncode == 1
         assert get_issues_report(Path(issue_report)) == [
             {
-                "error": {
-                    "code": "DEP002",
-                    "message": "'isort' defined as a dependency but not used in the codebase",
-                },
+                "error": {"code": "DEP002", "message": "'isort' defined as a dependency but not used in the codebase"},
                 "module": "isort",
-                "location": {
-                    "file": str(Path("pyproject.toml")),
-                    "line": None,
-                    "column": None,
-                },
+                "location": {"file": str(Path("pyproject.toml")), "line": None, "column": None},
             },
             {
                 "error": {
@@ -39,46 +32,29 @@ def test_cli_with_pep_621(pip_venv_factory: PipVenvFactory) -> None:
                     "message": "'requests' defined as a dependency but not used in the codebase",
                 },
                 "module": "requests",
-                "location": {
-                    "file": str(Path("pyproject.toml")),
-                    "line": None,
-                    "column": None,
-                },
+                "location": {"file": str(Path("pyproject.toml")), "line": None, "column": None},
             },
             {
-                "error": {
-                    "code": "DEP002",
-                    "message": "'mypy' defined as a dependency but not used in the codebase",
-                },
-                "module": "mypy",
-                "location": {
-                    "file": str(Path("pyproject.toml")),
-                    "line": None,
-                    "column": None,
-                },
-            },
-            {
-                "error": {
-                    "code": "DEP002",
-                    "message": "'pytest' defined as a dependency but not used in the codebase",
-                },
+                "error": {"code": "DEP002", "message": "'pytest' defined as a dependency but not used in the codebase"},
                 "module": "pytest",
-                "location": {
-                    "file": str(Path("pyproject.toml")),
-                    "line": None,
-                    "column": None,
-                },
+                "location": {"file": str(Path("pyproject.toml")), "line": None, "column": None},
             },
             {
                 "error": {
-                    "code": "DEP001",
-                    "message": "'white' imported but missing from the dependency definitions",
+                    "code": "DEP002",
+                    "message": "'matplotlib' defined as a dependency but not used in the codebase",
                 },
+                "module": "matplotlib",
+                "location": {"file": str(Path("pyproject.toml")), "line": None, "column": None},
+            },
+            {
+                "error": {"code": "DEP004", "message": "'black' imported but declared as a dev dependency"},
+                "module": "black",
+                "location": {"file": str(Path("src/main.py")), "line": 4, "column": 8},
+            },
+            {
+                "error": {"code": "DEP001", "message": "'white' imported but missing from the dependency definitions"},
                 "module": "white",
-                "location": {
-                    "file": str(Path("src/main.py")),
-                    "line": 6,
-                    "column": 8,
-                },
+                "location": {"file": str(Path("src/main.py")), "line": 6, "column": 8},
             },
         ]

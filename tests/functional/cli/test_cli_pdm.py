@@ -35,18 +35,6 @@ def test_cli_with_pdm(pdm_venv_factory: PDMVenvFactory) -> None:
             },
             {
                 "error": {
-                    "code": "DEP002",
-                    "message": "'requests' defined as a dependency but not used in the codebase",
-                },
-                "module": "requests",
-                "location": {
-                    "file": str(Path("pyproject.toml")),
-                    "line": None,
-                    "column": None,
-                },
-            },
-            {
-                "error": {
                     "code": "DEP004",
                     "message": "'black' imported but declared as a dev dependency",
                 },
