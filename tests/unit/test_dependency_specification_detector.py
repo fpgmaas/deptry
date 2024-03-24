@@ -21,13 +21,13 @@ def test_poetry(tmp_path: Path) -> None:
         assert spec == DependencyManagementFormat.POETRY
 
 
-def test_requirements_txt(tmp_path: Path) -> None:
+def test_requirements_files(tmp_path: Path) -> None:
     with run_within_dir(tmp_path):
         with Path("requirements.txt").open("w") as f:
             f.write('foo >= "1.0"')
 
         spec = DependencySpecificationDetector(Path("pyproject.toml")).detect()
-        assert spec == DependencyManagementFormat.REQUIREMENTS_TXT
+        assert spec == DependencyManagementFormat.REQUIREMENTS_FILE
 
 
 def test_pdm_with_dev_dependencies(tmp_path: Path) -> None:
@@ -84,24 +84,24 @@ def test_both(tmp_path: Path) -> None:
         assert spec == DependencyManagementFormat.POETRY
 
 
-def test_requirements_txt_with_argument(tmp_path: Path) -> None:
+def test_requirements_files_with_argument(tmp_path: Path) -> None:
     with run_within_dir(tmp_path):
         with Path("req.txt").open("w") as f:
             f.write('foo >= "1.0"')
 
-        spec = DependencySpecificationDetector(Path("pyproject.toml"), requirements_txt=("req.txt",)).detect()
-        assert spec == DependencyManagementFormat.REQUIREMENTS_TXT
+        spec = DependencySpecificationDetector(Path("pyproject.toml"), requirements_files=("req.txt",)).detect()
+        assert spec == DependencyManagementFormat.REQUIREMENTS_FILE
 
 
-def test_requirements_txt_with_argument_not_root_directory(tmp_path: Path) -> None:
+def test_requirements_files_with_argument_not_root_directory(tmp_path: Path) -> None:
     with run_within_dir(tmp_path):
         Path("req").mkdir()
 
         with Path("req/req.txt").open("w") as f:
             f.write('foo >= "1.0"')
 
-        spec = DependencySpecificationDetector(Path("pyproject.toml"), requirements_txt=("req/req.txt",)).detect()
-        assert spec == DependencyManagementFormat.REQUIREMENTS_TXT
+        spec = DependencySpecificationDetector(Path("pyproject.toml"), requirements_files=("req/req.txt",)).detect()
+        assert spec == DependencyManagementFormat.REQUIREMENTS_FILE
 
 
 def test_dependency_specification_not_found_raises_exception(tmp_path: Path) -> None:
@@ -112,4 +112,4 @@ def test_dependency_specification_not_found_raises_exception(tmp_path: Path) -> 
             " file(s) called 'req/req.txt' found. Exiting."
         ),
     ):
-        DependencySpecificationDetector(Path("pyproject.toml"), requirements_txt=("req/req.txt",)).detect()
+        DependencySpecificationDetector(Path("pyproject.toml"), requirements_files=("req/req.txt",)).detect()

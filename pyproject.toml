@@ -25,14 +25,14 @@ classifiers = [
 ]
 dependencies = [
     "click>=8.0.0,<9",
-    "pathspec>=0.9.0",
     "colorama>=0.4.6; sys_platform == 'win32'",
     "tomli>=2.0.1; python_version < '3.11'"
 ]
 
 [tool.pdm.dev-dependencies]
 dev = [
-    "pre-commit==3.5.0",
+    # Support for Python 3.8 was dropped by pre-commit in https://github.com/pre-commit/pre-commit/releases/tag/v3.6.0
+    "pre-commit==3.6.2; python_version >= '3.9'",
     "pytest==8.1.1",
     "pytest-cov==4.1.0",
     "pytest-xdist[psutil]==3.5.0",
