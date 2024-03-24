@@ -32,7 +32,8 @@ dependencies = [
 
 [tool.pdm.dev-dependencies]
 dev = [
-    "pre-commit==3.6.2",
+    # Support for Python 3.8 was dropped by pre-commit in https://github.com/pre-commit/pre-commit/releases/tag/v3.6.0
+    "pre-commit==3.6.2; python_version >= '3.9'",
     "pytest==8.1.1",
     "pytest-cov==4.1.0",
     "pytest-xdist[psutil]==3.5.0",
