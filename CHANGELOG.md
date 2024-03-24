@@ -28,8 +28,6 @@
 * Use ruff's AST parser for import extraction from Python files. This also adds support for files with Python 3.12 f-string syntax, see [PEP 701](https://docs.python.org/3/whatsnew/3.12.html#pep-701-syntactic-formalization-of-f-strings). ([#615](https://github.com/fpgmaas/deptry/pull/615))
 * Improved logging of the detected imports and their locations when *deptry* is run in verbose mode ([#627](https://github.com/fpgmaas/deptry/pull/627))
 * Introduce the `--pep621-dev-dependency-group` flag that allows users to specify which groups under `[project.optional-dependencies]` are considered development dependencies. ([#628](https://github.com/fpgmaas/deptry/pull/628))
-*  Improved support for projects that use tools such as `uv` and `pip-tools` that utilize both a `requirements.in`
-and a `requirements.txt` file. ([#641](https://github.com/fpgmaas/deptry/pull/641))
 
 ### Bug Fixes
 
