@@ -4,6 +4,7 @@ import logging
 import re
 import sys
 from pathlib import Path
+from typing import TYPE_CHECKING
 from unittest import mock
 
 import pytest
@@ -23,6 +24,9 @@ from deptry.violations import (
     DEP004MisplacedDevDependencyViolation,
 )
 from tests.utils import create_files, run_within_dir
+
+if TYPE_CHECKING:
+    from _pytest.logging import LogCaptureFixture
 
 
 def test__get_sorted_violations() -> None:
@@ -215,7 +219,7 @@ def test__log_dependencies(
     assert caplog.messages == expected_logs
 
 
-def test_check_for_requirements_in_file_with_requirements_in(tmp_path: Path, caplog):
+def test_check_for_requirements_in_file_with_requirements_in(tmp_path: Path, caplog: LogCaptureFixture) -> None:
     with run_within_dir(tmp_path):
         # Setup: Create a requirements.in file in the temporary directory
         requirements_in_path = Path("requirements.in")

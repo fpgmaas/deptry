@@ -64,7 +64,7 @@ class Core:
             requirements_files=self.requirements_files,
         ).detect()
 
-        self._check_for_requirements_in_file()
+        self._check_for_requirements_in_file(dependency_management_format)
 
         dependencies_extract = self._get_dependencies(dependency_management_format)
 
@@ -101,7 +101,7 @@ class Core:
 
         self._exit(violations)
 
-    def _check_for_requirements_in_file(self, dependency_management_format):
+    def _check_for_requirements_in_file(self, dependency_management_format: DependencyManagementFormat) -> None:
         if (
             dependency_management_format == DependencyManagementFormat.REQUIREMENTS_FILE
             and self.using_default_requirements_files
