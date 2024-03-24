@@ -19,7 +19,7 @@
 
 ### Deprecations
 
-* The options `requirements-txt` and `requirements-txt-dev` are replaced with the options `requirements-file` and `requirements-file-dev`, to provide better support for projects that use both a `requirements.in` and a `requirements.txt`. The legacy options will still be usable for the time being, with a warning being shown in the terminal, but they will be removed in a future release, so you are advised to migrate to the new ones. ([#609](https://github.com/fpgmaas/deptry/pull/609))
+* The options `requirements-txt` and `requirements-txt-dev` are replaced with the options `requirements-files` and `requirements-files-dev`, to provide better support for projects that use both a `requirements.in` and a `requirements.txt`. The legacy options will still be usable for the time being, with a warning being shown in the terminal, but they will be removed in a future release, so you are advised to migrate to the new ones. ([#609](https://github.com/fpgmaas/deptry/pull/609))
 
 ### Features
 
