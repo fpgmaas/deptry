@@ -9,10 +9,10 @@ if TYPE_CHECKING:
 
 
 class DependencySpecificationNotFoundError(FileNotFoundError):
-    def __init__(self, requirements_txt: tuple[str, ...]) -> None:
+    def __init__(self, requirements_files: tuple[str, ...]) -> None:
         super().__init__(
             "No file called 'pyproject.toml' with a [tool.poetry.dependencies], [tool.pdm] or [project] section or"
-            f" file(s) called '{', '.join(requirements_txt)}' found. Exiting."
+            f" file(s) called '{', '.join(requirements_files)}' found. Exiting."
         )
 
 

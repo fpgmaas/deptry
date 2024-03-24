@@ -4,12 +4,12 @@ from pathlib import Path
 
 import pytest
 
-from deptry.dependency_getter.requirements_txt import RequirementsTxtDependencyGetter
+from deptry.dependency_getter.requirements_files import RequirementsTxtDependencyGetter
 from tests.utils import run_within_dir
 
 
-def test_parse_requirements_txt(tmp_path: Path) -> None:
-    fake_requirements_txt = """click==8.1.3 #123asd
+def test_parse_requirements_files(tmp_path: Path) -> None:
+    fake_requirements_files = """click==8.1.3 #123asd
 colorama==0.4.5
 importlib-metadata==4.2.0 ; python_version >= "3.7" and python_version < "3.8"
 isort==5.10.1, <6.0
@@ -33,7 +33,7 @@ httpx==0.25.2
 """
     with run_within_dir(tmp_path):
         with Path("requirements.txt").open("w") as f:
-            f.write(fake_requirements_txt)
+            f.write(fake_requirements_files)
 
         getter = RequirementsTxtDependencyGetter(
             config=Path("pyproject.toml"),
@@ -66,8 +66,8 @@ httpx==0.25.2
         assert "fox" in dependencies[17].top_levels
 
 
-def test_parse_requirements_txt_urls(tmp_path: Path) -> None:
-    fake_requirements_txt = """urllib3 @ https://github.com/urllib3/urllib3/archive/refs/tags/1.26.8.zip
+def test_parse_requirements_files_urls(tmp_path: Path) -> None:
+    fake_requirements_files = """urllib3 @ https://github.com/urllib3/urllib3/archive/refs/tags/1.26.8.zip
 https://github.com/urllib3/urllib3/archive/refs/tags/1.26.8.zip
 git+https://github.com/baz/foo-bar.git@asd#egg=foo-bar
 git+https://github.com/baz/foo-bar.git@asd
@@ -75,7 +75,7 @@ git+https://github.com/abc123/bar-foo@xyz789#egg=bar-fooo"""
 
     with run_within_dir(tmp_path):
         with Path("requirements.txt").open("w") as f:
-            f.write(fake_requirements_txt)
+            f.write(fake_requirements_files)
 
         dependencies_extract = RequirementsTxtDependencyGetter(Path("pyproject.toml")).get()
         dependencies = dependencies_extract.dependencies
@@ -96,7 +96,7 @@ def test_single(tmp_path: Path) -> None:
             f.write("click==8.1.3 #123asd\ncolorama==0.4.5")
 
         dependencies_extract = RequirementsTxtDependencyGetter(
-            Path("pyproject.toml"), requirements_txt=("req.txt",)
+            Path("pyproject.toml"), requirements_files=("req.txt",)
         ).get()
         dependencies = dependencies_extract.dependencies
 
@@ -116,7 +116,7 @@ def test_multiple(tmp_path: Path) -> None:
             f.write("bar")
 
         dependencies_extract = RequirementsTxtDependencyGetter(
-            Path("pyproject.toml"), requirements_txt=("foo.txt", "bar.txt")
+            Path("pyproject.toml"), requirements_files=("foo.txt", "bar.txt")
         ).get()
         dependencies = dependencies_extract.dependencies
 
@@ -180,7 +180,7 @@ def test_dev_multiple_with_arguments(tmp_path: Path) -> None:
             f.write("bar")
 
         dependencies_extract = RequirementsTxtDependencyGetter(
-            Path("pyproject.toml"), requirements_txt_dev=("foo.txt", "bar.txt")
+            Path("pyproject.toml"), requirements_files_dev=("foo.txt", "bar.txt")
         ).get()
         dev_dependencies = dependencies_extract.dev_dependencies
 
