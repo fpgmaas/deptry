@@ -14,7 +14,7 @@ from deptry.dependency_specification_detector import DependencyManagementFormat,
 from deptry.exceptions import IncorrectDependencyFormatError, UnsupportedPythonVersionError
 from deptry.imports.extract import get_imported_modules_from_list_of_files
 from deptry.module import ModuleBuilder, ModuleLocations
-from deptry.python_file_finder import PythonFileFinder
+from deptry.python_file_finder import get_all_python_files_in
 from deptry.reporters import JSONReporter, TextReporter
 from deptry.stdlibs import STDLIBS_PYTHON
 from deptry.violations import (
@@ -65,10 +65,7 @@ class Core:
 
         self._log_dependencies(dependencies_extract)
 
-        all_python_files = PythonFileFinder(
-            self.exclude, self.extend_exclude, self.using_default_exclude, self.ignore_notebooks
-        ).get_all_python_files_in(self.root)
-
+        python_files = self._find_python_files()
         local_modules = self._get_local_modules()
         stdlib_modules = self._get_stdlib_modules()
 
@@ -83,7 +80,7 @@ class Core:
                 ).build(),
                 locations,
             )
-            for module, locations in get_imported_modules_from_list_of_files(all_python_files).items()
+            for module, locations in get_imported_modules_from_list_of_files(python_files).items()
         ]
         imported_modules_with_locations = [
             module_with_locations
@@ -98,6 +95,19 @@ class Core:
             JSONReporter(violations, self.json_output).report()
 
         self._exit(violations)
+
+    def _find_python_files(self) -> list[Path]:
+        logging.debug("Collecting Python files to scan...")
+
+        python_files = get_all_python_files_in(
+            self.root, self.exclude, self.extend_exclude, self.using_default_exclude, self.ignore_notebooks
+        )
+
+        logging.debug(
+            "Python files to scan for imports:\n%s\n", "\n".join(str(python_file) for python_file in python_files)
+        )
+
+        return python_files
 
     def _find_violations(
         self, imported_modules_with_locations: list[ModuleLocations], dependencies: list[Dependency]
