@@ -5,7 +5,7 @@
 groups = ["default", "dev", "docs", "typing"]
 strategy = ["cross_platform", "inherit_metadata"]
 lock_version = "4.4.1"
-content_hash = "sha256:f15642db3a02637006ce5161bd01696f0399d5d70085f3909c7b0f39f1dd5bc5"
+content_hash = "sha256:2ff7fc3b9d27d26b93562d4834cea9fd0f72c27d75d8d5a81d6296e540de7e51"
 
 [[package]]
 name = "babel"
@@ -1022,16 +1022,6 @@ marker = "python_version < \"3.11\""
 files = [
     {file = "tomli-2.0.1-py3-none-any.whl", hash = "sha256:939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc"},
     {file = "tomli-2.0.1.tar.gz", hash = "sha256:de526c12914f0c550d15924c62d72abc48d6fe7364aa87328337a31007fe8a4f"},
-]
-
-[[package]]
-name = "types-chardet"
-version = "5.0.4.6"
-summary = "Typing stubs for chardet"
-groups = ["typing"]
-files = [
-    {file = "types-chardet-5.0.4.6.tar.gz", hash = "sha256:caf4c74cd13ccfd8b3313c314aba943b159de562a2573ed03137402b2bb37818"},
-    {file = "types_chardet-5.0.4.6-py3-none-any.whl", hash = "sha256:ea832d87e798abf1e4dfc73767807c2b7fee35d0003ae90348aea4ae00fb004d"},
 ]
 
 [[package]]
