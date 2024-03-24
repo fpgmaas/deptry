@@ -161,8 +161,7 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
     help=f"""A regular expression for directories or files in which .py files should not be scanned for imports to determine if there are dependency issues.
     Can be used multiple times by specifying the argument multiple times. re.match() is used to match the expressions, which by default checks for a match only at the beginning of a string.
     For example: `deptry . -e ".*/foo/" -e bar"` Note that this overwrites the defaults.
-    [default: {", ".join(DEFAULT_EXCLUDE)}
-    """,
+    [default: {", ".join(DEFAULT_EXCLUDE)}]""",
 )
 @click.option(
     "--extend-exclude",
@@ -200,7 +199,7 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
     type=COMMA_SEPARATED_TUPLE,
     help=f""".txt files to scan for dependencies. If a file called pyproject.toml with a [tool.poetry.dependencies] or [project] section is found, this argument is ignored
     and the dependencies are extracted from the pyproject.toml file instead. Can be multiple e.g. `deptry . --requirements-txt req/prod.txt,req/extra.txt`
-    [default: {", ".join(DEFAULT_REQUIREMENTS_FILES)}""",
+    [default: {", ".join(DEFAULT_REQUIREMENTS_FILES)}]""",
 )
 @click.option(
     "--requirements-files-dev",
