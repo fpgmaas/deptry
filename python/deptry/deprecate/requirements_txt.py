@@ -3,7 +3,7 @@ from __future__ import annotations
 REQUIREMENTS_TXT_DEPRECATION_MESSAGE = (
     "Warning: In an upcoming release, support for the `--requirements-txt` command-line "
     "option and the `requirements_txt` configuration parameter will be discontinued. "
-    "Instead, use `--requirements-file` or `requirements_txt` under the `[tool.deptry]` "
+    "Instead, use `--requirements-file` or `requirements_file` under the `[tool.deptry]` "
     "section in pyproject.toml."
 )
 
