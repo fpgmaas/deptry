@@ -35,7 +35,7 @@
 
 ### Miscellaneous
 
-* Remove upper bound on `requires-python` ([#621](https://github.com/fpgmaas/deptry/pull/621)
+* Remove upper bound on `requires-python` ([#621](https://github.com/fpgmaas/deptry/pull/621))
 * Moved the documentation to [deptry.com](https://deptry.com) ([#630](https://github.com/fpgmaas/deptry/pull/630))
 
 **Full Changelog**: https://github.com/fpgmaas/deptry/compare/0.14.2...0.15.0
