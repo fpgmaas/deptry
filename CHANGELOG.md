@@ -38,7 +38,7 @@
 
 * Moved the documentation to [deptry.com](https://deptry.com) ([#630](https://github.com/fpgmaas/deptry/pull/630))
 
-**Full Changelog**: https://github.com/fpgmaas/deptry/compare/0.14.1...0.14.2
+**Full Changelog**: https://github.com/fpgmaas/deptry/compare/0.14.2...0.15.0
 
 
 ## 0.14.2 - 2024-03-19
