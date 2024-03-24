@@ -16,6 +16,7 @@
 
   These flags are now no longer supported. If you are still using these flags and are planning to upgrade to this release, please refer to the release notes of [0.12.0](https://github.com/fpgmaas/deptry/releases/tag/0.12.0) for instructions on how to migrate to the new method of configuration. ([#586](https://github.com/fpgmaas/deptry/pull/596))
 
+
 ### Deprecations
 
 * The options `requirements-txt` and `requirements-txt-dev` are replaced with the options `requirements-file` and `requirements-file-dev`, to provide better support for projects that use both a `requirements.in` and a `requirements.txt`. The legacy options will still be usable for the time being, with a warning being shown in the terminal, but they will be removed in a future release, so you are advised to migrate to the new ones. ([#609](https://github.com/fpgmaas/deptry/pull/609))
@@ -27,6 +28,8 @@
 * Use ruff's AST parser for import extraction from Python files. This also adds support for files with Python 3.12 f-string syntax, see [PEP 701](https://docs.python.org/3/whatsnew/3.12.html#pep-701-syntactic-formalization-of-f-strings). ([#615](https://github.com/fpgmaas/deptry/pull/615))
 * Improved logging of the detected imports and their locations when *deptry* is run in verbose mode ([#627](https://github.com/fpgmaas/deptry/pull/627))
 * Introduce the `--pep621-dev-dependency-group` flag that allows users to specify which groups under `[project.optional-dependencies]` are considered development dependencies. ([#628](https://github.com/fpgmaas/deptry/pull/628))
+*  Improved support for projects that use tools such as `uv` and `pip-tools` that utilize both a `requirements.in`
+and a `requirements.txt` file. ([#641](https://github.com/fpgmaas/deptry/pull/641))
 
 ### Bug Fixes
 
