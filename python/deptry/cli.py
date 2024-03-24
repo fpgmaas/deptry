@@ -26,6 +26,8 @@ if sys.platform == "win32":
 
 DEFAULT_EXCLUDE = ("venv", r"\.venv", r"\.direnv", "tests", r"\.git", r"setup\.py")
 
+DEFAULT_REQUIREMENTS_FILES = ("requirements.txt",)
+
 
 class CommaSeparatedTupleParamType(click.ParamType):
     """
@@ -196,10 +198,9 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
     "--requirements-files",
     "-rf",
     type=COMMA_SEPARATED_TUPLE,
-    help=""".txt files to scan for dependencies. If a file called pyproject.toml with a [tool.poetry.dependencies] or [project] section is found, this argument is ignored
-    and the dependencies are extracted from the pyproject.toml file instead. Can be multiple e.g. `deptry . --requirements-txt req/prod.txt,req/extra.txt`""",
-    default=("requirements.txt",),
-    show_default=True,
+    help=f""".txt files to scan for dependencies. If a file called pyproject.toml with a [tool.poetry.dependencies] or [project] section is found, this argument is ignored
+    and the dependencies are extracted from the pyproject.toml file instead. Can be multiple e.g. `deptry . --requirements-txt req/prod.txt,req/extra.txt`
+    [default: {", ".join(DEFAULT_REQUIREMENTS_FILES)}""",
 )
 @click.option(
     "--requirements-files-dev",
@@ -292,7 +293,8 @@ def deptry(
         ignore_notebooks=ignore_notebooks,
         ignore=ignore,
         per_rule_ignores=per_rule_ignores,
-        requirements_files=requirements_txt or requirements_files,
+        requirements_files=(requirements_txt or requirements_files) or DEFAULT_REQUIREMENTS_FILES,
+        using_default_requirements_files=not (requirements_txt or requirements_files),
         requirements_files_dev=requirements_txt_dev or requirements_files_dev,
         known_first_party=known_first_party,
         json_output=json_output,

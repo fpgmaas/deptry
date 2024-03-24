@@ -94,6 +94,7 @@ def test__get_local_modules(
                 json_output="",
                 package_module_name_map={},
                 pep621_dev_dependency_groups=(),
+                using_default_requirements_files=True,
             )._get_local_modules()
             == expected
         )

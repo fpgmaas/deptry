@@ -4,6 +4,7 @@ import logging
 import operator
 import sys
 from dataclasses import dataclass
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 from deptry.dependency_getter.pdm import PDMDependencyGetter
@@ -30,7 +31,6 @@ from deptry.violations import (
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
-    from pathlib import Path
 
     from deptry.dependency import Dependency
     from deptry.dependency_getter.base import DependenciesExtract
@@ -49,6 +49,7 @@ class Core:
     using_default_exclude: bool
     ignore_notebooks: bool
     requirements_files: tuple[str, ...]
+    using_default_requirements_files: bool
     requirements_files_dev: tuple[str, ...]
     known_first_party: tuple[str, ...]
     json_output: str
@@ -59,8 +60,22 @@ class Core:
         self._log_config()
 
         dependency_management_format = DependencySpecificationDetector(
-            self.config, requirements_files=self.requirements_files
+            self.config,
+            requirements_files=self.requirements_files,
         ).detect()
+
+        if (
+            dependency_management_format == DependencyManagementFormat.REQUIREMENTS_FILE
+            and self.using_default_requirements_files
+            and Path("requirements.in").is_file()
+        ):
+            logging.info(
+                "Detected a 'requirements.in' file in the project and no 'requirements-files' were explicitly specified. "
+                "Automatically using 'requirements.in' as the source for the project's dependencies. To specify a different source for "
+                "the project's dependencies, use the '--requirements-files' option."
+            )
+            self.requirements_files = ("requirements.in",)
+
         dependencies_extract = self._get_dependencies(dependency_management_format)
 
         self._log_dependencies(dependencies_extract)
