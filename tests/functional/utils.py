@@ -15,6 +15,7 @@ class Project(str, Enum):
     POETRY = "project_with_poetry"
     PYPROJECT_DIFFERENT_DIRECTORY = "project_with_pyproject_different_directory"
     REQUIREMENTS_TXT = "project_with_requirements_txt"
+    REQUIREMENTS_IN = "project_with_requirements_in"
     SRC_DIRECTORY = "project_with_src_directory"
 
     def __str__(self) -> str:

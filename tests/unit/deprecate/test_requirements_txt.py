@@ -24,6 +24,7 @@ DEFAULT_CORE_ARGS = {
     "json_output": ANY,
     "package_module_name_map": ANY,
     "pep621_dev_dependency_groups": ANY,
+    "using_default_requirements_files": ANY,
 }
 
 

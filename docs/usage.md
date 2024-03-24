@@ -31,8 +31,9 @@ To determine the project's dependencies, _deptry_ will scan the directory it is 
 3. If a `pyproject.toml` file with a `[project]` section is found, _deptry_ will assume it uses [PEP 621](https://peps.python.org/pep-0621/) for dependency specification and extract:
     - dependencies from `[project.dependencies]` and `[project.optional-dependencies]`.
     - development dependencies from the groups under `[project.optional-dependencies]` passed via the [`--pep621-dev-dependency-groups`](#pep-621-dev-dependency-groups) argument.
-4. If a `requirements.txt` file is found, _deptry_ will extract:
-    - dependencies from it
+4. If a `requirements.txt` file is found, _deptry_ will:
+    - first check if there is also a `requirements.in`. If so, it will extract dependencies from there, otherwise if will extract
+    dependencies from `requirements.txt`.
     - development dependencies from `dev-dependencies.txt` and `dependencies-dev.txt`, if any exist
 
 _deptry_ can be configured to look for `pip` requirements files with other names or in other directories.
