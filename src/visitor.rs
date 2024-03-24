@@ -10,7 +10,7 @@ pub struct ImportVisitor {
 
 impl ImportVisitor {
     pub fn new() -> Self {
-        ImportVisitor {
+        Self {
             imports: HashMap::new(),
         }
     }
@@ -49,11 +49,11 @@ impl<'a> Visitor<'a> for ImportVisitor {
 }
 
 /// Extracts the top-level module name from a potentially nested module path.
-/// e.g. when a module_name is `foo.bar`, this returns `foo`.
+/// e.g. when a `module_name` is `foo.bar`, this returns `foo`.
 fn get_top_level_module_name(module_name: &str) -> String {
     module_name
         .split('.')
         .next()
         .unwrap_or(module_name)
-        .to_string()
+        .to_owned()
 }

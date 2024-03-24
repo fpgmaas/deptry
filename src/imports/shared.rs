@@ -29,7 +29,7 @@ pub fn get_ast_from_file_content(file_content: &str) -> PyResult<Mod> {
 }
 
 /// Iterates through an AST to identify and collect import statements, and returns them together with their
-/// respective TextRange for each occurrence.
+/// respective `TextRange` for each occurrence.
 pub fn extract_imports_from_ast(ast: Mod) -> HashMap<String, Vec<TextRange>> {
     let mut visitor = ImportVisitor::new();
 
@@ -62,7 +62,7 @@ pub fn convert_imports_with_textranges_to_location_objects(
                     .column
                     .get();
                 Location {
-                    file: file_path.to_string(),
+                    file: file_path.to_owned(),
                     line: Some(start_line),
                     column: Some(start_col),
                 }
@@ -73,7 +73,7 @@ pub fn convert_imports_with_textranges_to_location_objects(
     imports_with_locations
 }
 
-/// Transforms a Rust HashMap containing import data into a Python dictionary suitable for Python-side consumption.
+/// Transforms a Rust `HashMap` containing import data into a Python dictionary suitable for Python-side consumption.
 pub fn convert_to_python_dict(
     py: Python<'_>,
     imports_with_locations: FileToImportsMap,
