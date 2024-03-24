@@ -193,7 +193,7 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
     "--requirements-txt-dev", "-rtd", type=COMMA_SEPARATED_TUPLE, help="To be deprecated.", hidden=True, default=()
 )
 @click.option(
-    "--requirements-file",
+    "--requirements-files",
     "-rf",
     type=COMMA_SEPARATED_TUPLE,
     help=""".txt files to scan for dependencies. If a file called pyproject.toml with a [tool.poetry.dependencies] or [project] section is found, this argument is ignored
@@ -202,7 +202,7 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
     show_default=True,
 )
 @click.option(
-    "--requirements-file-dev",
+    "--requirements-files-dev",
     "-rfd",
     type=COMMA_SEPARATED_TUPLE,
     help=""".txt files to scan for additional development dependencies. If a file called pyproject.toml with a [tool.poetry.dependencies] or [project] section is found, this argument is ignored
@@ -256,8 +256,8 @@ def deptry(
     ignore_notebooks: bool,
     requirements_txt: tuple[str, ...],
     requirements_txt_dev: tuple[str, ...],
-    requirements_file: tuple[str, ...],
-    requirements_file_dev: tuple[str, ...],
+    requirements_files: tuple[str, ...],
+    requirements_files_dev: tuple[str, ...],
     known_first_party: tuple[str, ...],
     json_output: str,
     package_module_name_map: MutableMapping[str, tuple[str, ...]],
@@ -292,8 +292,8 @@ def deptry(
         ignore_notebooks=ignore_notebooks,
         ignore=ignore,
         per_rule_ignores=per_rule_ignores,
-        requirements_file=requirements_txt or requirements_file,
-        requirements_file_dev=requirements_txt_dev or requirements_file_dev,
+        requirements_files=requirements_txt or requirements_files,
+        requirements_files_dev=requirements_txt_dev or requirements_files_dev,
         known_first_party=known_first_party,
         json_output=json_output,
         package_module_name_map=package_module_name_map,

@@ -12,7 +12,7 @@ class DependencyManagementFormat(Enum):
     PDM = "pdm"
     PEP_621 = "pep_621"
     POETRY = "poetry"
-    REQUIREMENTS_FILE = "requirements_file"
+    REQUIREMENTS_FILE = "requirements_files"
 
 
 class DependencySpecificationDetector:
@@ -25,9 +25,9 @@ class DependencySpecificationDetector:
 
     """
 
-    def __init__(self, config: Path, requirements_file: tuple[str, ...] = ("requirements.txt",)) -> None:
+    def __init__(self, config: Path, requirements_files: tuple[str, ...] = ("requirements.txt",)) -> None:
         self.config = config
-        self.requirements_file = requirements_file
+        self.requirements_files = requirements_files
 
     def detect(self) -> DependencyManagementFormat:
         pyproject_toml_found = self._project_contains_pyproject_toml()
@@ -37,10 +37,10 @@ class DependencySpecificationDetector:
             return DependencyManagementFormat.PDM
         if pyproject_toml_found and self._project_uses_pep_621():
             return DependencyManagementFormat.PEP_621
-        if self._project_uses_requirements_file():
+        if self._project_uses_requirements_files():
             return DependencyManagementFormat.REQUIREMENTS_FILE
 
-        raise DependencySpecificationNotFoundError(self.requirements_file)
+        raise DependencySpecificationNotFoundError(self.requirements_files)
 
     def _project_contains_pyproject_toml(self) -> bool:
         if self.config.exists():
@@ -100,11 +100,11 @@ class DependencySpecificationDetector:
         else:
             return True
 
-    def _project_uses_requirements_file(self) -> bool:
-        check = any(Path(requirements_file).is_file() for requirements_file in self.requirements_file)
+    def _project_uses_requirements_files(self) -> bool:
+        check = any(Path(requirements_files).is_file() for requirements_files in self.requirements_files)
         if check:
             logging.debug(
                 "Dependency specification found in '%s'. Will use this to determine the project's dependencies.\n",
-                ", ".join(self.requirements_file),
+                ", ".join(self.requirements_files),
             )
         return check

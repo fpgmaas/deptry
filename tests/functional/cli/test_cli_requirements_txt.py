@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 
 @pytest.mark.xdist_group(name=Project.REQUIREMENTS_TXT)
-def test_cli_single_requirements_file(pip_venv_factory: PipVenvFactory) -> None:
+def test_cli_single_requirements_files(pip_venv_factory: PipVenvFactory) -> None:
     with pip_venv_factory(
         Project.REQUIREMENTS_TXT,
         install_command=(
@@ -23,7 +23,7 @@ def test_cli_single_requirements_file(pip_venv_factory: PipVenvFactory) -> None:
     ) as virtual_env:
         issue_report = f"{uuid.uuid4()}.json"
         result = virtual_env.run(
-            "deptry . --requirements-file requirements.txt --requirements-file-dev requirements-dev.txt -o"
+            "deptry . --requirements-files requirements.txt --requirements-files-dev requirements-dev.txt -o"
             f" {issue_report}"
         )
 
@@ -105,7 +105,7 @@ def test_cli_single_requirements_file(pip_venv_factory: PipVenvFactory) -> None:
 
 
 @pytest.mark.xdist_group(name=Project.REQUIREMENTS_TXT)
-def test_cli_multiple_requirements_file(pip_venv_factory: PipVenvFactory) -> None:
+def test_cli_multiple_requirements_files(pip_venv_factory: PipVenvFactory) -> None:
     with pip_venv_factory(
         Project.REQUIREMENTS_TXT,
         install_command=(
@@ -114,7 +114,7 @@ def test_cli_multiple_requirements_file(pip_venv_factory: PipVenvFactory) -> Non
     ) as virtual_env:
         issue_report = f"{uuid.uuid4()}.json"
         result = virtual_env.run(
-            "deptry . --requirements-file requirements.txt,requirements-2.txt --requirements-file-dev"
+            "deptry . --requirements-files requirements.txt,requirements-2.txt --requirements-files-dev"
             f" requirements-dev.txt -o {issue_report}"
         )
 

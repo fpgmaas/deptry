@@ -37,8 +37,8 @@ def test_requirements_txt_deprecated() -> None:
         # Assert that Core was instantiated with the correct arguments
         mock_core.assert_called_once_with(
             **DEFAULT_CORE_ARGS,
-            requirements_file=("somefile.txt",),
-            requirements_file_dev=("dev-requirements.txt", "requirements-dev.txt"),
+            requirements_files=("somefile.txt",),
+            requirements_files_dev=("dev-requirements.txt", "requirements-dev.txt"),
         )
 
 
@@ -51,13 +51,13 @@ def test_requirements_txt_dev_deprecated() -> None:
 
         # Assert that Core was instantiated with the correct arguments
         mock_core.assert_called_once_with(
-            **DEFAULT_CORE_ARGS, requirements_file=("requirements.txt",), requirements_file_dev=("somefile.txt",)
+            **DEFAULT_CORE_ARGS, requirements_files=("requirements.txt",), requirements_files_dev=("somefile.txt",)
         )
 
 
-def test_requirements_file_works_as_expected() -> None:
+def test_requirements_files_works_as_expected() -> None:
     with patch("deptry.cli.Core") as mock_core, patch("logging.warning") as mock_warning:
-        result = CliRunner().invoke(deptry, [".", "--requirements-file", "somefile.txt"])
+        result = CliRunner().invoke(deptry, [".", "--requirements-files", "somefile.txt"])
 
         assert result.exit_code == 0
         mock_warning.assert_not_called()
@@ -65,19 +65,19 @@ def test_requirements_file_works_as_expected() -> None:
         # Assert that Core was instantiated with the correct arguments
         mock_core.assert_called_once_with(
             **DEFAULT_CORE_ARGS,
-            requirements_file=("somefile.txt",),
-            requirements_file_dev=("dev-requirements.txt", "requirements-dev.txt"),
+            requirements_files=("somefile.txt",),
+            requirements_files_dev=("dev-requirements.txt", "requirements-dev.txt"),
         )
 
 
-def test_requirements_file_dev_works_as_expected() -> None:
+def test_requirements_files_dev_works_as_expected() -> None:
     with patch("deptry.cli.Core") as mock_core, patch("logging.warning") as mock_warning:
-        result = CliRunner().invoke(deptry, [".", "--requirements-file-dev", "somefile.txt"])
+        result = CliRunner().invoke(deptry, [".", "--requirements-files-dev", "somefile.txt"])
 
         assert result.exit_code == 0
         mock_warning.assert_not_called()
 
         # Assert that Core was instantiated with the correct arguments
         mock_core.assert_called_once_with(
-            **DEFAULT_CORE_ARGS, requirements_file=("requirements.txt",), requirements_file_dev=("somefile.txt",)
+            **DEFAULT_CORE_ARGS, requirements_files=("requirements.txt",), requirements_files_dev=("somefile.txt",)
         )

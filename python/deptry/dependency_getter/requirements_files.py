@@ -16,37 +16,37 @@ from deptry.dependency_getter.base import DependenciesExtract, DependencyGetter
 class RequirementsTxtDependencyGetter(DependencyGetter):
     """Extract dependencies from requirements.txt files."""
 
-    requirements_file: tuple[str, ...] = ("requirements.txt",)
-    requirements_file_dev: tuple[str, ...] = ("dev-requirements.txt", "requirements-dev.txt")
+    requirements_files: tuple[str, ...] = ("requirements.txt",)
+    requirements_files_dev: tuple[str, ...] = ("dev-requirements.txt", "requirements-dev.txt")
 
     def get(self) -> DependenciesExtract:
         dependencies = list(
             itertools.chain(
-                *(self._get_dependencies_from_requirements_file(file_name) for file_name in self.requirements_file)
+                *(self._get_dependencies_from_requirements_files(file_name) for file_name in self.requirements_files)
             )
         )
 
         dev_dependencies = list(
             itertools.chain(
                 *(
-                    self._get_dependencies_from_requirements_file(file_name)
-                    for file_name in self._scan_for_dev_requirements_files()
+                    self._get_dependencies_from_requirements_files(file_name)
+                    for file_name in self._scan_for_dev_requirements_filess()
                 )
             )
         )
 
         return DependenciesExtract(dependencies, dev_dependencies)
 
-    def _scan_for_dev_requirements_files(self) -> list[str]:
+    def _scan_for_dev_requirements_filess(self) -> list[str]:
         """
-        Check if any of the files passed as requirements_file_dev exist, and if so; return them.
+        Check if any of the files passed as requirements_files_dev exist, and if so; return them.
         """
-        dev_requirements_files = [file_name for file_name in self.requirements_file_dev if file_name in os.listdir()]
-        if dev_requirements_files:
-            logging.debug("Found files with development requirements! %s", dev_requirements_files)
-        return dev_requirements_files
+        dev_requirements_filess = [file_name for file_name in self.requirements_files_dev if file_name in os.listdir()]
+        if dev_requirements_filess:
+            logging.debug("Found files with development requirements! %s", dev_requirements_filess)
+        return dev_requirements_filess
 
-    def _get_dependencies_from_requirements_file(self, file_name: str, is_dev: bool = False) -> list[Dependency]:
+    def _get_dependencies_from_requirements_files(self, file_name: str, is_dev: bool = False) -> list[Dependency]:
         logging.debug("Scanning %s for %s", file_name, "dev dependencies" if is_dev else "dependencies")
         dependencies = []
 
