@@ -1,5 +1,59 @@
 # Changelog
 
+## 0.15.0 - 2024-03-24
+
+### Breaking changes
+
+* In release [0.12.0](https://github.com/fpgmaas/deptry/releases/tag/0.12.0), we announced the deprecation of the following flags:
+  * `--ignore-unused`
+  * `--ignore-obsolete`
+  * `--ignore-missing`
+  * `--ignore-misplaced-dev`
+  * `--ignore-transitive`
+  * `--skip-unused`
+  * `--skip-obsolete`
+  * `--skip-missing`
+  * `--skip-misplaced-dev`
+  * `--skip-transitive`
+
+  These flags are now no longer supported. If you are still using these flags and are planning to upgrade to this release, please refer to the release notes of [0.12.0](https://github.com/fpgmaas/deptry/releases/tag/0.12.0) for instructions on how to migrate to the new method of configuration. ([#596](https://github.com/fpgmaas/deptry/pull/596))
+
+
+### Deprecations
+
+* The options `requirements-txt` and `requirements-txt-dev` are replaced with `requirements-files` and `requirements-files-dev`, respectively, to provide better support for projects that use both a `requirements.in` and a `requirements.txt`. The legacy options will still be usable for the time being, with a warning being shown in the terminal, but they will be removed in a future release, so you are advised to migrate to the new ones. ([#609](https://github.com/fpgmaas/deptry/pull/609))
+
+### Features
+
+* Implement the collection of all Python files to be scanned by *deptry* in Rust ([#591](https://github.com/fpgmaas/deptry/pull/591))
+* Implement import extraction for notebooks in Rust ([#606](https://github.com/fpgmaas/deptry/pull/606))
+* Use ruff's AST parser for import extraction from Python files. This also adds support for files with Python 3.12 f-string syntax, see [PEP 701](https://docs.python.org/3/whatsnew/3.12.html#pep-701-syntactic-formalization-of-f-strings). ([#615](https://github.com/fpgmaas/deptry/pull/615))
+* Improved logging of the detected imports and their locations when *deptry* is run in verbose mode ([#627](https://github.com/fpgmaas/deptry/pull/627))
+* Introduce the `--pep621-dev-dependency-groups` flag that allows users to specify which groups under `[project.optional-dependencies]` are considered development dependencies ([#628](https://github.com/fpgmaas/deptry/pull/628))
+
+### Bug Fixes
+
+* Add back the license classifier, which was lost during the transition from Poetry to PDM in ([#624](https://github.com/fpgmaas/deptry/pull/624))
+
+### Miscellaneous
+
+* Remove upper bound on `requires-python` ([#621](https://github.com/fpgmaas/deptry/pull/621))
+* Moved the documentation to [deptry.com](https://deptry.com) ([#630](https://github.com/fpgmaas/deptry/pull/630))
+
+### Full Changelog
+
+https://github.com/fpgmaas/deptry/compare/0.14.2...0.15.0
+
+
+## 0.14.2 - 2024-03-19
+
+This release adds back MIT license classifier in package metadata, that was lost when changing the build backend ([#623](https://github.com/fpgmaas/deptry/pull/623)).
+
+### Full Changelog
+
+https://github.com/fpgmaas/deptry/compare/0.14.1...0.14.2
+
+
 ## 0.14.1 - 2024-03-18
 
 This release improves runtime performance of built wheels by about 5%, and reduces their size ([#594](https://github.com/fpgmaas/deptry/pull/594)).
