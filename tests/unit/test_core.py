@@ -228,7 +228,7 @@ def test_check_for_requirements_in_file_with_requirements_in(tmp_path: Path, cap
         # Initialize Core object with the temporary path as the root, and simulate the default usage of requirements files
         core_instance = Core(
             root=(tmp_path,),
-            config="pyproject.toml",
+            config=Path("pyproject.toml"),
             no_ansi=False,
             per_rule_ignores={},
             ignore=(),
