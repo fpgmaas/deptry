@@ -230,7 +230,7 @@ deptry . --ignore-notebooks
 
 #### Requirements files
 
-List of [`pip` requirements files](https://pip.pypa.io/en/stable/user_guide/#requirements-filess) that contain the source dependencies.
+List of [`pip` requirements files](https://pip.pypa.io/en/stable/user_guide/#requirements-files) that contain the source dependencies.
 
 - Type: `list[str]`
 - Default: `["requirements.txt"]`
@@ -248,7 +248,7 @@ deptry . --requirements-files requirements.txt,requirements-private.txt
 
 #### Requirements files dev
 
-List of [`pip` requirements files](https://pip.pypa.io/en/stable/user_guide/#requirements-filess) that contain the source development dependencies.
+List of [`pip` requirements files](https://pip.pypa.io/en/stable/user_guide/#requirements-files) that contain the source development dependencies.
 
 - Type: `list[str]`
 - Default: `["dev-requirements.txt", "requirements-dev.txt"]`
