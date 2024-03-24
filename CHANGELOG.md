@@ -14,7 +14,7 @@
   * `--skip-missing`
   * `--skip-misplaced-dev`
 
-  These flags are now no longer supported. If you are still using these flags and are planning to upgrade to this release, please refer to the release notes of [0.12.0](https://github.com/fpgmaas/deptry/releases/tag/0.12.0) for instructions on how to migrate to the new method of configuration. ([#586](https://github.com/fpgmaas/deptry/pull/596))
+  These flags are now no longer supported. If you are still using these flags and are planning to upgrade to this release, please refer to the release notes of [0.12.0](https://github.com/fpgmaas/deptry/releases/tag/0.12.0) for instructions on how to migrate to the new method of configuration. ([#596](https://github.com/fpgmaas/deptry/pull/596))
 
 
 ### Deprecations
