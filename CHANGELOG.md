@@ -9,10 +9,12 @@
   * `--ignore-obsolete`
   * `--ignore-missing`
   * `--ignore-misplaced-dev`
+  * `--ignore-transitive`
   * `--skip-unused`
   * `--skip-obsolete`
   * `--skip-missing`
   * `--skip-misplaced-dev`
+  * `--skip-transitive`
 
   These flags are now no longer supported. If you are still using these flags and are planning to upgrade to this release, please refer to the release notes of [0.12.0](https://github.com/fpgmaas/deptry/releases/tag/0.12.0) for instructions on how to migrate to the new method of configuration. ([#596](https://github.com/fpgmaas/deptry/pull/596))
 
@@ -38,7 +40,9 @@
 * Remove upper bound on `requires-python` ([#621](https://github.com/fpgmaas/deptry/pull/621))
 * Moved the documentation to [deptry.com](https://deptry.com) ([#630](https://github.com/fpgmaas/deptry/pull/630))
 
-**Full Changelog**: https://github.com/fpgmaas/deptry/compare/0.14.2...0.15.0
+### Full Changelog
+
+https://github.com/fpgmaas/deptry/compare/0.14.2...0.15.0
 
 
 ## 0.14.2 - 2024-03-19
