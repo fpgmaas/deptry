@@ -20,15 +20,15 @@ def test_simple(tmp_path: Path) -> None:
     with run_within_dir(tmp_path):
         JSONReporter(
             [
-                DEP001MissingDependencyViolation(Module("foo", package="foo_package"), Location(Path("foo.py"), 1, 2)),
+                DEP001MissingDependencyViolation(Module("foo", package="foo-package"), Location(Path("foo.py"), 1, 2)),
                 DEP002UnusedDependencyViolation(
                     Dependency("foo", Path("pyproject.toml")), Location(Path("pyproject.toml"))
                 ),
                 DEP003TransitiveDependencyViolation(
-                    Module("foo", package="foo_package"), Location(Path("foo/bar.py"), 1, 2)
+                    Module("foo", package="foo-package"), Location(Path("foo/bar.py"), 1, 2)
                 ),
                 DEP004MisplacedDevDependencyViolation(
-                    Module("foo", package="foo_package"), Location(Path("foo.py"), 1, 2)
+                    Module("foo", package="foo-package"), Location(Path("foo.py"), 1, 2)
                 ),
             ],
             "output.json",
@@ -57,7 +57,7 @@ def test_simple(tmp_path: Path) -> None:
                 },
             },
             {
-                "error": {"code": "DEP003", "message": "'foo_package' imported but it is a transitive dependency"},
+                "error": {"code": "DEP003", "message": "'foo' imported but it is a transitive dependency"},
                 "module": "foo",
                 "location": {
                     "file": str(Path("foo/bar.py")),
