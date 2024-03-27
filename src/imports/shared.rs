@@ -78,14 +78,14 @@ pub fn convert_to_python_dict(
     py: Python<'_>,
     imports_with_locations: FileToImportsMap,
 ) -> PyResult<PyObject> {
-    let imports_dict = PyDict::new(py);
+    let imports_dict = PyDict::new_bound(py);
 
     for (module, locations) in imports_with_locations {
         let py_locations: Vec<PyObject> = locations
             .into_iter()
             .map(|location| location.into_py(py))
             .collect();
-        let locations_list = PyList::new(py, &py_locations);
+        let locations_list = PyList::new_bound(py, &py_locations);
         imports_dict.set_item(module, locations_list)?;
     }
 
