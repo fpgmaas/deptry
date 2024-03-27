@@ -14,8 +14,8 @@ encoding_rs = "0.8.33"
 ignore = "0.4.22"
 log = "0.4.21"
 path-slash = "0.2.1"
-pyo3 = { version = "0.20.3", features = ["abi3-py38"] }
-pyo3-log = "0.9.0"
+pyo3 = { version = "0.21.0", features = ["abi3-py38"] }
+pyo3-log = { git = "https://github.com/vorner/pyo3-log", rev = "a43ccf3d574437075a8048c6c918cc8592589c10" }
 rayon = "1.9.0"
 regex = "1.10.3"
 ruff_python_ast = { git = "https://github.com/astral-sh/ruff", tag = "v0.3.4" }
