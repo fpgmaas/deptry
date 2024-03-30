@@ -38,6 +38,30 @@ To determine the project's dependencies, _deptry_ will scan the directory it is 
 _deptry_ can be configured to look for `pip` requirements files with other names or in other directories.
 See [Requirements files](#requirements-files) and [Requirements files dev](#requirements-files-dev).
 
+## Imports extraction
+
+_deptry_ will search for imports in Python files (`*.py`, and `*.ipynb` unless [`--ignore-notebooks`](#ignore-notebooks)
+is set) that are not part of excluded files.
+
+Imports will be extracted regardless of where they are made in a file (top-level, functions, class methods, guarded by
+conditions, ...).
+
+The only exception is imports that are guarded
+by [`TYPE_CHECKING`](https://docs.python.org/3/library/typing.html#typing.TYPE_CHECKING) when
+using `from __future__ import annotations`, in accordance with [PEP 563](https://peps.python.org/pep-0563/). In this
+specific case, _deptry_ will not extract those imports, as they are not considered as problematic. For instance:
+
+```python
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    # This import will not be extracted, as it is guarded by `TYPE_CHECKING`, and `from __future__ import annotations`
+    # is used. This makes the import not evaluated during runtime, and meant to only be evaluated by type checkers.
+    import mypy_boto3_s3
+```
+
 ## Excluding files and directories
 
 To determine issues with imported modules and dependencies, _deptry_ will scan the working directory and its subdirectories recursively for `.py` and `.ipynb` files, so it can
