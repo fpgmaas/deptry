@@ -49,7 +49,7 @@ conditions, ...).
 The only exception is imports that are guarded
 by [`TYPE_CHECKING`](https://docs.python.org/3/library/typing.html#typing.TYPE_CHECKING) when
 using `from __future__ import annotations`, in accordance with [PEP 563](https://peps.python.org/pep-0563/). In this
-specific case, _deptry_ will not extract those imports, as they are not considered as problematic. For instance:
+specific case, _deptry_ will not extract those imports, as they are not considered problematic. For instance:
 
 ```python
 from __future__ import annotations
