@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
 
@@ -15,6 +16,7 @@ class DependencyManagementFormat(Enum):
     REQUIREMENTS_FILE = "requirements_files"
 
 
+@dataclass
 class DependencySpecificationDetector:
     """
     Class to detect how dependencies are specified:
@@ -22,21 +24,24 @@ class DependencySpecificationDetector:
     - Otherwise, find a pyproject.toml with a [tool.pdm] section
     - Otherwise, find a pyproject.toml with a [project] section
     - Otherwise, find a requirements.txt.
-
     """
 
-    def __init__(self, config: Path, requirements_files: tuple[str, ...] = ("requirements.txt",)) -> None:
-        self.config = config
-        self.requirements_files = requirements_files
+    config: Path
+    requirements_files: tuple[str, ...] = ("requirements.txt",)
 
     def detect(self) -> DependencyManagementFormat:
         pyproject_toml_found = self._project_contains_pyproject_toml()
-        if pyproject_toml_found and self._project_uses_poetry():
-            return DependencyManagementFormat.POETRY
-        if pyproject_toml_found and self._project_uses_pdm():
-            return DependencyManagementFormat.PDM
-        if pyproject_toml_found and self._project_uses_pep_621():
-            return DependencyManagementFormat.PEP_621
+
+        if pyproject_toml_found:
+            if self._project_uses_poetry():
+                return DependencyManagementFormat.POETRY
+
+            if self._project_uses_pdm():
+                return DependencyManagementFormat.PDM
+
+            if self._project_uses_pep_621():
+                return DependencyManagementFormat.PEP_621
+
         if self._project_uses_requirements_files():
             return DependencyManagementFormat.REQUIREMENTS_FILE
 
