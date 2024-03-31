@@ -57,8 +57,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    # This import will not be extracted, as it is guarded by `TYPE_CHECKING`, and `from __future__ import annotations`
-    # is used. This makes the import not evaluated during runtime, and meant to only be evaluated by type checkers.
+    # This import will not be extracted as it is guarded by `TYPE_CHECKING` and `from __future__ import annotations`
+    # is used. This means the import should only be evaluated by type checkers, and should not be evaluated during runtime.
     import mypy_boto3_s3
 ```
 
