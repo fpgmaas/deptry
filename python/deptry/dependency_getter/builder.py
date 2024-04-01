@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 
 
 @dataclass
-class DependencySpecificationDetector:
+class DependencyGetterBuilder:
     """
     Class to detect how dependencies are specified:
     - Either find a pyproject.toml with a [poetry.tool.dependencies] section
@@ -32,7 +32,7 @@ class DependencySpecificationDetector:
     requirements_files: tuple[str, ...] = ()
     requirements_files_dev: tuple[str, ...] = ()
 
-    def detect(self) -> DependencyGetter:
+    def build(self) -> DependencyGetter:
         pyproject_toml_found = self._project_contains_pyproject_toml()
 
         if pyproject_toml_found:

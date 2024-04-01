@@ -5,11 +5,11 @@ from pathlib import Path
 
 import pytest
 
+from deptry.dependency_getter.builder import DependencyGetterBuilder
 from deptry.dependency_getter.pdm import PDMDependencyGetter
 from deptry.dependency_getter.pep_621 import PEP621DependencyGetter
 from deptry.dependency_getter.poetry import PoetryDependencyGetter
 from deptry.dependency_getter.requirements_files import RequirementsTxtDependencyGetter
-from deptry.dependency_specification_detector import DependencySpecificationDetector
 from deptry.exceptions import DependencySpecificationNotFoundError
 from tests.utils import run_within_dir
 
@@ -21,7 +21,7 @@ def test_poetry(tmp_path: Path) -> None:
         with pyproject_toml_path.open("w") as f:
             f.write('[tool.poetry.dependencies]\nfake = "10"')
 
-        spec = DependencySpecificationDetector(pyproject_toml_path).detect()
+        spec = DependencyGetterBuilder(pyproject_toml_path).build()
         assert isinstance(spec, PoetryDependencyGetter)
 
 
@@ -35,7 +35,7 @@ def test_pdm_with_dev_dependencies(tmp_path: Path) -> None:
                 ' "scm"}\n[tool.pdm.dev-dependencies]\ngroup=["bar"]'
             )
 
-        spec = DependencySpecificationDetector(pyproject_toml_path).detect()
+        spec = DependencyGetterBuilder(pyproject_toml_path).build()
         assert isinstance(spec, PDMDependencyGetter)
 
 
@@ -46,7 +46,7 @@ def test_pdm_without_dev_dependencies(tmp_path: Path) -> None:
         with pyproject_toml_path.open("w") as f:
             f.write('[project]\ndependencies=["foo"]\n[tool.pdm]\nversion = {source = "scm"}')
 
-        spec = DependencySpecificationDetector(pyproject_toml_path).detect()
+        spec = DependencyGetterBuilder(pyproject_toml_path).build()
         assert isinstance(spec, PEP621DependencyGetter)
 
 
@@ -57,7 +57,7 @@ def test_pep_621(tmp_path: Path) -> None:
         with pyproject_toml_path.open("w") as f:
             f.write('[project]\ndependencies=["foo"]')
 
-        spec = DependencySpecificationDetector(pyproject_toml_path).detect()
+        spec = DependencyGetterBuilder(pyproject_toml_path).build()
         assert isinstance(spec, PEP621DependencyGetter)
 
 
@@ -75,7 +75,7 @@ def test_both(tmp_path: Path) -> None:
         with Path("requirements.txt").open("w") as f:
             f.write('foo >= "1.0"')
 
-        spec = DependencySpecificationDetector(pyproject_toml_path).detect()
+        spec = DependencyGetterBuilder(pyproject_toml_path).build()
         assert isinstance(spec, PoetryDependencyGetter)
 
 
@@ -84,9 +84,7 @@ def test_requirements_files(tmp_path: Path) -> None:
         with Path("requirements.txt").open("w") as f:
             f.write('foo >= "1.0"')
 
-        spec = DependencySpecificationDetector(
-            Path("pyproject.toml"), requirements_files=("requirements.txt",)
-        ).detect()
+        spec = DependencyGetterBuilder(Path("pyproject.toml"), requirements_files=("requirements.txt",)).build()
         assert isinstance(spec, RequirementsTxtDependencyGetter)
 
 
@@ -97,7 +95,7 @@ def test_requirements_files_with_argument_not_root_directory(tmp_path: Path) -> 
         with Path("req/req.txt").open("w") as f:
             f.write('foo >= "1.0"')
 
-        spec = DependencySpecificationDetector(Path("pyproject.toml"), requirements_files=("req/req.txt",)).detect()
+        spec = DependencyGetterBuilder(Path("pyproject.toml"), requirements_files=("req/req.txt",)).build()
         assert isinstance(spec, RequirementsTxtDependencyGetter)
 
 
@@ -109,4 +107,4 @@ def test_dependency_specification_not_found_raises_exception(tmp_path: Path) -> 
             " file(s) called 'req/req.txt' found. Exiting."
         ),
     ):
-        DependencySpecificationDetector(Path("pyproject.toml"), requirements_files=("req/req.txt",)).detect()
+        DependencyGetterBuilder(Path("pyproject.toml"), requirements_files=("req/req.txt",)).build()

@@ -6,7 +6,7 @@ import sys
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from deptry.dependency_specification_detector import DependencySpecificationDetector
+from deptry.dependency_getter.builder import DependencyGetterBuilder
 from deptry.exceptions import UnsupportedPythonVersionError
 from deptry.imports.extract import get_imported_modules_from_list_of_files
 from deptry.module import ModuleBuilder, ModuleLocations
@@ -54,13 +54,13 @@ class Core:
     def run(self) -> None:
         self._log_config()
 
-        dependency_getter = DependencySpecificationDetector(
+        dependency_getter = DependencyGetterBuilder(
             self.config,
             self.package_module_name_map,
             self.pep621_dev_dependency_groups,
             self.requirements_files,
             self.requirements_files_dev,
-        ).detect()
+        ).build()
 
         dependencies_extract = dependency_getter.get()
 
