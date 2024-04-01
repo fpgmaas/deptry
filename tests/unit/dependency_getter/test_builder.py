@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 import re
 from pathlib import Path
 
@@ -99,8 +100,14 @@ def test_requirements_files_with_argument_not_root_directory(tmp_path: Path) -> 
         assert isinstance(spec, RequirementsTxtDependencyGetter)
 
 
-def test_dependency_specification_not_found_raises_exception(tmp_path: Path) -> None:
-    with run_within_dir(tmp_path), pytest.raises(
+def test_dependency_specification_not_found_raises_exception(tmp_path: Path, caplog: pytest.LogCaptureFixture) -> None:
+    with run_within_dir(tmp_path):
+        pyproject_toml_path = Path("pyproject.toml")
+
+        with pyproject_toml_path.open("w") as f:
+            f.write('[build-system]\nrequires = ["maturin>=1.5,<2.0"]\nbuild-backend = "maturin"')
+
+    with caplog.at_level(logging.DEBUG), run_within_dir(tmp_path), pytest.raises(
         DependencySpecificationNotFoundError,
         match=re.escape(
             "No file called 'pyproject.toml' with a [tool.poetry.dependencies], [tool.pdm] or [project] section or"
@@ -108,3 +115,19 @@ def test_dependency_specification_not_found_raises_exception(tmp_path: Path) -> 
         ),
     ):
         DependencyGetterBuilder(Path("pyproject.toml"), requirements_files=("req/req.txt",)).build()
+
+    assert caplog.messages == [
+        "pyproject.toml found!",
+        (
+            "pyproject.toml does not contain a [tool.poetry.dependencies] section, so Poetry is not used to specify the"
+            " project's dependencies."
+        ),
+        (
+            "pyproject.toml does not contain a [tool.pdm.dev-dependencies] section, so PDM is not used to specify the"
+            " project's dependencies."
+        ),
+        (
+            "pyproject.toml does not contain a [project] section, so PEP 621 is not used to specify the project's"
+            " dependencies."
+        ),
+    ]
