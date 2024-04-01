@@ -24,26 +24,6 @@ from deptry.violations import (
 from tests.utils import create_files, run_within_dir
 
 
-def test__get_sorted_violations() -> None:
-    violations = [
-        DEP004MisplacedDevDependencyViolation(Module("foo"), Location(Path("foo.py"), 1, 0)),
-        DEP001MissingDependencyViolation(Module("foo"), Location(Path("foo.py"), 2, 0)),
-        DEP001MissingDependencyViolation(Module("foo"), Location(Path("foo.py"), 1, 0)),
-        DEP001MissingDependencyViolation(Module("foo"), Location(Path("bar.py"), 3, 1)),
-        DEP001MissingDependencyViolation(Module("foo"), Location(Path("bar.py"), 2, 1)),
-        DEP001MissingDependencyViolation(Module("foo"), Location(Path("bar.py"), 3, 0)),
-    ]
-
-    assert Core._get_sorted_violations(violations) == [
-        DEP001MissingDependencyViolation(Module("foo"), Location(Path("bar.py"), 2, 1)),
-        DEP001MissingDependencyViolation(Module("foo"), Location(Path("bar.py"), 3, 0)),
-        DEP001MissingDependencyViolation(Module("foo"), Location(Path("bar.py"), 3, 1)),
-        DEP001MissingDependencyViolation(Module("foo"), Location(Path("foo.py"), 1, 0)),
-        DEP004MisplacedDevDependencyViolation(Module("foo"), Location(Path("foo.py"), 1, 0)),
-        DEP001MissingDependencyViolation(Module("foo"), Location(Path("foo.py"), 2, 0)),
-    ]
-
-
 @pytest.mark.parametrize(
     ("known_first_party", "root_suffix", "expected"),
     [

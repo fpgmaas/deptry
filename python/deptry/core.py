@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import logging
-import operator
 import sys
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
@@ -13,22 +12,12 @@ from deptry.module import ModuleBuilder, ModuleLocations
 from deptry.python_file_finder import get_all_python_files_in
 from deptry.reporters import JSONReporter, TextReporter
 from deptry.stdlibs import STDLIBS_PYTHON
-from deptry.violations import (
-    DEP001MissingDependenciesFinder,
-    DEP001MissingDependencyViolation,
-    DEP002UnusedDependenciesFinder,
-    DEP002UnusedDependencyViolation,
-    DEP003TransitiveDependenciesFinder,
-    DEP003TransitiveDependencyViolation,
-    DEP004MisplacedDevDependenciesFinder,
-    DEP004MisplacedDevDependencyViolation,
-)
+from deptry.violations.finder import find_violations
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
     from pathlib import Path
 
-    from deptry.dependency import Dependency
     from deptry.dependency_getter.base import DependenciesExtract
     from deptry.violations import Violation
 
@@ -89,7 +78,9 @@ class Core:
             if not module_with_locations.module.standard_library
         ]
 
-        violations = self._find_violations(imported_modules_with_locations, dependencies_extract.dependencies)
+        violations = find_violations(
+            imported_modules_with_locations, dependencies_extract.dependencies, self.ignore, self.per_rule_ignores
+        )
         TextReporter(violations, use_ansi=not self.no_ansi).report()
 
         if self.json_output:
@@ -109,47 +100,6 @@ class Core:
         )
 
         return python_files
-
-    def _find_violations(
-        self, imported_modules_with_locations: list[ModuleLocations], dependencies: list[Dependency]
-    ) -> list[Violation]:
-        violations = []
-
-        if DEP001MissingDependencyViolation.error_code not in self.ignore:
-            violations.extend(
-                DEP001MissingDependenciesFinder(
-                    imported_modules_with_locations, dependencies, self.per_rule_ignores.get("DEP001", ())
-                ).find()
-            )
-
-        if DEP002UnusedDependencyViolation.error_code not in self.ignore:
-            violations.extend(
-                DEP002UnusedDependenciesFinder(
-                    imported_modules_with_locations, dependencies, self.per_rule_ignores.get("DEP002", ())
-                ).find()
-            )
-
-        if DEP003TransitiveDependencyViolation.error_code not in self.ignore:
-            violations.extend(
-                DEP003TransitiveDependenciesFinder(
-                    imported_modules_with_locations, dependencies, self.per_rule_ignores.get("DEP003", ())
-                ).find()
-            )
-
-        if DEP004MisplacedDevDependencyViolation.error_code not in self.ignore:
-            violations.extend(
-                DEP004MisplacedDevDependenciesFinder(
-                    imported_modules_with_locations, dependencies, self.per_rule_ignores.get("DEP004", ())
-                ).find()
-            )
-
-        return self._get_sorted_violations(violations)
-
-    @staticmethod
-    def _get_sorted_violations(violations: list[Violation]) -> list[Violation]:
-        return sorted(
-            violations, key=operator.attrgetter("location.file", "location.line", "location.column", "error_code")
-        )
 
     def _get_local_modules(self) -> set[str]:
         """
