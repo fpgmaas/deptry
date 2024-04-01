@@ -13,6 +13,8 @@ from deptry.exceptions import DependencySpecificationNotFoundError
 from deptry.utils import load_pyproject_toml
 
 if TYPE_CHECKING:
+    from typing import Any
+
     from deptry.dependency_getter.base import DependencyGetter
 
 
@@ -36,13 +38,15 @@ class DependencyGetterBuilder:
         pyproject_toml_found = self._project_contains_pyproject_toml()
 
         if pyproject_toml_found:
-            if self._project_uses_poetry():
+            pyproject_toml = load_pyproject_toml(self.config)
+
+            if self._project_uses_poetry(pyproject_toml):
                 return PoetryDependencyGetter(self.config, self.package_module_name_map)
 
-            if self._project_uses_pdm():
+            if self._project_uses_pdm(pyproject_toml):
                 return PDMDependencyGetter(self.config, self.package_module_name_map, self.pep621_dev_dependency_groups)
 
-            if self._project_uses_pep_621():
+            if self._project_uses_pep_621(pyproject_toml):
                 return PEP621DependencyGetter(
                     self.config, self.package_module_name_map, self.pep621_dev_dependency_groups
                 )
@@ -62,8 +66,8 @@ class DependencyGetterBuilder:
             logging.debug("No pyproject.toml found.")
             return False
 
-    def _project_uses_poetry(self) -> bool:
-        pyproject_toml = load_pyproject_toml(self.config)
+    @staticmethod
+    def _project_uses_poetry(pyproject_toml: dict[str, Any]) -> bool:
         try:
             pyproject_toml["tool"]["poetry"]["dependencies"]
             logging.debug(
@@ -79,8 +83,8 @@ class DependencyGetterBuilder:
         else:
             return True
 
-    def _project_uses_pdm(self) -> bool:
-        pyproject_toml = load_pyproject_toml(self.config)
+    @staticmethod
+    def _project_uses_pdm(pyproject_toml: dict[str, Any]) -> bool:
         try:
             pyproject_toml["tool"]["pdm"]["dev-dependencies"]
             logging.debug(
@@ -96,8 +100,8 @@ class DependencyGetterBuilder:
         else:
             return True
 
-    def _project_uses_pep_621(self) -> bool:
-        pyproject_toml = load_pyproject_toml(self.config)
+    @staticmethod
+    def _project_uses_pep_621(pyproject_toml: dict[str, Any]) -> bool:
         try:
             pyproject_toml["project"]
             logging.debug(
