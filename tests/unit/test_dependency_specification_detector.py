@@ -5,7 +5,11 @@ from pathlib import Path
 
 import pytest
 
-from deptry.dependency_specification_detector import DependencyManagementFormat, DependencySpecificationDetector
+from deptry.dependency_getter.pdm import PDMDependencyGetter
+from deptry.dependency_getter.pep_621 import PEP621DependencyGetter
+from deptry.dependency_getter.poetry import PoetryDependencyGetter
+from deptry.dependency_getter.requirements_files import RequirementsTxtDependencyGetter
+from deptry.dependency_specification_detector import DependencySpecificationDetector
 from deptry.exceptions import DependencySpecificationNotFoundError
 from tests.utils import run_within_dir
 
@@ -18,7 +22,7 @@ def test_poetry(tmp_path: Path) -> None:
             f.write('[tool.poetry.dependencies]\nfake = "10"')
 
         spec = DependencySpecificationDetector(pyproject_toml_path).detect()
-        assert spec == DependencyManagementFormat.POETRY
+        assert isinstance(spec, PoetryDependencyGetter)
 
 
 def test_pdm_with_dev_dependencies(tmp_path: Path) -> None:
@@ -32,7 +36,7 @@ def test_pdm_with_dev_dependencies(tmp_path: Path) -> None:
             )
 
         spec = DependencySpecificationDetector(pyproject_toml_path).detect()
-        assert spec == DependencyManagementFormat.PDM
+        assert isinstance(spec, PDMDependencyGetter)
 
 
 def test_pdm_without_dev_dependencies(tmp_path: Path) -> None:
@@ -43,7 +47,7 @@ def test_pdm_without_dev_dependencies(tmp_path: Path) -> None:
             f.write('[project]\ndependencies=["foo"]\n[tool.pdm]\nversion = {source = "scm"}')
 
         spec = DependencySpecificationDetector(pyproject_toml_path).detect()
-        assert spec == DependencyManagementFormat.PEP_621
+        assert isinstance(spec, PEP621DependencyGetter)
 
 
 def test_pep_621(tmp_path: Path) -> None:
@@ -54,7 +58,7 @@ def test_pep_621(tmp_path: Path) -> None:
             f.write('[project]\ndependencies=["foo"]')
 
         spec = DependencySpecificationDetector(pyproject_toml_path).detect()
-        assert spec == DependencyManagementFormat.PEP_621
+        assert isinstance(spec, PEP621DependencyGetter)
 
 
 def test_both(tmp_path: Path) -> None:
@@ -72,7 +76,7 @@ def test_both(tmp_path: Path) -> None:
             f.write('foo >= "1.0"')
 
         spec = DependencySpecificationDetector(pyproject_toml_path).detect()
-        assert spec == DependencyManagementFormat.POETRY
+        assert isinstance(spec, PoetryDependencyGetter)
 
 
 def test_requirements_files(tmp_path: Path) -> None:
@@ -83,7 +87,7 @@ def test_requirements_files(tmp_path: Path) -> None:
         spec = DependencySpecificationDetector(
             Path("pyproject.toml"), requirements_files=("requirements.txt",)
         ).detect()
-        assert spec == DependencyManagementFormat.REQUIREMENTS_FILE
+        assert isinstance(spec, RequirementsTxtDependencyGetter)
 
 
 def test_requirements_files_with_argument_not_root_directory(tmp_path: Path) -> None:
@@ -94,7 +98,7 @@ def test_requirements_files_with_argument_not_root_directory(tmp_path: Path) -> 
             f.write('foo >= "1.0"')
 
         spec = DependencySpecificationDetector(Path("pyproject.toml"), requirements_files=("req/req.txt",)).detect()
-        assert spec == DependencyManagementFormat.REQUIREMENTS_FILE
+        assert isinstance(spec, RequirementsTxtDependencyGetter)
 
 
 def test_dependency_specification_not_found_raises_exception(tmp_path: Path) -> None:

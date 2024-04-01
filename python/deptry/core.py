@@ -6,12 +6,8 @@ import sys
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from deptry.dependency_getter.pdm import PDMDependencyGetter
-from deptry.dependency_getter.pep_621 import PEP621DependencyGetter
-from deptry.dependency_getter.poetry import PoetryDependencyGetter
-from deptry.dependency_getter.requirements_files import RequirementsTxtDependencyGetter
-from deptry.dependency_specification_detector import DependencyManagementFormat, DependencySpecificationDetector
-from deptry.exceptions import IncorrectDependencyFormatError, UnsupportedPythonVersionError
+from deptry.dependency_specification_detector import DependencySpecificationDetector
+from deptry.exceptions import UnsupportedPythonVersionError
 from deptry.imports.extract import get_imported_modules_from_list_of_files
 from deptry.module import ModuleBuilder, ModuleLocations
 from deptry.python_file_finder import get_all_python_files_in
@@ -58,10 +54,15 @@ class Core:
     def run(self) -> None:
         self._log_config()
 
-        dependency_management_format = DependencySpecificationDetector(
-            self.config, requirements_files=self.requirements_files
+        dependency_getter = DependencySpecificationDetector(
+            self.config,
+            self.package_module_name_map,
+            self.pep621_dev_dependency_groups,
+            self.requirements_files,
+            self.requirements_files_dev,
         ).detect()
-        dependencies_extract = self._get_dependencies(dependency_management_format)
+
+        dependencies_extract = dependency_getter.get()
 
         self._log_dependencies(dependencies_extract)
 
@@ -149,23 +150,6 @@ class Core:
         return sorted(
             violations, key=operator.attrgetter("location.file", "location.line", "location.column", "error_code")
         )
-
-    def _get_dependencies(self, dependency_management_format: DependencyManagementFormat) -> DependenciesExtract:
-        if dependency_management_format is DependencyManagementFormat.POETRY:
-            return PoetryDependencyGetter(self.config, self.package_module_name_map).get()
-        if dependency_management_format is DependencyManagementFormat.PDM:
-            return PDMDependencyGetter(
-                self.config, self.package_module_name_map, self.pep621_dev_dependency_groups
-            ).get()
-        if dependency_management_format is DependencyManagementFormat.PEP_621:
-            return PEP621DependencyGetter(
-                self.config, self.package_module_name_map, self.pep621_dev_dependency_groups
-            ).get()
-        if dependency_management_format is DependencyManagementFormat.REQUIREMENTS_FILE:
-            return RequirementsTxtDependencyGetter(
-                self.config, self.package_module_name_map, self.requirements_files, self.requirements_files_dev
-            ).get()
-        raise IncorrectDependencyFormatError
 
     def _get_local_modules(self) -> set[str]:
         """
