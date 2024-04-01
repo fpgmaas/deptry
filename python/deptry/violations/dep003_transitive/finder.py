@@ -25,6 +25,8 @@ class DEP003TransitiveDependenciesFinder(ViolationsFinder):
     Then it must be a transitive dependency.
     """
 
+    violation = DEP003TransitiveDependencyViolation
+
     def find(self) -> list[Violation]:
         logging.debug("\nScanning for transitive dependencies...")
         transitive_dependencies: list[Violation] = []
@@ -37,7 +39,7 @@ class DEP003TransitiveDependenciesFinder(ViolationsFinder):
             if self._is_transitive(module):
                 # `self._is_transitive` only returns `True` if the package is not None.
                 for location in module_with_locations.locations:
-                    transitive_dependencies.append(DEP003TransitiveDependencyViolation(module, location))
+                    transitive_dependencies.append(self.violation(module, location))
 
         return transitive_dependencies
 

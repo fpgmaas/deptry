@@ -18,6 +18,8 @@ class DEP001MissingDependenciesFinder(ViolationsFinder):
     Given a list of imported modules and a list of project dependencies, determine which ones are missing.
     """
 
+    violation = DEP001MissingDependencyViolation
+
     def find(self) -> list[Violation]:
         logging.debug("\nScanning for missing dependencies...")
         missing_dependencies: list[Violation] = []
@@ -29,7 +31,7 @@ class DEP001MissingDependenciesFinder(ViolationsFinder):
 
             if self._is_missing(module):
                 for location in module_with_locations.locations:
-                    missing_dependencies.append(DEP001MissingDependencyViolation(module, location))
+                    missing_dependencies.append(self.violation(module, location))
 
         return missing_dependencies
 
