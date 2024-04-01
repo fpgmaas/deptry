@@ -21,15 +21,6 @@ def test_poetry(tmp_path: Path) -> None:
         assert spec == DependencyManagementFormat.POETRY
 
 
-def test_requirements_files(tmp_path: Path) -> None:
-    with run_within_dir(tmp_path):
-        with Path("requirements.txt").open("w") as f:
-            f.write('foo >= "1.0"')
-
-        spec = DependencySpecificationDetector(Path("pyproject.toml")).detect()
-        assert spec == DependencyManagementFormat.REQUIREMENTS_FILE
-
-
 def test_pdm_with_dev_dependencies(tmp_path: Path) -> None:
     with run_within_dir(tmp_path):
         pyproject_toml_path = Path("pyproject.toml")
@@ -84,12 +75,14 @@ def test_both(tmp_path: Path) -> None:
         assert spec == DependencyManagementFormat.POETRY
 
 
-def test_requirements_files_with_argument(tmp_path: Path) -> None:
+def test_requirements_files(tmp_path: Path) -> None:
     with run_within_dir(tmp_path):
-        with Path("req.txt").open("w") as f:
+        with Path("requirements.txt").open("w") as f:
             f.write('foo >= "1.0"')
 
-        spec = DependencySpecificationDetector(Path("pyproject.toml"), requirements_files=("req.txt",)).detect()
+        spec = DependencySpecificationDetector(
+            Path("pyproject.toml"), requirements_files=("requirements.txt",)
+        ).detect()
         assert spec == DependencyManagementFormat.REQUIREMENTS_FILE
 
 

@@ -27,7 +27,7 @@ class DependencySpecificationDetector:
     """
 
     config: Path
-    requirements_files: tuple[str, ...] = ("requirements.txt",)
+    requirements_files: tuple[str, ...] = ()
 
     def detect(self) -> DependencyManagementFormat:
         pyproject_toml_found = self._project_contains_pyproject_toml()
