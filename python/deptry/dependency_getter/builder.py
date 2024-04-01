@@ -102,19 +102,17 @@ class DependencyGetterBuilder:
 
     @staticmethod
     def _project_uses_pep_621(pyproject_toml: dict[str, Any]) -> bool:
-        try:
-            pyproject_toml["project"]
+        if pyproject_toml.get("project"):
             logging.debug(
                 "pyproject.toml contains a [project] section, so PEP 621 is used to specify the project's dependencies."
             )
-        except KeyError:
-            logging.debug(
-                "pyproject.toml does not contain a [project] section, so PEP 621 is not used to specify the project's"
-                " dependencies."
-            )
-            return False
-        else:
             return True
+
+        logging.debug(
+            "pyproject.toml does not contain a [project] section, so PEP 621 is not used to specify the project's"
+            " dependencies."
+        )
+        return False
 
     def _project_uses_requirements_files(self) -> bool:
         check = any(Path(requirements_files).is_file() for requirements_files in self.requirements_files)
