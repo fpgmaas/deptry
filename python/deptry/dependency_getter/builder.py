@@ -1,44 +1,60 @@
 from __future__ import annotations
 
 import logging
-from enum import Enum
+from dataclasses import dataclass, field
 from pathlib import Path
+from typing import TYPE_CHECKING, Mapping
 
+from deptry.dependency_getter.pdm import PDMDependencyGetter
+from deptry.dependency_getter.pep_621 import PEP621DependencyGetter
+from deptry.dependency_getter.poetry import PoetryDependencyGetter
+from deptry.dependency_getter.requirements_files import RequirementsTxtDependencyGetter
 from deptry.exceptions import DependencySpecificationNotFoundError
 from deptry.utils import load_pyproject_toml
 
+if TYPE_CHECKING:
+    from typing import Any
 
-class DependencyManagementFormat(Enum):
-    PDM = "pdm"
-    PEP_621 = "pep_621"
-    POETRY = "poetry"
-    REQUIREMENTS_FILE = "requirements_files"
+    from deptry.dependency_getter.base import DependencyGetter
 
 
-class DependencySpecificationDetector:
+@dataclass
+class DependencyGetterBuilder:
     """
     Class to detect how dependencies are specified:
     - Either find a pyproject.toml with a [poetry.tool.dependencies] section
     - Otherwise, find a pyproject.toml with a [tool.pdm] section
     - Otherwise, find a pyproject.toml with a [project] section
     - Otherwise, find a requirements.txt.
-
     """
 
-    def __init__(self, config: Path, requirements_files: tuple[str, ...] = ("requirements.txt",)) -> None:
-        self.config = config
-        self.requirements_files = requirements_files
+    config: Path
+    package_module_name_map: Mapping[str, tuple[str, ...]] = field(default_factory=dict)
+    pep621_dev_dependency_groups: tuple[str, ...] = ()
+    requirements_files: tuple[str, ...] = ()
+    requirements_files_dev: tuple[str, ...] = ()
 
-    def detect(self) -> DependencyManagementFormat:
+    def build(self) -> DependencyGetter:
         pyproject_toml_found = self._project_contains_pyproject_toml()
-        if pyproject_toml_found and self._project_uses_poetry():
-            return DependencyManagementFormat.POETRY
-        if pyproject_toml_found and self._project_uses_pdm():
-            return DependencyManagementFormat.PDM
-        if pyproject_toml_found and self._project_uses_pep_621():
-            return DependencyManagementFormat.PEP_621
+
+        if pyproject_toml_found:
+            pyproject_toml = load_pyproject_toml(self.config)
+
+            if self._project_uses_poetry(pyproject_toml):
+                return PoetryDependencyGetter(self.config, self.package_module_name_map)
+
+            if self._project_uses_pdm(pyproject_toml):
+                return PDMDependencyGetter(self.config, self.package_module_name_map, self.pep621_dev_dependency_groups)
+
+            if self._project_uses_pep_621(pyproject_toml):
+                return PEP621DependencyGetter(
+                    self.config, self.package_module_name_map, self.pep621_dev_dependency_groups
+                )
+
         if self._project_uses_requirements_files():
-            return DependencyManagementFormat.REQUIREMENTS_FILE
+            return RequirementsTxtDependencyGetter(
+                self.config, self.package_module_name_map, self.requirements_files, self.requirements_files_dev
+            )
 
         raise DependencySpecificationNotFoundError(self.requirements_files)
 
@@ -50,8 +66,8 @@ class DependencySpecificationDetector:
             logging.debug("No pyproject.toml found.")
             return False
 
-    def _project_uses_poetry(self) -> bool:
-        pyproject_toml = load_pyproject_toml(self.config)
+    @staticmethod
+    def _project_uses_poetry(pyproject_toml: dict[str, Any]) -> bool:
         try:
             pyproject_toml["tool"]["poetry"]["dependencies"]
             logging.debug(
@@ -67,8 +83,8 @@ class DependencySpecificationDetector:
         else:
             return True
 
-    def _project_uses_pdm(self) -> bool:
-        pyproject_toml = load_pyproject_toml(self.config)
+    @staticmethod
+    def _project_uses_pdm(pyproject_toml: dict[str, Any]) -> bool:
         try:
             pyproject_toml["tool"]["pdm"]["dev-dependencies"]
             logging.debug(
@@ -84,21 +100,19 @@ class DependencySpecificationDetector:
         else:
             return True
 
-    def _project_uses_pep_621(self) -> bool:
-        pyproject_toml = load_pyproject_toml(self.config)
-        try:
-            pyproject_toml["project"]
+    @staticmethod
+    def _project_uses_pep_621(pyproject_toml: dict[str, Any]) -> bool:
+        if pyproject_toml.get("project"):
             logging.debug(
                 "pyproject.toml contains a [project] section, so PEP 621 is used to specify the project's dependencies."
             )
-        except KeyError:
-            logging.debug(
-                "pyproject.toml does not contain a [project] section, so PEP 621 is not used to specify the project's"
-                " dependencies."
-            )
-            return False
-        else:
             return True
+
+        logging.debug(
+            "pyproject.toml does not contain a [project] section, so PEP 621 is not used to specify the project's"
+            " dependencies."
+        )
+        return False
 
     def _project_uses_requirements_files(self) -> bool:
         check = any(Path(requirements_files).is_file() for requirements_files in self.requirements_files)
