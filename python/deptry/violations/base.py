@@ -26,6 +26,7 @@ class ViolationsFinder(ABC):
 
     """
 
+    violation: ClassVar[type[Violation]]
     imported_modules_with_locations: list[ModuleLocations]
     dependencies: list[Dependency]
     ignored_modules: tuple[str, ...] = ()

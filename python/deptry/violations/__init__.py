@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from deptry.violations.base import Violation
+from deptry.violations.base import Violation, ViolationsFinder
 from deptry.violations.dep001_missing.finder import DEP001MissingDependenciesFinder
 from deptry.violations.dep001_missing.violation import DEP001MissingDependencyViolation
 from deptry.violations.dep002_unused.finder import DEP002UnusedDependenciesFinder
@@ -20,5 +20,5 @@ __all__ = (
     "DEP003TransitiveDependenciesFinder",
     "DEP004MisplacedDevDependenciesFinder",
     "Violation",
-    "ViolationFinder",
+    "ViolationsFinder",
 )

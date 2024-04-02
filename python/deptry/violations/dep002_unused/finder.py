@@ -27,6 +27,8 @@ class DEP002UnusedDependenciesFinder(ViolationsFinder):
     even if `matplotlib` itself is not imported anywhere.
     """
 
+    violation = DEP002UnusedDependencyViolation
+
     def find(self) -> list[Violation]:
         logging.debug("\nScanning for unused dependencies...")
         unused_dependencies: list[Violation] = []
@@ -35,9 +37,7 @@ class DEP002UnusedDependenciesFinder(ViolationsFinder):
             logging.debug("Scanning module %s...", dependency.name)
 
             if self._is_unused(dependency):
-                unused_dependencies.append(
-                    DEP002UnusedDependencyViolation(dependency, Location(dependency.definition_file))
-                )
+                unused_dependencies.append(self.violation(dependency, Location(dependency.definition_file)))
 
         return unused_dependencies
 

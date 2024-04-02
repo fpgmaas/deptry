@@ -21,6 +21,8 @@ class DEP004MisplacedDevDependenciesFinder(ViolationsFinder):
     This is the case for any development dependency encountered, since files solely used for development purposes should be excluded from scanning.
     """
 
+    violation = DEP004MisplacedDevDependencyViolation
+
     def find(self) -> list[Violation]:
         """
         In this function, we use 'corresponding_package_name' instead of module.package, since it can happen that a
@@ -38,7 +40,7 @@ class DEP004MisplacedDevDependenciesFinder(ViolationsFinder):
 
             if corresponding_package_name and self._is_development_dependency(module, corresponding_package_name):
                 for location in module_with_locations.locations:
-                    misplaced_dev_dependencies.append(DEP004MisplacedDevDependencyViolation(module, location))
+                    misplaced_dev_dependencies.append(self.violation(module, location))
 
         return misplaced_dev_dependencies
 
