@@ -1,5 +1,56 @@
 # Changelog
 
+## 0.16.0 - 2024-04-04
+
+### Breaking changes
+
+#### `typing.TYPE_CHECKING` handling
+
+Imports guarded by `typing.TYPE_CHECKING` when using `from __future__ import annotations` are now skipped. For instance:
+
+```python
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+  # This import will not be extracted as it is guarded by `TYPE_CHECKING` and `from __future__ import annotations`
+  # is used. This means the import should only be evaluated by type checkers, and should not be evaluated during runtime.
+  import mypy_boto3_s3
+```
+
+See https://deptry.com/usage/#imports-extraction for more information.
+
+#### `requirements.in` handling
+
+On projects using `pip` requirements format for defining dependencies, if `requirements_files` option is not overridden,
+_deptry_ will first search for a `requirements.in` file before `requirements.txt`, to better support projects using
+`pip-tools` and the like (which includes `uv` and Rye) out of the box. If you use `requirements.in` and want _deptry_ to
+use `requirements.txt`, you can either pass `--requirements-files requirements.txt` when invoking _deptry_, or set the
+option in `pyproject.toml`:
+
+```toml
+[tool.deptry]
+requirements_files = ["requirements.txt"]
+```
+
+### Features
+
+* Skip type checking blocks when parsing imports ([#652](https://github.com/fpgmaas/deptry/pull/652))
+* Search for `requirements.in` before `requirements.txt` on projects using `pip` requirements format for
+  dependencies ([#641](https://github.com/fpgmaas/deptry/pull/641))
+
+### Bug Fixes
+
+* Show module name instead of library name when reporting DEP003 ([#644](https://github.com/fpgmaas/deptry/pull/644)
+* Better support for notebooks by handling magic commands and line
+  continuations ([#656](https://github.com/fpgmaas/deptry/pull/656))
+
+### Full Changelog
+
+https://github.com/fpgmaas/deptry/compare/0.15.0...0.16.0
+
+
 ## 0.15.0 - 2024-03-24
 
 ### Breaking changes
