@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   quality:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Check out
         uses: actions/checkout@v4
@@ -34,7 +34,7 @@ jobs:
           pdm run deptry python
 
   linux:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
@@ -66,7 +66,7 @@ jobs:
         if: ${{ matrix.python-version == '3.11' && matrix.target == 'x86_64' }}
 
   windows:
-    runs-on: windows-latest
+    runs-on: windows-2022
     strategy:
       matrix:
         python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
@@ -89,7 +89,7 @@ jobs:
         run: pdm run pytest tests/functional -n auto --dist loadgroup
 
   macos:
-    runs-on: macos-latest
+    runs-on: macos-12
     strategy:
       matrix:
         python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
@@ -112,7 +112,7 @@ jobs:
         run: pdm run pytest tests/functional -n auto --dist loadgroup
 
   check-docs:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Check out
         uses: actions/checkout@v4
