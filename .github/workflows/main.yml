@@ -20,7 +20,6 @@ jobs:
       - name: Set up the environment
         uses: ./.github/actions/setup-env
         with:
-          python-version: '3.11'
           target: 'x86_64'
           python-target: 'x64'
 
@@ -59,11 +58,11 @@ jobs:
       - name: Run functional tests
         run: pdm run pytest tests/functional -n auto --dist loadgroup
 
-      - name: Upload coverage reports to Codecov with GitHub Action on Python 3.11 and x86_64
+      - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-        if: ${{ matrix.python-version == '3.11' && matrix.target == 'x86_64' }}
+        if: ${{ matrix.python-version == '3.12' && matrix.target == 'x86_64' }}
 
   windows:
     runs-on: windows-2022
@@ -120,7 +119,6 @@ jobs:
       - name: Set up the environment
         uses: ./.github/actions/setup-env
         with:
-          python-version: '3.11'
           target: 'x86_64'
 
       - name: Check if documentation can be built
