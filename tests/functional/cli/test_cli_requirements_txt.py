@@ -97,7 +97,7 @@ def test_cli_single_requirements_files(pip_venv_factory: PipVenvFactory) -> None
                 "module": "urllib3",
                 "location": {
                     "file": str(Path("src/notebook.ipynb")),
-                    "line": 3,
+                    "line": 2,
                     "column": 1,
                 },
             },

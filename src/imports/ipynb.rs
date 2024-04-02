@@ -66,6 +66,19 @@ fn _extract_code_from_notebook_cells(cells: &[serde_json::Value]) -> String {
         .filter_map(|cell| cell["source"].as_array())
         .flatten()
         .filter_map(|line| line.as_str())
+        .map(|line| {
+            // https://ipython.readthedocs.io/en/stable/interactive/magics.html
+            // We want to skip lines using magics, as they are not valid Python. We replace the
+            // lines with empty strings instead of completely removing them, to ensure that the
+            // violation reporters show the correct line location for imports made below those
+            // lines.
+            if line.starts_with('%') || line.starts_with('!') {
+                ""
+            } else {
+                line
+            }
+        })
+        .map(|s| s.strip_suffix('\n').unwrap_or(s))
         .map(str::to_owned)
         .collect();
 
