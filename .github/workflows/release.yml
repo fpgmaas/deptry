@@ -45,7 +45,6 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
-          architecture: 'x64'
 
       - name: Build wheels
         uses: PyO3/maturin-action@v1
@@ -81,7 +80,6 @@ jobs:
         id: setup-python
         with:
           python-version: ${{ matrix.python }}
-          architecture: ${{ matrix.target }}
 
       - name: Build wheels
         uses: PyO3/maturin-action@v1
@@ -120,7 +118,6 @@ jobs:
         id: setup-python
         with:
           python-version: ${{ matrix.python }}
-          architecture: ${{ matrix.target == 'aarch64' && 'arm64' || 'x64' }}
 
       - name: Build wheels
         uses: PyO3/maturin-action@v1
@@ -182,8 +179,6 @@ jobs:
 
       - name: Set up the environment
         uses: ./.github/actions/setup-env
-        with:
-          target: 'x86_64'
 
       - name: Deploy documentation
         run: pdm run mkdocs gh-deploy --force
