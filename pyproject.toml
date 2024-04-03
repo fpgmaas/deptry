@@ -149,6 +149,8 @@ select = [
     "T10",
     # flake8-logging-format
     "G",
+    # flake8-no-pep420
+    "INP",
     # flake8-print
     "T20",
     # flake8-pytest-style
