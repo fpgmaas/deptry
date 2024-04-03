@@ -6,7 +6,7 @@ on:
 
 jobs:
   set-version:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
 
@@ -27,12 +27,12 @@ jobs:
           path: pyproject.toml
 
   linux:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [set-version]
     strategy:
       matrix:
         target: [x86_64, aarch64]
-        python: ['3.11', 'pypy3.10']
+        python: ['3.12', 'pypy3.10']
     steps:
       - name: Check out
         uses: actions/checkout@v4
@@ -45,7 +45,6 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
-          architecture: 'x64'
 
       - name: Build wheels
         uses: PyO3/maturin-action@v1
@@ -62,12 +61,12 @@ jobs:
           path: dist
 
   windows:
-    runs-on: windows-latest
+    runs-on: windows-2022
     needs: [set-version]
     strategy:
       matrix:
         target: [x64]
-        python: ['3.11', 'pypy3.10']
+        python: ['3.12', 'pypy3.10']
     steps:
       - name: Check out
         uses: actions/checkout@v4
@@ -81,7 +80,6 @@ jobs:
         id: setup-python
         with:
           python-version: ${{ matrix.python }}
-          architecture: ${{ matrix.target }}
 
       - name: Build wheels
         uses: PyO3/maturin-action@v1
@@ -97,12 +95,12 @@ jobs:
           path: dist
 
   macos:
-    runs-on: macos-latest
+    runs-on: macos-13
     needs: [set-version]
     strategy:
       matrix:
         target: [x86_64, aarch64]
-        python: ['3.11']
+        python: ['3.12']
         include:
           # It seems PyPy3.10 is not available on macOS arm64 yet
           - target: x86_64
@@ -120,7 +118,6 @@ jobs:
         id: setup-python
         with:
           python-version: ${{ matrix.python }}
-          architecture: ${{ matrix.target == 'aarch64' && 'arm64' || 'x64' }}
 
       - name: Build wheels
         uses: PyO3/maturin-action@v1
@@ -136,7 +133,7 @@ jobs:
           path: dist
 
   sdist:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [set-version]
     steps:
       - uses: actions/checkout@v4
@@ -160,7 +157,7 @@ jobs:
 
   publish:
     name: Publish
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [linux, windows, macos, sdist]
     steps:
       - uses: actions/download-artifact@v4
@@ -174,7 +171,7 @@ jobs:
           args: --non-interactive --skip-existing wheels-*/*
 
   check-docs:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: publish
     steps:
       - name: Check out
@@ -182,9 +179,6 @@ jobs:
 
       - name: Set up the environment
         uses: ./.github/actions/setup-env
-        with:
-          python-version: '3.11'
-          target: 'x86_64'
 
       - name: Deploy documentation
         run: pdm run mkdocs gh-deploy --force
