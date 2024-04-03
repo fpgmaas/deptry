@@ -116,11 +116,11 @@ class DependencyGetterBuilder:
         )
         return False
 
-    def _project_uses_requirements_files(self) -> tuple[bool, tuple[str]]:
+    def _project_uses_requirements_files(self) -> tuple[bool, tuple[str, ...]]:
         """
         Tools like `pip-tools` and `uv` work with a setup in which a `requirements.in` is compiled into a `requirements.txt`, which then
         contains pinned versions for all transitive dependencies. If the user did not explicitly specify the argument `requirements-files`,
-        but there is a `requirements.in present`, it is highly likely that the user wants to use the `requirements.in` file so we set
+        but there is a `requirements.in` present, it is highly likely that the user wants to use the `requirements.in` file so we set
         `requirements-files` to that instead.
         """
         if self.using_default_requirements_files and Path("requirements.in").is_file():

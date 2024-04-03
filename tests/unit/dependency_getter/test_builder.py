@@ -154,7 +154,7 @@ def test_check_for_requirements_in_file_with_requirements_in(tmp_path: Path, cap
             ).build()
 
         # Assert that requirements_files is updated correctly
-        assert spec.requirements_files == ("requirements.in",)
+        assert spec.requirements_files == ("requirements.in",)  # type: ignore[attr-defined]
 
         # Assert that the expected log message is present
         expected_log = (
