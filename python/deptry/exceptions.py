@@ -16,11 +16,6 @@ class DependencySpecificationNotFoundError(FileNotFoundError):
         )
 
 
-class IncorrectDependencyFormatError(ValueError):
-    def __init__(self) -> None:
-        super().__init__("Incorrect dependency manage format. Only poetry, pdm and requirements.txt are supported.")
-
-
 class PyprojectFileNotFoundError(FileNotFoundError):
     def __init__(self, directory: Path) -> None:
         super().__init__(f"No file `pyproject.toml` found in directory {directory}")

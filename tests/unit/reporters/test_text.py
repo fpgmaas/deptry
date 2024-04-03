@@ -26,14 +26,14 @@ if TYPE_CHECKING:
 def test_logging_number_multiple(caplog: LogCaptureFixture) -> None:
     with caplog.at_level(logging.INFO):
         violations = [
-            DEP001MissingDependencyViolation(Module("foo", package="foo_package"), Location(Path("foo.py"), 1, 2)),
+            DEP001MissingDependencyViolation(Module("foo", package="foo-package"), Location(Path("foo.py"), 1, 2)),
             DEP002UnusedDependencyViolation(
                 Dependency("foo", Path("pyproject.toml")), Location(Path("pyproject.toml"))
             ),
             DEP003TransitiveDependencyViolation(
-                Module("foo", package="foo_package"), Location(Path("foo/bar.py"), 1, 2)
+                Module("foo", package="foo-package"), Location(Path("foo/bar.py"), 1, 2)
             ),
-            DEP004MisplacedDevDependencyViolation(Module("foo", package="foo_package"), Location(Path("foo.py"), 1, 2)),
+            DEP004MisplacedDevDependencyViolation(Module("foo", package="foo-package"), Location(Path("foo.py"), 1, 2)),
         ]
         TextReporter(violations).report()
 
@@ -54,7 +54,7 @@ def test_logging_number_multiple(caplog: LogCaptureFixture) -> None:
             file=Path("pyproject.toml"),
         ),
         stylize(
-            "{BOLD}{file}{RESET}{CYAN}:{RESET}1{CYAN}:{RESET}2{CYAN}:{RESET} {BOLD}{RED}DEP003{RESET} 'foo_package'"
+            "{BOLD}{file}{RESET}{CYAN}:{RESET}1{CYAN}:{RESET}2{CYAN}:{RESET} {BOLD}{RED}DEP003{RESET} 'foo'"
             " imported but it is a transitive dependency",
             file=Path("foo/bar.py"),
         ),
@@ -71,7 +71,7 @@ def test_logging_number_multiple(caplog: LogCaptureFixture) -> None:
 def test_logging_number_single(caplog: LogCaptureFixture) -> None:
     with caplog.at_level(logging.INFO):
         TextReporter([
-            DEP001MissingDependencyViolation(Module("foo", package="foo_package"), Location(Path("foo.py"), 1, 2))
+            DEP001MissingDependencyViolation(Module("foo", package="foo-package"), Location(Path("foo.py"), 1, 2))
         ]).report()
 
     assert caplog.messages == [
@@ -99,14 +99,14 @@ def test_logging_number_none(caplog: LogCaptureFixture) -> None:
 def test_logging_no_ansi(caplog: LogCaptureFixture) -> None:
     with caplog.at_level(logging.INFO):
         violations = [
-            DEP001MissingDependencyViolation(Module("foo", package="foo_package"), Location(Path("foo.py"), 1, 2)),
+            DEP001MissingDependencyViolation(Module("foo", package="foo-package"), Location(Path("foo.py"), 1, 2)),
             DEP002UnusedDependencyViolation(
                 Dependency("foo", Path("pyproject.toml")), Location(Path("pyproject.toml"))
             ),
             DEP003TransitiveDependencyViolation(
-                Module("foo", package="foo_package"), Location(Path("foo/bar.py"), 1, 2)
+                Module("foo", package="foo-package"), Location(Path("foo/bar.py"), 1, 2)
             ),
-            DEP004MisplacedDevDependencyViolation(Module("foo", package="foo_package"), Location(Path("foo.py"), 1, 2)),
+            DEP004MisplacedDevDependencyViolation(Module("foo", package="foo-package"), Location(Path("foo.py"), 1, 2)),
         ]
         TextReporter(violations, use_ansi=False).report()
 
@@ -118,7 +118,7 @@ def test_logging_no_ansi(caplog: LogCaptureFixture) -> None:
         "",
         f"{Path('foo.py')}:1:2: DEP001 'foo' imported but missing from the dependency definitions",
         f"{Path('pyproject.toml')}: DEP002 'foo' defined as a dependency but not used in the codebase",
-        f"{Path('foo/bar.py')}:1:2: DEP003 'foo_package' imported but it is a transitive dependency",
+        f"{Path('foo/bar.py')}:1:2: DEP003 'foo' imported but it is a transitive dependency",
         f"{Path('foo.py')}:1:2: DEP004 'foo' imported but declared as a dev dependency",
         "Found 4 dependency issues.",
         "\nFor more information, see the documentation: https://deptry.com/",

@@ -5,15 +5,11 @@ inputs:
   python-version:
     description: 'Python version for setup-python'
     required: true
-    default: 3.11
+    default: '3.12'
   target:
     description: 'Target architecture for maturin'
     required: true
     default: 'x86_64'
-  python-target:
-    description: 'Target architecture for python installation'
-    required: true
-    default: 'x64'
 
 runs:
   using: 'composite'
@@ -22,7 +18,6 @@ runs:
       uses: actions/setup-python@v5
       with:
         python-version: ${{ inputs.python-version }}
-        architecture: ${{ matrix.python-target }}
 
     - name: Setup Rust toolchain
       run: rustup component add clippy rustfmt

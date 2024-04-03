@@ -1,6 +1,9 @@
+from __future__ import annotations
+
+import typing
 from os import chdir, walk
 from pathlib import Path
-from typing import List
+from typing import List, TYPE_CHECKING
 
 import numpy as np
 import pandas
@@ -19,6 +22,12 @@ else:
 
 import barfoo as bf
 from randomizer import random
+
+if TYPE_CHECKING:
+    import mypy_boto3_s3
+
+if typing.TYPE_CHECKING:
+    import mypy_boto3_sagemaker
 
 try:
     import click

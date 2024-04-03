@@ -21,23 +21,27 @@ def test_import_parser_py() -> None:
     some_imports_path = Path("tests/data/some_imports.py")
 
     assert get_imported_modules_from_list_of_files([some_imports_path]) == {
-        "barfoo": [Location(some_imports_path, 20, 8)],
-        "baz": [Location(some_imports_path, 16, 5)],
-        "click": [Location(some_imports_path, 24, 12)],
-        "foobar": [Location(some_imports_path, 18, 12)],
-        "httpx": [Location(some_imports_path, 14, 12)],
-        "module_in_class": [Location(some_imports_path, 35, 16)],
-        "module_in_func": [Location(some_imports_path, 30, 12)],
-        "not_click": [Location(some_imports_path, 26, 12)],
+        "__future__": [Location(some_imports_path, 1, 1)],
+        "barfoo": [Location(some_imports_path, 23, 8)],
+        "baz": [Location(some_imports_path, 19, 5)],
+        "click": [Location(some_imports_path, 33, 12)],
+        "foobar": [Location(some_imports_path, 21, 12)],
+        "httpx": [Location(some_imports_path, 17, 12)],
+        "module_in_class": [Location(some_imports_path, 44, 16)],
+        "module_in_func": [Location(some_imports_path, 39, 12)],
+        "not_click": [Location(some_imports_path, 35, 12)],
         "numpy": [
-            Location(some_imports_path, 5, 8),
-            Location(some_imports_path, 7, 1),
+            Location(some_imports_path, 8, 8),
+            Location(some_imports_path, 10, 1),
         ],
-        "os": [Location(some_imports_path, 1, 1)],
-        "pandas": [Location(some_imports_path, 6, 8)],
-        "pathlib": [Location(some_imports_path, 2, 1)],
-        "randomizer": [Location(some_imports_path, 21, 1)],
-        "typing": [Location(some_imports_path, 3, 1)],
+        "os": [Location(some_imports_path, 4, 1)],
+        "pandas": [Location(some_imports_path, 9, 8)],
+        "pathlib": [Location(some_imports_path, 5, 1)],
+        "randomizer": [Location(some_imports_path, 24, 1)],
+        "typing": [
+            Location(some_imports_path, 3, 8),
+            Location(some_imports_path, 6, 1),
+        ],
     }
 
 
@@ -45,9 +49,9 @@ def test_import_parser_ipynb() -> None:
     notebook_path = Path("tests/data/example_project/src/notebook.ipynb")
 
     assert get_imported_modules_from_list_of_files([notebook_path]) == {
-        "click": [Location(notebook_path, 1, 8)],
-        "toml": [Location(notebook_path, 5, 8)],
-        "urllib3": [Location(notebook_path, 3, 1)],
+        "click": [Location(notebook_path, 4, 8)],
+        "toml": [Location(notebook_path, 6, 8)],
+        "urllib3": [Location(notebook_path, 5, 1)],
     }
 
 

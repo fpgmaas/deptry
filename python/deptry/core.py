@@ -1,38 +1,23 @@
 from __future__ import annotations
 
 import logging
-import operator
 import sys
 from dataclasses import dataclass
-from pathlib import Path
 from typing import TYPE_CHECKING
 
-from deptry.dependency_getter.pdm import PDMDependencyGetter
-from deptry.dependency_getter.pep_621 import PEP621DependencyGetter
-from deptry.dependency_getter.poetry import PoetryDependencyGetter
-from deptry.dependency_getter.requirements_files import RequirementsTxtDependencyGetter
-from deptry.dependency_specification_detector import DependencyManagementFormat, DependencySpecificationDetector
-from deptry.exceptions import IncorrectDependencyFormatError, UnsupportedPythonVersionError
+from deptry.dependency_getter.builder import DependencyGetterBuilder
+from deptry.exceptions import UnsupportedPythonVersionError
 from deptry.imports.extract import get_imported_modules_from_list_of_files
 from deptry.module import ModuleBuilder, ModuleLocations
 from deptry.python_file_finder import get_all_python_files_in
 from deptry.reporters import JSONReporter, TextReporter
 from deptry.stdlibs import STDLIBS_PYTHON
-from deptry.violations import (
-    DEP001MissingDependenciesFinder,
-    DEP001MissingDependencyViolation,
-    DEP002UnusedDependenciesFinder,
-    DEP002UnusedDependencyViolation,
-    DEP003TransitiveDependenciesFinder,
-    DEP003TransitiveDependencyViolation,
-    DEP004MisplacedDevDependenciesFinder,
-    DEP004MisplacedDevDependencyViolation,
-)
+from deptry.violations.finder import find_violations
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
+    from pathlib import Path
 
-    from deptry.dependency import Dependency
     from deptry.dependency_getter.base import DependenciesExtract
     from deptry.violations import Violation
 
@@ -59,15 +44,16 @@ class Core:
     def run(self) -> None:
         self._log_config()
 
-        dependency_management_format = DependencySpecificationDetector(
+        dependency_getter = DependencyGetterBuilder(
             self.config,
-            requirements_files=self.requirements_files,
-        ).detect()
+            self.package_module_name_map,
+            self.pep621_dev_dependency_groups,
+            self.requirements_files,
+            self.using_default_requirements_files,
+            self.requirements_files_dev,
+        ).build()
 
-        if dependency_management_format == DependencyManagementFormat.REQUIREMENTS_FILE:
-            self._check_for_requirements_in_file()
-
-        dependencies_extract = self._get_dependencies(dependency_management_format)
+        dependencies_extract = dependency_getter.get()
 
         self._log_dependencies(dependencies_extract)
 
@@ -94,28 +80,15 @@ class Core:
             if not module_with_locations.module.standard_library
         ]
 
-        violations = self._find_violations(imported_modules_with_locations, dependencies_extract.dependencies)
+        violations = find_violations(
+            imported_modules_with_locations, dependencies_extract.dependencies, self.ignore, self.per_rule_ignores
+        )
         TextReporter(violations, use_ansi=not self.no_ansi).report()
 
         if self.json_output:
             JSONReporter(violations, self.json_output).report()
 
         self._exit(violations)
-
-    def _check_for_requirements_in_file(self) -> None:
-        """
-        Tools like `pip-tools` and `uv` work with a setup in which a `requirements.in` is compiled into a `requirements.txt`, which then
-        contains pinned versions for all transitive dependencies. If the user did not explicitly specify the argument `requirements-files`,
-        but there is a `requirements.in present`, it is highly likely that the user wants to use the `requirements.in` file so we set
-        `requirements-files` to that instead.
-        """
-        if self.using_default_requirements_files and Path("requirements.in").is_file():
-            logging.info(
-                "Detected a 'requirements.in' file in the project and no 'requirements-files' were explicitly specified. "
-                "Automatically using 'requirements.in' as the source for the project's dependencies. To specify a different source for "
-                "the project's dependencies, use the '--requirements-files' option."
-            )
-            self.requirements_files = ("requirements.in",)
 
     def _find_python_files(self) -> list[Path]:
         logging.debug("Collecting Python files to scan...")
@@ -129,64 +102,6 @@ class Core:
         )
 
         return python_files
-
-    def _find_violations(
-        self, imported_modules_with_locations: list[ModuleLocations], dependencies: list[Dependency]
-    ) -> list[Violation]:
-        violations = []
-
-        if DEP001MissingDependencyViolation.error_code not in self.ignore:
-            violations.extend(
-                DEP001MissingDependenciesFinder(
-                    imported_modules_with_locations, dependencies, self.per_rule_ignores.get("DEP001", ())
-                ).find()
-            )
-
-        if DEP002UnusedDependencyViolation.error_code not in self.ignore:
-            violations.extend(
-                DEP002UnusedDependenciesFinder(
-                    imported_modules_with_locations, dependencies, self.per_rule_ignores.get("DEP002", ())
-                ).find()
-            )
-
-        if DEP003TransitiveDependencyViolation.error_code not in self.ignore:
-            violations.extend(
-                DEP003TransitiveDependenciesFinder(
-                    imported_modules_with_locations, dependencies, self.per_rule_ignores.get("DEP003", ())
-                ).find()
-            )
-
-        if DEP004MisplacedDevDependencyViolation.error_code not in self.ignore:
-            violations.extend(
-                DEP004MisplacedDevDependenciesFinder(
-                    imported_modules_with_locations, dependencies, self.per_rule_ignores.get("DEP004", ())
-                ).find()
-            )
-
-        return self._get_sorted_violations(violations)
-
-    @staticmethod
-    def _get_sorted_violations(violations: list[Violation]) -> list[Violation]:
-        return sorted(
-            violations, key=operator.attrgetter("location.file", "location.line", "location.column", "error_code")
-        )
-
-    def _get_dependencies(self, dependency_management_format: DependencyManagementFormat) -> DependenciesExtract:
-        if dependency_management_format is DependencyManagementFormat.POETRY:
-            return PoetryDependencyGetter(self.config, self.package_module_name_map).get()
-        if dependency_management_format is DependencyManagementFormat.PDM:
-            return PDMDependencyGetter(
-                self.config, self.package_module_name_map, self.pep621_dev_dependency_groups
-            ).get()
-        if dependency_management_format is DependencyManagementFormat.PEP_621:
-            return PEP621DependencyGetter(
-                self.config, self.package_module_name_map, self.pep621_dev_dependency_groups
-            ).get()
-        if dependency_management_format is DependencyManagementFormat.REQUIREMENTS_FILE:
-            return RequirementsTxtDependencyGetter(
-                self.config, self.package_module_name_map, self.requirements_files, self.requirements_files_dev
-            ).get()
-        raise IncorrectDependencyFormatError
 
     def _get_local_modules(self) -> set[str]:
         """

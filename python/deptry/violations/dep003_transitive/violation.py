@@ -16,4 +16,4 @@ class DEP003TransitiveDependencyViolation(Violation):
     issue: Module
 
     def get_error_message(self) -> str:
-        return self.error_template.format(name=self.issue.package)
+        return self.error_template.format(name=self.issue.name)
