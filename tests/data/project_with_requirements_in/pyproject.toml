@@ -1,0 +1,5 @@
+[tool.black]
+line-length = 120
+
+[tool.deptry.per_rule_ignores]
+DEP001 = ["toml"]

@@ -3,6 +3,7 @@ from __future__ import annotations
 import logging
 import re
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 import pytest
 
@@ -13,6 +14,9 @@ from deptry.dependency_getter.poetry import PoetryDependencyGetter
 from deptry.dependency_getter.requirements_files import RequirementsTxtDependencyGetter
 from deptry.exceptions import DependencySpecificationNotFoundError
 from tests.utils import run_within_dir
+
+if TYPE_CHECKING:
+    from _pytest.logging import LogCaptureFixture
 
 
 def test_poetry(tmp_path: Path) -> None:
@@ -131,3 +135,31 @@ def test_dependency_specification_not_found_raises_exception(tmp_path: Path, cap
             " dependencies."
         ),
     ]
+
+
+def test_check_for_requirements_in_file_with_requirements_in(tmp_path: Path, caplog: LogCaptureFixture) -> None:
+    with run_within_dir(tmp_path):
+        # Setup: Create a requirements.in file in the temporary directory
+        requirements_in_path = Path("requirements.in")
+        requirements_in_path.touch()
+        requirements_txt_path = Path("requirements.txt")
+        requirements_txt_path.touch()
+
+        # Use caplog to capture logging at the INFO level
+        with caplog.at_level(logging.INFO):
+            spec = DependencyGetterBuilder(
+                config=Path("pyproject.toml"),
+                requirements_files=("requirements.txt",),
+                using_default_requirements_files=True,
+            ).build()
+
+        # Assert that requirements_files is updated correctly
+        assert spec.requirements_files == ("requirements.in",)  # type: ignore[attr-defined]
+
+        # Assert that the expected log message is present
+        expected_log = (
+            "Detected a 'requirements.in' file in the project and no 'requirements-files' were explicitly specified. "
+            "Automatically using 'requirements.in' as the source for the project's dependencies. To specify a different source for "
+            "the project's dependencies, use the '--requirements-files' option."
+        )
+        assert expected_log in caplog.text

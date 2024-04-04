@@ -32,6 +32,7 @@ class DependencyGetterBuilder:
     package_module_name_map: Mapping[str, tuple[str, ...]] = field(default_factory=dict)
     pep621_dev_dependency_groups: tuple[str, ...] = ()
     requirements_files: tuple[str, ...] = ()
+    using_default_requirements_files: bool = True
     requirements_files_dev: tuple[str, ...] = ()
 
     def build(self) -> DependencyGetter:
@@ -51,9 +52,10 @@ class DependencyGetterBuilder:
                     self.config, self.package_module_name_map, self.pep621_dev_dependency_groups
                 )
 
-        if self._project_uses_requirements_files():
+        check, requirements_files = self._project_uses_requirements_files()
+        if check:
             return RequirementsTxtDependencyGetter(
-                self.config, self.package_module_name_map, self.requirements_files, self.requirements_files_dev
+                self.config, self.package_module_name_map, requirements_files, self.requirements_files_dev
             )
 
         raise DependencySpecificationNotFoundError(self.requirements_files)
@@ -114,11 +116,26 @@ class DependencyGetterBuilder:
         )
         return False
 
-    def _project_uses_requirements_files(self) -> bool:
+    def _project_uses_requirements_files(self) -> tuple[bool, tuple[str, ...]]:
+        """
+        Tools like `pip-tools` and `uv` work with a setup in which a `requirements.in` is compiled into a `requirements.txt`, which then
+        contains pinned versions for all transitive dependencies. If the user did not explicitly specify the argument `requirements-files`,
+        but there is a `requirements.in` present, it is highly likely that the user wants to use the `requirements.in` file so we set
+        `requirements-files` to that instead.
+        """
+        if self.using_default_requirements_files and Path("requirements.in").is_file():
+            logging.info(
+                "Detected a 'requirements.in' file in the project and no 'requirements-files' were explicitly specified. "
+                "Automatically using 'requirements.in' as the source for the project's dependencies. To specify a different source for "
+                "the project's dependencies, use the '--requirements-files' option."
+            )
+            return True, ("requirements.in",)
+
         check = any(Path(requirements_files).is_file() for requirements_files in self.requirements_files)
         if check:
             logging.debug(
                 "Dependency specification found in '%s'. Will use this to determine the project's dependencies.\n",
                 ", ".join(self.requirements_files),
             )
-        return check
+            return True, self.requirements_files
+        return False, ()

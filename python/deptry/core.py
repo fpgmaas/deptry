@@ -34,6 +34,7 @@ class Core:
     using_default_exclude: bool
     ignore_notebooks: bool
     requirements_files: tuple[str, ...]
+    using_default_requirements_files: bool
     requirements_files_dev: tuple[str, ...]
     known_first_party: tuple[str, ...]
     json_output: str
@@ -48,6 +49,7 @@ class Core:
             self.package_module_name_map,
             self.pep621_dev_dependency_groups,
             self.requirements_files,
+            self.using_default_requirements_files,
             self.requirements_files_dev,
         ).build()
 
