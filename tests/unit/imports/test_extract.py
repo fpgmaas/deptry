@@ -21,26 +21,25 @@ def test_import_parser_py() -> None:
     some_imports_path = Path("tests/data/some_imports.py")
 
     assert get_imported_modules_from_list_of_files([some_imports_path]) == {
-        "__future__": [Location(some_imports_path, 1, 1)],
-        "barfoo": [Location(some_imports_path, 23, 8)],
-        "baz": [Location(some_imports_path, 19, 5)],
-        "click": [Location(some_imports_path, 33, 12)],
-        "foobar": [Location(some_imports_path, 21, 12)],
-        "httpx": [Location(some_imports_path, 17, 12)],
-        "module_in_class": [Location(some_imports_path, 44, 16)],
-        "module_in_func": [Location(some_imports_path, 39, 12)],
-        "not_click": [Location(some_imports_path, 35, 12)],
+        "barfoo": [Location(some_imports_path, 21, 8)],
+        "baz": [Location(some_imports_path, 17, 5)],
+        "click": [Location(some_imports_path, 31, 12)],
+        "foobar": [Location(some_imports_path, 19, 12)],
+        "httpx": [Location(some_imports_path, 15, 12)],
+        "module_in_class": [Location(some_imports_path, 42, 16)],
+        "module_in_func": [Location(some_imports_path, 37, 12)],
+        "not_click": [Location(some_imports_path, 33, 12)],
         "numpy": [
-            Location(some_imports_path, 8, 8),
-            Location(some_imports_path, 10, 1),
+            Location(some_imports_path, 6, 8),
+            Location(some_imports_path, 8, 1),
         ],
-        "os": [Location(some_imports_path, 4, 1)],
-        "pandas": [Location(some_imports_path, 9, 8)],
-        "pathlib": [Location(some_imports_path, 5, 1)],
-        "randomizer": [Location(some_imports_path, 24, 1)],
+        "os": [Location(some_imports_path, 2, 1)],
+        "pandas": [Location(some_imports_path, 7, 8)],
+        "pathlib": [Location(some_imports_path, 3, 1)],
+        "randomizer": [Location(some_imports_path, 22, 1)],
         "typing": [
-            Location(some_imports_path, 3, 8),
-            Location(some_imports_path, 6, 1),
+            Location(some_imports_path, 1, 8),
+            Location(some_imports_path, 4, 1),
         ],
     }
 
