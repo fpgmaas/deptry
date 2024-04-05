@@ -1,19 +1,17 @@
 use ruff_python_ast::visitor::{walk_stmt, Visitor};
-use ruff_python_ast::{self, Expr, ExprAttribute, ExprName, Stmt, StmtIf, StmtImportFrom};
+use ruff_python_ast::{self, Expr, ExprAttribute, ExprName, Stmt, StmtIf};
 use ruff_text_size::TextRange;
 use std::collections::HashMap;
 
 #[derive(Debug, Clone)]
 pub struct ImportVisitor {
     imports: HashMap<String, Vec<TextRange>>,
-    has_future_annotations: bool,
 }
 
 impl ImportVisitor {
     pub fn new() -> Self {
         Self {
             imports: HashMap::new(),
-            has_future_annotations: false,
         }
     }
 
@@ -37,10 +35,6 @@ impl<'a> Visitor<'a> for ImportVisitor {
             Stmt::ImportFrom(import_from_stmt) => {
                 if let Some(module) = &import_from_stmt.module {
                     if import_from_stmt.level == Some(0) {
-                        if is_future_annotations_import(module.as_str(), import_from_stmt) {
-                            self.has_future_annotations = true;
-                        }
-
                         self.imports
                             .entry(get_top_level_module_name(module.as_str()))
                             .or_default()
@@ -48,7 +42,7 @@ impl<'a> Visitor<'a> for ImportVisitor {
                     }
                 }
             }
-            Stmt::If(if_stmt) if is_typing_only_block(self.has_future_annotations, if_stmt) => {
+            Stmt::If(if_stmt) if is_guarded_by_type_checking(if_stmt) => {
                 // Avoid parsing imports that are only evaluated by type checkers.
             }
             _ => walk_stmt(self, stmt), // Delegate other statements to walk_stmt
@@ -66,35 +60,22 @@ fn get_top_level_module_name(module_name: &str) -> String {
         .to_owned()
 }
 
-/// Checks if the import is a `from __future__ import annotations` one.
-fn is_future_annotations_import(module: &str, import_from_stmt: &StmtImportFrom) -> bool {
-    return module == "__future__"
-        && import_from_stmt
-            .names
-            .iter()
-            .any(|alias| alias.name.as_str() == "annotations");
-}
-
-/// Checks if we are in a block that will only be evaluated by type checkers, in accordance with
-/// <https://peps.python.org/pep-0563/>. If no `__future__.annotations` import is made, a block using `TYPE_CHECKING`
-/// will be evaluated at runtime, so we should not consider that this is a typing only block in that case.
-fn is_typing_only_block(has_future_annotations: bool, if_stmt: &StmtIf) -> bool {
-    if has_future_annotations {
-        match &if_stmt.test.as_ref() {
-            Expr::Attribute(ExprAttribute { value, attr, .. }) => {
-                if let Expr::Name(ExprName { id, .. }) = value.as_ref() {
-                    if id.as_str() == "typing" && attr.as_str() == "TYPE_CHECKING" {
-                        return true;
-                    }
-                }
-            }
-            Expr::Name(ExprName { id, .. }) => {
-                if id == "TYPE_CHECKING" {
+/// Checks if we are in a block guarded by `typing.TYPE_CHECKING`.
+fn is_guarded_by_type_checking(if_stmt: &StmtIf) -> bool {
+    match &if_stmt.test.as_ref() {
+        Expr::Attribute(ExprAttribute { value, attr, .. }) => {
+            if let Expr::Name(ExprName { id, .. }) = value.as_ref() {
+                if id.as_str() == "typing" && attr.as_str() == "TYPE_CHECKING" {
                     return true;
                 }
             }
-            _ => (),
         }
+        Expr::Name(ExprName { id, .. }) => {
+            if id == "TYPE_CHECKING" {
+                return true;
+            }
+        }
+        _ => (),
     }
 
     false
