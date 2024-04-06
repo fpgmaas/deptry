@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.16.1 - 2024-04-06
+
+### Bug Fixes
+
+* Skip type checking blocks whether future annotations are used ([#662](https://github.com/fpgmaas/deptry/pull/662))
+
+### Full Changelog
+
+https://github.com/fpgmaas/deptry/compare/0.16.0...0.16.1
+
+
 ## 0.16.0 - 2024-04-04
 
 ### Breaking changes
