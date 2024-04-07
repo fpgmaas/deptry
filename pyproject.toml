@@ -107,6 +107,10 @@ warn_unreachable = true
 pretty = true
 show_error_codes = true
 
+[[tool.mypy.overrides]]
+module = ["xdist.*"]
+ignore_missing_imports = true
+
 [tool.deptry]
 extend_exclude = [
     "docs",
