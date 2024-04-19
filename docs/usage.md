@@ -230,7 +230,7 @@ DEP002 = ["pandas", "numpy"]
 ```
 - CLI example:
 ```shell
-deptry . --per-rule-ignores DEP001=matplotlib,DEP002=pandas|numpy
+deptry . --per-rule-ignores "DEP001=matplotlib,DEP002=pandas|numpy"
 ```
 
 #### Ignore notebooks
@@ -414,15 +414,15 @@ foo-python = [
 ```
 * CLI examples:
 ```shell
-deptry . --package-module-name-map 'foo-python=foo'
+deptry . --package-module-name-map "foo-python=foo"
 ```
 Multiple module names are joined by a pipe (`|`):
 ```shell
-deptry . --package-module-name-map 'foo-python=foo|bar'
+deptry . --package-module-name-map "foo-python=foo|bar"
 ```
 Multiple package name to module name mappings are joined by a comma (`,`):
 ```shell
-deptry . --package-module-name-map 'foo-python=foo,bar-python=bar'
+deptry . --package-module-name-map "foo-python=foo,bar-python=bar"
 ```
 
 #### PEP 621 dev dependency groups
