@@ -152,7 +152,7 @@ def test_import_parser_errors(tmp_path: Path, caplog: LogCaptureFixture) -> None
             caplog.text,
         )
         assert re.search(
-            r"WARNING  .*:shared.rs:\d+ Warning: Skipping processing of file_with_syntax_error.py because of the following error: \"SyntaxError: invalid syntax. Got unexpected token ':' at byte offset 15\".",
+            r"WARNING  .*:shared.rs:\d+ Warning: Skipping processing of file_with_syntax_error.py because of the following error: \"SyntaxError: Expected an expression at byte range 15..16\".",
             caplog.text,
         )
 
@@ -194,7 +194,7 @@ def test_import_parser_for_ipynb_errors(tmp_path: Path, caplog: LogCaptureFixtur
             ]) == {"numpy": [Location(file=Path("notebook_ok.ipynb"), line=1, column=8)]}
 
         assert re.search(
-            r"WARNING  .*:shared.rs:\d+ Warning: Skipping processing of notebook_with_syntax_error.ipynb because of the following error: \"SyntaxError: invalid syntax. Got unexpected token 'invalid_syntax' at byte offset 9\"",
+            r"WARNING  .*:shared.rs:\d+ Warning: Skipping processing of notebook_with_syntax_error.ipynb because of the following error: \"SyntaxError: Expected ',', found name at byte range 9..23\".",
             caplog.text,
         )
 
