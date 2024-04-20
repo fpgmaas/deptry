@@ -10,7 +10,7 @@ crate-type = ["cdylib"]
 
 [dependencies]
 chardetng = "0.1.17"
-encoding_rs = "0.8.33"
+encoding_rs = "0.8.34"
 ignore = "0.4.22"
 log = "0.4.21"
 path-slash = "0.2.1"
