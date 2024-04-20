@@ -5,7 +5,7 @@
 groups = ["default", "dev", "docs", "typing"]
 strategy = ["cross_platform", "inherit_metadata"]
 lock_version = "4.4.1"
-content_hash = "sha256:3f9106bfbec21759dd51f4bd31ac0804d3d6275324e9be24e51a0e63c817124f"
+content_hash = "sha256:bebc18ba765dae8330b73c4a6e835074797778a06a17b541fa79ec60d653d7d2"
 
 [[package]]
 name = "babel"
@@ -307,13 +307,13 @@ files = [
 
 [[package]]
 name = "execnet"
-version = "2.0.2"
-requires_python = ">=3.7"
+version = "2.1.1"
+requires_python = ">=3.8"
 summary = "execnet: rapid multi-Python deployment"
 groups = ["dev"]
 files = [
-    {file = "execnet-2.0.2-py3-none-any.whl", hash = "sha256:88256416ae766bc9e8895c76a87928c0012183da3cc4fc18016e6f050e025f41"},
-    {file = "execnet-2.0.2.tar.gz", hash = "sha256:cc59bc4423742fd71ad227122eb0dd44db51efb3dc4095b45ac9a08c770096af"},
+    {file = "execnet-2.1.1-py3-none-any.whl", hash = "sha256:26dee51f1b80cebd6d0ca8e74dd8745419761d3bef34163928cbebbdc4749fdc"},
+    {file = "execnet-2.1.1.tar.gz", hash = "sha256:5189b52c6121c24feae288166ab41b32549c7e2348652736540b9e6e7d4e72e3"},
 ]
 
 [[package]]
@@ -768,33 +768,33 @@ files = [
 
 [[package]]
 name = "pytest-xdist"
-version = "3.5.0"
-requires_python = ">=3.7"
+version = "3.6.0"
+requires_python = ">=3.8"
 summary = "pytest xdist plugin for distributed testing, most importantly across multiple CPUs"
 groups = ["dev"]
 dependencies = [
-    "execnet>=1.1",
-    "pytest>=6.2.0",
+    "execnet>=2.1",
+    "pytest>=7.0.0",
 ]
 files = [
-    {file = "pytest-xdist-3.5.0.tar.gz", hash = "sha256:cbb36f3d67e0c478baa57fa4edc8843887e0f6cfc42d677530a36d7472b32d8a"},
-    {file = "pytest_xdist-3.5.0-py3-none-any.whl", hash = "sha256:d075629c7e00b611df89f490a5063944bee7a4362a5ff11c7cc7824a03dfce24"},
+    {file = "pytest_xdist-3.6.0-py3-none-any.whl", hash = "sha256:958e08f38472e1b3a83450d8d3e682e90fdbffee39a97dd0f27185a3bd9074d1"},
+    {file = "pytest_xdist-3.6.0.tar.gz", hash = "sha256:2bf346fb1f1481c8d255750f80bc1dfb9fb18b9ad5286ead0b741b6fd56d15b7"},
 ]
 
 [[package]]
 name = "pytest-xdist"
-version = "3.5.0"
+version = "3.6.0"
 extras = ["psutil"]
-requires_python = ">=3.7"
+requires_python = ">=3.8"
 summary = "pytest xdist plugin for distributed testing, most importantly across multiple CPUs"
 groups = ["dev"]
 dependencies = [
     "psutil>=3.0",
-    "pytest-xdist==3.5.0",
+    "pytest-xdist==3.6.0",
 ]
 files = [
-    {file = "pytest-xdist-3.5.0.tar.gz", hash = "sha256:cbb36f3d67e0c478baa57fa4edc8843887e0f6cfc42d677530a36d7472b32d8a"},
-    {file = "pytest_xdist-3.5.0-py3-none-any.whl", hash = "sha256:d075629c7e00b611df89f490a5063944bee7a4362a5ff11c7cc7824a03dfce24"},
+    {file = "pytest_xdist-3.6.0-py3-none-any.whl", hash = "sha256:958e08f38472e1b3a83450d8d3e682e90fdbffee39a97dd0f27185a3bd9074d1"},
+    {file = "pytest_xdist-3.6.0.tar.gz", hash = "sha256:2bf346fb1f1481c8d255750f80bc1dfb9fb18b9ad5286ead0b741b6fd56d15b7"},
 ]
 
 [[package]]
