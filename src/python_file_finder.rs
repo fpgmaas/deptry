@@ -11,8 +11,8 @@ use std::path::PathBuf;
 pub fn find_python_files(
     py: Python,
     directories: Vec<PathBuf>,
-    exclude: Vec<&str>,
-    extend_exclude: Vec<&str>,
+    exclude: Vec<String>,
+    extend_exclude: Vec<String>,
     using_default_exclude: bool,
     ignore_notebooks: bool,
 ) -> PyResult<PyObject> {
@@ -37,12 +37,12 @@ pub fn find_python_files(
     })
     .collect();
 
-    Ok(PyList::new(py, &python_files).into())
+    Ok(PyList::new_bound(py, &python_files).into())
 }
 
 fn build_walker(
     directories: Vec<PathBuf>,
-    excluded_patterns: Vec<&str>,
+    excluded_patterns: Vec<String>,
     use_git_ignore: bool,
     ignore_notebooks: bool,
 ) -> Walk {
