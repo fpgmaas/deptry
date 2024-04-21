@@ -101,12 +101,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "248e3bacc7dc6baa3b21e405ee045c3047101a49145e7e9eca583ab4c2ca5345"
 
 [[package]]
-name = "crunchy"
-version = "0.2.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7a81dae078cea95a014a339291cec439d2f232ebe854a9d672b796c6afafa9b7"
-
-[[package]]
 name = "deptryrs"
 version = "0.1.0"
 dependencies = [
@@ -125,6 +119,12 @@ dependencies = [
  "ruff_text_size",
  "serde_json",
 ]
+
+[[package]]
+name = "drop_bomb"
+version = "0.1.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9bda8e21c04aca2ae33ffc2fd8c23134f3cac46db123ba97bd9d3f3b8a4a85e1"
 
 [[package]]
 name = "either"
@@ -228,12 +228,6 @@ name = "itoa"
 version = "1.0.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "49f1f14873335454500d59611f1cf4a4b0f786f9ac11f4312a78e4cf2566695b"
-
-[[package]]
-name = "lalrpop-util"
-version = "0.20.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "507460a910eb7b32ee961886ff48539633b788a36b65692b95f225b844c82553"
 
 [[package]]
 name = "libc"
@@ -540,7 +534,7 @@ checksum = "adad44e29e4c806119491a7f06f03de4d1af22c3a680dd47f1e6e179439d1f56"
 [[package]]
 name = "ruff_python_ast"
 version = "0.0.0"
-source = "git+https://github.com/astral-sh/ruff?tag=v0.3.4#5062572aca9413670aafd018cb65037bcb4d6acb"
+source = "git+https://github.com/astral-sh/ruff?tag=v0.4.1#0ff25a540c550d8d2f562844354f84eb292b9c4b"
 dependencies = [
  "aho-corasick",
  "bitflags 2.5.0",
@@ -556,20 +550,19 @@ dependencies = [
 [[package]]
 name = "ruff_python_parser"
 version = "0.0.0"
-source = "git+https://github.com/astral-sh/ruff?tag=v0.3.4#5062572aca9413670aafd018cb65037bcb4d6acb"
+source = "git+https://github.com/astral-sh/ruff?tag=v0.4.1#0ff25a540c550d8d2f562844354f84eb292b9c4b"
 dependencies = [
  "anyhow",
  "bitflags 2.5.0",
  "bstr",
+ "drop_bomb",
  "is-macro",
  "itertools",
- "lalrpop-util",
  "memchr",
  "ruff_python_ast",
  "ruff_text_size",
  "rustc-hash",
  "static_assertions",
- "tiny-keccak",
  "unicode-ident",
  "unicode-normalization",
  "unicode_names2",
@@ -578,7 +571,7 @@ dependencies = [
 [[package]]
 name = "ruff_python_trivia"
 version = "0.0.0"
-source = "git+https://github.com/astral-sh/ruff?tag=v0.3.4#5062572aca9413670aafd018cb65037bcb4d6acb"
+source = "git+https://github.com/astral-sh/ruff?tag=v0.4.1#0ff25a540c550d8d2f562844354f84eb292b9c4b"
 dependencies = [
  "itertools",
  "ruff_source_file",
@@ -589,7 +582,7 @@ dependencies = [
 [[package]]
 name = "ruff_source_file"
 version = "0.0.0"
-source = "git+https://github.com/astral-sh/ruff?tag=v0.3.4#5062572aca9413670aafd018cb65037bcb4d6acb"
+source = "git+https://github.com/astral-sh/ruff?tag=v0.4.1#0ff25a540c550d8d2f562844354f84eb292b9c4b"
 dependencies = [
  "memchr",
  "once_cell",
@@ -599,7 +592,7 @@ dependencies = [
 [[package]]
 name = "ruff_text_size"
 version = "0.0.0"
-source = "git+https://github.com/astral-sh/ruff?tag=v0.3.4#5062572aca9413670aafd018cb65037bcb4d6acb"
+source = "git+https://github.com/astral-sh/ruff?tag=v0.4.1#0ff25a540c550d8d2f562844354f84eb292b9c4b"
 
 [[package]]
 name = "rustc-hash"
@@ -693,15 +686,6 @@ name = "target-lexicon"
 version = "0.12.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e1fc403891a21bcfb7c37834ba66a547a8f402146eba7265b5a6d88059c9ff2f"
-
-[[package]]
-name = "tiny-keccak"
-version = "2.0.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2c9d3793400a45f954c52e73d068316d76b6f4e36977e3fcebb13a2721e80237"
-dependencies = [
- "crunchy",
-]
 
 [[package]]
 name = "tinyvec"

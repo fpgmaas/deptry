@@ -18,10 +18,10 @@ pyo3 = { version = "0.20.3", features = ["abi3-py38"] }
 pyo3-log = "0.9.0"
 rayon = "1.10.0"
 regex = "1.10.4"
-ruff_python_ast = { git = "https://github.com/astral-sh/ruff", tag = "v0.3.4" }
-ruff_python_parser = { git = "https://github.com/astral-sh/ruff", tag = "v0.3.4" }
-ruff_source_file = { git = "https://github.com/astral-sh/ruff", tag = "v0.3.4" }
-ruff_text_size = { git = "https://github.com/astral-sh/ruff", tag = "v0.3.4" }
+ruff_python_ast = { git = "https://github.com/astral-sh/ruff", tag = "v0.4.1" }
+ruff_python_parser = { git = "https://github.com/astral-sh/ruff", tag = "v0.4.1" }
+ruff_source_file = { git = "https://github.com/astral-sh/ruff", tag = "v0.4.1" }
+ruff_text_size = { git = "https://github.com/astral-sh/ruff", tag = "v0.4.1" }
 serde_json = "1.0.115"
 
 [profile.release]
