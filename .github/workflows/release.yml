@@ -95,7 +95,7 @@ jobs:
           path: dist
 
   macos:
-    runs-on: macos-13
+    runs-on: macos-14
     needs: [set-version]
     strategy:
       matrix:
