@@ -38,8 +38,8 @@ dev = [
     "pytest-xdist[psutil]==3.5.0",
 ]
 docs = [
-    "mkdocs==1.5.3",
-    "mkdocs-material==9.5.18",
+    "mkdocs==1.6.0",
+    "mkdocs-material==9.5.19",
 ]
 typing = [
     "mypy==1.10.0",
