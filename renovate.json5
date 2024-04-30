@@ -53,16 +53,4 @@
       customChangelogUrl: "https://github.com/charliermarsh/ruff",
     },
   ],
-
-  // https://docs.renovatebot.com/configuration-options/#regexmanagers
-  regexManagers: [
-    {
-      description: "Update PEP 440 Python dependencies",
-      fileMatch: ["^.+\\.ya?ml$"],
-      matchStrings: [
-        '"(?<depName>[\\w-]+)(?<currentValue>.+?)",?[[:blank:]]+#[[:blank:]]*renovate: pep440-python-dependency\\s',
-      ],
-      datasourceTemplate: "pypi",
-    },
-  ],
 }
