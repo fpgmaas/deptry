@@ -54,15 +54,15 @@
     },
   ],
 
-  // https://docs.renovatebot.com/configuration-options/#regexmanagers
-  regexManagers: [
+  // https://docs.renovatebot.com/configuration-options/#custommanagers
+  customManagers: [
     {
-      description: "Update PEP 440 Python dependencies",
-      fileMatch: ["^.+\\.ya?ml$"],
-      matchStrings: [
-        '"(?<depName>[\\w-]+)(?<currentValue>.+?)",?[[:blank:]]+#[[:blank:]]*renovate: pep440-python-dependency\\s',
-      ],
+      description: "Update Ruff in Cargo.toml",
+      customType: "regex",
+      fileMatch: ["^Cargo\\.toml$"],
+      matchStrings: ['git = "https:\/\/github.com\/astral-sh\/ruff", tag = "v(?<currentValue>.*?)"'],
       datasourceTemplate: "pypi",
+      depNameTemplate: "ruff",
     },
   ],
 }
