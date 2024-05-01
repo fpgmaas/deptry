@@ -29,7 +29,7 @@ repos:
         args: ["--locked", "--all-targets", "--all-features"]
         language: system
         pass_filenames: false
-        files: ^Cargo.toml$
+        files: ^Cargo\.toml$
 
   - repo: local
     hooks:
