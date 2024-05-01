@@ -100,11 +100,7 @@ jobs:
     strategy:
       matrix:
         target: [x86_64, aarch64]
-        python: ['3.12']
-        include:
-          # It seems PyPy3.10 is not available on macOS arm64 yet
-          - target: x86_64
-            python: pypy3.10
+        python: ['3.12', 'pypy3.10']
     steps:
       - name: Check out
         uses: actions/checkout@v4
