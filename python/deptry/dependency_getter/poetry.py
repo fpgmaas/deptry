@@ -53,34 +53,8 @@ class PoetryDependencyGetter(DependencyGetter):
     def _get_dependencies(
         self, poetry_dependencies: dict[str, Any], package_module_name_map: Mapping[str, Sequence[str]]
     ) -> list[Dependency]:
-        dependencies = []
-        for dep, spec in poetry_dependencies.items():
-            # dep is the dependency name, spec is the version specification, e.g. "^0.2.2" or {"*", optional = true}
-            if dep != "python":
-                optional = self._is_optional(spec)
-                conditional = self._is_conditional(spec)
-                dependencies.append(
-                    Dependency(
-                        dep,
-                        self.config,
-                        conditional=conditional,
-                        optional=optional,
-                        module_names=package_module_name_map.get(dep),
-                    )
-                )
-
-        return dependencies
-
-    @staticmethod
-    def _is_optional(spec: str | dict[str, Any]) -> bool:
-        """
-        If a dependency specification is of the shape `isodate = {version = "*", optional = true}`, mark it as optional.
-        """
-        return bool(isinstance(spec, dict) and spec.get("optional"))
-
-    @staticmethod
-    def _is_conditional(spec: str | dict[str, Any]) -> bool:
-        """
-        If a dependency specification is of the shape `tomli = { version = "^2.0.1", python = "<3.11" }`, mark it as conditional.
-        """
-        return isinstance(spec, dict) and "python" in spec and "version" in spec
+        return [
+            Dependency(dep, self.config, module_names=package_module_name_map.get(dep))
+            for dep in poetry_dependencies
+            if dep != "python"
+        ]

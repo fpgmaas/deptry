@@ -43,46 +43,28 @@ pytest-cov = "^4.0.0"
         assert len(dev_dependencies) == 6
 
         assert dependencies[0].name == "bar"
-        assert dependencies[0].is_conditional
-        assert not dependencies[0].is_optional
         assert "bar" in dependencies[0].top_levels
 
         assert dependencies[1].name == "foo-bar"
-        assert dependencies[1].is_conditional
-        assert dependencies[1].is_optional
         assert "foo_bar" in dependencies[1].top_levels
 
         assert dependencies[2].name == "fox-python"
-        assert not dependencies[2].is_conditional
-        assert not dependencies[2].is_optional
         assert "fox" in dependencies[2].top_levels
 
         assert dev_dependencies[0].name == "toml"
-        assert not dev_dependencies[0].is_conditional
-        assert not dev_dependencies[0].is_optional
         assert "toml" in dev_dependencies[0].top_levels
 
         assert dev_dependencies[1].name == "qux"
-        assert not dev_dependencies[1].is_conditional
-        assert dev_dependencies[1].is_optional
         assert "qux" in dev_dependencies[1].top_levels
 
         assert dev_dependencies[2].name == "black"
-        assert not dev_dependencies[2].is_conditional
-        assert not dev_dependencies[2].is_optional
         assert "black" in dev_dependencies[2].top_levels
 
         assert dev_dependencies[3].name == "mypy"
-        assert not dev_dependencies[3].is_conditional
-        assert not dev_dependencies[3].is_optional
         assert "mypy" in dev_dependencies[3].top_levels
 
         assert dev_dependencies[4].name == "pytest"
-        assert not dev_dependencies[4].is_conditional
-        assert not dev_dependencies[4].is_optional
         assert "pytest" in dev_dependencies[4].top_levels
 
         assert dev_dependencies[5].name == "pytest-cov"
-        assert not dev_dependencies[5].is_conditional
-        assert not dev_dependencies[5].is_optional
         assert "pytest_cov" in dev_dependencies[5].top_levels
