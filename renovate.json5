@@ -53,16 +53,4 @@
       customChangelogUrl: "https://github.com/charliermarsh/ruff",
     },
   ],
-
-  // https://docs.renovatebot.com/configuration-options/#custommanagers
-  customManagers: [
-    {
-      description: "Update Ruff in Cargo.toml",
-      customType: "regex",
-      fileMatch: ["^Cargo\\.toml$"],
-      matchStrings: ['git = "https:\/\/github.com\/astral-sh\/ruff", tag = "v(?<currentValue>.*?)"'],
-      datasourceTemplate: "pypi",
-      depNameTemplate: "ruff",
-    },
-  ],
 }
