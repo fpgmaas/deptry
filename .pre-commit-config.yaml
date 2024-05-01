@@ -16,6 +16,21 @@ repos:
         args: [--exit-non-zero-on-fix]
       - id: ruff-format
 
+  - repo: https://github.com/pdm-project/pdm
+    rev: "2.15.1"
+    hooks:
+      - id: pdm-lock-check
+
+  - repo: local
+    hooks:
+      - id: cargo-check-lock
+        name: check cargo lock file validity
+        entry: cargo check
+        args: ["--locked", "--all-targets", "--all-features"]
+        language: system
+        pass_filenames: false
+        files: ^Cargo\.toml$
+
   - repo: local
     hooks:
       - id: cargo-fmt
