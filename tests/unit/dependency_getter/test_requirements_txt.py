@@ -46,23 +46,15 @@ httpx==0.25.2
         assert len(dependencies_extract.dev_dependencies) == 0
 
         assert dependencies[1].name == "colorama"
-        assert not dependencies[1].is_conditional
-        assert not dependencies[1].is_optional
         assert "colorama" in dependencies[1].top_levels
 
         assert dependencies[2].name == "importlib-metadata"
-        assert dependencies[2].is_conditional
-        assert not dependencies[2].is_optional
         assert "importlib_metadata" in dependencies[2].top_levels
 
         assert dependencies[11].name == "requests"
-        assert dependencies[11].is_conditional
-        assert dependencies[11].is_optional
         assert "requests" in dependencies[11].top_levels
 
         assert dependencies[17].name == "fox-python"
-        assert not dependencies[17].is_conditional
-        assert not dependencies[17].is_optional
         assert "fox" in dependencies[17].top_levels
 
 
@@ -142,8 +134,6 @@ def test_dev_single(tmp_path: Path) -> None:
         assert len(dev_dependencies) == 2
 
         assert dev_dependencies[1].name == "colorama"
-        assert not dev_dependencies[1].is_conditional
-        assert not dev_dependencies[1].is_optional
         assert "colorama" in dev_dependencies[1].top_levels
 
 

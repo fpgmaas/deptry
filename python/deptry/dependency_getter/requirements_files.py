@@ -70,14 +70,9 @@ class RequirementsTxtDependencyGetter(DependencyGetter):
         line = self._remove_newlines_from(line)
         name = self._find_dependency_name_in(line)
         if name:
-            line = line.replace(name, "")
-            optional = self._check_if_dependency_is_optional(line)
-            conditional = self._check_if_dependency_is_conditional(line)
             return Dependency(
                 name=name,
                 definition_file=file_path,
-                optional=optional,
-                conditional=conditional,
                 module_names=self.package_module_name_map.get(name),
             )
         else:
@@ -107,14 +102,6 @@ class RequirementsTxtDependencyGetter(DependencyGetter):
     @staticmethod
     def _remove_newlines_from(line: str) -> str:
         return line.replace("\n", "")
-
-    @staticmethod
-    def _check_if_dependency_is_optional(line: str) -> bool:
-        return bool(re.findall(r"\[([a-zA-Z0-9-]+?)\]", line))
-
-    @staticmethod
-    def _check_if_dependency_is_conditional(line: str) -> bool:
-        return ";" in line
 
     @staticmethod
     def _line_is_url(line: str) -> bool:

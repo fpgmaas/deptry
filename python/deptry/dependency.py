@@ -20,8 +20,6 @@ class Dependency:
     Attributes:
         name (str): The name of the dependency.
         definition_file (Path): The path to the file defining the dependency, e.g. 'pyproject.toml'.
-        is_conditional (bool): Indicates if the dependency is conditional.
-        is_optional (bool): Indicates if the dependency is optional i.e. dependencies that are not installed by default
           and that can be used to create a variant of the package with a set of extra functionalities.
         found (bool): Indicates if the dependency has been found in the environment.
         top_levels (set[str]): The top-level module names associated with the dependency.
@@ -31,16 +29,12 @@ class Dependency:
         self,
         name: str,
         definition_file: Path,
-        conditional: bool = False,
-        optional: bool = False,
         module_names: Sequence[str] | None = None,
     ) -> None:
         distribution = self.find_distribution(name)
 
         self.name = name
         self.definition_file = definition_file
-        self.is_conditional = conditional
-        self.is_optional = optional
         self.found = distribution is not None
         self.top_levels = self._get_top_levels(name, distribution, module_names)
 
@@ -84,7 +78,7 @@ class Dependency:
         return f"Dependency '{self.name}'"
 
     def __str__(self) -> str:
-        return f"Dependency '{self.name}'{self._string_for_printing()}with top-levels: {self.top_levels}."
+        return f"Dependency '{self.name}' with top-levels: {self.top_levels}."
 
     @staticmethod
     def find_distribution(name: str) -> Distribution | None:
@@ -92,21 +86,6 @@ class Dependency:
             return metadata.distribution(name)
         except metadata.PackageNotFoundError:
             return None
-
-    def _string_for_printing(self) -> str:
-        """
-        Return 'Conditional', 'Optional' or 'Conditional and optional'
-        """
-        output_list = []
-        if self.is_optional:
-            output_list.append("optional")
-        if self.is_conditional:
-            output_list.append("conditional")
-
-        if len(output_list) > 0:
-            return f" ({', '.join(output_list)}) "
-        else:
-            return " "
 
     @staticmethod
     def _get_top_level_module_names_from_top_level_txt(distribution: Distribution) -> set[str]:

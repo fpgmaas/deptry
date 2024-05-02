@@ -114,21 +114,11 @@ class PEP621DependencyGetter(DependencyGetter):
                     Dependency(
                         name,
                         self.config,
-                        conditional=self._is_conditional(spec),
-                        optional=self._is_optional(spec),
                         module_names=package_module_name_map.get(name),
                     )
                 )
 
         return extracted_dependencies
-
-    @staticmethod
-    def _is_optional(dependency_specification: str) -> bool:
-        return bool(re.findall(r"\[([a-zA-Z0-9-]+?)\]", dependency_specification))
-
-    @staticmethod
-    def _is_conditional(dependency_specification: str) -> bool:
-        return ";" in dependency_specification
 
     @staticmethod
     def _find_dependency_name_in(spec: str) -> str | None:
