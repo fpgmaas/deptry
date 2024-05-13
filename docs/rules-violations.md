@@ -47,6 +47,9 @@ dependencies = ["httpx==0.23.1"]
 
 Dependencies that are required in a project, but are not used within the codebase.
 
+!!! note
+    Development dependencies are not considered for this rule, as they are usually meant to only be used outside the codebase (for instance in tests, or as CLI tools for type-checking, formatting, etc.).
+
 ### Example
 
 On a project with the following dependencies:
