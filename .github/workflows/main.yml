@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12', 'pypy3.10']
+        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12', '3.13-dev', 'pypy3.10']
     steps:
       - name: Check out
         uses: actions/checkout@v4
@@ -62,7 +62,7 @@ jobs:
     runs-on: windows-2022
     strategy:
       matrix:
-        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
+        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12', '3.13-dev']
     steps:
       - name: Check out
         uses: actions/checkout@v4
@@ -82,7 +82,7 @@ jobs:
     runs-on: macos-14
     strategy:
       matrix:
-        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
+        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12', '3.13-dev']
     steps:
       - name: Check out
         uses: actions/checkout@v4
