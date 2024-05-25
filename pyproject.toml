@@ -39,7 +39,7 @@ dev = [
 ]
 docs = [
     "mkdocs==1.6.0",
-    "mkdocs-material==9.5.23",
+    "mkdocs-material==9.5.24",
 ]
 typing = [
     "mypy==1.10.0",
