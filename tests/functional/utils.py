@@ -18,6 +18,7 @@ class Project(str, Enum):
     REQUIREMENTS_IN = "project_with_requirements_in"
     SRC_DIRECTORY = "project_with_src_directory"
     UV = "project_with_uv"
+    DYNAMIC_DEPENDENCIES = "project_with_dynamic_dependencies"
 
     def __str__(self) -> str:
         return self.value
