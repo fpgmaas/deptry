@@ -45,20 +45,88 @@ class DependencyGetterBuilder:
                 return PoetryDependencyGetter(self.config, self.package_module_name_map)
 
             if self._project_uses_pdm(pyproject_toml):
-                return PDMDependencyGetter(self.config, self.package_module_name_map, self.pep621_dev_dependency_groups)
+                return PDMDependencyGetter(
+                    self.config,
+                    self.package_module_name_map,
+                    self.pep621_dev_dependency_groups,
+                )
+
+            if self._project_uses_setuptools(pyproject_toml) and self._project_uses_dynamic_dependencies(
+                pyproject_toml
+            ):
+                requirements_txt_file = self._project_dynamic_requirements_file(pyproject_toml)
+                return RequirementsTxtDependencyGetter(
+                    self.config, self.package_module_name_map, requirements_txt_file, ()
+                )
 
             if self._project_uses_pep_621(pyproject_toml):
                 return PEP621DependencyGetter(
-                    self.config, self.package_module_name_map, self.pep621_dev_dependency_groups
+                    self.config,
+                    self.package_module_name_map,
+                    self.pep621_dev_dependency_groups,
                 )
 
         check, requirements_files = self._project_uses_requirements_files()
         if check:
             return RequirementsTxtDependencyGetter(
-                self.config, self.package_module_name_map, requirements_files, self.requirements_files_dev
+                self.config,
+                self.package_module_name_map,
+                requirements_files,
+                self.requirements_files_dev,
             )
 
         raise DependencySpecificationNotFoundError(self.requirements_files)
+
+    def _project_uses_setuptools(self, pyproject_toml: dict[str, Any]) -> bool:
+        try:
+            if pyproject_toml["build-system"]["build-backend"] == "setuptools.build_meta":
+                logging.debug(
+                    "pyproject.toml has the entry"
+                    " build-system.build-backend == 'setuptools.build-meta'"
+                    ", so setuptools is used to manage dependencies."
+                )
+                return True
+            else:
+                logging.debug(
+                    "pyproject.toml does not have"
+                    " build-system.build-backend == 'setuptools.build-meta'"
+                    ", so setuptools is not used to manage dependencies."
+                )
+                return False
+        except KeyError:
+            logging.debug(
+                "pyproject.toml does not contain a build-system.build-backend entry, "
+                "so setuptools is not used to manage dependencies."
+            )
+            return False
+
+    def _project_uses_dynamic_dependencies(self, pyproject_toml: dict[str, Any]) -> bool:
+        try:
+            if "dependencies" not in pyproject_toml["project"]["dynamic"]:
+                logging.debug(
+                    "pyproject.toml does not have"
+                    " dependencies listed as dynamic metadata,"
+                    " so dynamic dependencies are not used."
+                )
+                return False
+            else:
+                pyproject_toml["tool"]["setuptools"]["dynamic"]["dependencies"]["file"]
+                logging.debug(
+                    "pyproject.toml has dependencies listed as dynamic metadata"
+                    " and contains a populated tools.setuptools.dynamic.dependencies.file"
+                    " entry, so dynamic dependencies are used."
+                )
+                return True
+        except KeyError:
+            logging.debug(
+                "pyproject.toml either does not contain a project.dynamic entry or "
+                "tools.setuptools.dynamic.dependencies.file entry, so dynamic "
+                "dependencies are not used."
+            )
+            return False
+
+    def _project_dynamic_requirements_file(self, pyproject_toml: dict[str, Any]) -> tuple[str, ...]:
+        return tuple(pyproject_toml["tool"]["setuptools"]["dynamic"]["dependencies"]["file"])
 
     def _project_contains_pyproject_toml(self) -> bool:
         if self.config.exists():
