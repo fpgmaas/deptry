@@ -131,6 +131,10 @@ def test_dependency_specification_not_found_raises_exception(tmp_path: Path, cap
             " project's dependencies."
         ),
         (
+            "pyproject.toml does not have build-system.build-backend == 'setuptools.build-meta', so setuptools is"
+            " not used to manage dependencies."
+        ),
+        (
             "pyproject.toml does not contain a [project] section, so PEP 621 is not used to specify the project's"
             " dependencies."
         ),
