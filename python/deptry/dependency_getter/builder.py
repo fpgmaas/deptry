@@ -82,21 +82,21 @@ class DependencyGetterBuilder:
             if pyproject_toml["build-system"]["build-backend"] == "setuptools.build_meta":
                 logging.debug(
                     "pyproject.toml has the entry"
-                    " build-system.build-backend == 'setuptools.build-meta'"
-                    ", so setuptools is used to manage dependencies."
+                    " build-system.build-backend == 'setuptools.build_meta'"
+                    ", so setuptools is used to specify the project's dependencies."
                 )
                 return True
             else:
                 logging.debug(
                     "pyproject.toml does not have"
-                    " build-system.build-backend == 'setuptools.build-meta'"
-                    ", so setuptools is not used to manage dependencies."
+                    " build-system.build-backend == 'setuptools.build_meta'"
+                    ", so setuptools is not used to specify the project's dependencies."
                 )
                 return False
         except KeyError:
             logging.debug(
                 "pyproject.toml does not contain a build-system.build-backend entry, "
-                "so setuptools is not used to manage dependencies."
+                "so setuptools is not used to specify the project's dependencies."
             )
             return False
 
