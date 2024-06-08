@@ -31,9 +31,9 @@ runs:
       shell: bash
 
     - name: Setup Rust toolchain
-      run:
-        - rustup toolchain install stable --profile minimal
-        - rustup component add clippy rustfmt
+      run: |
+        rustup toolchain install stable --profile minimal
+        rustup component add clippy rustfmt
       shell: bash
 
     - uses: Swatinem/rust-cache@v2
