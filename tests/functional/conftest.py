@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import logging
 import shlex
 import subprocess
 import sys
@@ -32,11 +31,11 @@ def pytest_sessionstart(session: pytest.Session) -> None:
             text=True,
             check=True,
         )
-        logging.info("pdm build output: %s", result.stdout)
-        logging.error("pdm build errors: %s", result.stderr)
+        print("pdm build output: %s", result.stdout)  # noqa: T201
+        print("pdm build errors: %s", result.stderr)  # noqa: T201
     except subprocess.CalledProcessError as e:
-        logging.exception("Output: %s", e.output)
-        logging.exception("Errors: %s", e.stderr)
+        print("Output: %s", e.output)  # noqa: T201
+        print("Errors: %s", e.stderr)  # noqa: T201
         raise
 
 
