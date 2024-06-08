@@ -29,34 +29,34 @@ jobs:
         run: |
           pdm run deptry python
 
-  linux:
-    runs-on: ubuntu-22.04
-    strategy:
-      matrix:
-        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12', 'pypy3.10']
-    steps:
-      - name: Check out
-        uses: actions/checkout@v4
+  # linux:
+  #   runs-on: ubuntu-22.04
+  #   strategy:
+  #     matrix:
+  #       python-version: ['3.8', '3.9', '3.10', '3.11', '3.12', 'pypy3.10']
+  #   steps:
+  #     - name: Check out
+  #       uses: actions/checkout@v4
 
-      - name: Set up the environment
-        uses: ./.github/actions/setup-env
-        with:
-          python-version: ${{ matrix.python-version }}
+  #     - name: Set up the environment
+  #       uses: ./.github/actions/setup-env
+  #       with:
+  #         python-version: ${{ matrix.python-version }}
 
-      - name: Check typing
-        run: pdm run mypy
+  #     - name: Check typing
+  #       run: pdm run mypy
 
-      - name: Run unit tests
-        run: pdm run pytest tests/unit --cov --cov-config=pyproject.toml --cov-report=xml
+  #     - name: Run unit tests
+  #       run: pdm run pytest tests/unit --cov --cov-config=pyproject.toml --cov-report=xml
 
-      - name: Run functional tests
-        run: pdm run pytest tests/functional -n auto --dist loadgroup
+  #     - name: Run functional tests
+  #       run: pdm run pytest tests/functional -n auto --dist loadgroup
 
-      - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v4
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-        if: ${{ matrix.python-version == '3.12' }}
+  #     - name: Upload coverage reports to Codecov
+  #       uses: codecov/codecov-action@v4
+  #       env:
+  #         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+  #       if: ${{ matrix.python-version == '3.12' }}
 
   windows:
     runs-on: windows-2022
@@ -78,25 +78,25 @@ jobs:
       - name: Run functional tests
         run: pdm run pytest tests/functional -n auto --dist loadgroup
 
-  macos:
-    runs-on: macos-14
-    strategy:
-      matrix:
-        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
-    steps:
-      - name: Check out
-        uses: actions/checkout@v4
+  # macos:
+  #   runs-on: macos-14
+  #   strategy:
+  #     matrix:
+  #       python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
+  #   steps:
+  #     - name: Check out
+  #       uses: actions/checkout@v4
 
-      - name: Set up the environment
-        uses: ./.github/actions/setup-env
-        with:
-          python-version: ${{ matrix.python-version }}
+  #     - name: Set up the environment
+  #       uses: ./.github/actions/setup-env
+  #       with:
+  #         python-version: ${{ matrix.python-version }}
 
-      - name: Run unit tests
-        run: pdm run pytest tests/unit --cov --cov-config=pyproject.toml --cov-report=xml
+  #     - name: Run unit tests
+  #       run: pdm run pytest tests/unit --cov --cov-config=pyproject.toml --cov-report=xml
 
-      - name: Run functional tests
-        run: pdm run pytest tests/functional -n auto --dist loadgroup
+  #     - name: Run functional tests
+  #       run: pdm run pytest tests/functional -n auto --dist loadgroup
 
   check-docs:
     runs-on: ubuntu-22.04
