@@ -26,7 +26,7 @@ def pytest_sessionstart(session: pytest.Session) -> None:
 
     try:
         result = subprocess.run(
-            shlex.split(f"pdm build --no-sdist --dest {deptry_wheel_path}", posix=sys.platform != "win32"),
+            shlex.split(f"pdm build -vv --no-sdist --dest {deptry_wheel_path}", posix=sys.platform != "win32"),
             capture_output=True,
             text=True,
             check=True,
