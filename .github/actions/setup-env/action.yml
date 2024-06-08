@@ -22,7 +22,7 @@ runs:
       with:
         version: ${{ env.PDM_VERSION }}
         python-version: ${{ inputs.python-version }}
-        cache: true
+        # cache: true
 
     - name: Install Python dependencies
       run: pdm install --frozen-lockfile --no-editable
@@ -36,7 +36,7 @@ runs:
         rustup component add clippy rustfmt
       shell: bash
 
-    - uses: Swatinem/rust-cache@v2
+    # - uses: Swatinem/rust-cache@v2
 
     - name: Build and install the project using Maturin
       uses: PyO3/maturin-action@v1
