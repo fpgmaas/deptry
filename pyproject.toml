@@ -56,7 +56,7 @@ changelog = "https://github.com/fpgmaas/deptry/blob/main/CHANGELOG.md"
 deptry = "deptry.cli:deptry"
 
 [build-system]
-requires = ["maturin>=1.6.0,<2.0"]
+requires = ["maturin>=1.5.1,<1.6.0"]
 build-backend = "maturin"
 
 [tool.maturin]
