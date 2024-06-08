@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 import shlex
 import subprocess
 import sys
@@ -24,12 +25,19 @@ def pytest_sessionstart(session: pytest.Session) -> None:
 
     print(f"Building `deptry` wheel in {deptry_wheel_path} to use it on functional tests...")  # noqa: T201
 
-    subprocess.run(
-        shlex.split(f"pdm build --no-sdist --dest {deptry_wheel_path}", posix=sys.platform != "win32"),
-        capture_output=True,
-        text=True,
-        check=True,
-    )
+    try:
+        result = subprocess.run(
+            shlex.split(f"pdm build --no-sdist --dest {deptry_wheel_path}", posix=sys.platform != "win32"),
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        logging.info("pdm build output: %s", result.stdout)
+        logging.error("pdm build errors: %s", result.stderr)
+    except subprocess.CalledProcessError as e:
+        logging.exception("Output: %s", e.output)
+        logging.exception("Errors: %s", e.stderr)
+        raise
 
 
 @pytest.fixture(scope="session")
