@@ -30,15 +30,13 @@ runs:
         PDM_VENV_WITH_PIP: "true"
       shell: bash
 
-    - name: Setup Rust toolchain
-      run: rustup component add clippy rustfmt
-      shell: bash
-
-    # - uses: Swatinem/rust-cache@v2
-
     - name: Build and install the project using Maturin
       uses: PyO3/maturin-action@v1
       with:
         target: ${{ inputs.target }}
         command: develop
         sccache: 'true'
+
+    - name: Setup Rust toolchain
+      run: rustup component add clippy rustfmt
+      shell: bash
