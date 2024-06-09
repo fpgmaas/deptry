@@ -113,14 +113,14 @@ class DependencyGetterBuilder:
                 pyproject_toml["tool"]["setuptools"]["dynamic"]["dependencies"]["file"]
                 logging.debug(
                     "pyproject.toml has dependencies listed as dynamic metadata"
-                    " and contains a populated tools.setuptools.dynamic.dependencies.file"
+                    " and contains a populated tool.setuptools.dynamic.dependencies.file"
                     " entry, so dynamic dependencies are used."
                 )
                 return True
         except KeyError:
             logging.debug(
                 "pyproject.toml either does not contain a project.dynamic entry or "
-                "tools.setuptools.dynamic.dependencies.file entry, so dynamic "
+                "tool.setuptools.dynamic.dependencies.file entry, so dynamic "
                 "dependencies are not used."
             )
             return False
