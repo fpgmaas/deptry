@@ -24,12 +24,19 @@ def pytest_sessionstart(session: pytest.Session) -> None:
 
     print(f"Building `deptry` wheel in {deptry_wheel_path} to use it on functional tests...")  # noqa: T201
 
-    subprocess.run(
-        shlex.split(f"pdm build --no-sdist --dest {deptry_wheel_path}", posix=sys.platform != "win32"),
-        capture_output=True,
-        text=True,
-        check=True,
-    )
+    try:
+        result = subprocess.run(
+            shlex.split(f"pdm build -v --no-sdist --dest {deptry_wheel_path}", posix=sys.platform != "win32"),
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        print("pdm build output: %s", result.stdout)  # noqa: T201
+        print("pdm build errors: %s", result.stderr)  # noqa: T201
+    except subprocess.CalledProcessError as e:
+        print("Output: %s", e.output)  # noqa: T201
+        print("Errors: %s", e.stderr)  # noqa: T201
+        raise
 
 
 @pytest.fixture(scope="session")
