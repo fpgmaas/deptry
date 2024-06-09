@@ -34,7 +34,7 @@ runs:
       run: rustup component add clippy rustfmt
       shell: bash
 
-    - uses: Swatinem/rust-cache@v2
+    # - uses: Swatinem/rust-cache@v2
 
     - name: Build and install the project using Maturin
       uses: PyO3/maturin-action@v1
