@@ -1,4 +1,3 @@
-
 from __future__ import annotations
 
 import uuid
@@ -18,14 +17,10 @@ if TYPE_CHECKING:
 def test_cli_single_requirements_files(pip_venv_factory: PipVenvFactory) -> None:
     with pip_venv_factory(
         Project.DYNAMIC_DEPENDENCIES,
-        install_command=(
-            "pip install -r requirements.txt"
-        ),
+        install_command=("pip install -r requirements.txt"),
     ) as virtual_env:
         issue_report = f"{uuid.uuid4()}.json"
-        result = virtual_env.run(
-            f"deptry . -o {issue_report}"
-        )
+        result = virtual_env.run(f"deptry . -o {issue_report}")
 
         assert result.returncode == 1
         assert get_issues_report(Path(issue_report)) == [
@@ -102,4 +97,3 @@ def test_cli_single_requirements_files(pip_venv_factory: PipVenvFactory) -> None
                 },
             },
         ]
-
