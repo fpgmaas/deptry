@@ -3,20 +3,20 @@ from __future__ import annotations
 import logging
 import sys
 from dataclasses import dataclass
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 from deptry.dependency_getter.builder import DependencyGetterBuilder
 from deptry.exceptions import UnsupportedPythonVersionError
 from deptry.imports.extract import get_imported_modules_from_list_of_files
 from deptry.module import ModuleBuilder, ModuleLocations
-from deptry.python_file_finder import get_all_python_files_in
 from deptry.reporters import JSONReporter, TextReporter
+from deptry.rust import find_python_files
 from deptry.stdlibs import STDLIBS_PYTHON
 from deptry.violations.finder import find_violations
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
-    from pathlib import Path
 
     from deptry.dependency_getter.base import DependenciesExtract
     from deptry.violations import Violation
@@ -93,9 +93,12 @@ class Core:
     def _find_python_files(self) -> list[Path]:
         logging.debug("Collecting Python files to scan...")
 
-        python_files = get_all_python_files_in(
-            self.root, self.exclude, self.extend_exclude, self.using_default_exclude, self.ignore_notebooks
-        )
+        python_files = [
+            Path(f)
+            for f in find_python_files(
+                self.root, self.exclude, self.extend_exclude, self.using_default_exclude, self.ignore_notebooks
+            )
+        ]
 
         logging.debug(
             "Python files to scan for imports:\n%s\n", "\n".join(str(python_file) for python_file in python_files)
