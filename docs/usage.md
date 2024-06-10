@@ -20,6 +20,15 @@ If you want to configure _deptry_ using `pyproject.toml`, or if your dependencie
 
 ## Dependencies extraction
 
+_deptry_ extracts dependencies into 2 separate groups:
+
+- "production" ones, meant to be used in the codebase
+- development ones
+
+This is an important distinction, as development dependencies are usually meant to only be used outside the
+codebase (for instance in tests, or as CLI tools for type-checking, formatting, etc.). For this reason, _deptry_ will
+not run [Unused dependencies (DEP002)](rules-violations.md#unused-dependencies-dep002) for development dependencies.
+
 To determine the project's dependencies, _deptry_ will scan the directory it is run from for files in the following order:
 
 1. If a `pyproject.toml` file with a `[tool.poetry.dependencies]` section is found, _deptry_ will assume it uses Poetry and extract:
