@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   quality:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Check out
         uses: actions/checkout@v4
@@ -30,7 +30,7 @@ jobs:
           pdm run deptry python
 
   linux:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         python-version: ['3.8', '3.9', '3.10', '3.11', '3.12', 'pypy3.10']
@@ -99,7 +99,7 @@ jobs:
         run: pdm run pytest tests/functional -n auto --dist loadgroup
 
   check-docs:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Check out
         uses: actions/checkout@v4
