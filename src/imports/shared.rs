@@ -6,8 +6,8 @@ use pyo3::exceptions::PySyntaxError;
 use pyo3::prelude::*;
 use pyo3::types::{PyDict, PyList};
 use ruff_python_ast::visitor::Visitor;
-use ruff_python_ast::Mod;
-use ruff_python_parser::{parse, Mode};
+use ruff_python_ast::{Mod, ModModule};
+use ruff_python_parser::{parse, Mode, Parsed};
 use ruff_source_file::LineIndex;
 use ruff_text_size::TextRange;
 use std::collections::HashMap;
@@ -22,7 +22,7 @@ pub struct ThreadResult {
 }
 
 /// Parses the content of a Python file into an abstract syntax tree (AST).
-pub fn get_ast_from_file_content(file_content: &str) -> PyResult<Mod> {
+pub fn get_ast_from_file_content(file_content: &str) -> PyResult<Parsed<Mod>> {
     let ast =
         parse(file_content, Mode::Module).map_err(|e| PySyntaxError::new_err(e.to_string()))?;
     Ok(ast)
@@ -30,11 +30,11 @@ pub fn get_ast_from_file_content(file_content: &str) -> PyResult<Mod> {
 
 /// Iterates through an AST to identify and collect import statements, and returns them together with their
 /// respective `TextRange` for each occurrence.
-pub fn extract_imports_from_ast(ast: Mod) -> HashMap<String, Vec<TextRange>> {
+pub fn extract_imports_from_ast(ast: Parsed<Mod>) -> HashMap<String, Vec<TextRange>> {
     let mut visitor = ImportVisitor::new();
 
-    if let Mod::Module(module) = ast {
-        for stmt in module.body {
+    if let Mod::Module(ModModule { body, .. }) = ast.into_syntax() {
+        for stmt in body {
             visitor.visit_stmt(&stmt);
         }
     }
