@@ -39,8 +39,8 @@ pub fn get_imports_from_py_files(py: Python, file_paths: Vec<&PyString>) -> PyRe
 /// Used internally by both parallel and single file processing functions.
 fn _get_imports_from_py_file(path_str: &str) -> PyResult<HashMap<String, Vec<Location>>> {
     let file_content = read_file(path_str)?;
-    let ast = shared::get_ast_from_file_content(&file_content)?;
-    let imported_modules = shared::extract_imports_from_ast(ast);
+    let ast = shared::parse_file_content(&file_content)?;
+    let imported_modules = shared::extract_imports_from_parsed_file_content(ast);
     Ok(shared::convert_imports_with_textranges_to_location_objects(
         imported_modules,
         path_str,
