@@ -54,7 +54,6 @@ class Violation(ABC):
         issue: An attribute representing the module or dependency where the violation
             occurred.
         location: An attribute representing the location in the code where the violation occurred.
-        ignored: Boolean flag indicating if a violation should be ignored
     """
 
     error_code: ClassVar[str] = ""
