@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 @dataclass
 class DEP004MisplacedDevDependencyViolation(Violation):
     error_code: ClassVar[str] = "DEP100"
-    error_template: ClassVar[str] = "'{name}' imported but declared as a dev dependency"
+    error_template: ClassVar[str] = "'{name}' TODO"
     issue: Module
 
     def get_error_message(self) -> str:
