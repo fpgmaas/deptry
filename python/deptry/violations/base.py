@@ -61,7 +61,6 @@ class Violation(ABC):
     error_template: ClassVar[str] = ""
     issue: Dependency | Module
     location: Location
-    ignored: bool = False
 
     @abstractmethod
     def get_error_message(self) -> str:
