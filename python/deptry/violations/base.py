@@ -21,15 +21,19 @@ class ViolationsFinder(ABC):
         imported_modules_with_locations: A list of ModuleLocations objects representing the
             modules imported by the project and their locations.
         dependencies: A list of Dependency objects representing the project's dependencies.
-        ignored_modules: A tuple of module names to ignore when scanning for issues. Defaults to an
+        modules_to_ignore: A tuple of module names to ignore when scanning for issues. Defaults to an
             empty tuple.
+        used_ignores: a list to keep track of which values in 'modules_to_ignore' were actually used. This list should
+            be updated during the `find()` method, so that the set difference of `modules_to_ignore` and `used_ignores`
+            results in a set of modules in `modules_to_ignore` that no longer need to be ignored.
 
     """
 
     violation: ClassVar[type[Violation]]
     imported_modules_with_locations: list[ModuleLocations]
     dependencies: list[Dependency]
-    ignored_modules: tuple[str, ...] = ()
+    modules_to_ignore: tuple[str, ...] = ()
+    used_ignores: list[str] = []
 
     @abstractmethod
     def find(self) -> list[Violation]:
@@ -50,12 +54,14 @@ class Violation(ABC):
         issue: An attribute representing the module or dependency where the violation
             occurred.
         location: An attribute representing the location in the code where the violation occurred.
+        ignored: Boolean flag indicating if a violation should be ignored
     """
 
     error_code: ClassVar[str] = ""
     error_template: ClassVar[str] = ""
     issue: Dependency | Module
     location: Location
+    ignored: bool = False
 
     @abstractmethod
     def get_error_message(self) -> str:

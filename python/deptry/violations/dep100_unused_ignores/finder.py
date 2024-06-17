@@ -4,16 +4,26 @@ import logging
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from deptry.violations.base import ViolationsFinder
 from deptry.violations.dep004_misplaced_dev.violation import DEP004MisplacedDevDependencyViolation
 
 if TYPE_CHECKING:
     from deptry.module import Module
     from deptry.violations import Violation
 
+    violation: ClassVar[type[Violation]]
+    imported_modules_with_locations: list[ModuleLocations]
+    dependencies: list[Dependency]
+    modules_to_ignore: tuple[str, ...] = ()
+    used_ignores: list[str] = []
+
+    @abstractmethod
+    def find(self) -> list[Violation]:
+        """Find issues about dependencies."""
+        raise NotImplementedError()
+
 
 @dataclass
-class DEP004MisplacedDevDependenciesFinder(ViolationsFinder):
+class DEP100UnusedIgnoresFinder:
     """
     Given a list of imported modules and a list of project dependencies, determine which development dependencies
     should actually be regular dependencies.
@@ -21,7 +31,7 @@ class DEP004MisplacedDevDependenciesFinder(ViolationsFinder):
     This is the case for any development dependency encountered, since files solely used for development purposes should be excluded from scanning.
     """
 
-    violation = DEP004MisplacedDevDependencyViolation
+    violation: ClassVar[type[Violation]] = DEP004MisplacedDevDependencyViolation
 
     def find(self) -> list[Violation]:
         """

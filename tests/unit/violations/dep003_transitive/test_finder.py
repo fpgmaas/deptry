@@ -36,4 +36,6 @@ def test_simple_with_ignore() -> None:
         )
     ]
 
-    assert DEP003TransitiveDependenciesFinder(modules_locations, dependencies, ignored_modules=("foobar",)).find() == []
+    assert (
+        DEP003TransitiveDependenciesFinder(modules_locations, dependencies, modules_to_ignore=("foobar",)).find() == []
+    )
