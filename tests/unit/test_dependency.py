@@ -2,9 +2,15 @@ from __future__ import annotations
 
 from importlib.metadata import PackageNotFoundError
 from pathlib import Path
+from typing import TYPE_CHECKING
 from unittest.mock import patch
 
-from deptry.dependency import Dependency
+import pytest
+
+from deptry.dependency import Dependency, parse_pep_508_dependency
+
+if TYPE_CHECKING:
+    from typing import Any
 
 
 def test_simple_dependency() -> None:
@@ -99,3 +105,46 @@ def test_not_predefined_and_not_installed() -> None:
 
     assert dependency.name == "Foo-bar"
     assert dependency.top_levels == {"foo_bar"}
+
+
+@pytest.mark.parametrize(
+    ("specification", "definition_file", "package_module_name_map", "expected"),
+    [
+        (
+            "foo",
+            Path("pyproject.toml"),
+            {},
+            {
+                "name": "foo",
+                "definition_file": Path("pyproject.toml"),
+                "found": False,
+                "top_levels": {"foo"},
+            },
+        ),
+        (
+            'foobar[extra]==1.2.3; python_version < "3.9"',
+            Path("requirements.txt"),
+            {"foobar": ["foo"], "barfoo": ["bar"]},
+            {
+                "name": "foobar",
+                "definition_file": Path("requirements.txt"),
+                "found": False,
+                "top_levels": {"foo"},
+            },
+        ),
+    ],
+)
+def test_parse_pep_508_dependency(
+    specification: str,
+    definition_file: Path,
+    package_module_name_map: dict[str, list[str]],
+    expected: dict[str, Any],
+) -> None:
+    dependency = parse_pep_508_dependency(specification, definition_file, package_module_name_map)
+
+    for dependency_key, expected_value in expected.items():
+        assert getattr(dependency, dependency_key) == expected_value
+
+
+def test_parse_pep_508_dependency_invalid_definition() -> None:
+    assert parse_pep_508_dependency("an_incorrect_definition=1.2.3", Path("pyproject.toml"), {}) is None

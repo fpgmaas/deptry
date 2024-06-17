@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from pathlib import Path
 
-import pytest
-
 from deptry.dependency_getter.requirements_files import RequirementsTxtDependencyGetter
 from tests.utils import run_within_dir
 
@@ -59,11 +57,15 @@ httpx==0.25.2
 
 
 def test_parse_requirements_files_urls(tmp_path: Path) -> None:
-    fake_requirements_files = """urllib3 @ https://github.com/urllib3/urllib3/archive/refs/tags/1.26.8.zip
-https://github.com/urllib3/urllib3/archive/refs/tags/1.26.8.zip
-git+https://github.com/baz/foo-bar.git@asd#egg=foo-bar
-git+https://github.com/baz/foo-bar.git@asd
-git+https://github.com/abc123/bar-foo@xyz789#egg=bar-fooo"""
+    fake_requirements_files = """git-archive @ git+https://github.com/foo/bar.git@1.2.3
+    remote-archive @ https://github.com/urllib3/urllib3/archive/refs/tags/1.26.8.zip
+    another-remote-archive[with-extra] @ https://github.com/foo/bar/archive/refs/tags/v0.1.2.tar.gz
+    remote-archive-with-egg @ https://github.com/foo/bar/archive/refs/tags/v0.1.2.tar.gz#egg=foo-bar
+    local-sdist @ file:///local/sdist.tar.gz
+    local-wheel @ file:///local/wheel.whl
+    local-directory @ file:///local/directory
+    another-local-directory@file:///local/directory
+    """
 
     with run_within_dir(tmp_path):
         with Path("requirements.txt").open("w") as f:
@@ -72,14 +74,17 @@ git+https://github.com/abc123/bar-foo@xyz789#egg=bar-fooo"""
         dependencies_extract = RequirementsTxtDependencyGetter(Path("pyproject.toml")).get()
         dependencies = dependencies_extract.dependencies
 
-        assert len(dependencies) == 5
-        assert len(dependencies_extract.dev_dependencies) == 0
-
-        assert dependencies[0].name == "urllib3"
-        assert dependencies[1].name == "urllib3"
-        assert dependencies[2].name == "foo-bar"
-        assert dependencies[3].name == "foo-bar"
-        assert dependencies[4].name == "bar-fooo"
+        assert [dependency.name for dependency in dependencies] == [
+            "git-archive",
+            "remote-archive",
+            "another-remote-archive",
+            "remote-archive-with-egg",
+            "local-sdist",
+            "local-wheel",
+            "local-directory",
+            "another-local-directory",
+        ]
+        assert dependencies_extract.dev_dependencies == []
 
 
 def test_single(tmp_path: Path) -> None:
@@ -179,25 +184,3 @@ def test_dev_multiple_with_arguments(tmp_path: Path) -> None:
 
         assert dev_dependencies[0].name == "click"
         assert dev_dependencies[1].name == "bar"
-
-
-@pytest.mark.parametrize(
-    ("line", "expected"),
-    [
-        ("foo", False),
-        ("http", False),
-        ("https", False),
-        ("httpx", False),
-        ("git+http", False),
-        ("git+https", False),
-        ("http://", True),
-        ("https://", True),
-        ("git+http://", True),
-        ("git+https://", True),
-        ("file://", True),
-        ("file:///", True),
-        ("httpx://", True),
-    ],
-)
-def test__line_is_url(line: str, expected: bool) -> None:
-    assert RequirementsTxtDependencyGetter._line_is_url(line) is expected

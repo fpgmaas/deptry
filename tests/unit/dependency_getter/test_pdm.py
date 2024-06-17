@@ -15,7 +15,7 @@ dependencies = [
     "qux",
     "bar>=20.9",
     "optional-foo[option]>=0.12.11",
-    "conditional-bar>=1.1.0; python_version < 3.11",
+    "conditional-bar>=1.1.0; python_version < '3.11'",
     "fox-python",  # top level module is called "fox"
 ]
 """
@@ -57,12 +57,12 @@ dependencies = [
     "qux",
     "bar>=20.9",
     "optional-foo[option]>=0.12.11",
-    "conditional-bar>=1.1.0; python_version < 3.11",
+    "conditional-bar>=1.1.0; python_version < '3.11'",
 ]
 [tool.pdm.dev-dependencies]
 test = [
     "qux",
-    "bar; python_version < 3.11"
+    "bar; python_version < '3.11'"
     ]
 tox = [
     "foo-bar",

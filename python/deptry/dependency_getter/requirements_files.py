@@ -6,10 +6,13 @@ import os
 import re
 from dataclasses import dataclass
 from pathlib import Path
-from urllib.parse import urlparse
+from typing import TYPE_CHECKING
 
-from deptry.dependency import Dependency
+from deptry.dependency import parse_pep_508_dependency
 from deptry.dependency_getter.base import DependenciesExtract, DependencyGetter
+
+if TYPE_CHECKING:
+    from deptry.dependency import Dependency
 
 
 @dataclass
@@ -66,63 +69,15 @@ class RequirementsTxtDependencyGetter(DependencyGetter):
         """
         Extract a dependency from a single line of a requirements.txt file.
         """
-        line = self._remove_comments_from(line)
-        line = self._remove_newlines_from(line)
-        name = self._find_dependency_name_in(line)
-        if name:
-            return Dependency(
-                name=name,
-                definition_file=file_path,
-                module_names=self.package_module_name_map.get(name),
-            )
-        else:
-            return None
-
-    def _find_dependency_name_in(self, line: str) -> str | None:
-        """
-        Find the dependency name of a dependency specified according to the pip-standards for requirement.txt
-        """
-        if self._line_is_url(line):
-            return self._extract_name_from_url(line)
-        else:
-            match = re.search("^[^-][a-zA-Z0-9-_]+", line)
-            if match:
-                return match.group(0)
-        return None
+        # Note that `packaging` does not strip comments on purpose (https://github.com/pypa/packaging/issues/807), so we
+        # need to remove the comments ourselves.
+        return parse_pep_508_dependency(self._remove_comments_from(line), file_path, self.package_module_name_map)
 
     @staticmethod
     def _remove_comments_from(line: str) -> str:
         """
-        Removes comments from a line. A comment is defined as any text
-        following a '#' that is either at the start of the line or preceded by a space.
+        Removes comments from a line. A comment is defined as any text following a '#' that is either at the start of
+        the line or preceded by a space.
         This ensures that fragments like '#egg=' in URLs are not mistakenly removed.
         """
         return re.sub(r"(?<!\S)#.*", "", line).strip()
-
-    @staticmethod
-    def _remove_newlines_from(line: str) -> str:
-        return line.replace("\n", "")
-
-    @staticmethod
-    def _line_is_url(line: str) -> bool:
-        return urlparse(line).scheme != ""
-
-    @staticmethod
-    def _extract_name_from_url(line: str) -> str | None:
-        # Try to find egg, for url like git+https://github.com/xxxxx/package@xxxxx#egg=package
-        match = re.search("egg=([a-zA-Z0-9-_]*)", line)
-        if match:
-            return match.group(1)
-
-        # for url like git+https://github.com/name/python-module.git@0d6dc38d58
-        match = re.search(r"\/((?:(?!\/).)*?)\.git", line)
-        if match:
-            return match.group(1)
-
-        # for url like https://github.com/urllib3/urllib3/archive/refs/tags/1.26.8.zip
-        match = re.search(r"\/((?:(?!\/).)*?)\/archive\/", line)
-        if match:
-            return match.group(1)
-
-        logging.warning("Could not parse dependency name from url %s", line)
-        return None

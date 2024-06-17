@@ -26,6 +26,7 @@ classifiers = [
 dependencies = [
     "click>=8.0.0,<9",
     "colorama>=0.4.6; sys_platform == 'win32'",
+    "packaging>=22.0",
     "tomli>=2.0.1; python_version < '3.11'"
 ]
 

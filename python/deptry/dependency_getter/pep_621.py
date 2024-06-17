@@ -2,16 +2,15 @@ from __future__ import annotations
 
 import itertools
 import logging
-import re
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from deptry.dependency import Dependency
+from deptry.dependency import parse_pep_508_dependency
 from deptry.dependency_getter.base import DependenciesExtract, DependencyGetter
 from deptry.utils import load_pyproject_toml
 
 if TYPE_CHECKING:
-    from collections.abc import Mapping, Sequence
+    from deptry.dependency import Dependency
 
 
 @dataclass
@@ -59,13 +58,13 @@ class PEP621DependencyGetter(DependencyGetter):
     def _get_dependencies(self) -> list[Dependency]:
         pyproject_data = load_pyproject_toml(self.config)
         dependency_strings: list[str] = pyproject_data["project"]["dependencies"]
-        return self._extract_pep_508_dependencies(dependency_strings, self.package_module_name_map)
+        return self._extract_pep_508_dependencies(dependency_strings)
 
     def _get_optional_dependencies(self) -> dict[str, list[Dependency]]:
         pyproject_data = load_pyproject_toml(self.config)
 
         return {
-            group: self._extract_pep_508_dependencies(dependencies, self.package_module_name_map)
+            group: self._extract_pep_508_dependencies(dependencies)
             for group, dependencies in pyproject_data["project"].get("optional-dependencies", {}).items()
         }
 
@@ -98,31 +97,14 @@ class PEP621DependencyGetter(DependencyGetter):
         )
         return dev_dependencies, regular_dependencies
 
-    def _extract_pep_508_dependencies(
-        self, dependencies: list[str], package_module_name_map: Mapping[str, Sequence[str]]
-    ) -> list[Dependency]:
+    def _extract_pep_508_dependencies(self, dependencies: list[str]) -> list[Dependency]:
         """
         Given a list of dependency specifications (e.g. "django>2.1; os_name != 'nt'"), convert them to Dependency objects.
         """
-        extracted_dependencies = []
+        extracted_dependencies: list[Dependency] = []
 
-        for spec in dependencies:
-            # An example of a spec is `"tomli>=1.1.0; python_version < \"3.11\""`
-            name = self._find_dependency_name_in(spec)
-            if name:
-                extracted_dependencies.append(
-                    Dependency(
-                        name,
-                        self.config,
-                        module_names=package_module_name_map.get(name),
-                    )
-                )
+        for dependency in dependencies:
+            if extracted_dependency := parse_pep_508_dependency(dependency, self.config, self.package_module_name_map):
+                extracted_dependencies.append(extracted_dependency)
 
         return extracted_dependencies
-
-    @staticmethod
-    def _find_dependency_name_in(spec: str) -> str | None:
-        match = re.search("[a-zA-Z0-9-_]+", spec)
-        if match:
-            return match.group(0)
-        return None
