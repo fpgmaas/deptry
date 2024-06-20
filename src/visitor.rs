@@ -34,7 +34,7 @@ impl<'a> Visitor<'a> for ImportVisitor {
             }
             Stmt::ImportFrom(import_from_stmt) => {
                 if let Some(module) = &import_from_stmt.module {
-                    if import_from_stmt.level == Some(0) {
+                    if import_from_stmt.level == 0 {
                         self.imports
                             .entry(get_top_level_module_name(module.as_str()))
                             .or_default()
