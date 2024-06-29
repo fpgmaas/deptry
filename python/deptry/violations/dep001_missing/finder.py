@@ -44,8 +44,9 @@ class DEP001MissingDependenciesFinder(ViolationsFinder):
         ]):
             return False
 
-        if module.name in self.ignored_modules:
+        if module.name in self.modules_to_ignore:
             logging.debug("Identified module '%s' as a missing dependency, but ignoring.", module.name)
+            self.used_ignores.append(module.name)
             return False
 
         logging.debug("No package found to import module '%s' from. Marked as a missing dependency.", module.name)

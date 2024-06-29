@@ -41,7 +41,7 @@ def test_simple_with_ignore() -> None:
         )
     ]
 
-    assert DEP001MissingDependenciesFinder(modules_locations, dependencies, ignored_modules=("foobar",)).find() == []
+    assert DEP001MissingDependenciesFinder(modules_locations, dependencies, modules_to_ignore=("foobar",)).find() == []
 
 
 def test_no_error() -> None:

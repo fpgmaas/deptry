@@ -45,8 +45,9 @@ class DEP002UnusedDependenciesFinder(ViolationsFinder):
         if self._dependency_found_in_imported_modules(dependency) or self._any_of_the_top_levels_imported(dependency):
             return False
 
-        if dependency.name in self.ignored_modules:
+        if dependency.name in self.modules_to_ignore:
             logging.debug("Dependency '%s' found to be unused, but ignoring.", dependency.name)
+            self.used_ignores.append(dependency.name)
             return False
 
         logging.debug("Dependency '%s' does not seem to be used.", dependency.name)

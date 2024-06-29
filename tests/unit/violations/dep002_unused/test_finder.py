@@ -30,7 +30,7 @@ def test_simple_with_ignore() -> None:
         )
     ]
 
-    assert DEP002UnusedDependenciesFinder(modules_locations, dependencies, ignored_modules=("click",)).find() == []
+    assert DEP002UnusedDependenciesFinder(modules_locations, dependencies, modules_to_ignore=("click",)).find() == []
 
 
 def test_top_level() -> None:
