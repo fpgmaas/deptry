@@ -140,7 +140,7 @@ def test__exit_with_violations() -> None:
     with pytest.raises(SystemExit) as e:
         Core._exit(violations)
 
-    assert e.type == SystemExit
+    assert e.type is SystemExit
     assert e.value.code == 1
 
 
@@ -148,7 +148,7 @@ def test__exit_without_violations() -> None:
     with pytest.raises(SystemExit) as e:
         Core._exit([])
 
-    assert e.type == SystemExit
+    assert e.type is SystemExit
     assert e.value.code == 0
 
 
