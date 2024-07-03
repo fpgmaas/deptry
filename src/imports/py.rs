@@ -4,7 +4,6 @@ use crate::location;
 use file_utils::read_file;
 use location::Location;
 use pyo3::prelude::*;
-use pyo3::types::PyString;
 use rayon::prelude::*;
 use std::collections::HashMap;
 
@@ -13,13 +12,8 @@ use super::shared;
 /// Processes multiple Python files in parallel to extract import statements and their locations.
 /// Accepts a list of file paths and returns a dictionary mapping module names to their import locations.
 #[pyfunction]
-pub fn get_imports_from_py_files(py: Python, file_paths: Vec<&PyString>) -> PyResult<PyObject> {
-    let rust_file_paths: Vec<String> = file_paths
-        .iter()
-        .map(|py_str| py_str.to_str().unwrap().to_owned())
-        .collect();
-
-    let results: Vec<_> = rust_file_paths
+pub fn get_imports_from_py_files(py: Python, file_paths: Vec<String>) -> PyResult<PyObject> {
+    let results: Vec<_> = file_paths
         .par_iter()
         .map(|path_str| {
             let result = _get_imports_from_py_file(path_str);
