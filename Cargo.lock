@@ -474,7 +474,7 @@ checksum = "7a66a03ae7c801facd77a29370b4faec201768915ac14a721ba36f20bc9c209b"
 [[package]]
 name = "ruff_python_ast"
 version = "0.0.0"
-source = "git+https://github.com/astral-sh/ruff?tag=v0.4.9#4f49e918a9154de16145d77217a4af2b8ce38297"
+source = "git+https://github.com/astral-sh/ruff?tag=0.5.0#244b923f615c2c162278fc0e06051853614760f3"
 dependencies = [
  "aho-corasick",
  "bitflags",
@@ -490,7 +490,7 @@ dependencies = [
 [[package]]
 name = "ruff_python_parser"
 version = "0.0.0"
-source = "git+https://github.com/astral-sh/ruff?tag=v0.4.9#4f49e918a9154de16145d77217a4af2b8ce38297"
+source = "git+https://github.com/astral-sh/ruff?tag=0.5.0#244b923f615c2c162278fc0e06051853614760f3"
 dependencies = [
  "bitflags",
  "bstr",
@@ -508,7 +508,7 @@ dependencies = [
 [[package]]
 name = "ruff_python_trivia"
 version = "0.0.0"
-source = "git+https://github.com/astral-sh/ruff?tag=v0.4.9#4f49e918a9154de16145d77217a4af2b8ce38297"
+source = "git+https://github.com/astral-sh/ruff?tag=0.5.0#244b923f615c2c162278fc0e06051853614760f3"
 dependencies = [
  "itertools",
  "ruff_source_file",
@@ -519,7 +519,7 @@ dependencies = [
 [[package]]
 name = "ruff_source_file"
 version = "0.0.0"
-source = "git+https://github.com/astral-sh/ruff?tag=v0.4.9#4f49e918a9154de16145d77217a4af2b8ce38297"
+source = "git+https://github.com/astral-sh/ruff?tag=0.5.0#244b923f615c2c162278fc0e06051853614760f3"
 dependencies = [
  "memchr",
  "once_cell",
@@ -529,13 +529,13 @@ dependencies = [
 [[package]]
 name = "ruff_text_size"
 version = "0.0.0"
-source = "git+https://github.com/astral-sh/ruff?tag=v0.4.9#4f49e918a9154de16145d77217a4af2b8ce38297"
+source = "git+https://github.com/astral-sh/ruff?tag=0.5.0#244b923f615c2c162278fc0e06051853614760f3"
 
 [[package]]
 name = "rustc-hash"
-version = "1.1.0"
+version = "2.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "08d43f7aa6b08d49f382cde6a7982047c3426db949b1424bc4b7ec9ae12c6ce2"
+checksum = "583034fd73374156e66797ed8e5b0d5690409c9226b22d87cb7f19821c05d152"
 
 [[package]]
 name = "ryu"
