@@ -46,8 +46,13 @@ jobs:
       - name: Check typing
         run: pdm run mypy
 
-      - name: Run unit tests
+      - name: Run unit tests with coverage
         run: pdm run pytest tests/unit --cov --cov-config=pyproject.toml --cov-report=xml
+        if: ${{ matrix.python-version == '3.12' }}
+
+      - name: Run unit tests
+        run: pdm run pytest tests/unit
+        if: ${{ matrix.python-version != '3.12' }}
 
       - name: Run functional tests
         run: pdm run pytest tests/functional -n auto --dist loadgroup
@@ -73,7 +78,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Run unit tests
-        run: pdm run pytest tests/unit --cov --cov-config=pyproject.toml --cov-report=xml
+        run: pdm run pytest tests/unit
 
       - name: Run functional tests
         run: pdm run pytest tests/functional -n auto --dist loadgroup
@@ -93,7 +98,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Run unit tests
-        run: pdm run pytest tests/unit --cov --cov-config=pyproject.toml --cov-report=xml
+        run: pdm run pytest tests/unit
 
       - name: Run functional tests
         run: pdm run pytest tests/functional -n auto --dist loadgroup
