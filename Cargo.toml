@@ -14,7 +14,7 @@ encoding_rs = "0.8.34"
 ignore = "0.4.22"
 log = "0.4.22"
 path-slash = "0.2.1"
-pyo3 = { version = "0.21.2", features = ["abi3-py38"] }
+pyo3 = { version = "0.22.0", features = ["abi3-py38"] }
 pyo3-log = "0.11.0"
 rayon = "1.10.0"
 regex = "1.10.5"

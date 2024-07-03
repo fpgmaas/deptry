@@ -14,6 +14,7 @@ pub struct Location {
 #[pymethods]
 impl Location {
     #[new]
+    #[pyo3(signature = (file, line=None, column=None))]
     fn new(file: String, line: Option<usize>, column: Option<usize>) -> Self {
         Self { file, line, column }
     }
