@@ -58,7 +58,7 @@ class PEP621DependencyGetter(DependencyGetter):
 
     def _get_dependencies(self) -> list[Dependency]:
         pyproject_data = load_pyproject_toml(self.config)
-        dependency_strings: list[str] = pyproject_data["project"]["dependencies"]
+        dependency_strings: list[str] = pyproject_data["project"].get("dependencies", [])
         return self._extract_pep_508_dependencies(dependency_strings, self.package_module_name_map)
 
     def _get_optional_dependencies(self) -> dict[str, list[Dependency]]:
