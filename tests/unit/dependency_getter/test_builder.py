@@ -123,7 +123,7 @@ def test_dependency_specification_not_found_raises_exception(tmp_path: Path, cap
     assert caplog.messages == [
         "pyproject.toml found!",
         (
-            "pyproject.toml does not contain a [tool.poetry.dependencies] section, so Poetry is not used to specify the"
+            "pyproject.toml does not contain a [tool.poetry] section, so Poetry is not used to specify the"
             " project's dependencies."
         ),
         (
