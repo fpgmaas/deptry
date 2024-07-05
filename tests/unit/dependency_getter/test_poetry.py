@@ -8,6 +8,9 @@ from tests.utils import run_within_dir
 
 def test_dependency_getter(tmp_path: Path) -> None:
     fake_pyproject_toml = """
+[tool.poetry]
+name = "foo"
+
 [tool.poetry.dependencies]
 python = ">=3.7,<4.0"
 bar =  { version = ">=2.5.1,<4.0.0", python = ">3.7" }
@@ -68,3 +71,20 @@ pytest-cov = "^4.0.0"
 
         assert dev_dependencies[5].name == "pytest-cov"
         assert "pytest_cov" in dev_dependencies[5].top_levels
+
+
+def test_dependency_getter_empty_dependencies(tmp_path: Path) -> None:
+    fake_pyproject_toml = """
+[tool.poetry]
+name = "foo"
+"""
+
+    with run_within_dir(tmp_path):
+        with Path("pyproject.toml").open("w") as f:
+            f.write(fake_pyproject_toml)
+
+        getter = PoetryDependencyGetter(config=Path("pyproject.toml"))
+        dependencies_extract = getter.get()
+
+        assert len(dependencies_extract.dependencies) == 0
+        assert len(dependencies_extract.dev_dependencies) == 0

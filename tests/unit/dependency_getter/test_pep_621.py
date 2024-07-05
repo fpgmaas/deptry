@@ -147,3 +147,20 @@ group2 = [
 
         assert dependencies[2].name == "barfoo"
         assert "barfoo" in dependencies[2].top_levels
+
+
+def test_dependency_getter_empty_dependencies(tmp_path: Path) -> None:
+    fake_pyproject_toml = """[project]
+# PEP 621 project metadata
+# See https://www.python.org/dev/peps/pep-0621/
+"""
+
+    with run_within_dir(tmp_path):
+        with Path("pyproject.toml").open("w") as f:
+            f.write(fake_pyproject_toml)
+
+        getter = PEP621DependencyGetter(config=Path("pyproject.toml"))
+        dependencies_extract = getter.get()
+
+        assert len(dependencies_extract.dependencies) == 0
+        assert len(dependencies_extract.dev_dependencies) == 0
