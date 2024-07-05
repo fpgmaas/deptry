@@ -122,7 +122,7 @@ class Core:
         """Guess if a module is a local Python module."""
         return bool(
             (path.is_file() and path.name != "__init__.py" and path.suffix == ".py")
-            or (path.is_dir() and list(path.glob("*.py")))
+            or (path.is_dir() and list(path.rglob("*.py")))
         )
 
     @staticmethod
