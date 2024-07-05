@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.16.2 - 2024-07-05
+
+### Bug Fixes
+
+* Avoid crashing on PEP 621 and Poetry projects with no dependencies ([#752](https://github.com/fpgmaas/deptry/pull/752))
+* Recursively search for Python files to detect local modules, to better support namespace packages ([#753](https://github.com/fpgmaas/deptry/pull/753))
+
+### Miscellaneous
+
+* Provide macOS ARM wheels for PyPy ([#691](https://github.com/fpgmaas/deptry/pull/691))
+
+### Full Changelog
+
+https://github.com/fpgmaas/deptry/compare/0.16.1...0.16.2
+
+
 ## 0.16.1 - 2024-04-06
 
 ### Bug Fixes
