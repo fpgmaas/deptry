@@ -38,6 +38,16 @@ class DEP005StandardLibraryDependencyFinder(ViolationsFinder):
             logging.debug("Scanning module %s...", dependency.name)
 
             if dependency.name in self.stdlib_modules:
+                if dependency.name in self.ignored_modules:
+                    logging.debug(
+                        "Dependency '%s' found to be a dependency that is part of the standard library, but ignoring.",
+                        dependency.name,
+                    )
+                    continue
+
+                logging.debug(
+                    "Dependency '%s' marked as a dependency that is part of the standard library.", dependency.name
+                )
                 stdlib_violations.append(self.violation(dependency, Location(dependency.definition_file)))
 
         return stdlib_violations
