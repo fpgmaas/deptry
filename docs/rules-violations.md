@@ -187,7 +187,7 @@ dependencies = [
 ]
 ```
 
-and the following `main.py` that is the only Python file in the project:
+and the following `main.py` in the project:
 
 ```python
 import asyncio
