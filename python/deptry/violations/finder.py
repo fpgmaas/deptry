@@ -8,6 +8,7 @@ from deptry.violations import (
     DEP002UnusedDependenciesFinder,
     DEP003TransitiveDependenciesFinder,
     DEP004MisplacedDevDependenciesFinder,
+    DEP005StandardLibraryDependencyFinder,
 )
 
 if TYPE_CHECKING:
@@ -31,6 +32,7 @@ def find_violations(
     dependencies: list[Dependency],
     ignore: tuple[str, ...],
     per_rule_ignores: Mapping[str, tuple[str, ...]],
+    stdlib_modules: set[str],
 ) -> list[Violation]:
     violations = []
 
@@ -38,11 +40,23 @@ def find_violations(
         if violation_finder.violation.error_code not in ignore:
             violations.extend(
                 violation_finder(
-                    imported_modules_with_locations,
-                    dependencies,
-                    per_rule_ignores.get(violation_finder.violation.error_code, ()),
+                    imported_modules_with_locations=imported_modules_with_locations,
+                    dependencies=dependencies,
+                    ignored_modules=per_rule_ignores.get(violation_finder.violation.error_code, ()),
                 ).find()
             )
+
+    # Since DEP005StandardLibraryDependencyFinder has a different constructor than the other 4 classes,
+    # we handle it separately.
+    if DEP005StandardLibraryDependencyFinder.violation.error_code not in ignore:
+        violations.extend(
+            DEP005StandardLibraryDependencyFinder(
+                imported_modules_with_locations=imported_modules_with_locations,
+                dependencies=dependencies,
+                ignored_modules=per_rule_ignores.get(violation_finder.violation.error_code, ()),
+                stdlib_modules=stdlib_modules,
+            ).find()
+        )
 
     return _get_sorted_violations(violations)
 

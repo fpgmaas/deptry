@@ -74,14 +74,13 @@ class Core:
             )
             for module, locations in get_imported_modules_from_list_of_files(python_files).items()
         ]
-        imported_modules_with_locations = [
-            module_with_locations
-            for module_with_locations in imported_modules_with_locations
-            if not module_with_locations.module.standard_library
-        ]
 
         violations = find_violations(
-            imported_modules_with_locations, dependencies_extract.dependencies, self.ignore, self.per_rule_ignores
+            imported_modules_with_locations,
+            dependencies_extract.dependencies,
+            self.ignore,
+            self.per_rule_ignores,
+            stdlib_modules,
         )
         TextReporter(violations, use_ansi=not self.no_ansi).report()
 
