@@ -32,7 +32,7 @@ def find_violations(
     dependencies: list[Dependency],
     ignore: tuple[str, ...],
     per_rule_ignores: Mapping[str, tuple[str, ...]],
-    stdlib_modules: frozenset[str],
+    standard_library_modules: frozenset[str],
 ) -> list[Violation]:
     violations = []
 
@@ -54,7 +54,7 @@ def find_violations(
                 imported_modules_with_locations=imported_modules_with_locations,
                 dependencies=dependencies,
                 ignored_modules=per_rule_ignores.get(violation_finder.violation.error_code, ()),
-                stdlib_modules=stdlib_modules,
+                standard_library_modules=standard_library_modules,
             ).find()
         )
 

@@ -24,11 +24,11 @@ class DEP005StandardLibraryDependencyFinder(ViolationsFinder):
         self,
         imported_modules_with_locations: list[ModuleLocations],
         dependencies: list[Dependency],
-        stdlib_modules: frozenset[str],
+        standard_library_modules: frozenset[str],
         ignored_modules: tuple[str, ...] = (),
     ):
         super().__init__(imported_modules_with_locations, dependencies, ignored_modules)
-        self.stdlib_modules = stdlib_modules
+        self.standard_library_modules = standard_library_modules
 
     def find(self) -> list[Violation]:
         logging.debug("\nScanning for dependencies that are part of the standard library...")
@@ -37,7 +37,7 @@ class DEP005StandardLibraryDependencyFinder(ViolationsFinder):
         for dependency in self.dependencies:
             logging.debug("Scanning module %s...", dependency.name)
 
-            if dependency.name in self.stdlib_modules:
+            if dependency.name in self.standard_library_modules:
                 if dependency.name in self.ignored_modules:
                     logging.debug(
                         "Dependency '%s' found to be a dependency that is part of the standard library, but ignoring.",

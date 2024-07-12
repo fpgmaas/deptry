@@ -45,7 +45,7 @@ class PythonStdlibHTMLParser(HTMLParser):
             self.modules.append(data)
 
 
-def get_stdlib_modules_for_python_version(python_version: tuple[int, int]) -> list[str]:
+def get_standard_library_modules_for_python_version(python_version: tuple[int, int]) -> list[str]:
     with urllib.request.urlopen(  # noqa: S310
         STDLIB_MODULES_URL.format(python_version[0], python_version[1])
     ) as response:
@@ -60,9 +60,9 @@ def get_stdlib_modules_for_python_version(python_version: tuple[int, int]) -> li
     return sorted(modules)
 
 
-def get_stdlib_modules() -> dict[str, list[str]]:
+def get_standard_library_modules() -> dict[str, list[str]]:
     return {
-        f"{python_version[0]}{python_version[1]}": get_stdlib_modules_for_python_version(python_version)
+        f"{python_version[0]}{python_version[1]}": get_standard_library_modules_for_python_version(python_version)
         for python_version in PYTHON_VERSIONS
     }
 
@@ -78,10 +78,10 @@ def write_stdlibs_file(stdlib_python: dict[str, list[str]]) -> None:
                     values=[
                         ast.Call(
                             func=ast.Name(id="frozenset"),
-                            args=[ast.Set(elts=[ast.Constant(module) for module in python_stdlib_modules])],
+                            args=[ast.Set(elts=[ast.Constant(module) for module in python_standard_library_modules])],
                             keywords=[],
                         )
-                        for python_stdlib_modules in stdlib_python.values()
+                        for python_standard_library_modules in stdlib_python.values()
                     ],
                 ),
                 lineno=None,
@@ -95,4 +95,4 @@ def write_stdlibs_file(stdlib_python: dict[str, list[str]]) -> None:
 
 
 if __name__ == "__main__":
-    write_stdlibs_file(get_stdlib_modules())
+    write_stdlibs_file(get_standard_library_modules())
