@@ -18,7 +18,9 @@ def test_simple() -> None:
     ]
 
     assert DEP005StandardLibraryDependencyFinder(
-        imported_modules_with_locations=modules_locations, dependencies=dependencies, stdlib_modules={"asyncio"}
+        imported_modules_with_locations=modules_locations,
+        dependencies=dependencies,
+        stdlib_modules=frozenset(["asyncio"]),
     ).find() == [DEP005StandardLibraryDependencyViolation(dependency_asyncio, Location(Path("pyproject.toml")))]
 
 
@@ -35,7 +37,7 @@ def test_simple_with_ignore() -> None:
         DEP005StandardLibraryDependencyFinder(
             imported_modules_with_locations=modules_locations,
             dependencies=dependencies,
-            stdlib_modules={"asyncio"},
+            stdlib_modules=frozenset(["asyncio"]),
             ignored_modules=("asyncio",),
         ).find()
         == []

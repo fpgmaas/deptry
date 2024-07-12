@@ -36,6 +36,11 @@ class ViolationsFinder(ABC):
         self.dependencies = dependencies
         self.ignored_modules = ignored_modules
 
+    @abstractmethod
+    def find(self) -> list[Violation]:
+        """Find issues about dependencies."""
+        raise NotImplementedError()
+
 
 @dataclass
 class Violation(ABC):

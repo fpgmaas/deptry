@@ -32,7 +32,7 @@ def find_violations(
     dependencies: list[Dependency],
     ignore: tuple[str, ...],
     per_rule_ignores: Mapping[str, tuple[str, ...]],
-    stdlib_modules: set[str],
+    stdlib_modules: frozenset[str],
 ) -> list[Violation]:
     violations = []
 

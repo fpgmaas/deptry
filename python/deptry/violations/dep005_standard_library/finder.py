@@ -24,7 +24,7 @@ class DEP005StandardLibraryDependencyFinder(ViolationsFinder):
         self,
         imported_modules_with_locations: list[ModuleLocations],
         dependencies: list[Dependency],
-        stdlib_modules: set[str],
+        stdlib_modules: frozenset[str],
         ignored_modules: tuple[str, ...] = (),
     ):
         super().__init__(imported_modules_with_locations, dependencies, ignored_modules)
