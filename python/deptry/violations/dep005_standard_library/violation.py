@@ -12,7 +12,9 @@ if TYPE_CHECKING:
 @dataclass
 class DEP005StandardLibraryDependencyViolation(Violation):
     error_code: ClassVar[str] = "DEP005"
-    error_template: ClassVar[str] = "'{name}' defined as a dependency but it's part of the standard library"
+    error_template: ClassVar[str] = (
+        "'{name}' is defined as a dependency but it is included in the Python standard library."
+    )
     issue: Dependency
 
     def get_error_message(self) -> str:

@@ -50,7 +50,7 @@ def test_cli_with_pep_621(pip_venv_factory: PipVenvFactory) -> None:
             {
                 "error": {
                     "code": "DEP005",
-                    "message": "'asyncio' defined as a dependency but it's part of the standard library",
+                    "message": "'asyncio' is defined as a dependency but it is included in the Python standard library.",
                 },
                 "module": "asyncio",
                 "location": {"file": "pyproject.toml", "line": None, "column": None},
