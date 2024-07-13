@@ -49,7 +49,7 @@ def test_simple_with_standard_library() -> None:
     standard_library_modules = frozenset(["foobar"])
     modules_locations = [
         ModuleLocations(
-            ModuleBuilder("foobar", {}, standard_library_modules, dependencies).build(),
+            ModuleBuilder("foobar", set(), standard_library_modules, dependencies).build(),
             [Location(Path("foo.py"), 1, 2)],
         )
     ]
