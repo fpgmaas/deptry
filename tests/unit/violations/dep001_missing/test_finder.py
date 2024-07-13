@@ -44,6 +44,19 @@ def test_simple_with_ignore() -> None:
     assert DEP001MissingDependenciesFinder(modules_locations, dependencies, ignored_modules=("foobar",)).find() == []
 
 
+def test_simple_with_standard_library() -> None:
+    dependencies: list[Dependency] = []
+    standard_library_modules = frozenset(["foobar"])
+    modules_locations = [
+        ModuleLocations(
+            ModuleBuilder("foobar", {}, standard_library_modules, dependencies).build(),
+            [Location(Path("foo.py"), 1, 2)],
+        )
+    ]
+
+    assert DEP001MissingDependenciesFinder(modules_locations, dependencies).find() == []
+
+
 def test_no_error() -> None:
     """
     This should run without an error, even though `foo` is not installed.

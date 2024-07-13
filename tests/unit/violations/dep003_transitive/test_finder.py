@@ -37,3 +37,16 @@ def test_simple_with_ignore() -> None:
     ]
 
     assert DEP003TransitiveDependenciesFinder(modules_locations, dependencies, ignored_modules=("foobar",)).find() == []
+
+
+def test_simple_with_standard_library() -> None:
+    dependencies: list[Dependency] = []
+    standard_library_modules = frozenset(["foobar"])
+    modules_locations = [
+        ModuleLocations(
+            ModuleBuilder("foobar", {"foo"}, standard_library_modules, dependencies).build(),
+            [Location(Path("foo.py"), 1, 2)],
+        )
+    ]
+
+    assert DEP003TransitiveDependenciesFinder(modules_locations, dependencies).find() == []
