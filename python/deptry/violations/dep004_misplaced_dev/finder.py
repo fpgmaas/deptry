@@ -50,7 +50,8 @@ class DEP004MisplacedDevDependenciesFinder(ViolationsFinder):
         if not module.is_provided_by_dev_dependency or module.is_provided_by_dependency:
             return False
 
-        if module.name in self.ignored_modules:
+        if module.name in self.modules_to_ignore:
+            self.used_ignores.append(module.name)
             logging.debug(
                 "Dependency '%s' found to be a misplaced development dependency, but ignoring.",
                 corresponding_package_name,

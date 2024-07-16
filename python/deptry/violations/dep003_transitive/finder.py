@@ -52,7 +52,8 @@ class DEP003TransitiveDependenciesFinder(ViolationsFinder):
         ]):
             return False
 
-        if module.name in self.ignored_modules:
+        if module.name in self.modules_to_ignore:
+            self.used_ignores.append(module.name)
             logging.debug("Dependency '%s' found to be a transitive dependency, but ignoring.", module.package)
             return False
 
