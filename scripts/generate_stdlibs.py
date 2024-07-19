@@ -74,7 +74,7 @@ def write_stdlibs_file(stdlib_python: dict[str, list[str]]) -> None:
             ast.Assign(
                 targets=[ast.Name("STDLIBS_PYTHON")],
                 value=ast.Dict(
-                    keys=[ast.Str(python_version) for python_version in stdlib_python],
+                    keys=[ast.Constant(python_version) for python_version in stdlib_python],
                     values=[
                         ast.Call(
                             func=ast.Name(id="frozenset"),
