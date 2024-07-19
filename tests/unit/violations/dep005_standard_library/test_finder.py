@@ -5,7 +5,7 @@ from pathlib import Path
 from deptry.dependency import Dependency
 from deptry.imports.location import Location
 from deptry.module import ModuleBuilder, ModuleLocations
-from deptry.violations import DEP005StandardLibraryDependencyFinder, DEP005StandardLibraryDependencyViolation
+from deptry.violations import DEP005StandardLibraryDependenciesFinder, DEP005StandardLibraryDependencyViolation
 
 
 def test_simple() -> None:
@@ -17,7 +17,7 @@ def test_simple() -> None:
         )
     ]
 
-    assert DEP005StandardLibraryDependencyFinder(
+    assert DEP005StandardLibraryDependenciesFinder(
         imported_modules_with_locations=modules_locations,
         dependencies=dependencies,
         standard_library_modules=frozenset(["asyncio"]),
@@ -34,7 +34,7 @@ def test_simple_with_ignore() -> None:
     ]
 
     assert (
-        DEP005StandardLibraryDependencyFinder(
+        DEP005StandardLibraryDependenciesFinder(
             imported_modules_with_locations=modules_locations,
             dependencies=dependencies,
             standard_library_modules=frozenset(["asyncio"]),

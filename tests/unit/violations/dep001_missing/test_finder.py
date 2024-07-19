@@ -16,7 +16,7 @@ def test_simple() -> None:
 
     modules_locations = [ModuleLocations(module_foobar, module_foobar_locations)]
 
-    assert DEP001MissingDependenciesFinder(modules_locations, dependencies).find() == [
+    assert DEP001MissingDependenciesFinder(modules_locations, dependencies, frozenset()).find() == [
         DEP001MissingDependencyViolation(module_foobar, location) for location in module_foobar_locations
     ]
 
@@ -30,7 +30,7 @@ def test_local_module() -> None:
         )
     ]
 
-    assert DEP001MissingDependenciesFinder(modules_locations, dependencies).find() == []
+    assert DEP001MissingDependenciesFinder(modules_locations, dependencies, frozenset()).find() == []
 
 
 def test_simple_with_ignore() -> None:
@@ -41,7 +41,12 @@ def test_simple_with_ignore() -> None:
         )
     ]
 
-    assert DEP001MissingDependenciesFinder(modules_locations, dependencies, ignored_modules=("foobar",)).find() == []
+    assert (
+        DEP001MissingDependenciesFinder(
+            modules_locations, dependencies, frozenset(), ignored_modules=("foobar",)
+        ).find()
+        == []
+    )
 
 
 def test_simple_with_standard_library() -> None:
@@ -54,7 +59,7 @@ def test_simple_with_standard_library() -> None:
         )
     ]
 
-    assert DEP001MissingDependenciesFinder(modules_locations, dependencies).find() == []
+    assert DEP001MissingDependenciesFinder(modules_locations, dependencies, frozenset()).find() == []
 
 
 def test_no_error() -> None:
@@ -65,8 +70,9 @@ def test_no_error() -> None:
     dependencies = [Dependency("foo", Path("pyproject.toml"))]
     modules_locations = [
         ModuleLocations(
-            ModuleBuilder("foo", {"bar"}, frozenset(), dependencies).build(), [Location(Path("foo.py"), 1, 2)]
+            ModuleBuilder("foo", {"bar"}, frozenset(), dependencies, frozenset()).build(),
+            [Location(Path("foo.py"), 1, 2)],
         )
     ]
 
-    assert DEP001MissingDependenciesFinder(modules_locations, dependencies).find() == []
+    assert DEP001MissingDependenciesFinder(modules_locations, dependencies, frozenset()).find() == []

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from deptry.imports.location import Location
@@ -8,27 +9,16 @@ from deptry.violations.base import ViolationsFinder
 from deptry.violations.dep005_standard_library.violation import DEP005StandardLibraryDependencyViolation
 
 if TYPE_CHECKING:
-    from deptry.dependency import Dependency
-    from deptry.module import ModuleLocations
     from deptry.violations import Violation
 
 
+@dataclass
 class DEP005StandardLibraryDependenciesFinder(ViolationsFinder):
     """
     Finds dependencies that are part of the standard library but are defined as dependencies.
     """
 
     violation = DEP005StandardLibraryDependencyViolation
-
-    def __init__(
-        self,
-        imported_modules_with_locations: list[ModuleLocations],
-        dependencies: list[Dependency],
-        standard_library_modules: frozenset[str],
-        ignored_modules: tuple[str, ...] = (),
-    ):
-        super().__init__(imported_modules_with_locations, dependencies, ignored_modules)
-        self.standard_library_modules = standard_library_modules
 
     def find(self) -> list[Violation]:
         logging.debug("\nScanning for dependencies that are part of the standard library...")

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from deptry.violations.base import ViolationsFinder
@@ -11,6 +12,7 @@ if TYPE_CHECKING:
     from deptry.violations import Violation
 
 
+@dataclass
 class DEP003TransitiveDependenciesFinder(ViolationsFinder):
     """
     Given a list of imported modules and a list of project dependencies, determine which ones are transitive.

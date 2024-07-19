@@ -9,7 +9,7 @@ from deptry.violations.dep003_transitive.finder import DEP003TransitiveDependenc
 from deptry.violations.dep003_transitive.violation import DEP003TransitiveDependencyViolation
 from deptry.violations.dep004_misplaced_dev.finder import DEP004MisplacedDevDependenciesFinder
 from deptry.violations.dep004_misplaced_dev.violation import DEP004MisplacedDevDependencyViolation
-from deptry.violations.dep005_standard_library.finder import DEP005StandardLibraryDependencyFinder
+from deptry.violations.dep005_standard_library.finder import DEP005StandardLibraryDependenciesFinder
 from deptry.violations.dep005_standard_library.violation import DEP005StandardLibraryDependencyViolation
 
 __all__ = (
@@ -22,7 +22,7 @@ __all__ = (
     "DEP002UnusedDependenciesFinder",
     "DEP003TransitiveDependenciesFinder",
     "DEP004MisplacedDevDependenciesFinder",
-    "DEP005StandardLibraryDependencyFinder",
+    "DEP005StandardLibraryDependenciesFinder",
     "Violation",
     "ViolationsFinder",
 )

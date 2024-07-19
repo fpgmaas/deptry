@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from deptry.imports.location import Location
@@ -12,6 +13,7 @@ if TYPE_CHECKING:
     from deptry.violations import Violation
 
 
+@dataclass
 class DEP002UnusedDependenciesFinder(ViolationsFinder):
     """
     Finds unused dependencies by comparing a list of imported modules to a list of project dependencies.

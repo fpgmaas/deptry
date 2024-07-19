@@ -10,7 +10,10 @@ if TYPE_CHECKING:
     from deptry.module import Module
     from deptry.violations import Violation
 
+from dataclasses import dataclass
 
+
+@dataclass
 class DEP004MisplacedDevDependenciesFinder(ViolationsFinder):
     """
     Given a list of imported modules and a list of project dependencies, determine which development dependencies

@@ -23,7 +23,7 @@ def test_simple() -> None:
 
     modules_locations = [ModuleLocations(module_platformdirs, module_platformdirs_locations)]
 
-    assert DEP003TransitiveDependenciesFinder(modules_locations, dependencies).find() == [
+    assert DEP003TransitiveDependenciesFinder(modules_locations, dependencies, frozenset()).find() == [
         DEP003TransitiveDependencyViolation(module_platformdirs, location) for location in module_platformdirs_locations
     ]
 
@@ -36,7 +36,12 @@ def test_simple_with_ignore() -> None:
         )
     ]
 
-    assert DEP003TransitiveDependenciesFinder(modules_locations, dependencies, ignored_modules=("foobar",)).find() == []
+    assert (
+        DEP003TransitiveDependenciesFinder(
+            modules_locations, dependencies, frozenset(), ignored_modules=("foobar",)
+        ).find()
+        == []
+    )
 
 
 def test_simple_with_standard_library() -> None:
@@ -49,4 +54,4 @@ def test_simple_with_standard_library() -> None:
         )
     ]
 
-    assert DEP003TransitiveDependenciesFinder(modules_locations, dependencies).find() == []
+    assert DEP003TransitiveDependenciesFinder(modules_locations, dependencies, frozenset()).find() == []

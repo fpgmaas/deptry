@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from deptry.module import Module, ModuleLocations
 
 
+@dataclass
 class ViolationsFinder(ABC):
     """Base class for all issues finders.
 
@@ -22,19 +23,14 @@ class ViolationsFinder(ABC):
         dependencies: A list of Dependency objects representing the project's dependencies.
         ignored_modules: A tuple of module names to ignore when scanning for issues. Defaults to an
             empty tuple.
+        standard_library_modules: A set of modules that are part of the standard library
     """
 
     violation: ClassVar[type[Violation]]
-
-    def __init__(
-        self,
-        imported_modules_with_locations: list[ModuleLocations],
-        dependencies: list[Dependency],
-        ignored_modules: tuple[str, ...] = (),
-    ):
-        self.imported_modules_with_locations = imported_modules_with_locations
-        self.dependencies = dependencies
-        self.ignored_modules = ignored_modules
+    imported_modules_with_locations: list[ModuleLocations]
+    dependencies: list[Dependency]
+    standard_library_modules: frozenset[str]
+    ignored_modules: tuple[str, ...] = ()
 
     @abstractmethod
     def find(self) -> list[Violation]:
