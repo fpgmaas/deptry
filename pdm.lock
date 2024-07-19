@@ -3,9 +3,12 @@
 
 [metadata]
 groups = ["default", "dev", "docs", "typing"]
-strategy = ["cross_platform", "inherit_metadata"]
-lock_version = "4.4.2"
+strategy = ["inherit_metadata"]
+lock_version = "4.5.0"
 content_hash = "sha256:9d13d84d4048c0adbf8f5255bc8d11133d16fa23e933c794a13a681636800235"
+
+[[metadata.targets]]
+requires_python = ">=3.8"
 
 [[package]]
 name = "babel"
@@ -138,6 +141,7 @@ summary = "Composable command line interface toolkit"
 groups = ["default", "docs"]
 dependencies = [
     "colorama; platform_system == \"Windows\"",
+    "importlib-metadata; python_version < \"3.8\"",
 ]
 files = [
     {file = "click-8.1.7-py3-none-any.whl", hash = "sha256:ae74fb96c20a0277a1d615f1e4d73c8414f5a98db8b799a7931d1582f3390c28"},
@@ -372,6 +376,7 @@ summary = "Read metadata from Python packages"
 groups = ["docs"]
 marker = "python_version < \"3.10\""
 dependencies = [
+    "typing-extensions>=3.6.4; python_version < \"3.8\"",
     "zipp>=0.5",
 ]
 files = [
@@ -1070,6 +1075,7 @@ marker = "python_version >= \"3.9\""
 dependencies = [
     "distlib<1,>=0.3.7",
     "filelock<4,>=3.12.2",
+    "importlib-metadata>=6.6; python_version < \"3.8\"",
     "platformdirs<5,>=3.9.1",
 ]
 files = [
