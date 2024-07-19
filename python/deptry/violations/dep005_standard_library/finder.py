@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from deptry.violations import Violation
 
 
-class DEP005StandardLibraryDependencyFinder(ViolationsFinder):
+class DEP005StandardLibraryDependenciesFinder(ViolationsFinder):
     """
     Finds dependencies that are part of the standard library but are defined as dependencies.
     """
