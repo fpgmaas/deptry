@@ -9,7 +9,7 @@ import urllib.request
 from html.parser import HTMLParser
 from pathlib import Path
 
-OUTPUT_PATH = Path("deptry/stdlibs.py")
+OUTPUT_PATH = Path("python/deptry/stdlibs.py")
 STDLIB_MODULES_URL = "https://docs.python.org/{}.{}/py-modindex.html"
 
 # Starting from Python 3.10, https://docs.python.org/3/library/sys.html#sys.stdlib_module_names is available.
