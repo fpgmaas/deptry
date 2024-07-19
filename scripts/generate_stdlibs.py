@@ -84,7 +84,7 @@ def write_stdlibs_file(stdlib_python: dict[str, list[str]]) -> None:
                         for python_stdlib_modules in stdlib_python.values()
                     ],
                 ),
-                lineno=None,
+                lineno=0,
             ),
         ],
         type_ignores=[],
