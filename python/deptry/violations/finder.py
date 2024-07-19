@@ -53,7 +53,7 @@ def find_violations(
             DEP005StandardLibraryDependencyFinder(
                 imported_modules_with_locations=imported_modules_with_locations,
                 dependencies=dependencies,
-                ignored_modules=per_rule_ignores.get(violation_finder.violation.error_code, ()),
+                ignored_modules=per_rule_ignores.get(DEP005StandardLibraryDependencyFinder.violation.error_code, ()),
                 standard_library_modules=standard_library_modules,
             ).find()
         )
