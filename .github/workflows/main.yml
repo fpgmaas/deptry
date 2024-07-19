@@ -29,11 +29,19 @@ jobs:
         run: |
           pdm run deptry python
 
-  linux:
-    runs-on: ubuntu-22.04
+  tests:
     strategy:
       matrix:
+        os:
+          - name: linux
+            image: ubuntu-22.04
+          - name: macos
+            image: macos-14
+          - name: windows
+            image: windows-2022
         python-version: ['3.8', '3.9', '3.10', '3.11', '3.12', 'pypy3.10']
+    runs-on: ${{ matrix.os.image }}
+    name: ${{ matrix.os.name }} (${{ matrix.python-version }})
     steps:
       - name: Check out
         uses: actions/checkout@v4
@@ -45,6 +53,7 @@ jobs:
 
       - name: Check typing
         run: pdm run mypy
+        if: ${{ matrix.os.name == 'linux' }}
 
       - name: Run unit tests
         run: pdm run pytest tests/unit --cov --cov-config=pyproject.toml --cov-report=xml
@@ -56,47 +65,7 @@ jobs:
         uses: codecov/codecov-action@v4
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-        if: ${{ matrix.python-version == '3.12' }}
-
-  windows:
-    runs-on: windows-2022
-    strategy:
-      matrix:
-        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
-    steps:
-      - name: Check out
-        uses: actions/checkout@v4
-
-      - name: Set up the environment
-        uses: ./.github/actions/setup-env
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Run unit tests
-        run: pdm run pytest tests/unit --cov --cov-config=pyproject.toml --cov-report=xml
-
-      - name: Run functional tests
-        run: pdm run pytest tests/functional -n auto --dist loadgroup
-
-  macos:
-    runs-on: macos-14
-    strategy:
-      matrix:
-        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
-    steps:
-      - name: Check out
-        uses: actions/checkout@v4
-
-      - name: Set up the environment
-        uses: ./.github/actions/setup-env
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Run unit tests
-        run: pdm run pytest tests/unit --cov --cov-config=pyproject.toml --cov-report=xml
-
-      - name: Run functional tests
-        run: pdm run pytest tests/functional -n auto --dist loadgroup
+        if: ${{ matrix.os.name == 'linux' && matrix.python-version == '3.12' }}
 
   check-docs:
     runs-on: ubuntu-22.04
