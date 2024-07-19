@@ -70,7 +70,7 @@ def test_no_error() -> None:
     dependencies = [Dependency("foo", Path("pyproject.toml"))]
     modules_locations = [
         ModuleLocations(
-            ModuleBuilder("foo", {"bar"}, frozenset(), dependencies, frozenset()).build(),
+            ModuleBuilder("foo", {"bar"}, frozenset(), dependencies).build(),
             [Location(Path("foo.py"), 1, 2)],
         )
     ]
