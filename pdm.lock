@@ -5,7 +5,7 @@
 groups = ["default", "dev", "docs", "typing"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:0dfe1a7a088e347491bf8135e7949ff0860b24733e968a35030cf1d947793a35"
+content_hash = "sha256:d373febd17a3f074f87a598668c87ed1030cb4ce1c05e65e225e7a154d35c9fa"
 
 [[metadata.targets]]
 requires_python = ">=3.8"
@@ -540,7 +540,7 @@ files = [
 
 [[package]]
 name = "mkdocs-material"
-version = "9.5.28"
+version = "9.5.29"
 requires_python = ">=3.8"
 summary = "Documentation that simply works"
 groups = ["docs"]
@@ -558,8 +558,8 @@ dependencies = [
     "requests~=2.26",
 ]
 files = [
-    {file = "mkdocs_material-9.5.28-py3-none-any.whl", hash = "sha256:ff48b11b2a9f705dd210409ec3b418ab443dd36d96915bcba45a41f10ea27bfd"},
-    {file = "mkdocs_material-9.5.28.tar.gz", hash = "sha256:9cba305283ad1600e3d0a67abe72d7a058b54793b47be39930911a588fe0336b"},
+    {file = "mkdocs_material-9.5.29-py3-none-any.whl", hash = "sha256:afc1f508e2662ded95f0a35a329e8a5acd73ee88ca07ba73836eb6fcdae5d8b4"},
+    {file = "mkdocs_material-9.5.29.tar.gz", hash = "sha256:3e977598ec15a4ddad5c4dfc9e08edab6023edb51e88f0729bd27be77e3d322a"},
 ]
 
 [[package]]
