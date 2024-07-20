@@ -34,6 +34,9 @@ class DEP003TransitiveDependenciesFinder(ViolationsFinder):
         for module_with_locations in self.imported_modules_with_locations:
             module = module_with_locations.module
 
+            if module.standard_library:
+                continue
+
             logging.debug("Scanning module %s...", module.name)
 
             if self._is_transitive(module):

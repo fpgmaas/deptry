@@ -59,14 +59,14 @@ class Core:
 
         python_files = self._find_python_files()
         local_modules = self._get_local_modules()
-        stdlib_modules = self._get_stdlib_modules()
+        standard_library_modules = self._get_standard_library_modules()
 
         imported_modules_with_locations = [
             ModuleLocations(
                 ModuleBuilder(
                     module,
                     local_modules,
-                    stdlib_modules,
+                    standard_library_modules,
                     dependencies_extract.dependencies,
                     dependencies_extract.dev_dependencies,
                 ).build(),
@@ -74,14 +74,13 @@ class Core:
             )
             for module, locations in get_imported_modules_from_list_of_files(python_files).items()
         ]
-        imported_modules_with_locations = [
-            module_with_locations
-            for module_with_locations in imported_modules_with_locations
-            if not module_with_locations.module.standard_library
-        ]
 
         violations = find_violations(
-            imported_modules_with_locations, dependencies_extract.dependencies, self.ignore, self.per_rule_ignores
+            imported_modules_with_locations,
+            dependencies_extract.dependencies,
+            self.ignore,
+            self.per_rule_ignores,
+            standard_library_modules,
         )
         TextReporter(violations, use_ansi=not self.no_ansi).report()
 
@@ -126,7 +125,7 @@ class Core:
         )
 
     @staticmethod
-    def _get_stdlib_modules() -> frozenset[str]:
+    def _get_standard_library_modules() -> frozenset[str]:
         if sys.version_info[:2] >= (3, 10):
             return sys.stdlib_module_names
 

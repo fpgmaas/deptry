@@ -82,12 +82,12 @@ def test__get_local_modules(
 
 @pytest.mark.skipif(sys.version_info >= (3, 10), reason="mapping is only used for Python < 3.10")
 def test__get_stdlib_packages_without_stdlib_module_names() -> None:
-    assert Core._get_stdlib_modules() == STDLIBS_PYTHON[f"{sys.version_info[0]}{sys.version_info[1]}"]
+    assert Core._get_standard_library_modules() == STDLIBS_PYTHON[f"{sys.version_info[0]}{sys.version_info[1]}"]
 
 
 @pytest.mark.skipif(sys.version_info < (3, 10), reason="only Python >= 3.10 has sys.stdlib_module_names")
 def test__get_stdlib_packages_with_stdlib_module_names() -> None:
-    assert Core._get_stdlib_modules() == sys.stdlib_module_names  # type: ignore[attr-defined, unused-ignore]
+    assert Core._get_standard_library_modules() == sys.stdlib_module_names  # type: ignore[attr-defined, unused-ignore]
 
 
 @pytest.mark.parametrize(
@@ -104,7 +104,7 @@ def test__get_stdlib_packages_with_stdlib_module_names() -> None:
 def test__get_stdlib_packages_with_stdlib_module_names_future_version(version_info: tuple[int | str, ...]) -> None:
     """Test that future versions of Python not yet tested on the CI will also work."""
     with mock.patch("sys.version_info", (sys.version_info[0], sys.version_info[1] + 1, 0)):
-        assert Core._get_stdlib_modules() == sys.stdlib_module_names  # type: ignore[attr-defined, unused-ignore]
+        assert Core._get_standard_library_modules() == sys.stdlib_module_names  # type: ignore[attr-defined, unused-ignore]
 
 
 @pytest.mark.parametrize(
@@ -126,7 +126,7 @@ def test__get_stdlib_packages_unsupported(version_info: tuple[int | str, ...]) -
             f"Python version {version_info[0]}.{version_info[1]} is not supported. Only versions >= 3.8 are supported."
         ),
     ):
-        Core._get_stdlib_modules()
+        Core._get_standard_library_modules()
 
 
 def test__exit_with_violations() -> None:
