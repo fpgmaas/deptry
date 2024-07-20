@@ -9,7 +9,7 @@ import urllib.request
 from html.parser import HTMLParser
 from pathlib import Path
 
-OUTPUT_PATH = Path("deptry/stdlibs.py")
+OUTPUT_PATH = Path("python/deptry/stdlibs.py")
 STDLIB_MODULES_URL = "https://docs.python.org/{}.{}/py-modindex.html"
 
 # Starting from Python 3.10, https://docs.python.org/3/library/sys.html#sys.stdlib_module_names is available.
@@ -74,7 +74,7 @@ def write_stdlibs_file(stdlib_python: dict[str, list[str]]) -> None:
             ast.Assign(
                 targets=[ast.Name("STDLIBS_PYTHON")],
                 value=ast.Dict(
-                    keys=[ast.Str(python_version) for python_version in stdlib_python],
+                    keys=[ast.Constant(python_version) for python_version in stdlib_python],
                     values=[
                         ast.Call(
                             func=ast.Name(id="frozenset"),
@@ -84,7 +84,7 @@ def write_stdlibs_file(stdlib_python: dict[str, list[str]]) -> None:
                         for python_standard_library_modules in stdlib_python.values()
                     ],
                 ),
-                lineno=None,
+                lineno=0,
             ),
         ],
         type_ignores=[],
