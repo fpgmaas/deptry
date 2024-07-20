@@ -37,6 +37,7 @@
   // https://docs.renovatebot.com/configuration-options/#lockfilemaintenance
   lockFileMaintenance: {
     enabled: true,
+    enabledManagers: ["pep621"],
     schedule: ["before 5am on saturday"],
   },
 
