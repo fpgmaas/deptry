@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.17.0 - 2024-07-20
+
+### Features
+
+* Add a new rule `DEP005` to detect project dependencies that are in the standard library. ([#761](https://github.com/fpgmaas/deptry/pull/761))
+
+### Full Changelog
+
+https://github.com/fpgmaas/deptry/compare/0.16.2...0.17.0
+
+
 ## 0.16.2 - 2024-07-05
 
 ### Bug Fixes
