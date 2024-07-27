@@ -72,7 +72,7 @@ if TYPE_CHECKING:
 
 There is some support for imports created with `importlib`: namely any usage with a string literal:
 
-```
+```python
 import importlib
 
 importlib.import_module("foo")  # package 'foo' imported
