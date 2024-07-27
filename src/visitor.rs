@@ -85,15 +85,15 @@ impl<'a> Visitor<'a> for ImportVisitor {
                     };
 
                     if is_import_module {
-                        if let Some(arg) = call_expr.arguments.args.first() {
-                            if let Expr::StringLiteral(string_literal) = arg {
-                                let top_level_module =
-                                    get_top_level_module_name(&string_literal.value.to_string());
-                                self.imports
-                                    .entry(top_level_module)
-                                    .or_default()
-                                    .push(expr_stmt.range);
-                            }
+                        if let Some(Expr::StringLiteral(string_literal)) =
+                            call_expr.arguments.args.first()
+                        {
+                            let top_level_module =
+                                get_top_level_module_name(&string_literal.value.to_string());
+                            self.imports
+                                .entry(top_level_module)
+                                .or_default()
+                                .push(expr_stmt.range);
                         }
                     }
                 }
