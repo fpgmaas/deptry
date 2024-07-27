@@ -70,6 +70,9 @@ if TYPE_CHECKING:
     import mypy_boto3_s3
 ```
 
+There is some support for imports created with `importlib`: namely any usage with a string literal
+(not where the argument is provided dynamically from a variable, attribute, etc.).
+
 ## Excluding files and directories
 
 To determine issues with imported modules and dependencies, _deptry_ will scan the working directory and its subdirectories recursively for `.py` and `.ipynb` files, so it can
