@@ -70,7 +70,7 @@ if TYPE_CHECKING:
     import mypy_boto3_s3
 ```
 
-There is some support for imports created with `importlib`: namely any usage with a string literal:
+There is some support for imports created with [`importlib.import_module`](https://docs.python.org/3/library/importlib.html#importlib.import_module) that use a string literal:
 
 ```python
 import importlib
