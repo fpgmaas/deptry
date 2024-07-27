@@ -1,5 +1,7 @@
 use ruff_python_ast::visitor::{walk_stmt, Visitor};
-use ruff_python_ast::{self, Expr, ExprAttribute, ExprName, Stmt, StmtIf};
+use ruff_python_ast::{
+    self, Expr, ExprAttribute, ExprName, Stmt, StmtExpr, StmtIf, StmtImport, StmtImportFrom,
+};
 use ruff_text_size::TextRange;
 use std::collections::{HashMap, HashSet};
 
@@ -36,7 +38,7 @@ impl ImportVisitor {
     /// Imports of the `importlib` package are handled as a special case: its name (or alias),
     /// suffixed with ".import_module", is stored in `import_module_names`. This is done to
     /// indicate how we should look out for dynamic imports in the code that follows.
-    fn handle_import(&mut self, import_stmt: &ruff_python_ast::Import) {
+    fn handle_import(&mut self, import_stmt: &StmtImport) {
         for alias in &import_stmt.names {
             let top_level_module = get_top_level_module_name(alias.name.as_str());
             self.imports
@@ -64,7 +66,7 @@ impl ImportVisitor {
     /// Imports of `import_module` from the `importlib` package are handled as a special case: its
     /// name (or alias), prefixed with "importlib.", is stored in `import_module_names`. This is done to
     /// indicate how we should look out for dynamic imports in the code that follows.
-    fn handle_import_from(&mut self, import_from_stmt: &ruff_python_ast::ImportFrom) {
+    fn handle_import_from(&mut self, import_from_stmt: &StmtImportFrom) {
         if let Some(module) = &import_from_stmt.module {
             if import_from_stmt.level == 0 {
                 let module_name = module.as_str();
@@ -94,7 +96,7 @@ impl ImportVisitor {
     /// This function checks if the expression is a call to a function that might be `importlib.import_module`
     /// (which could be import aliased at either the package or function name). If so, processes the imported
     /// module name (which must be given as a string literal, not a variable) and adds it to the `imports` map.
-    fn handle_expr(&mut self, expr_stmt: &ruff_python_ast::ExprStmt) {
+    fn handle_expr(&mut self, expr_stmt: &StmtExpr) {
         // Check for dynamic imports using `importlib.import_module`
         if let Expr::Call(call_expr) = expr_stmt.value.as_ref() {
             let is_import_module = match call_expr.func.as_ref() {
