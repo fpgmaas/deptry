@@ -49,6 +49,7 @@ def test_import_parser_py() -> None:
             Location(some_imports_path, 1, 8),
             Location(some_imports_path, 4, 1),
         ],
+        "uvicorn": [Location(some_imports_path, line=49, column=1)],
     }
 
 
