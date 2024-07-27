@@ -21,8 +21,17 @@ def test_dyn_import_parser_py() -> None:
     some_dyn_imports_path = Path("tests/data/some_dyn_imports.py")
 
     assert get_imported_modules_from_list_of_files([some_dyn_imports_path]) == {
-        "importlib": [Location(some_dyn_imports_path, line=1, column=1)],
-        "polars": [Location(some_dyn_imports_path, line=3, column=1)],
+        "importlib": [
+            Location(some_dyn_imports_path, line=1, column=1),
+            Location(some_dyn_imports_path, line=2, column=1),
+            Location(some_dyn_imports_path, line=3, column=8),
+        ],
+        "patito": [
+            Location(some_dyn_imports_path, line=6, column=1),
+        ],
+        "polars": [
+            Location(some_dyn_imports_path, line=5, column=1),
+        ],
     }
 
 
