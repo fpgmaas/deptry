@@ -9,6 +9,13 @@ pub struct ImportVisitor {
     import_module_names: HashSet<String>,
 }
 
+/// Visitor for tracking Python imports in AST.
+///
+/// `imports`: Maps top-level module names to their import locations.
+///
+/// `import_module_names`: Tracks import names (including aliases) that
+/// refer to the `importlib.import_module` function itself, i.e. the import
+/// alias for `importlib` package and/or the `importlib.import_module` function.
 impl ImportVisitor {
     pub fn new() -> Self {
         Self {
