@@ -1,19 +1,19 @@
 use ruff_python_ast::visitor::{walk_stmt, Visitor};
 use ruff_python_ast::{self, Expr, ExprAttribute, ExprName, Stmt, StmtIf};
 use ruff_text_size::TextRange;
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 #[derive(Debug, Clone)]
 pub struct ImportVisitor {
     imports: HashMap<String, Vec<TextRange>>,
-    import_module_name: Option<String>,
+    import_module_names: HashSet<String>,
 }
 
 impl ImportVisitor {
     pub fn new() -> Self {
         Self {
             imports: HashMap::new(),
-            import_module_name: None,
+            import_module_names: HashSet::new(),
         }
     }
 
@@ -34,7 +34,7 @@ impl<'a> Visitor<'a> for ImportVisitor {
                         .push(alias.range);
 
                     if alias.name.as_str() == "importlib" {
-                        self.import_module_name = Some("import_module".to_string());
+                        self.import_module_names.insert("import_module".to_string());
                     }
                 }
             }
@@ -50,46 +50,32 @@ impl<'a> Visitor<'a> for ImportVisitor {
                         if module_name == "importlib" {
                             for alias in &import_from_stmt.names {
                                 if alias.name.as_str() == "import_module" {
-                                    self.import_module_name = Some(
-                                        alias
-                                            .asname
-                                            .as_ref()
-                                            .map(|id| id.as_str().to_string())
-                                            .unwrap_or_else(|| "import_module".to_string()),
-                                    );
-                                    break;
+                                    let name = alias
+                                        .asname
+                                        .as_ref()
+                                        .map(|id| id.as_str().to_string())
+                                        .unwrap_or_else(|| "import_module".to_string());
+                                    self.import_module_names.insert(name);
                                 }
                             }
                         }
                     }
                 }
             }
-            Stmt::If(if_stmt) if is_guarded_by_type_checking(if_stmt) => {
-                // Avoid parsing imports that are only evaluated by type checkers.
-            }
             Stmt::Expr(expr_stmt) => {
                 if let Expr::Call(call_expr) = expr_stmt.value.as_ref() {
                     let is_import_module = match call_expr.func.as_ref() {
                         Expr::Attribute(attr_expr) => {
-                            // Case: importlib.import_module(...)
                             matches!(attr_expr.value.as_ref(), Expr::Name(name) if name.id.as_str() == "importlib")
                                 && attr_expr.attr.as_str() == "import_module"
                         }
-                        Expr::Name(name) => {
-                            // Case: import_module(...) or aliased version
-                            self.import_module_name
-                                .as_ref()
-                                .map_or(false, |im_name| name.id.as_str() == im_name)
-                        }
+                        Expr::Name(name) => self.import_module_names.contains(name.id.as_str()),
                         _ => false,
                     };
 
                     if is_import_module {
-                        if let Some(Expr::StringLiteral(string_literal)) =
-                            call_expr.arguments.args.first()
-                        {
-                            let top_level_module =
-                                get_top_level_module_name(&string_literal.value.to_string());
+                        if let Some(Expr::StringLiteral(string_literal)) = call_expr.arguments.args.first() {
+                            let top_level_module = get_top_level_module_name(&string_literal.value.to_string());
                             self.imports
                                 .entry(top_level_module)
                                 .or_default()
@@ -97,6 +83,9 @@ impl<'a> Visitor<'a> for ImportVisitor {
                         }
                     }
                 }
+            }
+            Stmt::If(if_stmt) if is_guarded_by_type_checking(if_stmt) => {
+                // Avoid parsing imports that are only evaluated by type checkers.
             }
             _ => walk_stmt(self, stmt), // Delegate other statements to walk_stmt
         }
