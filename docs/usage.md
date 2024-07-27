@@ -78,7 +78,7 @@ import importlib
 importlib.import_module("foo")  # package 'foo' imported
 ```
 
-But not where the argument is provided dynamically from a variable, attribute, etc.
+but not where the argument is provided dynamically from a variable, attribute, etc., e.g.:
 
 ```python
 bar = "foo"
