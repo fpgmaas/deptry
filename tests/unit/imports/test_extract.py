@@ -17,44 +17,33 @@ if TYPE_CHECKING:
     from _pytest.logging import LogCaptureFixture
 
 
-def test_dyn_import_parser_py() -> None:
-    some_dyn_imports_path = Path("tests/data/some_dyn_imports.py")
-
-    assert get_imported_modules_from_list_of_files([some_dyn_imports_path]) == {
-        "importlib": [
-            Location(some_dyn_imports_path, line=1, column=1),
-            Location(some_dyn_imports_path, line=2, column=1),
-            Location(some_dyn_imports_path, line=3, column=8),
-        ],
-        "patito": [
-            Location(some_dyn_imports_path, line=6, column=1),
-        ],
-        "polars": [
-            Location(some_dyn_imports_path, line=5, column=1),
-        ],
-    }
-
-
 def test_import_parser_py() -> None:
     some_imports_path = Path("tests/data/some_imports.py")
 
     assert get_imported_modules_from_list_of_files([some_imports_path]) == {
-        "barfoo": [Location(some_imports_path, 21, 8)],
-        "baz": [Location(some_imports_path, 17, 5)],
-        "click": [Location(some_imports_path, 31, 12)],
-        "foobar": [Location(some_imports_path, 19, 12)],
-        "httpx": [Location(some_imports_path, 15, 12)],
-        "module_in_class": [Location(some_imports_path, 42, 16)],
-        "module_in_func": [Location(some_imports_path, 37, 12)],
-        "not_click": [Location(some_imports_path, 33, 12)],
+        "barfoo": [Location(some_imports_path, 24, 8)],
+        "baz": [Location(some_imports_path, 20, 5)],
+        "click": [Location(some_imports_path, 34, 12)],
+        "foobar": [Location(some_imports_path, 22, 12)],
+        "httpx": [Location(some_imports_path, 18, 12)],
+        "importlib": [
+            Location(some_imports_path, line=5, column=1),
+            Location(some_imports_path, line=6, column=1),
+            Location(some_imports_path, line=7, column=8),
+        ],
+        "module_in_class": [Location(some_imports_path, 45, 16)],
+        "module_in_func": [Location(some_imports_path, 40, 12)],
+        "not_click": [Location(some_imports_path, 36, 12)],
         "numpy": [
-            Location(some_imports_path, 6, 8),
-            Location(some_imports_path, 8, 1),
+            Location(some_imports_path, 9, 8),
+            Location(some_imports_path, 11, 1),
         ],
         "os": [Location(some_imports_path, 2, 1)],
-        "pandas": [Location(some_imports_path, 7, 8)],
+        "pandas": [Location(some_imports_path, 10, 8)],
         "pathlib": [Location(some_imports_path, 3, 1)],
-        "randomizer": [Location(some_imports_path, 22, 1)],
+        "patito": [Location(some_imports_path, line=48, column=1)],
+        "polars": [Location(some_imports_path, line=47, column=1)],
+        "randomizer": [Location(some_imports_path, 25, 1)],
         "typing": [
             Location(some_imports_path, 1, 8),
             Location(some_imports_path, 4, 1),

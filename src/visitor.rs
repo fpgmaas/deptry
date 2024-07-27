@@ -51,10 +51,11 @@ impl<'a> Visitor<'a> for ImportVisitor {
                             for alias in &import_from_stmt.names {
                                 if alias.name.as_str() == "import_module" {
                                     self.import_module_name = Some(
-                                        alias.asname
+                                        alias
+                                            .asname
                                             .as_ref()
                                             .map(|id| id.as_str().to_string())
-                                            .unwrap_or_else(|| "import_module".to_string())
+                                            .unwrap_or_else(|| "import_module".to_string()),
                                     );
                                     break;
                                 }
@@ -76,7 +77,9 @@ impl<'a> Visitor<'a> for ImportVisitor {
                         }
                         Expr::Name(name) => {
                             // Case: import_module(...) or aliased version
-                            self.import_module_name.as_ref().map_or(false, |im_name| name.id.as_str() == im_name)
+                            self.import_module_name
+                                .as_ref()
+                                .map_or(false, |im_name| name.id.as_str() == im_name)
                         }
                         _ => false,
                     };
@@ -84,7 +87,8 @@ impl<'a> Visitor<'a> for ImportVisitor {
                     if is_import_module {
                         if let Some(arg) = call_expr.arguments.args.first() {
                             if let Expr::StringLiteral(string_literal) = arg {
-                                let top_level_module = get_top_level_module_name(&string_literal.value.to_string());
+                                let top_level_module =
+                                    get_top_level_module_name(&string_literal.value.to_string());
                                 self.imports
                                     .entry(top_level_module)
                                     .or_default()

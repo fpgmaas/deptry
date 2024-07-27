@@ -2,6 +2,9 @@ import typing
 from os import chdir, walk
 from pathlib import Path
 from typing import List, TYPE_CHECKING
+from importlib import import_module
+from importlib import import_module as im
+import importlib
 
 import numpy as np
 import pandas
@@ -40,3 +43,7 @@ def func():
 class MyClass:
     def __init__(self):
         import module_in_class
+
+import_module("polars")
+importlib.import_module("patito")
+im("uvicorn")
