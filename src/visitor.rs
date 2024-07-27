@@ -45,6 +45,25 @@ impl<'a> Visitor<'a> for ImportVisitor {
             Stmt::If(if_stmt) if is_guarded_by_type_checking(if_stmt) => {
                 // Avoid parsing imports that are only evaluated by type checkers.
             }
+            Stmt::Expr(expr_stmt) => {
+                if let Expr::Call(call_expr) = expr_stmt.value.as_ref() {
+                    if let Expr::Attribute(attr_expr) = call_expr.func.as_ref() {
+                        if let Expr::Name(name) = attr_expr.value.as_ref() {
+                            if name.id.as_str() == "importlib" && attr_expr.attr.as_str() == "import_module" {
+                                if let Some(arg) = call_expr.arguments.args.first() {
+                                    if let Expr::StringLiteral(string_literal) = arg {
+                                        let top_level_module = get_top_level_module_name(&string_literal.value.to_string());
+                                        self.imports
+                                            .entry(top_level_module)
+                                            .or_default()
+                                            .push(expr_stmt.range);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             _ => walk_stmt(self, stmt), // Delegate other statements to walk_stmt
         }
     }
