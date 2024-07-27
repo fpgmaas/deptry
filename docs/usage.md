@@ -80,7 +80,7 @@ importlib.import_module("foo")  # package 'foo' imported
 
 But not where the argument is provided dynamically from a variable, attribute, etc.
 
-```py
+```python
 bar = "foo"
 importlib.import_module(bar)  # Not detected
 ```
