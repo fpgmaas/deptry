@@ -44,6 +44,7 @@ class MyClass:
     def __init__(self):
         import module_in_class
 
-import_module("polars")
-importlib.import_module("patito")
+import_module("patito")
+importlib.import_module("polars")
 im("uvicorn")
+import_module("http.server")

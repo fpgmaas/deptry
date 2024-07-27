@@ -25,6 +25,7 @@ def test_import_parser_py() -> None:
         "baz": [Location(some_imports_path, 20, 5)],
         "click": [Location(some_imports_path, 34, 12)],
         "foobar": [Location(some_imports_path, 22, 12)],
+        "http": [Location(some_imports_path, line=50, column=1)],
         "httpx": [Location(some_imports_path, 18, 12)],
         "importlib": [
             Location(some_imports_path, line=5, column=1),
@@ -41,8 +42,8 @@ def test_import_parser_py() -> None:
         "os": [Location(some_imports_path, 2, 1)],
         "pandas": [Location(some_imports_path, 10, 8)],
         "pathlib": [Location(some_imports_path, 3, 1)],
-        "patito": [Location(some_imports_path, line=48, column=1)],
-        "polars": [Location(some_imports_path, line=47, column=1)],
+        "patito": [Location(some_imports_path, line=47, column=1)],
+        "polars": [Location(some_imports_path, line=48, column=1)],
         "randomizer": [Location(some_imports_path, 25, 1)],
         "typing": [
             Location(some_imports_path, 1, 8),
