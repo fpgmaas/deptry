@@ -5,6 +5,7 @@ from typing import List, TYPE_CHECKING
 from importlib import import_module
 from importlib import import_module as im
 import importlib
+import importlib as il
 
 import numpy as np
 import pandas
@@ -48,3 +49,4 @@ import_module("patito")
 importlib.import_module("polars")
 im("uvicorn")
 import_module("http.server")
+il.import_module("xml.etree.ElementTree")

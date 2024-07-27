@@ -34,7 +34,13 @@ impl<'a> Visitor<'a> for ImportVisitor {
                         .push(alias.range);
 
                     if alias.name.as_str() == "importlib" {
-                        self.import_module_names.insert("import_module".to_string());
+                        let name = alias
+                            .asname
+                            .as_ref()
+                            .map(|id| id.as_str())
+                            .unwrap_or("importlib");
+                        self.import_module_names
+                            .insert(format!("{}.import_module", name));
                     }
                 }
             }
@@ -53,9 +59,9 @@ impl<'a> Visitor<'a> for ImportVisitor {
                                     let name = alias
                                         .asname
                                         .as_ref()
-                                        .map(|id| id.as_str().to_string())
-                                        .unwrap_or_else(|| "import_module".to_string());
-                                    self.import_module_names.insert(name);
+                                        .map(|id| id.as_str())
+                                        .unwrap_or("import_module");
+                                    self.import_module_names.insert(name.to_string());
                                 }
                             }
                         }
@@ -66,16 +72,23 @@ impl<'a> Visitor<'a> for ImportVisitor {
                 if let Expr::Call(call_expr) = expr_stmt.value.as_ref() {
                     let is_import_module = match call_expr.func.as_ref() {
                         Expr::Attribute(attr_expr) => {
-                            matches!(attr_expr.value.as_ref(), Expr::Name(name) if name.id.as_str() == "importlib")
-                                && attr_expr.attr.as_str() == "import_module"
+                            if let Expr::Name(name) = attr_expr.value.as_ref() {
+                                self.import_module_names
+                                    .contains(&format!("{}.import_module", name.id.as_str()))
+                            } else {
+                                false
+                            }
                         }
                         Expr::Name(name) => self.import_module_names.contains(name.id.as_str()),
                         _ => false,
                     };
 
                     if is_import_module {
-                        if let Some(Expr::StringLiteral(string_literal)) = call_expr.arguments.args.first() {
-                            let top_level_module = get_top_level_module_name(&string_literal.value.to_string());
+                        if let Some(Expr::StringLiteral(string_literal)) =
+                            call_expr.arguments.args.first()
+                        {
+                            let top_level_module =
+                                get_top_level_module_name(&string_literal.value.to_string());
                             self.imports
                                 .entry(top_level_module)
                                 .or_default()
