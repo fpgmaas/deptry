@@ -70,8 +70,20 @@ if TYPE_CHECKING:
     import mypy_boto3_s3
 ```
 
-There is some support for imports created with `importlib`: namely any usage with a string literal
-(not where the argument is provided dynamically from a variable, attribute, etc.).
+There is some support for imports created with `importlib`: namely any usage with a string literal:
+
+```
+import importlib
+
+importlib.import_module("foo")  # package 'foo' imported
+```
+
+But not where the argument is provided dynamically from a variable, attribute, etc.
+
+```py
+bar = "foo"
+importlib.import_module(bar)  # Not detected
+```
 
 ## Excluding files and directories
 
