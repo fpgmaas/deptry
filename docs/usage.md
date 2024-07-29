@@ -70,6 +70,21 @@ if TYPE_CHECKING:
     import mypy_boto3_s3
 ```
 
+There is some support for imports created with [`importlib.import_module`](https://docs.python.org/3/library/importlib.html#importlib.import_module) that use a string literal:
+
+```python
+import importlib
+
+importlib.import_module("foo")  # package 'foo' imported
+```
+
+but not where the argument is provided dynamically from a variable, attribute, etc., e.g.:
+
+```python
+bar = "foo"
+importlib.import_module(bar)  # Not detected
+```
+
 ## Excluding files and directories
 
 To determine issues with imported modules and dependencies, _deptry_ will scan the working directory and its subdirectories recursively for `.py` and `.ipynb` files, so it can
