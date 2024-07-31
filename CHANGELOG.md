@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.18.0 - 2024-07-31
+
+### Features
+
+* Support imports using `importlib.import_module` ([#782](https://github.com/fpgmaas/deptry/pull/782))
+
+### New Contributors
+
+* @lmmx made their first contribution in [#782](https://github.com/fpgmaas/deptry/pull/782)
+
+### Full Changelog
+
+https://github.com/fpgmaas/deptry/compare/0.17.0...0.18.0
+
+
 ## 0.17.0 - 2024-07-20
 
 ### Features
