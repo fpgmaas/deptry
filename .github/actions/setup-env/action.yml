@@ -23,6 +23,10 @@ runs:
         version: ${{ env.PDM_VERSION }}
         python-version: ${{ inputs.python-version }}
 
+    - name: Setup Rust toolchain
+      run: rustup component add cargo clippy rustfmt
+      shell: bash
+
     - name: Install Python dependencies
       run: pdm install --frozen-lockfile --no-editable --no-self
       env:
@@ -34,7 +38,3 @@ runs:
       with:
         target: ${{ inputs.target }}
         command: develop
-
-    - name: Setup Rust toolchain
-      run: rustup component add clippy rustfmt
-      shell: bash
