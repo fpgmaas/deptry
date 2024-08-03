@@ -24,8 +24,12 @@ runs:
         python-version: ${{ inputs.python-version }}
         cache: true
 
+    - name: Setup Rust toolchain
+      run: rustup component add cargo clippy rustfmt
+      shell: bash
+
     - name: Install Python dependencies
-      run: pdm install --frozen-lockfile --no-editable
+      run: pdm install --frozen-lockfile --no-editable --no-self
       env:
         PDM_VENV_WITH_PIP: "true"
       shell: bash
@@ -36,7 +40,3 @@ runs:
         target: ${{ inputs.target }}
         command: develop
         sccache: 'true'
-
-    - name: Setup Rust toolchain
-      run: rustup component add clippy rustfmt
-      shell: bash
