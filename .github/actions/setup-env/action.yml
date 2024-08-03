@@ -22,6 +22,7 @@ runs:
       with:
         version: ${{ env.PDM_VERSION }}
         python-version: ${{ inputs.python-version }}
+        cache: true
 
     - name: Setup Rust toolchain
       run: rustup component add cargo clippy rustfmt
@@ -38,3 +39,4 @@ runs:
       with:
         target: ${{ inputs.target }}
         command: develop
+        sccache: 'true'
