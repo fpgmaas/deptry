@@ -22,7 +22,6 @@ runs:
       with:
         version: ${{ env.PDM_VERSION }}
         python-version: ${{ inputs.python-version }}
-        cache: true
 
     - name: Install Python dependencies
       run: pdm install --frozen-lockfile --no-editable
