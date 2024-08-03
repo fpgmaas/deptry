@@ -29,7 +29,7 @@ runs:
       shell: bash
 
     - name: Install Python dependencies
-      run: pdm install --frozen-lockfile --no-editable
+      run: pdm install --frozen-lockfile --no-editable --no-self
       env:
         PDM_VENV_WITH_PIP: "true"
       shell: bash
