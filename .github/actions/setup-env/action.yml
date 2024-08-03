@@ -34,7 +34,6 @@ runs:
       with:
         target: ${{ inputs.target }}
         command: develop
-        sccache: 'true'
 
     - name: Setup Rust toolchain
       run: rustup component add clippy rustfmt
