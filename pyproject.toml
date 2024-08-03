@@ -42,7 +42,7 @@ docs = [
     "mkdocs-material==9.5.31",
 ]
 typing = [
-    "mypy==1.11.0",
+    "mypy==1.11.1",
     "types-colorama==0.4.15.20240311; sys_platform == 'win32'",
 ]
 
