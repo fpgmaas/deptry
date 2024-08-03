@@ -28,13 +28,7 @@ runs:
       shell: bash
 
     - name: Install Python dependencies
-      run: pdm install --frozen-lockfile --no-editable --no-self
+      run: pdm install --frozen-lockfile --no-editable
       env:
         PDM_VENV_WITH_PIP: "true"
       shell: bash
-
-    - name: Build and install the project using Maturin
-      uses: PyO3/maturin-action@v1
-      with:
-        target: ${{ inputs.target }}
-        command: develop
