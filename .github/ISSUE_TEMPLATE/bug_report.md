@@ -1,31 +1,27 @@
 ---
 name: Bug report
-about: Create a bug report to help us improve
+about: Report an issue on the project
 labels: "bug"
 ---
 
-**Describe the bug**
+**Environment**
 
-<!-- A clear and concise description of what the bug is. -->
+- **deptry version**:
+- **Python version**:
+- **Operating system** (e.g. Ubuntu 22.04, Windows 11):
 
-**To Reproduce**
+**Describe the issue**
 
-Steps to reproduce the behavior:
+<!-- A clear and concise description of what the issue is. -->
 
-1. ...
-2. ...
-3. ...
+**Minimal way to reproduce the issue**
+
+<!-- A minimal way to reproduce the issue. If possible, set `--verbose` option on `deptry` commands and share the output (make sure to redact any sensitive information). -->
 
 **Expected behavior**
 
 <!-- A clear and concise description of what you expected to happen. -->
 
-**System [please complete the following information]:**
-
--   OS: e.g. [Ubuntu 18.04]
--   Language Version: [e.g. Python 3.8]
--   Poetry version: [e.g. Poetry 1.1.13]
-
 **Additional context**
 
-<!-- Add any other context about the problem here. -->
+<!-- If relevant, add any other context about the problem here. -->
