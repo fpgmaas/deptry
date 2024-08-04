@@ -6,7 +6,7 @@ on:
 
 jobs:
   set-version:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
 
@@ -27,7 +27,7 @@ jobs:
           path: pyproject.toml
 
   linux:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     needs: [set-version]
     strategy:
       matrix:
@@ -129,7 +129,7 @@ jobs:
           path: dist
 
   sdist:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     needs: [set-version]
     steps:
       - uses: actions/checkout@v4
@@ -153,7 +153,7 @@ jobs:
 
   publish:
     name: Publish
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     needs: [linux, windows, macos, sdist]
     steps:
       - uses: actions/download-artifact@v4
@@ -167,7 +167,7 @@ jobs:
           args: --non-interactive --skip-existing wheels-*/*
 
   check-docs:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     needs: publish
     steps:
       - name: Check out
