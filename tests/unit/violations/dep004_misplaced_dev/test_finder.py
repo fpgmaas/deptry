@@ -17,7 +17,7 @@ def test_simple() -> None:
 
     modules_locations = [ModuleLocations(module_foo, module_foo_locations)]
 
-    assert DEP004MisplacedDevDependenciesFinder(modules_locations, dependencies).find() == [
+    assert DEP004MisplacedDevDependenciesFinder(modules_locations, dependencies, frozenset()).find() == [
         DEP004MisplacedDevDependencyViolation(module_foo, location) for location in module_foo_locations
     ]
 
@@ -37,4 +37,4 @@ def test_regular_and_dev_dependency() -> None:
 
     modules_locations = [ModuleLocations(module_foo, module_foo_locations)]
 
-    assert not DEP004MisplacedDevDependenciesFinder(modules_locations, dependencies).find()
+    assert not DEP004MisplacedDevDependenciesFinder(modules_locations, dependencies, frozenset()).find()

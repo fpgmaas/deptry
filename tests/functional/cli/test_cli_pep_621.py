@@ -48,6 +48,14 @@ def test_cli_with_pep_621(pip_venv_factory: PipVenvFactory) -> None:
                 "location": {"file": str(Path("pyproject.toml")), "line": None, "column": None},
             },
             {
+                "error": {
+                    "code": "DEP005",
+                    "message": "'asyncio' is defined as a dependency but it is included in the Python standard library.",
+                },
+                "module": "asyncio",
+                "location": {"file": "pyproject.toml", "line": None, "column": None},
+            },
+            {
                 "error": {"code": "DEP004", "message": "'black' imported but declared as a dev dependency"},
                 "module": "black",
                 "location": {"file": str(Path("src/main.py")), "line": 4, "column": 8},

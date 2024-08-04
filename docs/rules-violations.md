@@ -8,6 +8,7 @@ _deptry_ checks your project against the following rules related to dependencies
 | DEP002 | Project should not contain unused dependencies               | [link](#unused-dependencies-dep002)                 |
 | DEP003 | Project should not use transitive dependencies            | [link](#transitive-dependencies-dep003)             |
 | DEP004 | Project should not use development dependencies in non-development code | [link](#misplaced-development-dependencies-dep004)  |
+| DEP005 | Project should not contain dependencies that are in the standard library    | [link](#standard-library-dependencies-dep005)       |
 
 Any of the checks can be disabled with the [`ignore`](usage.md#ignore) flag. Specific dependencies or modules can be
 ignored with the [`per-rule-ignores`](usage.md#per-rule-ignores) flag.
@@ -169,4 +170,37 @@ dependencies = [
 
 [tool.pdm.dev-dependencies]
 test = ["pytest==7.2.0"]
+```
+
+## Standard library dependencies (DEP005)
+
+Dependencies that are part of the Python standard library should not be defined as dependencies in your project.
+
+### Example
+
+On a project with the following dependencies:
+
+```toml
+[project]
+dependencies = [
+    "asyncio",
+]
+```
+
+and the following `main.py` in the project:
+
+```python
+import asyncio
+
+def async_example():
+    return asyncio.run(some_coroutine())
+```
+
+_deptry_ will report `asyncio` as a standard library dependency because it is part of the standard library, yet it is defined as a dependency in the project.
+
+To fix the issue, `asyncio` should be removed from `[project.dependencies]`:
+
+```toml
+[project]
+dependencies = []
 ```

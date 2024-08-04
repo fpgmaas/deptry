@@ -9,7 +9,7 @@ import urllib.request
 from html.parser import HTMLParser
 from pathlib import Path
 
-OUTPUT_PATH = Path("deptry/stdlibs.py")
+OUTPUT_PATH = Path("python/deptry/stdlibs.py")
 STDLIB_MODULES_URL = "https://docs.python.org/{}.{}/py-modindex.html"
 
 # Starting from Python 3.10, https://docs.python.org/3/library/sys.html#sys.stdlib_module_names is available.
@@ -45,7 +45,7 @@ class PythonStdlibHTMLParser(HTMLParser):
             self.modules.append(data)
 
 
-def get_stdlib_modules_for_python_version(python_version: tuple[int, int]) -> list[str]:
+def get_standard_library_modules_for_python_version(python_version: tuple[int, int]) -> list[str]:
     with urllib.request.urlopen(  # noqa: S310
         STDLIB_MODULES_URL.format(python_version[0], python_version[1])
     ) as response:
@@ -60,9 +60,9 @@ def get_stdlib_modules_for_python_version(python_version: tuple[int, int]) -> li
     return sorted(modules)
 
 
-def get_stdlib_modules() -> dict[str, list[str]]:
+def get_standard_library_modules() -> dict[str, list[str]]:
     return {
-        f"{python_version[0]}{python_version[1]}": get_stdlib_modules_for_python_version(python_version)
+        f"{python_version[0]}{python_version[1]}": get_standard_library_modules_for_python_version(python_version)
         for python_version in PYTHON_VERSIONS
     }
 
@@ -74,17 +74,17 @@ def write_stdlibs_file(stdlib_python: dict[str, list[str]]) -> None:
             ast.Assign(
                 targets=[ast.Name("STDLIBS_PYTHON")],
                 value=ast.Dict(
-                    keys=[ast.Str(python_version) for python_version in stdlib_python],
+                    keys=[ast.Constant(python_version) for python_version in stdlib_python],
                     values=[
                         ast.Call(
                             func=ast.Name(id="frozenset"),
-                            args=[ast.Set(elts=[ast.Constant(module) for module in python_stdlib_modules])],
+                            args=[ast.Set(elts=[ast.Constant(module) for module in python_standard_library_modules])],
                             keywords=[],
                         )
-                        for python_stdlib_modules in stdlib_python.values()
+                        for python_standard_library_modules in stdlib_python.values()
                     ],
                 ),
-                lineno=None,
+                lineno=0,
             ),
         ],
         type_ignores=[],
@@ -95,4 +95,4 @@ def write_stdlibs_file(stdlib_python: dict[str, list[str]]) -> None:
 
 
 if __name__ == "__main__":
-    write_stdlibs_file(get_stdlib_modules())
+    write_stdlibs_file(get_standard_library_modules())

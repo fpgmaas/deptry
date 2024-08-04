@@ -17,7 +17,7 @@ def test_simple() -> None:
         )
     ]
 
-    assert DEP002UnusedDependenciesFinder(modules_locations, dependencies).find() == [
+    assert DEP002UnusedDependenciesFinder(modules_locations, dependencies, frozenset()).find() == [
         DEP002UnusedDependencyViolation(dependency_toml, Location(Path("pyproject.toml")))
     ]
 
@@ -30,7 +30,10 @@ def test_simple_with_ignore() -> None:
         )
     ]
 
-    assert DEP002UnusedDependenciesFinder(modules_locations, dependencies, ignored_modules=("click",)).find() == []
+    assert (
+        DEP002UnusedDependenciesFinder(modules_locations, dependencies, frozenset(), ignored_modules=("click",)).find()
+        == []
+    )
 
 
 def test_top_level() -> None:
@@ -45,7 +48,7 @@ def test_top_level() -> None:
         )
     ]
 
-    deps = DEP002UnusedDependenciesFinder(modules_locations, dependencies).find()
+    deps = DEP002UnusedDependenciesFinder(modules_locations, dependencies, frozenset()).find()
 
     assert deps == []
 
@@ -61,4 +64,4 @@ def test_without_top_level() -> None:
         )
     ]
 
-    assert DEP002UnusedDependenciesFinder(modules_locations, dependencies).find() == []
+    assert DEP002UnusedDependenciesFinder(modules_locations, dependencies, frozenset()).find() == []

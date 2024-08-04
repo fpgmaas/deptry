@@ -71,14 +71,14 @@ class DependencyGetterBuilder:
     @staticmethod
     def _project_uses_poetry(pyproject_toml: dict[str, Any]) -> bool:
         try:
-            pyproject_toml["tool"]["poetry"]["dependencies"]
+            pyproject_toml["tool"]["poetry"]
             logging.debug(
-                "pyproject.toml contains a [tool.poetry.dependencies] section, so Poetry is used to specify the"
+                "pyproject.toml contains a [tool.poetry] section, so Poetry is used to specify the"
                 " project's dependencies."
             )
         except KeyError:
             logging.debug(
-                "pyproject.toml does not contain a [tool.poetry.dependencies] section, so Poetry is not used to specify"
+                "pyproject.toml does not contain a [tool.poetry] section, so Poetry is not used to specify"
                 " the project's dependencies."
             )
             return False

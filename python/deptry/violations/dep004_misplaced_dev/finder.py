@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import logging
-from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from deptry.violations.base import ViolationsFinder
@@ -10,6 +9,8 @@ from deptry.violations.dep004_misplaced_dev.violation import DEP004MisplacedDevD
 if TYPE_CHECKING:
     from deptry.module import Module
     from deptry.violations import Violation
+
+from dataclasses import dataclass
 
 
 @dataclass
@@ -34,6 +35,9 @@ class DEP004MisplacedDevDependenciesFinder(ViolationsFinder):
 
         for module_with_locations in self.imported_modules_with_locations:
             module = module_with_locations.module
+
+            if module.standard_library:
+                continue
 
             logging.debug("Scanning module %s...", module.name)
             corresponding_package_name = self._get_package_name(module)

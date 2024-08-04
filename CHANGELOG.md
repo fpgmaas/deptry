@@ -1,5 +1,47 @@
 # Changelog
 
+## 0.18.0 - 2024-07-31
+
+### Features
+
+* Support imports using `importlib.import_module` ([#782](https://github.com/fpgmaas/deptry/pull/782))
+
+### New Contributors
+
+* @lmmx made their first contribution in [#782](https://github.com/fpgmaas/deptry/pull/782)
+
+### Full Changelog
+
+https://github.com/fpgmaas/deptry/compare/0.17.0...0.18.0
+
+
+## 0.17.0 - 2024-07-20
+
+### Features
+
+* Add a new rule `DEP005` to detect project dependencies that are in the standard library. ([#761](https://github.com/fpgmaas/deptry/pull/761))
+
+### Full Changelog
+
+https://github.com/fpgmaas/deptry/compare/0.16.2...0.17.0
+
+
+## 0.16.2 - 2024-07-05
+
+### Bug Fixes
+
+* Avoid crashing on PEP 621 and Poetry projects with no dependencies ([#752](https://github.com/fpgmaas/deptry/pull/752))
+* Recursively search for Python files to detect local modules, to better support namespace packages ([#753](https://github.com/fpgmaas/deptry/pull/753))
+
+### Miscellaneous
+
+* Provide macOS ARM wheels for PyPy ([#691](https://github.com/fpgmaas/deptry/pull/691))
+
+### Full Changelog
+
+https://github.com/fpgmaas/deptry/compare/0.16.1...0.16.2
+
+
 ## 0.16.1 - 2024-04-06
 
 ### Bug Fixes

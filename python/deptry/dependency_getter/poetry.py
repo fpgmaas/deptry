@@ -21,7 +21,7 @@ class PoetryDependencyGetter(DependencyGetter):
 
     def _get_poetry_dependencies(self) -> list[Dependency]:
         pyproject_data = load_pyproject_toml(self.config)
-        dependencies: dict[str, Any] = pyproject_data["tool"]["poetry"]["dependencies"]
+        dependencies: dict[str, Any] = pyproject_data["tool"]["poetry"].get("dependencies", {})
         return self._get_dependencies(dependencies, self.package_module_name_map)
 
     def _get_poetry_dev_dependencies(self) -> list[Dependency]:

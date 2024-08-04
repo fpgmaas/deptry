@@ -64,7 +64,7 @@ class ModuleBuilder:
         self,
         name: str,
         local_modules: set[str],
-        stdlib_modules: frozenset[str],
+        standard_library_modules: frozenset[str],
         dependencies: list[Dependency] | None = None,
         dev_dependencies: list[Dependency] | None = None,
     ) -> None:
@@ -74,13 +74,13 @@ class ModuleBuilder:
         Args:
             name: The name of the imported module
             local_modules: The list of local modules
-            stdlib_modules: The list of Python stdlib modules
+            standard_library_modules: The list of Python stdlib modules
             dependencies: A list of the project's dependencies
             dev_dependencies: A list of the project's development dependencies
         """
         self.name = name
         self.local_modules = local_modules
-        self.stdlib_modules = stdlib_modules
+        self.standard_library_modules = standard_library_modules
         self.dependencies = dependencies or []
         self.dev_dependencies = dev_dependencies or []
 
@@ -137,7 +137,7 @@ class ModuleBuilder:
         ]
 
     def _in_standard_library(self) -> bool:
-        return self.name in self.stdlib_modules
+        return self.name in self.standard_library_modules
 
     def _is_local_module(self) -> bool:
         """
