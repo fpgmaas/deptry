@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   quality:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Check out
         uses: actions/checkout@v4
@@ -34,7 +34,7 @@ jobs:
       matrix:
         os:
           - name: linux
-            image: ubuntu-22.04
+            image: ubuntu-24.04
           - name: macos
             image: macos-14
           - name: windows
@@ -69,7 +69,7 @@ jobs:
         if: ${{ matrix.os.name == 'linux' && matrix.python-version == '3.12' }}
 
   check-docs:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Check out
         uses: actions/checkout@v4

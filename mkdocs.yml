@@ -24,6 +24,10 @@ theme:
     - content.code.copy
     - navigation.footer
   palette:
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
     - media: "(prefers-color-scheme: light)"
       scheme: default
       primary: cyan
@@ -37,7 +41,7 @@ theme:
       accent: deep orange
       toggle:
         icon: material/brightness-4
-        name: Switch to light mode
+        name: Switch to system preferences
   icon:
     repo: fontawesome/brands/github
 
