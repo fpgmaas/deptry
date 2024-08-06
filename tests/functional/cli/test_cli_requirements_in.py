@@ -34,8 +34,11 @@ def test_cli_single_requirements_files(pip_venv_factory: PipVenvFactory) -> None
                 "location": {"file": str(Path("requirements.in")), "line": None, "column": None},
             },
             {
-                "error": {"code": "DEP002", "message": "'pandas' defined as a dependency but not used in the codebase"},
-                "module": "pandas",
+                "error": {
+                    "code": "DEP002",
+                    "message": "'uvicorn' defined as a dependency but not used in the codebase",
+                },
+                "module": "uvicorn",
                 "location": {"file": str(Path("requirements.in")), "line": None, "column": None},
             },
             {
@@ -44,14 +47,14 @@ def test_cli_single_requirements_files(pip_venv_factory: PipVenvFactory) -> None
                 "location": {"file": str(Path("src/main.py")), "line": 4, "column": 8},
             },
             {
-                "error": {"code": "DEP001", "message": "'white' imported but missing from the dependency definitions"},
-                "module": "white",
+                "error": {"code": "DEP003", "message": "'h11' imported but it is a transitive dependency"},
+                "module": "h11",
                 "location": {"file": str(Path("src/main.py")), "line": 6, "column": 8},
             },
             {
-                "error": {"code": "DEP003", "message": "'requests' imported but it is a transitive dependency"},
-                "module": "requests",
-                "location": {"file": str(Path("src/main.py")), "line": 8, "column": 8},
+                "error": {"code": "DEP001", "message": "'white' imported but missing from the dependency definitions"},
+                "module": "white",
+                "location": {"file": str(Path("src/main.py")), "line": 7, "column": 8},
             },
         ]
 
@@ -78,13 +81,11 @@ def test_cli_multiple_requirements_files(pip_venv_factory: PipVenvFactory) -> No
                 "location": {"file": str(Path("requirements.txt")), "line": None, "column": None},
             },
             {
-                "error": {"code": "DEP002", "message": "'pandas' defined as a dependency but not used in the codebase"},
-                "module": "pandas",
-                "location": {"file": str(Path("requirements.txt")), "line": None, "column": None},
-            },
-            {
-                "error": {"code": "DEP002", "message": "'numpy' defined as a dependency but not used in the codebase"},
-                "module": "numpy",
+                "error": {
+                    "code": "DEP002",
+                    "message": "'uvicorn' defined as a dependency but not used in the codebase",
+                },
+                "module": "uvicorn",
                 "location": {"file": str(Path("requirements.txt")), "line": None, "column": None},
             },
             {
@@ -95,6 +96,6 @@ def test_cli_multiple_requirements_files(pip_venv_factory: PipVenvFactory) -> No
             {
                 "error": {"code": "DEP001", "message": "'white' imported but missing from the dependency definitions"},
                 "module": "white",
-                "location": {"file": str(Path("src/main.py")), "line": 6, "column": 8},
+                "location": {"file": str(Path("src/main.py")), "line": 7, "column": 8},
             },
         ]
