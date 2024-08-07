@@ -11,7 +11,6 @@ class Project(str, Enum):
     FUTURE_DEPRECATED_OBSOLETE_ARGUMENT = "project_with_future_deprecated_obsolete_argument"
     GITIGNORE = "project_with_gitignore"
     MULTIPLE_SOURCE_DIRECTORIES = "project_with_multiple_source_directories"
-    NAMESPACE = "project_using_namespace"
     PDM = "project_with_pdm"
     POETRY = "project_with_poetry"
     PYPROJECT_DIFFERENT_DIRECTORY = "project_with_pyproject_different_directory"
