@@ -119,7 +119,7 @@ To fix the issue, `certifi` should be explicitly added to `[project.dependencies
 ```toml
 [project]
 dependencies = [
-    "httpcore==0.16.3",
+    "certifi==2024.7.4",
     "httpx==0.23.1",
 ]
 ```
