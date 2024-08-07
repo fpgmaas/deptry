@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.19.0 - 2024-08-08
+
+This release reverts https://github.com/fpgmaas/deptry/pull/753 that caused a noticeable performance regression on large
+codebases. The intent of the initial PR was to support projects following PEP 420, so if your project currently relies
+on this behaviour, feel free to manifest your interest in https://github.com/fpgmaas/deptry/issues/740.
+
+### Fixes
+
+* Revert "fix(core): use `rglob` to guess local Python modules (#753)" ([#798](https://github.com/fpgmaas/deptry/pull/798))
+
+### New Contributors
+
+* @huisman made their first contribution in [#796](https://github.com/fpgmaas/deptry/pull/796)
+
+### Full Changelog
+
+https://github.com/fpgmaas/deptry/compare/0.18.0...0.19.0
+
+
 ## 0.18.0 - 2024-07-31
 
 ### Features
