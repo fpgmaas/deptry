@@ -34,13 +34,16 @@ To determine the project's dependencies, _deptry_ will scan the directory it is 
 1. If a `pyproject.toml` file with a `[tool.poetry.dependencies]` section is found, _deptry_ will assume it uses Poetry and extract:
     - dependencies from `[tool.poetry.dependencies]` section
     - development dependencies from `[tool.poetry.group.dev.dependencies]` or `[tool.poetry.dev-dependencies]` section
-2. If a `pyproject.toml` file with a `[tool.pdm.dev-dependencies]` section is found, _deptry_ will assume it uses PDM and extract:
+1. If a `pyproject.toml` file with a `[tool.pdm.dev-dependencies]` section is found, _deptry_ will assume it uses PDM and extract:
     - dependencies from `[project.dependencies]` and `[project.optional-dependencies]` sections
     - development dependencies from `[tool.pdm.dev-dependencies]` section and from the groups under `[project.optional-dependencies]` passed via the [`--pep621-dev-dependency-groups`](#pep-621-dev-dependency-groups) argument.
-3. If a `pyproject.toml` file with a `[project]` section is found, _deptry_ will assume it uses [PEP 621](https://peps.python.org/pep-0621/) for dependency specification and extract:
+1. If a `pyproject.toml` file with a `[tool.uv.dev-dependencies]` section is found, _deptry_ will assume it uses uv and extract:
+    - dependencies from `[project.dependencies]` and `[project.optional-dependencies]` sections
+    - development dependencies from `[tool.uv.dev-dependencies]` section and from the groups under `[project.optional-dependencies]` passed via the [`--pep621-dev-dependency-groups`](#pep-621-dev-dependency-groups) argument.
+1. If a `pyproject.toml` file with a `[project]` section is found, _deptry_ will assume it uses [PEP 621](https://peps.python.org/pep-0621/) for dependency specification and extract:
     - dependencies from `[project.dependencies]` and `[project.optional-dependencies]`.
     - development dependencies from the groups under `[project.optional-dependencies]` passed via the [`--pep621-dev-dependency-groups`](#pep-621-dev-dependency-groups) argument.
-4. If a `requirements.in` or `requirements.txt` file is found, _deptry_ will:
+1. If a `requirements.in` or `requirements.txt` file is found, _deptry_ will:
     - extract dependencies from that file.
     - extract development dependencies from `dev-dependencies.txt` and `dependencies-dev.txt`, if any exist
 
