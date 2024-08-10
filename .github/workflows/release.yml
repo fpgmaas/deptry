@@ -68,7 +68,7 @@ jobs:
     needs: [set-version]
     strategy:
       matrix:
-        target: [x64]
+        target: [x64, aarch64]
         python: ['3.12', 'pypy3.10']
     steps:
       - name: Check out
