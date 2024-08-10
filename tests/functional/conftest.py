@@ -9,7 +9,7 @@ import pytest
 import xdist
 
 from tests.functional.utils import DEPTRY_WHEEL_DIRECTORY
-from tests.utils import PDMVenvFactory, PipVenvFactory, PoetryVenvFactory
+from tests.utils import PDMVenvFactory, PipVenvFactory, PoetryVenvFactory, UvVenvFactory
 
 
 def pytest_sessionstart(session: pytest.Session) -> None:
@@ -42,6 +42,11 @@ def pytest_sessionstart(session: pytest.Session) -> None:
 @pytest.fixture(scope="session")
 def pdm_venv_factory(tmp_path_factory: pytest.TempPathFactory) -> PDMVenvFactory:
     return PDMVenvFactory(tmp_path_factory.getbasetemp() / "venvs")
+
+
+@pytest.fixture(scope="session")
+def uv_venv_factory(tmp_path_factory: pytest.TempPathFactory) -> UvVenvFactory:
+    return UvVenvFactory(tmp_path_factory.getbasetemp() / "venvs")
 
 
 @pytest.fixture(scope="session")
