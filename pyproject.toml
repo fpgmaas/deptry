@@ -106,7 +106,6 @@ enable_error_code = [
 strict = true
 warn_unreachable = true
 pretty = true
-show_error_codes = true
 
 [[tool.mypy.overrides]]
 module = ["xdist.*"]
@@ -128,7 +127,6 @@ filterwarnings = ["error"]
 norecursedirs = ["data*"]
 
 [tool.ruff]
-target-version = "py38"
 line-length = 120
 fix = true
 extend-exclude = ["tests/data/*"]
@@ -186,10 +184,8 @@ select = [
     "TRY",
 ]
 ignore = [
-    # LineTooLong
+    # line-too-long (https://docs.astral.sh/ruff/rules/line-too-long/)
     "E501",
-    # DoNotAssignLambda
-    "E731",
 ]
 
 [tool.ruff.lint.flake8-type-checking]
