@@ -44,6 +44,13 @@ class PDMVenvFactory(_BaseVenvFactory):
             yield virtual_env
 
 
+class UvVenvFactory(_BaseVenvFactory):
+    @contextmanager
+    def __call__(self, project: str) -> Generator[VirtualEnvironment, None, None]:
+        with self.venv(project, ["pip install uv", "uv sync"]) as virtual_env:
+            yield virtual_env
+
+
 @dataclass
 class PoetryVenvFactory(_BaseVenvFactory):
     @contextmanager
