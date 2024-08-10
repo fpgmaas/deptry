@@ -40,6 +40,7 @@ class Core:
     json_output: str
     package_module_name_map: Mapping[str, tuple[str, ...]]
     pep621_dev_dependency_groups: tuple[str, ...]
+    experimental_namespace_package: bool
 
     def run(self) -> None:
         self._log_config()

@@ -75,6 +75,7 @@ def test__get_local_modules(
                 package_module_name_map={},
                 pep621_dev_dependency_groups=(),
                 using_default_requirements_files=True,
+                experimental_namespace_package=False,
             )._get_local_modules()
             == expected
         )

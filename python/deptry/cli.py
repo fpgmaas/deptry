@@ -245,6 +245,11 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
     default=(),
     show_default=False,
 )
+@click.option(
+    "--experimental-namespace-package",
+    is_flag=True,
+    help="Enable experimental support for namespace package (PEP 420) when detecting local modules (https://peps.python.org/pep-0420/).",
+)
 def deptry(
     root: tuple[Path, ...],
     config: Path,
@@ -262,6 +267,7 @@ def deptry(
     json_output: str,
     package_module_name_map: MutableMapping[str, tuple[str, ...]],
     pep621_dev_dependency_groups: tuple[str, ...],
+    experimental_namespace_package: bool,
 ) -> None:
     """Find dependency issues in your Python project.
 
@@ -282,6 +288,7 @@ def deptry(
 
     if requirements_txt_dev:
         logging.warning(REQUIREMENTS_TXT_DEV_DEPRECATION_MESSAGE)
+
     Core(
         root=root,
         config=config,
@@ -299,4 +306,5 @@ def deptry(
         json_output=json_output,
         package_module_name_map=package_module_name_map,
         pep621_dev_dependency_groups=pep621_dev_dependency_groups,
+        experimental_namespace_package=experimental_namespace_package,
     ).run()
