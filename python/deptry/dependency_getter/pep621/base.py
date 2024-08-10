@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import itertools
 import logging
 import re
 from dataclasses import dataclass
@@ -45,16 +44,10 @@ class PEP621DependencyGetter(DependencyGetter):
         dependencies = self._get_dependencies()
         optional_dependencies = self._get_optional_dependencies()
 
-        if self.pep621_dev_dependency_groups:
-            self._check_for_invalid_group_names(optional_dependencies)
-            dev_dependencies, leftover_optional_dependencies = (
-                self._split_development_dependencies_from_optional_dependencies(optional_dependencies)
-            )
-            dependencies = [*dependencies, *leftover_optional_dependencies]
-            return DependenciesExtract(dependencies, dev_dependencies)
-
-        dependencies = [*dependencies, *itertools.chain(*optional_dependencies.values())]
-        return DependenciesExtract(dependencies, [])
+        dev_dependencies, remaining_optional_dependencies = (
+            self._split_development_dependencies_from_optional_dependencies(optional_dependencies)
+        )
+        return DependenciesExtract([*dependencies, *remaining_optional_dependencies], dev_dependencies)
 
     def _get_dependencies(self) -> list[Dependency]:
         pyproject_data = load_pyproject_toml(self.config)
@@ -86,16 +79,18 @@ class PEP621DependencyGetter(DependencyGetter):
         Split the optional dependencies into optional dependencies and development dependencies based on the `pep621_dev_dependency_groups`
         parameter. Return a tuple with two values: a list of the development dependencies and a list of the remaining 'true' optional dependencies.
         """
-        dev_dependencies = list(
-            itertools.chain.from_iterable(
-                deps for group, deps in optional_dependencies.items() if group in self.pep621_dev_dependency_groups
-            )
-        )
-        regular_dependencies = list(
-            itertools.chain.from_iterable(
-                deps for group, deps in optional_dependencies.items() if group not in self.pep621_dev_dependency_groups
-            )
-        )
+        dev_dependencies: list[Dependency] = []
+        regular_dependencies: list[Dependency] = []
+
+        if self.pep621_dev_dependency_groups:
+            self._check_for_invalid_group_names(optional_dependencies)
+
+        for group, dependencies in optional_dependencies.items():
+            if group in self.pep621_dev_dependency_groups:
+                dev_dependencies.extend(dependencies)
+            else:
+                regular_dependencies.extend(dependencies)
+
         return dev_dependencies, regular_dependencies
 
     def _extract_pep_508_dependencies(
