@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from deptry.dependency_getter.base import DependenciesExtract
-from deptry.dependency_getter.pep_621 import PEP621DependencyGetter
+from deptry.dependency_getter.pep621.base import PEP621DependencyGetter
 from deptry.utils import load_pyproject_toml
 
 if TYPE_CHECKING:
