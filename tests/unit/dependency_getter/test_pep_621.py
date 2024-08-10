@@ -4,7 +4,7 @@ import logging
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from deptry.dependency_getter.pep_621 import PEP621DependencyGetter
+from deptry.dependency_getter.pep621.base import PEP621DependencyGetter
 from tests.utils import run_within_dir
 
 if TYPE_CHECKING:
