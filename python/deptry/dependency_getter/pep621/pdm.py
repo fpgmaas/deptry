@@ -44,7 +44,4 @@ class PDMDependencyGetter(PEP621DependencyGetter):
         except KeyError:
             logging.debug("No section [tool.pdm.dev-dependencies] found in pyproject.toml")
 
-        return [
-            *dev_dependencies,
-            *self._extract_pep_508_dependencies(dev_dependency_strings, self.package_module_name_map),
-        ]
+        return [*dev_dependencies, *self._extract_pep_508_dependencies(dev_dependency_strings)]
