@@ -40,7 +40,7 @@ from tests.utils import create_files, run_within_dir
         (
             ("module_without_init",),
             "module_with_init",
-            {"foo", "module_without_init", "subdirectory"},
+            {"foo", "module_without_init", "subdirectory", "subdirectory_namespace"},
         ),
     ],
 )
@@ -49,10 +49,12 @@ def test__get_local_modules(
 ) -> None:
     with run_within_dir(tmp_path):
         create_files([
+            Path("directory_without_python_files/foo.txt"),
             Path("module_with_init/__init__.py"),
             Path("module_with_init/foo.py"),
             Path("module_with_init/subdirectory/__init__.py"),
             Path("module_with_init/subdirectory/foo.py"),
+            Path("module_with_init/subdirectory_namespace/foo.py"),
             Path("module_without_init/bar.py"),
             Path("local_file.py"),
         ])
