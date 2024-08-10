@@ -4,7 +4,6 @@ import logging
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from deptry.dependency_getter.base import DependenciesExtract
 from deptry.dependency_getter.pep621.base import PEP621DependencyGetter
 from deptry.utils import load_pyproject_toml
 
@@ -15,20 +14,13 @@ if TYPE_CHECKING:
 @dataclass
 class PDMDependencyGetter(PEP621DependencyGetter):
     """
-    Class to get dependencies that are specified according to PEP 621 from a `pyproject.toml` file for a project that uses PDM for its dependency management.
+    Class to get dependencies that are specified according to PEP 621 from a `pyproject.toml` file for a project that
+    uses PDM for its dependency management.
     """
 
-    def get(self) -> DependenciesExtract:
-        pep_621_dependencies_extract = super().get()
-
-        return DependenciesExtract(
-            pep_621_dependencies_extract.dependencies,
-            [*pep_621_dependencies_extract.dev_dependencies, *self._get_pdm_dev_dependencies()],
-        )
-
-    def _get_pdm_dev_dependencies(self) -> list[Dependency]:
+    def _get_dev_dependencies(self, dev_dependencies_from_optional: list[Dependency]) -> list[Dependency]:
         """
-        Try to get development dependencies from pyproject.toml, which with PDM are specified as:
+        Retrieve dev dependencies from pyproject.toml, which in PDM are specified as:
 
         [tool.pdm.dev-dependencies]
         test = [
@@ -40,6 +32,8 @@ class PDMDependencyGetter(PEP621DependencyGetter):
             "tox-pdm>=0.5",
         ]
         """
+        dev_dependencies = super()._get_dev_dependencies(dev_dependencies_from_optional)
+
         pyproject_data = load_pyproject_toml(self.config)
 
         dev_dependency_strings: list[str] = []
@@ -50,4 +44,7 @@ class PDMDependencyGetter(PEP621DependencyGetter):
         except KeyError:
             logging.debug("No section [tool.pdm.dev-dependencies] found in pyproject.toml")
 
-        return self._extract_pep_508_dependencies(dev_dependency_strings, self.package_module_name_map)
+        return [
+            *dev_dependencies,
+            *self._extract_pep_508_dependencies(dev_dependency_strings, self.package_module_name_map),
+        ]

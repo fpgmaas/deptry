@@ -44,10 +44,13 @@ class PEP621DependencyGetter(DependencyGetter):
         dependencies = self._get_dependencies()
         optional_dependencies = self._get_optional_dependencies()
 
-        dev_dependencies, remaining_optional_dependencies = (
+        dev_dependencies_from_optional, remaining_optional_dependencies = (
             self._split_development_dependencies_from_optional_dependencies(optional_dependencies)
         )
-        return DependenciesExtract([*dependencies, *remaining_optional_dependencies], dev_dependencies)
+        return DependenciesExtract(
+            [*dependencies, *remaining_optional_dependencies],
+            self._get_dev_dependencies(dev_dependencies_from_optional),
+        )
 
     def _get_dependencies(self) -> list[Dependency]:
         pyproject_data = load_pyproject_toml(self.config)
@@ -61,6 +64,9 @@ class PEP621DependencyGetter(DependencyGetter):
             group: self._extract_pep_508_dependencies(dependencies, self.package_module_name_map)
             for group, dependencies in pyproject_data["project"].get("optional-dependencies", {}).items()
         }
+
+    def _get_dev_dependencies(self, dev_dependencies_from_optional: list[Dependency]) -> list[Dependency]:
+        return dev_dependencies_from_optional
 
     def _check_for_invalid_group_names(self, optional_dependencies: dict[str, list[Dependency]]) -> None:
         missing_groups = set(self.pep621_dev_dependency_groups) - set(optional_dependencies.keys())
