@@ -5,8 +5,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import TYPE_CHECKING, Mapping
 
-from deptry.dependency_getter.pdm import PDMDependencyGetter
 from deptry.dependency_getter.pep621.base import PEP621DependencyGetter
+from deptry.dependency_getter.pep621.pdm import PDMDependencyGetter
 from deptry.dependency_getter.poetry import PoetryDependencyGetter
 from deptry.dependency_getter.requirements_files import RequirementsTxtDependencyGetter
 from deptry.exceptions import DependencySpecificationNotFoundError

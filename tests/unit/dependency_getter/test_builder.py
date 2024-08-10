@@ -8,8 +8,8 @@ from typing import TYPE_CHECKING
 import pytest
 
 from deptry.dependency_getter.builder import DependencyGetterBuilder
-from deptry.dependency_getter.pdm import PDMDependencyGetter
 from deptry.dependency_getter.pep621.base import PEP621DependencyGetter
+from deptry.dependency_getter.pep621.pdm import PDMDependencyGetter
 from deptry.dependency_getter.poetry import PoetryDependencyGetter
 from deptry.dependency_getter.requirements_files import RequirementsTxtDependencyGetter
 from deptry.exceptions import DependencySpecificationNotFoundError
