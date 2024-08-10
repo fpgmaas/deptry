@@ -11,7 +11,6 @@ from deptry.utils import load_pyproject_toml
 
 @dataclass
 class PEP621DependencyGetter(DependencyGetter):
-    pep621_dev_dependency_groups: tuple[str, ...] = ()
     """
     Class to extract dependencies from a pyproject.toml file in which dependencies are specified according to PEP 621. For example:
 
@@ -35,6 +34,8 @@ class PEP621DependencyGetter(DependencyGetter):
     argument, all dependencies from groups in that argument are considered to be development dependencies. e.g. in the example above, when
     `pep621_dev_dependency_groups=(test,)`, both `pytest` and `pytest-cov` are returned as development dependencies.
     """
+
+    pep621_dev_dependency_groups: tuple[str, ...] = ()
 
     def get(self) -> DependenciesExtract:
         dependencies = self._get_dependencies()
