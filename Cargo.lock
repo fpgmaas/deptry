@@ -53,6 +53,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1fd0f2584146f6f2ef48085050886acf353beff7305ebd1ae69500e27c67f64b"
 
 [[package]]
+name = "castaway"
+version = "0.2.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0abae9be0aaf9ea96a3b1b8b1b55c602ca751eba1b1500220cea4ecbafe7c0d5"
+dependencies = [
+ "rustversion",
+]
+
+[[package]]
 name = "cc"
 version = "1.1.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -73,6 +82,20 @@ dependencies = [
  "cfg-if",
  "encoding_rs",
  "memchr",
+]
+
+[[package]]
+name = "compact_str"
+version = "0.8.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6050c3a16ddab2e412160b31f2c871015704239bca62f72f6e5f0be631d3f644"
+dependencies = [
+ "castaway",
+ "cfg-if",
+ "itoa",
+ "rustversion",
+ "ryu",
+ "static_assertions",
 ]
 
 [[package]]
@@ -499,10 +522,11 @@ checksum = "7a66a03ae7c801facd77a29370b4faec201768915ac14a721ba36f20bc9c209b"
 [[package]]
 name = "ruff_python_ast"
 version = "0.0.0"
-source = "git+https://github.com/astral-sh/ruff?tag=0.5.0#244b923f615c2c162278fc0e06051853614760f3"
+source = "git+https://github.com/astral-sh/ruff?tag=0.5.7#221ea662e0e19384f774c99e93a9fd08b6f14029"
 dependencies = [
  "aho-corasick",
  "bitflags",
+ "compact_str",
  "is-macro",
  "itertools",
  "once_cell",
@@ -515,10 +539,11 @@ dependencies = [
 [[package]]
 name = "ruff_python_parser"
 version = "0.0.0"
-source = "git+https://github.com/astral-sh/ruff?tag=0.5.0#244b923f615c2c162278fc0e06051853614760f3"
+source = "git+https://github.com/astral-sh/ruff?tag=0.5.7#221ea662e0e19384f774c99e93a9fd08b6f14029"
 dependencies = [
  "bitflags",
  "bstr",
+ "compact_str",
  "memchr",
  "ruff_python_ast",
  "ruff_python_trivia",
@@ -533,7 +558,7 @@ dependencies = [
 [[package]]
 name = "ruff_python_trivia"
 version = "0.0.0"
-source = "git+https://github.com/astral-sh/ruff?tag=0.5.0#244b923f615c2c162278fc0e06051853614760f3"
+source = "git+https://github.com/astral-sh/ruff?tag=0.5.7#221ea662e0e19384f774c99e93a9fd08b6f14029"
 dependencies = [
  "itertools",
  "ruff_source_file",
@@ -544,7 +569,7 @@ dependencies = [
 [[package]]
 name = "ruff_source_file"
 version = "0.0.0"
-source = "git+https://github.com/astral-sh/ruff?tag=0.5.0#244b923f615c2c162278fc0e06051853614760f3"
+source = "git+https://github.com/astral-sh/ruff?tag=0.5.7#221ea662e0e19384f774c99e93a9fd08b6f14029"
 dependencies = [
  "memchr",
  "once_cell",
@@ -554,13 +579,19 @@ dependencies = [
 [[package]]
 name = "ruff_text_size"
 version = "0.0.0"
-source = "git+https://github.com/astral-sh/ruff?tag=0.5.0#244b923f615c2c162278fc0e06051853614760f3"
+source = "git+https://github.com/astral-sh/ruff?tag=0.5.7#221ea662e0e19384f774c99e93a9fd08b6f14029"
 
 [[package]]
 name = "rustc-hash"
 version = "2.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "583034fd73374156e66797ed8e5b0d5690409c9226b22d87cb7f19821c05d152"
+
+[[package]]
+name = "rustversion"
+version = "1.0.17"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "955d28af4278de8121b7ebeb796b6a45735dc01436d898801014aced2773a3d6"
 
 [[package]]
 name = "ryu"
