@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.19.1 - 2024-08-10
+
+### Features
+
+* Add back PEP 420 support behind `--experimental-namespace-package` feature
+  flag ([#808](https://github.com/fpgmaas/deptry/pull/808))
+* Add support for Python 3.13 ([#713](https://github.com/fpgmaas/deptry/pull/713), [#809](https://github.com/fpgmaas/deptry/pull/809))
+
+### Miscellaneous
+
+* Provide Windows ARM64 wheels for Python and PyPy ([#807](https://github.com/fpgmaas/deptry/pull/807))
+
+### Full Changelog
+
+https://github.com/fpgmaas/deptry/compare/0.19.0...0.19.1
+
+
 ## 0.19.0 - 2024-08-08
 
 This release reverts https://github.com/fpgmaas/deptry/pull/753 that caused a noticeable performance regression on large
