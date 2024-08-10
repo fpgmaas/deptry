@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import os
 import sys
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
@@ -40,6 +41,7 @@ class Core:
     json_output: str
     package_module_name_map: Mapping[str, tuple[str, ...]]
     pep621_dev_dependency_groups: tuple[str, ...]
+    experimental_namespace_package: bool
 
     def run(self) -> None:
         self._log_config()
@@ -116,13 +118,24 @@ class Core:
 
         return guessed_local_modules | set(self.known_first_party)
 
-    @staticmethod
-    def _is_local_module(path: Path) -> bool:
+    def _is_local_module(self, path: Path) -> bool:
         """Guess if a module is a local Python module."""
         return bool(
             (path.is_file() and path.name != "__init__.py" and path.suffix == ".py")
-            or (path.is_dir() and list(path.glob("*.py")))
+            or (path.is_dir() and self._directory_has_python_files(path))
         )
+
+    def _directory_has_python_files(self, path: Path) -> bool:
+        """Check if there is any Python file in the current directory. If experimental support for namespace packages
+        (PEP 420) is enabled, also search for Python files in subdirectories."""
+        if self.experimental_namespace_package:
+            for _root, _dirs, files in os.walk(path):
+                for file in files:
+                    if file.endswith(".py"):
+                        return True
+            return False
+
+        return bool(list(path.glob("*.py")))
 
     @staticmethod
     def _get_standard_library_modules() -> frozenset[str]:

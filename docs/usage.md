@@ -489,3 +489,28 @@ pep621_dev_dependency_groups = ["test", "docs"]
 ```shell
 deptry . --pep621-dev-dependency-groups "test,docs"
 ```
+
+#### Experimental namespace package
+
+!!! warning
+    This option is experimental and disabled by default for now, as it could degrade performance in large codebases.
+
+Enable experimental namespace package ([PEP 420](https://peps.python.org/pep-0420/)) support.
+
+When enabled, deptry will not only rely on the presence of `__init__.py` file in a directory to determine if it is a
+local Python module or not, but will consider any Python file in the directory or its subdirectories, recursively. If a
+Python file is found, then the directory will be considered as a local Python module.
+
+- Type: `bool`
+- Default: `False`
+- `pyproject.toml` option name: `experimental_namespace_package`
+- CLI option name: `--experimental-namespace-package`
+- `pyproject.toml` example:
+```toml
+[tool.deptry]
+experimental_namespace_package = true
+```
+- CLI example:
+```shell
+deptry . --experimental-namespace-package
+```
