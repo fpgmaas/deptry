@@ -184,10 +184,8 @@ select = [
     "TRY",
 ]
 ignore = [
-    # LineTooLong
+    # line-too-long (https://docs.astral.sh/ruff/rules/line-too-long/)
     "E501",
-    # DoNotAssignLambda
-    "E731",
 ]
 
 [tool.ruff.lint.flake8-type-checking]
