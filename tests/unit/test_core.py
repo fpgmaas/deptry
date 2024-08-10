@@ -25,36 +25,87 @@ from tests.utils import create_files, run_within_dir
 
 
 @pytest.mark.parametrize(
-    ("known_first_party", "root_suffix", "expected"),
+    ("known_first_party", "root_suffix", "experimental_namespace_package", "expected"),
     [
         (
             (),
             "",
-            {"module_with_init", "module_without_init", "local_file"},
+            False,
+            {
+                "local_file",
+                "module_with_init",
+                "module_without_init",
+            },
         ),
         (
             ("module_with_init", "module_without_init"),
             "",
-            {"module_with_init", "module_without_init", "local_file"},
+            False,
+            {
+                "local_file",
+                "module_with_init",
+                "module_without_init",
+            },
         ),
         (
             ("module_without_init",),
             "module_with_init",
-            {"foo", "module_without_init", "subdirectory", "subdirectory_namespace"},
+            False,
+            {
+                "foo",
+                "module_without_init",
+                "subdirectory",
+            },
+        ),
+        (
+            (),
+            "",
+            True,
+            {
+                "local_file",
+                "module_using_namespace",
+                "module_with_init",
+                "module_without_init",
+            },
+        ),
+        (
+            ("module_with_init", "module_without_init"),
+            "",
+            True,
+            {
+                "local_file",
+                "module_using_namespace",
+                "module_with_init",
+                "module_without_init",
+            },
+        ),
+        (
+            ("module_without_init",),
+            "module_with_init",
+            True,
+            {
+                "foo",
+                "module_without_init",
+                "subdirectory",
+            },
         ),
     ],
 )
 def test__get_local_modules(
-    tmp_path: Path, known_first_party: tuple[str, ...], root_suffix: str, expected: set[str]
+    tmp_path: Path,
+    known_first_party: tuple[str, ...],
+    root_suffix: str,
+    experimental_namespace_package: bool,
+    expected: set[str],
 ) -> None:
     with run_within_dir(tmp_path):
         create_files([
             Path("directory_without_python_files/foo.txt"),
+            Path("module_using_namespace/subdirectory_namespace/foo.py"),
             Path("module_with_init/__init__.py"),
             Path("module_with_init/foo.py"),
             Path("module_with_init/subdirectory/__init__.py"),
             Path("module_with_init/subdirectory/foo.py"),
-            Path("module_with_init/subdirectory_namespace/foo.py"),
             Path("module_without_init/bar.py"),
             Path("local_file.py"),
         ])
@@ -77,7 +128,7 @@ def test__get_local_modules(
                 package_module_name_map={},
                 pep621_dev_dependency_groups=(),
                 using_default_requirements_files=True,
-                experimental_namespace_package=False,
+                experimental_namespace_package=experimental_namespace_package,
             )._get_local_modules()
             == expected
         )
