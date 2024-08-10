@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import shutil
 import sys
 from collections import defaultdict
 from importlib.metadata import version
@@ -240,7 +241,7 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
     is_flag=True,
     help="Enable experimental support for namespace package (PEP 420) when detecting local modules (https://peps.python.org/pep-0420/).",
 )
-def deptry(
+def cli(
     root: tuple[Path, ...],
     config: Path,
     no_ansi: bool,
@@ -290,3 +291,9 @@ def deptry(
         pep621_dev_dependency_groups=pep621_dev_dependency_groups,
         experimental_namespace_package=experimental_namespace_package,
     ).run()
+
+
+def deptry() -> None:
+    column_size, _line_size = shutil.get_terminal_size()
+
+    cli(max_content_width=column_size)
