@@ -18,7 +18,7 @@ runs:
       uses: pdm-project/setup-pdm@v4
       env:
         # renovate: datasource=pypi depName=pdm
-        PDM_VERSION: "2.18.0"
+        PDM_VERSION: "2.18.1"
       with:
         version: ${{ env.PDM_VERSION }}
         python-version: ${{ inputs.python-version }}
