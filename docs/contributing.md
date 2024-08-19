@@ -62,12 +62,12 @@ Ready to contribute? Here's how to set up _deptry_ for local development. Please
 
     Then, install the virtual environment with:
     ```bash
-    pdm install
+    uv sync
     ```
 
 4. Install [pre-commit](https://pre-commit.com/) to run linters/formatters at commit time:
     ```bash
-    pdm run pre-commit install
+    uv run pre-commit install
     ```
 
 5. Create a branch for local development:

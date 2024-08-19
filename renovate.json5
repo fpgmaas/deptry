@@ -49,8 +49,8 @@
       automerge: true,
     },
     {
-      matchPackageNames: ["pdm", "pdm-project/pdm"],
-      groupName: "pdm-version",
+      matchPackageNames: ["uv", "astral-sh/uv-pre-commit"],
+      groupName: "uv-version",
     },
     {
       matchPackageNames: ["astral-sh/ruff-pre-commit"],
