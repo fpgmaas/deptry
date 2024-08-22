@@ -35,16 +35,11 @@ dev-dependencies = [
     "mkdocs==1.6.1",
     "mkdocs-material==9.5.33",
     "mypy==1.11.2",
-    # Support for Python 3.8 was dropped in https://github.com/pre-commit/pre-commit/releases/tag/v3.6.0
-    "pre-commit==3.8.0; python_version >= '3.9'",
     "pytest==8.3.2",
     "pytest-cov==5.0.0",
     "pytest-xdist[psutil]==3.6.1",
     "types-colorama==0.4.15.20240311; sys_platform == 'win32'",
 ]
-# Workaround from https://github.com/astral-sh/uv/issues/4668#issuecomment-2298973036. Can be removed once Python 3.8
-# support is dropped, or if there is a proper fix for the issue.
-environments = ["python_version < '3.9'", "python_version >= '3.9'"]
 
 [project.urls]
 homepage = "https://deptry.com"

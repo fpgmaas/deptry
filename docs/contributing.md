@@ -40,7 +40,9 @@ If you are proposing a new feature:
 
 ## Get started!
 
-Ready to contribute? Here's how to set up _deptry_ for local development. Please note this documentation assumes you already have [PDM](https://pdm-project.org/latest/) and [Git](https://git-scm.com/) installed and ready to go.
+Ready to contribute? Here's how to set up _deptry_ for local development. Please note this documentation assumes you
+already have [uv](https://docs.astral.sh/uv/), [Git](https://git-scm.com/) and [pre-commit](https://pre-commit.com/)
+installed and ready to go.
 
 1. [Fork](https://github.com/fpgmaas/deptry/fork) the _deptry_ repository on GitHub.
 
@@ -55,19 +57,14 @@ Ready to contribute? Here's how to set up _deptry_ for local development. Please
     cd deptry
     ```
 
-    If you are using [pyenv](https://github.com/pyenv/pyenv), select a version to use locally (see installed versions with `pyenv versions`):
-    ```bash
-    pyenv local <x.y.z>
-    ```
-
     Then, install the virtual environment with:
     ```bash
     uv sync
     ```
 
-4. Install [pre-commit](https://pre-commit.com/) to run linters/formatters at commit time:
+4. Install `pre-commit` hooks to run linters/formatters at commit time:
     ```bash
-    uv run pre-commit install
+    pre-commit install
     ```
 
 5. Create a branch for local development:
