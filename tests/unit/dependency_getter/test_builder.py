@@ -8,8 +8,9 @@ from typing import TYPE_CHECKING
 import pytest
 
 from deptry.dependency_getter.builder import DependencyGetterBuilder
-from deptry.dependency_getter.pdm import PDMDependencyGetter
-from deptry.dependency_getter.pep_621 import PEP621DependencyGetter
+from deptry.dependency_getter.pep621.base import PEP621DependencyGetter
+from deptry.dependency_getter.pep621.pdm import PDMDependencyGetter
+from deptry.dependency_getter.pep621.uv import UvDependencyGetter
 from deptry.dependency_getter.poetry import PoetryDependencyGetter
 from deptry.dependency_getter.requirements_files import RequirementsTxtDependencyGetter
 from deptry.exceptions import DependencySpecificationNotFoundError
@@ -50,6 +51,30 @@ def test_pdm_without_dev_dependencies(tmp_path: Path) -> None:
 
         with pyproject_toml_path.open("w") as f:
             f.write('[project]\ndependencies=["foo"]\n[tool.pdm]\nversion = {source = "scm"}')
+
+        spec = DependencyGetterBuilder(pyproject_toml_path).build()
+        assert isinstance(spec, PEP621DependencyGetter)
+
+
+def test_uv_with_dev_dependencies(tmp_path: Path) -> None:
+    with run_within_dir(tmp_path):
+        pyproject_toml_path = Path("pyproject.toml")
+
+        with pyproject_toml_path.open("w") as f:
+            f.write(
+                '[project]\ndependencies=["foo"]\n[tool.uv]\ncompile-bytecode = true\n[tool.uv.dev-dependencies]\n["bar"]'
+            )
+
+        spec = DependencyGetterBuilder(pyproject_toml_path).build()
+        assert isinstance(spec, UvDependencyGetter)
+
+
+def test_uv_without_dev_dependencies(tmp_path: Path) -> None:
+    with run_within_dir(tmp_path):
+        pyproject_toml_path = Path("pyproject.toml")
+
+        with pyproject_toml_path.open("w") as f:
+            f.write('[project]\ndependencies=["foo"]\n[tool.uv]\ncompile-bytecode = true')
 
         spec = DependencyGetterBuilder(pyproject_toml_path).build()
         assert isinstance(spec, PEP621DependencyGetter)
@@ -128,6 +153,10 @@ def test_dependency_specification_not_found_raises_exception(tmp_path: Path, cap
         ),
         (
             "pyproject.toml does not contain a [tool.pdm.dev-dependencies] section, so PDM is not used to specify the"
+            " project's dependencies."
+        ),
+        (
+            "pyproject.toml does not contain a [tool.uv.dev-dependencies] section, so uv is not used to specify the"
             " project's dependencies."
         ),
         (

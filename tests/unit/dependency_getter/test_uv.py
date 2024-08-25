@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from deptry.dependency_getter.pep621.pdm import PDMDependencyGetter
+from deptry.dependency_getter.pep621.uv import UvDependencyGetter
 from tests.utils import run_within_dir
 
 
@@ -19,12 +19,10 @@ dependencies = [
     "fox-python",  # top level module is called "fox"
 ]
 
-[tool.pdm.dev-dependencies]
-test = [
+[tool.uv]
+dev-dependencies = [
     "qux",
-    "bar; python_version < 3.11"
-]
-tox = [
+    "bar; python_version < 3.11",
     "foo-bar",
 ]
 """
@@ -33,7 +31,7 @@ tox = [
         with Path("pyproject.toml").open("w") as f:
             f.write(fake_pyproject_toml)
 
-        dependencies_extract = PDMDependencyGetter(
+        dependencies_extract = UvDependencyGetter(
             config=Path("pyproject.toml"),
             package_module_name_map={"fox-python": ("fox",)},
         ).get()

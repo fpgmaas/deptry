@@ -5,8 +5,9 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import TYPE_CHECKING, Mapping
 
-from deptry.dependency_getter.pdm import PDMDependencyGetter
-from deptry.dependency_getter.pep_621 import PEP621DependencyGetter
+from deptry.dependency_getter.pep621.base import PEP621DependencyGetter
+from deptry.dependency_getter.pep621.pdm import PDMDependencyGetter
+from deptry.dependency_getter.pep621.uv import UvDependencyGetter
 from deptry.dependency_getter.poetry import PoetryDependencyGetter
 from deptry.dependency_getter.requirements_files import RequirementsTxtDependencyGetter
 from deptry.exceptions import DependencySpecificationNotFoundError
@@ -46,6 +47,9 @@ class DependencyGetterBuilder:
 
             if self._project_uses_pdm(pyproject_toml):
                 return PDMDependencyGetter(self.config, self.package_module_name_map, self.pep621_dev_dependency_groups)
+
+            if self._project_uses_uv(pyproject_toml):
+                return UvDependencyGetter(self.config, self.package_module_name_map, self.pep621_dev_dependency_groups)
 
             if self._project_uses_pep_621(pyproject_toml):
                 return PEP621DependencyGetter(
@@ -97,6 +101,23 @@ class DependencyGetterBuilder:
             logging.debug(
                 "pyproject.toml does not contain a [tool.pdm.dev-dependencies] section, so PDM is not used to specify"
                 " the project's dependencies."
+            )
+            return False
+        else:
+            return True
+
+    @staticmethod
+    def _project_uses_uv(pyproject_toml: dict[str, Any]) -> bool:
+        try:
+            pyproject_toml["tool"]["uv"]["dev-dependencies"]
+            logging.debug(
+                "pyproject.toml contains a [tool.uv.dev-dependencies] section, so uv is used to specify the project's"
+                " dependencies."
+            )
+        except KeyError:
+            logging.debug(
+                "pyproject.toml does not contain a [tool.uv.dev-dependencies] section, so uv is not used to specify the"
+                " project's dependencies."
             )
             return False
         else:
