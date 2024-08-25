@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 import pytest
 from click.testing import CliRunner
 
-from deptry.cli import deptry
+from deptry.cli import cli
 from tests.functional.utils import Project
 from tests.utils import get_issues_report, stylize
 
@@ -625,6 +625,6 @@ def test_cli_with_json_output(poetry_venv_factory: PoetryVenvFactory) -> None:
 
 
 def test_cli_help() -> None:
-    result = CliRunner().invoke(deptry, "--help")
+    result = CliRunner().invoke(cli, "--help")
 
     assert result.exit_code == 0
