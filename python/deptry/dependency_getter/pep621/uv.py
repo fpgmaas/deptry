@@ -28,6 +28,8 @@ class UvDependencyGetter(PEP621DependencyGetter):
             "pytest-cov==5.0.0",
             "tox",
         ]
+
+        Dev dependencies marked as such from optional dependencies are also added to the list of dev dependencies found.
         """
         dev_dependencies = super()._get_dev_dependencies(dev_dependencies_from_optional)
 
