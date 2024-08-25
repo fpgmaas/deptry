@@ -62,3 +62,9 @@ markdown_extensions:
       permalink: true
   - pymdownx.arithmatex:
       generic: true
+
+validation:
+  omitted_files: warn
+  absolute_links: warn
+  unrecognized_links: warn
+  anchors: warn
