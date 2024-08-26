@@ -34,7 +34,7 @@ Those flags have now been removed. If you relied on them, you should now use, re
 
 ### Miscellaneous
 
-* Provide Windows ARM64 wheels for Python and PyPy ([#807](https://github.com/fpgmaas/deptry/pull/807))
+* Provide Windows ARM64 wheels for Python ([#807](https://github.com/fpgmaas/deptry/pull/807))
 
 ### Full Changelog
 
