@@ -20,9 +20,9 @@ Those flags have now been removed. If you relied on them, you should now use, re
 * deptry now detects [uv](https://github.com/astral-sh/uv) and reads development dependencies from
   `[uv.tool.dev-dependencies]` section ([#816](https://github.com/fpgmaas/deptry/pull/816))
 * Dynamically set max terminal width for better readability when displaying
-  help ([#817](https://github.com/fpgmaas/deptry/pull/817)
+  help ([#817](https://github.com/fpgmaas/deptry/pull/817))
 * Remove deprecated `--requirements-txt`/`--requirements-txt-dev`
-  flags ([#819](https://github.com/fpgmaas/deptry/pull/819)
+  flags ([#819](https://github.com/fpgmaas/deptry/pull/819))
 
 ## 0.19.1 - 2024-08-10
 
