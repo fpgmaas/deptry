@@ -1,5 +1,29 @@
 # Changelog
 
+## 0.20.0 - 2024-08-27
+
+### Breaking changes
+
+In release [0.15.0](https://github.com/fpgmaas/deptry/releases/tag/0.15.0), we announced the deprecation of the
+following flags:
+
+* `--requirements-txt` (and its `requirements_txt` setting counterpart in `pyproject.toml`)
+* `--requirements-txt-dev` (and its `requirements_txt_dev` setting counterpart in `pyproject.toml`)
+
+Those flags have now been removed. If you relied on them, you should now use, respectively:
+
+* `--requirements-files` (and its `requirements_files` setting counterpart in `pyproject.toml`)
+* `--requirements-files-dev` (and its `requirements_files_dev` setting counterpart in `pyproject.toml`)
+
+### Features
+
+* deptry now detects [uv](https://github.com/astral-sh/uv) and reads development dependencies from
+  `[uv.tool.dev-dependencies]` section ([#816](https://github.com/fpgmaas/deptry/pull/816))
+* Dynamically set max terminal width for better readability when displaying
+  help ([#817](https://github.com/fpgmaas/deptry/pull/817)
+* Remove deprecated `--requirements-txt`/`--requirements-txt-dev`
+  flags ([#819](https://github.com/fpgmaas/deptry/pull/819)
+
 ## 0.19.1 - 2024-08-10
 
 ### Features
@@ -10,7 +34,7 @@
 
 ### Miscellaneous
 
-* Provide Windows ARM64 wheels for Python and PyPy ([#807](https://github.com/fpgmaas/deptry/pull/807))
+* Provide Windows ARM64 wheels for Python ([#807](https://github.com/fpgmaas/deptry/pull/807))
 
 ### Full Changelog
 
@@ -157,7 +181,6 @@ https://github.com/fpgmaas/deptry/compare/0.15.0...0.16.0
   * `--skip-transitive`
 
   These flags are now no longer supported. If you are still using these flags and are planning to upgrade to this release, please refer to the release notes of [0.12.0](https://github.com/fpgmaas/deptry/releases/tag/0.12.0) for instructions on how to migrate to the new method of configuration. ([#596](https://github.com/fpgmaas/deptry/pull/596))
-
 
 ### Deprecations
 

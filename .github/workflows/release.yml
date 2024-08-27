@@ -68,8 +68,12 @@ jobs:
     needs: [set-version]
     strategy:
       matrix:
-        target: [x64, aarch64]
+        target: [x64]
         python: ['3.12', 'pypy3.10']
+        # PyPy doesn't support Windows ARM64.
+        include:
+          - python: '3.12'
+            target: aarch64
     steps:
       - name: Check out
         uses: actions/checkout@v4
