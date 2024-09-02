@@ -183,7 +183,9 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up the environment
-        uses: ./.github/actions/setup-env
+        uses: ./.github/actions/setup-python-env
 
       - name: Deploy documentation
-        run: pdm run mkdocs gh-deploy --force
+        # `--no-project` is a workaround to avoid the installation of deptry
+        # itself (https://github.com/astral-sh/uv/issues/6578)
+        run: uv run --no-project mkdocs gh-deploy --force
