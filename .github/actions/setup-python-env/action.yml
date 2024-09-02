@@ -22,7 +22,7 @@ runs:
       run: pipx install uv
       env:
         # renovate: datasource=pypi depName=uv
-        UV_VERSION: '0.4.1'
+        UV_VERSION: '0.4.2'
       shell: bash
 
     - name: Install Python dependencies
