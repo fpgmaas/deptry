@@ -25,7 +25,7 @@ class DependencyGetterBuilder:
     Class to detect how dependencies are specified:
     - Either find a pyproject.toml with a [poetry.tool.dependencies] section
     - Otherwise, find a pyproject.toml with a [tool.pdm] section
-    - Otherwise, fina a pyproject.toml with a [tool.uv.dev-dependencies] section
+    - Otherwise, find a pyproject.toml with a [tool.uv.dev-dependencies] section
     - Otherwise, find a pyproject.toml with a [project] section
     - Otherwise, find a requirements.txt.
     """
