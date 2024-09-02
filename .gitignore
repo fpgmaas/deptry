@@ -4,8 +4,6 @@ deptry.json
 .DS_Store
 .vscode
 
-.pdm-python
-
 # From https://raw.githubusercontent.com/github/gitignore/main/Python.gitignore
 
  Byte-compiled / optimized / DLL files
@@ -91,8 +89,6 @@ target/
 # IPython
 profile_default/
 ipython_config.py
-
-.pdm.toml
 
 # PEP 582; used by e.g. github.com/David-OConnor/pyflow and github.com/pdm-project/pdm
 __pypackages__/
