@@ -5,6 +5,11 @@ on:
     types: [published]
   workflow_dispatch:
 
+env:
+  PYTHON_VERSION: '3.12'
+  # renovate: datasource=pypi depName=uv
+  UV_VERSION: '0.4.6'
+
 jobs:
   set-version:
     runs-on: ubuntu-24.04
@@ -45,7 +50,8 @@ jobs:
         with:
           name: pyproject-toml
 
-      - uses: actions/setup-python@v5
+      - name: Install Python
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
 
@@ -83,7 +89,8 @@ jobs:
         with:
           name: pyproject-toml
 
-      - uses: actions/setup-python@v5
+      - name: Install Python
+        uses: actions/setup-python@v5
         id: setup-python
         with:
           python-version: ${{ matrix.python }}
@@ -117,7 +124,8 @@ jobs:
         with:
           name: pyproject-toml
 
-      - uses: actions/setup-python@v5
+      - name: Install Python
+        uses: actions/setup-python@v5
         id: setup-python
         with:
           python-version: ${{ matrix.python }}
@@ -182,8 +190,18 @@ jobs:
       - name: Check out
         uses: actions/checkout@v4
 
-      - name: Set up the environment
-        uses: ./.github/actions/setup-python-env
+      - name: Install uv
+        uses: astral-sh/setup-uv@v2
+        with:
+          version: ${{ env.UV_VERSION }}
+
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install Python dependencies
+        run: uv sync --frozen --no-install-project
 
       - name: Deploy documentation
         # `--no-project` is a workaround to avoid the installation of deptry
