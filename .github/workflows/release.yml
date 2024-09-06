@@ -144,7 +144,7 @@ jobs:
           path: dist
 
   sdist:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     needs: [set-version]
     steps:
       - uses: actions/checkout@v4
@@ -168,7 +168,7 @@ jobs:
 
   publish:
     name: Publish
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     needs: [linux, windows, macos, sdist]
     if: ${{ github.event_name == 'release' }}
     steps:
