@@ -149,6 +149,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
       - name: Download updated pyproject.toml
         uses: actions/download-artifact@v4
         with:
@@ -173,6 +178,11 @@ jobs:
     if: ${{ github.event_name == 'release' }}
     steps:
       - uses: actions/download-artifact@v4
+
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Publish to PyPI
         uses: PyO3/maturin-action@v1
