@@ -2,13 +2,9 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
 
 from deptry.dependency_getter.pep621.base import PEP621DependencyGetter
 from deptry.utils import load_pyproject_toml
-
-if TYPE_CHECKING:
-    from deptry.dependency import Dependency
 
 
 @dataclass
@@ -18,7 +14,7 @@ class UvDependencyGetter(PEP621DependencyGetter):
     uses uv for its dependency management.
     """
 
-    def _get_dev_dependencies(self, dev_dependencies_from_optional: list[Dependency]) -> list[Dependency]:
+    def _get_dev_dependencies(self, dev_dependencies_from_optional: list[str]) -> list[str]:
         """
         Retrieve dev dependencies from pyproject.toml, which in uv are specified as:
 

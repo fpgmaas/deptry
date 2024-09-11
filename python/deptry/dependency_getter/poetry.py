@@ -2,14 +2,10 @@ from __future__ import annotations
 
 import contextlib
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
-from deptry.dependency import Dependency
-from deptry.dependency_getter.base import DependenciesExtract, DependencyGetter
+from deptry.dependency_getter.base import DependenciesExtract, DependencyExtract, DependencyGetter
 from deptry.utils import load_pyproject_toml
-
-if TYPE_CHECKING:
-    from collections.abc import Mapping, Sequence
 
 
 @dataclass
@@ -19,12 +15,12 @@ class PoetryDependencyGetter(DependencyGetter):
     def get(self) -> DependenciesExtract:
         return DependenciesExtract(self._get_poetry_dependencies(), self._get_poetry_dev_dependencies())
 
-    def _get_poetry_dependencies(self) -> list[Dependency]:
+    def _get_poetry_dependencies(self) -> list[DependencyExtract]:
         pyproject_data = load_pyproject_toml(self.config)
         dependencies: dict[str, Any] = pyproject_data["tool"]["poetry"].get("dependencies", {})
-        return self._get_dependencies(dependencies, self.package_module_name_map)
+        return self._get_dependencies(dependencies)
 
-    def _get_poetry_dev_dependencies(self) -> list[Dependency]:
+    def _get_poetry_dev_dependencies(self) -> list[DependencyExtract]:
         """
         Poetry's development dependencies can be specified under either of the following:
 
@@ -48,13 +44,7 @@ class PoetryDependencyGetter(DependencyGetter):
             with contextlib.suppress(KeyError):
                 dependencies = {**dependencies, **group_values["dependencies"]}
 
-        return self._get_dependencies(dependencies, self.package_module_name_map)
+        return self._get_dependencies(dependencies)
 
-    def _get_dependencies(
-        self, poetry_dependencies: dict[str, Any], package_module_name_map: Mapping[str, Sequence[str]]
-    ) -> list[Dependency]:
-        return [
-            Dependency(dep, self.config, module_names=package_module_name_map.get(dep))
-            for dep in poetry_dependencies
-            if dep != "python"
-        ]
+    def _get_dependencies(self, poetry_dependencies: dict[str, Any]) -> list[DependencyExtract]:
+        return [DependencyExtract(dep, self.config) for dep in poetry_dependencies if dep != "python"]

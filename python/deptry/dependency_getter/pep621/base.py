@@ -4,8 +4,7 @@ import logging
 import re
 from dataclasses import dataclass
 
-from deptry.dependency import Dependency
-from deptry.dependency_getter.base import DependenciesExtract, DependencyGetter
+from deptry.dependency_getter.base import DependenciesExtract, DependencyExtract, DependencyGetter
 from deptry.utils import load_pyproject_toml
 
 
@@ -45,16 +44,16 @@ class PEP621DependencyGetter(DependencyGetter):
             self._split_development_dependencies_from_optional_dependencies(optional_dependencies)
         )
         return DependenciesExtract(
-            [*dependencies, *remaining_optional_dependencies],
-            self._get_dev_dependencies(dev_dependencies_from_optional),
+            [DependencyExtract(dep, self.config) for dep in [*dependencies, *remaining_optional_dependencies]],
+            [DependencyExtract(dep, self.config) for dep in self._get_dev_dependencies(dev_dependencies_from_optional)],
         )
 
-    def _get_dependencies(self) -> list[Dependency]:
+    def _get_dependencies(self) -> list[str]:
         pyproject_data = load_pyproject_toml(self.config)
         dependency_strings: list[str] = pyproject_data["project"].get("dependencies", [])
         return self._extract_pep_508_dependencies(dependency_strings)
 
-    def _get_optional_dependencies(self) -> dict[str, list[Dependency]]:
+    def _get_optional_dependencies(self) -> dict[str, list[str]]:
         pyproject_data = load_pyproject_toml(self.config)
 
         return {
@@ -62,10 +61,10 @@ class PEP621DependencyGetter(DependencyGetter):
             for group, dependencies in pyproject_data["project"].get("optional-dependencies", {}).items()
         }
 
-    def _get_dev_dependencies(self, dev_dependencies_from_optional: list[Dependency]) -> list[Dependency]:
+    def _get_dev_dependencies(self, dev_dependencies_from_optional: list[str]) -> list[str]:
         return dev_dependencies_from_optional
 
-    def _check_for_invalid_group_names(self, optional_dependencies: dict[str, list[Dependency]]) -> None:
+    def _check_for_invalid_group_names(self, optional_dependencies: dict[str, list[str]]) -> None:
         missing_groups = set(self.pep621_dev_dependency_groups) - set(optional_dependencies.keys())
         if missing_groups:
             logging.warning(
@@ -76,14 +75,14 @@ class PEP621DependencyGetter(DependencyGetter):
             )
 
     def _split_development_dependencies_from_optional_dependencies(
-        self, optional_dependencies: dict[str, list[Dependency]]
-    ) -> tuple[list[Dependency], list[Dependency]]:
+        self, optional_dependencies: dict[str, list[str]]
+    ) -> tuple[list[str], list[str]]:
         """
         Split the optional dependencies into optional dependencies and development dependencies based on the `pep621_dev_dependency_groups`
         parameter. Return a tuple with two values: a list of the development dependencies and a list of the remaining 'true' optional dependencies.
         """
-        dev_dependencies: list[Dependency] = []
-        regular_dependencies: list[Dependency] = []
+        dev_dependencies: list[str] = []
+        regular_dependencies: list[str] = []
 
         if self.pep621_dev_dependency_groups:
             self._check_for_invalid_group_names(optional_dependencies)
@@ -96,7 +95,7 @@ class PEP621DependencyGetter(DependencyGetter):
 
         return dev_dependencies, regular_dependencies
 
-    def _extract_pep_508_dependencies(self, dependencies: list[str]) -> list[Dependency]:
+    def _extract_pep_508_dependencies(self, dependencies: list[str]) -> list[str]:
         """
         Given a list of dependency specifications (e.g. "django>2.1; os_name != 'nt'"), convert them to Dependency objects.
         """
@@ -106,13 +105,7 @@ class PEP621DependencyGetter(DependencyGetter):
             # An example of a spec is `"tomli>=1.1.0; python_version < \"3.11\""`
             name = self._find_dependency_name_in(spec)
             if name:
-                extracted_dependencies.append(
-                    Dependency(
-                        name,
-                        self.config,
-                        module_names=self.package_module_name_map.get(name),
-                    )
-                )
+                extracted_dependencies.append(name)
 
         return extracted_dependencies
 

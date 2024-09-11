@@ -8,8 +8,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from urllib.parse import urlparse
 
-from deptry.dependency import Dependency
-from deptry.dependency_getter.base import DependenciesExtract, DependencyGetter
+from deptry.dependency_getter.base import DependenciesExtract, DependencyExtract, DependencyGetter
 
 
 @dataclass
@@ -46,7 +45,9 @@ class RequirementsTxtDependencyGetter(DependencyGetter):
             logging.debug("Found files with development requirements! %s", dev_requirements_files)
         return dev_requirements_files
 
-    def _get_dependencies_from_requirements_files(self, file_name: str, is_dev: bool = False) -> list[Dependency]:
+    def _get_dependencies_from_requirements_files(
+        self, file_name: str, is_dev: bool = False
+    ) -> list[DependencyExtract]:
         logging.debug("Scanning %s for %s", file_name, "dev dependencies" if is_dev else "dependencies")
         dependencies = []
 
@@ -62,21 +63,15 @@ class RequirementsTxtDependencyGetter(DependencyGetter):
 
         return dependencies
 
-    def _extract_dependency_from_line(self, line: str, file_path: Path) -> Dependency | None:
+    def _extract_dependency_from_line(self, line: str, file_path: Path) -> DependencyExtract | None:
         """
         Extract a dependency from a single line of a requirements.txt file.
         """
         line = self._remove_comments_from(line)
         line = self._remove_newlines_from(line)
         name = self._find_dependency_name_in(line)
-        if name:
-            return Dependency(
-                name=name,
-                definition_file=file_path,
-                module_names=self.package_module_name_map.get(name),
-            )
-        else:
-            return None
+
+        return DependencyExtract(name=name, definition_file=file_path) if name else None
 
     def _find_dependency_name_in(self, line: str) -> str | None:
         """

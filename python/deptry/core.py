@@ -6,6 +6,7 @@ import sys
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
+from deptry.dependency import Dependency
 from deptry.dependency_getter.builder import DependencyGetterBuilder
 from deptry.exceptions import UnsupportedPythonVersionError
 from deptry.imports.extract import get_imported_modules_from_list_of_files
@@ -19,7 +20,6 @@ if TYPE_CHECKING:
     from collections.abc import Mapping
     from pathlib import Path
 
-    from deptry.dependency_getter.base import DependenciesExtract
     from deptry.violations import Violation
 
 
@@ -57,7 +57,16 @@ class Core:
 
         dependencies_extract = dependency_getter.get()
 
-        self._log_dependencies(dependencies_extract)
+        dependencies = [
+            Dependency(dep.name, dep.definition_file, self.package_module_name_map)
+            for dep in dependencies_extract.dependencies
+        ]
+        dev_dependencies = [
+            Dependency(dep.name, dep.definition_file, self.package_module_name_map)
+            for dep in dependencies_extract.dev_dependencies
+        ]
+
+        self._log_dependencies(dependencies, dev_dependencies)
 
         python_files = self._find_python_files()
         local_modules = self._get_local_modules()
@@ -69,8 +78,8 @@ class Core:
                     module,
                     local_modules,
                     standard_library_modules,
-                    dependencies_extract.dependencies,
-                    dependencies_extract.dev_dependencies,
+                    dependencies,
+                    dev_dependencies,
                 ).build(),
                 locations,
             )
@@ -79,7 +88,7 @@ class Core:
 
         violations = find_violations(
             imported_modules_with_locations,
-            dependencies_extract.dependencies,
+            dependencies,
             self.ignore,
             self.per_rule_ignores,
             standard_library_modules,
@@ -154,16 +163,16 @@ class Core:
         logging.debug("")
 
     @staticmethod
-    def _log_dependencies(dependencies_extract: DependenciesExtract) -> None:
-        if dependencies_extract.dependencies:
+    def _log_dependencies(dependencies: list[Dependency], dev_dependencies: list[Dependency]) -> None:
+        if dependencies:
             logging.debug("The project contains the following dependencies:")
-            for dependency in dependencies_extract.dependencies:
+            for dependency in dependencies:
                 logging.debug(dependency)
             logging.debug("")
 
-        if dependencies_extract.dev_dependencies:
+        if dev_dependencies:
             logging.debug("The project contains the following dev dependencies:")
-            for dependency in dependencies_extract.dev_dependencies:
+            for dependency in dev_dependencies:
                 logging.debug(dependency)
             logging.debug("")
 
