@@ -144,10 +144,15 @@ jobs:
           path: dist
 
   sdist:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     needs: [set-version]
     steps:
       - uses: actions/checkout@v4
+
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Download updated pyproject.toml
         uses: actions/download-artifact@v4
@@ -168,11 +173,16 @@ jobs:
 
   publish:
     name: Publish
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     needs: [linux, windows, macos, sdist]
     if: ${{ github.event_name == 'release' }}
     steps:
       - uses: actions/download-artifact@v4
+
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Publish to PyPI
         uses: PyO3/maturin-action@v1
