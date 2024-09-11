@@ -25,8 +25,11 @@ class Module:
             `google` in their top-level module names.
         dev_top_levels: A list of development dependencies that contain this module in their
             top-level module names. Can be multiple, similar to the attribute `top_levels`.
+        dev_top_levels: A list of transitive dependencies that contain this module in their
+            top-level module names. Can be multiple, similar to the attribute `top_levels`.
         is_provided_by_dependency: Whether the module is provided by a listed dependency.
         is_provided_by_dev_dependency: Whether the module is provided by a listed development dependency.
+        is_provided_by_transitive_dependency: Whether the module is provided by a listed transitive dependency.
     """
 
     name: str
@@ -35,8 +38,10 @@ class Module:
     package: str | None = None
     top_levels: list[str] | None = None
     dev_top_levels: list[str] | None = None
+    transitive_top_levels: list[str] | None = None
     is_provided_by_dependency: bool | None = None
     is_provided_by_dev_dependency: bool | None = None
+    is_provided_by_transitive_dependency: bool | None = None
 
     def __post_init__(self) -> None:
         self._log()
@@ -67,6 +72,7 @@ class ModuleBuilder:
         standard_library_modules: frozenset[str],
         dependencies: list[Dependency] | None = None,
         dev_dependencies: list[Dependency] | None = None,
+        transitive_dependencies: list[Dependency] | None = None,
     ) -> None:
         """
         Create a Module object that represents an imported module.
@@ -77,12 +83,14 @@ class ModuleBuilder:
             standard_library_modules: The list of Python stdlib modules
             dependencies: A list of the project's dependencies
             dev_dependencies: A list of the project's development dependencies
+            transitive_dependencies: A list of the project's transitive dependencies
         """
         self.name = name
         self.local_modules = local_modules
         self.standard_library_modules = standard_library_modules
         self.dependencies = dependencies or []
         self.dev_dependencies = dev_dependencies or []
+        self.transitive_dependencies = transitive_dependencies or []
 
     def build(self) -> Module:
         """
@@ -99,16 +107,21 @@ class ModuleBuilder:
         package = self._get_package_name_from_metadata()
         top_levels = self._get_corresponding_top_levels_from(self.dependencies)
         dev_top_levels = self._get_corresponding_top_levels_from(self.dev_dependencies)
+        transitive_top_levels = self._get_corresponding_top_levels_from(self.transitive_dependencies)
 
         is_provided_by_dependency = self._has_matching_dependency(package, top_levels)
         is_provided_by_dev_dependency = self._has_matching_dev_dependency(package, dev_top_levels)
+        is_provided_by_transitive_dependency = self._has_matching_transitive_dependency(package, transitive_top_levels)
+
         return Module(
             self.name,
             package=package,
             top_levels=top_levels,
             dev_top_levels=dev_top_levels,
+            transitive_top_levels=transitive_top_levels,
             is_provided_by_dependency=is_provided_by_dependency,
             is_provided_by_dev_dependency=is_provided_by_dev_dependency,
+            is_provided_by_transitive_dependency=is_provided_by_transitive_dependency,
         )
 
     def _get_package_name_from_metadata(self) -> str | None:
@@ -157,3 +170,13 @@ class ModuleBuilder:
         Same as _has_matching_dependency, but for development dependencies.
         """
         return package and (package in [dep.name for dep in self.dev_dependencies]) or len(dev_top_levels) > 0
+
+    def _has_matching_transitive_dependency(self, package: str | None, transitive_top_levels: list[str]) -> bool:
+        """
+        Same as _has_matching_dependency, but for transitive dependencies.
+        """
+        return (
+            package
+            and (package in [dep.name for dep in self.transitive_dependencies])
+            or len(transitive_top_levels) > 0
+        )
