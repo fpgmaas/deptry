@@ -21,7 +21,6 @@ class Dependency:
         name (str): The name of the dependency.
         definition_file (Path): The path to the file defining the dependency, e.g. 'pyproject.toml'.
           and that can be used to create a variant of the package with a set of extra functionalities.
-        found (bool): Indicates if the dependency has been found in the environment.
         top_levels (set[str]): The top-level module names associated with the dependency.
     """
 
@@ -31,12 +30,9 @@ class Dependency:
         definition_file: Path,
         module_names: Sequence[str] | None = None,
     ) -> None:
-        distribution = self.find_distribution(name)
-
         self.name = name
         self.definition_file = definition_file
-        self.found = distribution is not None
-        self.top_levels = self._get_top_levels(name, distribution, module_names)
+        self.top_levels = self._get_top_levels(name, self.find_distribution(name), module_names)
 
     def _get_top_levels(
         self, name: str, distribution: Distribution | None, module_names: Sequence[str] | None
