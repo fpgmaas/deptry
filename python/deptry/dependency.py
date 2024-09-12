@@ -3,8 +3,9 @@ from __future__ import annotations
 import logging
 import re
 from contextlib import suppress
-from importlib import metadata
 from typing import TYPE_CHECKING
+
+from deptry.compat import importlib_metadata
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -83,8 +84,8 @@ class Dependency:
     @staticmethod
     def find_distribution(name: str) -> Distribution | None:
         try:
-            return metadata.distribution(name)
-        except metadata.PackageNotFoundError:
+            return importlib_metadata.distribution(name)
+        except importlib_metadata.PackageNotFoundError:
             return None
 
     @staticmethod
