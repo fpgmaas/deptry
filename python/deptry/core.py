@@ -4,8 +4,11 @@ import logging
 import os
 import sys
 from dataclasses import dataclass
+from importlib import metadata
+from pathlib import Path
 from typing import TYPE_CHECKING
 
+from deptry.dependency import Dependency
 from deptry.dependency_getter.builder import DependencyGetterBuilder
 from deptry.exceptions import UnsupportedPythonVersionError
 from deptry.imports.extract import get_imported_modules_from_list_of_files
@@ -17,9 +20,7 @@ from deptry.violations.finder import find_violations
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
-    from pathlib import Path
 
-    from deptry.dependency_getter.base import DependenciesExtract
     from deptry.violations import Violation
 
 
@@ -56,8 +57,19 @@ class Core:
         ).build()
 
         dependencies_extract = dependency_getter.get()
+        installed_dependencies = self._get_installed_dependencies()
 
-        self._log_dependencies(dependencies_extract)
+        transitive_dependencies = [
+            Dependency(dep, Path("pyproject.toml"), self.package_module_name_map.get(dep))
+            for dep in set(installed_dependencies).difference(
+                {d.name for d in dependencies_extract.dependencies},
+                {d.name for d in dependencies_extract.dev_dependencies},
+            )
+        ]
+
+        self._log_dependencies(
+            dependencies_extract.dependencies, dependencies_extract.dev_dependencies, transitive_dependencies
+        )
 
         python_files = self._find_python_files()
         local_modules = self._get_local_modules()
@@ -71,6 +83,7 @@ class Core:
                     standard_library_modules,
                     dependencies_extract.dependencies,
                     dependencies_extract.dev_dependencies,
+                    transitive_dependencies,
                 ).build(),
                 locations,
             )
@@ -138,6 +151,10 @@ class Core:
         return bool(list(path.glob("*.py")))
 
     @staticmethod
+    def _get_installed_dependencies() -> list[str]:
+        return [distribution.name for distribution in metadata.distributions()]
+
+    @staticmethod
     def _get_standard_library_modules() -> frozenset[str]:
         if sys.version_info[:2] >= (3, 10):
             return sys.stdlib_module_names
@@ -154,16 +171,24 @@ class Core:
         logging.debug("")
 
     @staticmethod
-    def _log_dependencies(dependencies_extract: DependenciesExtract) -> None:
-        if dependencies_extract.dependencies:
+    def _log_dependencies(
+        dependencies: list[Dependency], dev_dependencies: list[Dependency], transitive_dependencies: list[Dependency]
+    ) -> None:
+        if dependencies:
             logging.debug("The project contains the following dependencies:")
-            for dependency in dependencies_extract.dependencies:
+            for dependency in dependencies:
                 logging.debug(dependency)
             logging.debug("")
 
-        if dependencies_extract.dev_dependencies:
+        if dev_dependencies:
             logging.debug("The project contains the following dev dependencies:")
-            for dependency in dependencies_extract.dev_dependencies:
+            for dependency in dev_dependencies:
+                logging.debug(dependency)
+            logging.debug("")
+
+        if transitive_dependencies:
+            logging.debug("The project contains the following transitive dependencies:")
+            for dependency in transitive_dependencies:
                 logging.debug(dependency)
             logging.debug("")
 
