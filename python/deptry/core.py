@@ -71,6 +71,7 @@ class Core:
                     standard_library_modules,
                     dependencies_extract.dependencies,
                     dependencies_extract.dev_dependencies,
+                    dependencies_extract.transitive_dependencies,
                 ).build(),
                 locations,
             )
@@ -164,6 +165,12 @@ class Core:
         if dependencies_extract.dev_dependencies:
             logging.debug("The project contains the following dev dependencies:")
             for dependency in dependencies_extract.dev_dependencies:
+                logging.debug(dependency)
+            logging.debug("")
+
+        if dependencies_extract.transitive_dependencies:
+            logging.debug("The project contains the following transitive dependencies:")
+            for dependency in dependencies_extract.transitive_dependencies:
                 logging.debug(dependency)
             logging.debug("")
 
