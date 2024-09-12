@@ -53,10 +53,12 @@ class DEP002UnusedDependenciesFinder(ViolationsFinder):
         return True
 
     def _dependency_found_in_imported_modules(self, dependency: Dependency) -> bool:
-        return any(
-            module_with_locations.module.package == dependency.name
-            for module_with_locations in self.imported_modules_with_locations
-        )
+        for module_with_locations in self.imported_modules_with_locations:
+            if module_with_locations.module.packages:
+                for package in module_with_locations.module.packages:
+                    if package == dependency.name:
+                        return True
+        return False
 
     def _any_of_the_top_levels_imported(self, dependency: Dependency) -> bool:
         if not dependency.top_levels:

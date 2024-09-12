@@ -48,7 +48,7 @@ class DEP003TransitiveDependenciesFinder(ViolationsFinder):
 
     def _is_transitive(self, module: Module) -> bool:
         if any([
-            module.package is None,
+            module.packages is None,
             module.is_provided_by_dependency,
             module.is_provided_by_dev_dependency,
             module.local_module,
@@ -56,8 +56,8 @@ class DEP003TransitiveDependenciesFinder(ViolationsFinder):
             return False
 
         if module.name in self.ignored_modules:
-            logging.debug("Dependency '%s' found to be a transitive dependency, but ignoring.", module.package)
+            logging.debug("Dependency '%s' found to be a transitive dependency, but ignoring.", module.packages)
             return False
 
-        logging.debug("Dependency '%s' marked as a transitive dependency.", module.package)
+        logging.debug("Dependency '%s' marked as a transitive dependency.", module.packages)
         return True
