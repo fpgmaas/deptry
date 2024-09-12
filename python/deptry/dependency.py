@@ -28,7 +28,7 @@ class Dependency:
     def __init__(
         self,
         name: str,
-        definition_file: Path,
+        definition_file: Path | None = None,
         module_names: Sequence[str] | None = None,
     ) -> None:
         distribution = self.find_distribution(name)

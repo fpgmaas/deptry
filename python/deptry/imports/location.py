@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 @dataclass(frozen=True)
 class Location:
-    file: Path
+    file: Path | None = None
     line: int | None = None
     column: int | None = None
 
