@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
 
 from deptry.dependency import Dependency
-from deptry.dependency_getter.base import DependenciesExtract, DependencyGetter
+from deptry.dependency_getter.base import DependencyGetter
 from deptry.utils import load_pyproject_toml
 
 if TYPE_CHECKING:
@@ -16,8 +16,8 @@ if TYPE_CHECKING:
 class PoetryDependencyGetter(DependencyGetter):
     """Extract Poetry dependencies from pyproject.toml."""
 
-    def get(self) -> DependenciesExtract:
-        return DependenciesExtract(self._get_poetry_dependencies(), self._get_poetry_dev_dependencies())
+    def _get_direct_dependencies(self) -> tuple[list[Dependency], list[Dependency]]:
+        return self._get_poetry_dependencies(), self._get_poetry_dev_dependencies()
 
     def _get_poetry_dependencies(self) -> list[Dependency]:
         pyproject_data = load_pyproject_toml(self.config)

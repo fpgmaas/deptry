@@ -9,7 +9,7 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 from deptry.dependency import Dependency
-from deptry.dependency_getter.base import DependenciesExtract, DependencyGetter
+from deptry.dependency_getter.base import DependencyGetter
 
 
 @dataclass
@@ -19,7 +19,7 @@ class RequirementsTxtDependencyGetter(DependencyGetter):
     requirements_files: tuple[str, ...] = ("requirements.txt",)
     requirements_files_dev: tuple[str, ...] = ("dev-requirements.txt", "requirements-dev.txt")
 
-    def get(self) -> DependenciesExtract:
+    def _get_direct_dependencies(self) -> tuple[list[Dependency], list[Dependency]]:
         dependencies = list(
             itertools.chain(
                 *(self._get_dependencies_from_requirements_files(file_name) for file_name in self.requirements_files)
@@ -35,7 +35,7 @@ class RequirementsTxtDependencyGetter(DependencyGetter):
             )
         )
 
-        return DependenciesExtract(dependencies, dev_dependencies)
+        return dependencies, dev_dependencies
 
     def _scan_for_dev_requirements_files(self) -> list[str]:
         """

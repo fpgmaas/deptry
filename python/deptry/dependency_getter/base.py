@@ -31,7 +31,11 @@ class DependencyGetter(ABC):
     config: Path
     package_module_name_map: Mapping[str, Sequence[str]] = field(default_factory=dict)
 
-    @abstractmethod
     def get(self) -> DependenciesExtract:
-        """Get extracted dependencies and dev dependencies."""
-        raise NotImplementedError()
+        dependencies, dev_dependencies = self._get_direct_dependencies()
+
+        return DependenciesExtract(dependencies, dev_dependencies)
+
+    @abstractmethod
+    def _get_direct_dependencies(self) -> tuple[list[Dependency], list[Dependency]]:
+        raise NotImplementedError

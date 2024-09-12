@@ -5,7 +5,7 @@ import re
 from dataclasses import dataclass
 
 from deptry.dependency import Dependency
-from deptry.dependency_getter.base import DependenciesExtract, DependencyGetter
+from deptry.dependency_getter.base import DependencyGetter
 from deptry.utils import load_pyproject_toml
 
 
@@ -37,14 +37,15 @@ class PEP621DependencyGetter(DependencyGetter):
 
     pep621_dev_dependency_groups: tuple[str, ...] = ()
 
-    def get(self) -> DependenciesExtract:
+    def _get_direct_dependencies(self) -> tuple[list[Dependency], list[Dependency]]:
         dependencies = self._get_dependencies()
         optional_dependencies = self._get_optional_dependencies()
 
         dev_dependencies_from_optional, remaining_optional_dependencies = (
             self._split_development_dependencies_from_optional_dependencies(optional_dependencies)
         )
-        return DependenciesExtract(
+
+        return (
             [*dependencies, *remaining_optional_dependencies],
             self._get_dev_dependencies(dev_dependencies_from_optional),
         )
