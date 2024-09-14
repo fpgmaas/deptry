@@ -218,6 +218,7 @@ source = { editable = "." }
 dependencies = [
     { name = "click" },
     { name = "colorama", marker = "sys_platform == 'win32'" },
+    { name = "importlib-metadata", marker = "python_full_version < '3.11'" },
     { name = "tomli", marker = "python_full_version < '3.11'" },
 ]
 
@@ -236,6 +237,7 @@ dev = [
 requires-dist = [
     { name = "click", specifier = ">=8.0.0,<9" },
     { name = "colorama", marker = "sys_platform == 'win32'", specifier = ">=0.4.6" },
+    { name = "importlib-metadata", marker = "python_full_version < '3.11'", specifier = ">=4.13.0" },
     { name = "tomli", marker = "python_full_version < '3.11'", specifier = ">=2.0.1" },
 ]
 
