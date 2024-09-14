@@ -35,7 +35,7 @@ dev-dependencies = [
     "mkdocs==1.6.1",
     "mkdocs-material==9.5.34",
     "mypy==1.11.2",
-    "pytest==8.3.2",
+    "pytest==8.3.3",
     "pytest-cov==5.0.0",
     "pytest-xdist[psutil]==3.6.1",
     "types-colorama==0.4.15.20240311; sys_platform == 'win32'",
