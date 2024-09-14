@@ -181,7 +181,7 @@ def test_display_deptry_version(capsys: pytest.CaptureFixture[str]) -> None:
     ctx = mock.Mock(resilient_parsing=False, spec=click.Context)
     param = mock.Mock(spec=click.Parameter)
 
-    with patch("deptry.cli.version", return_value="1.2.3"):
+    with patch("deptry.cli.importlib_metadata.version", return_value="1.2.3"):
         display_deptry_version(ctx, param, True)
 
     assert capsys.readouterr().out == "deptry 1.2.3\n"
