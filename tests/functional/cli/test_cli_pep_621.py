@@ -29,6 +29,14 @@ def test_cli_with_pep_621(pip_venv_factory: PipVenvFactory) -> None:
             {
                 "error": {
                     "code": "DEP002",
+                    "message": "'itchiodl' defined as a dependency but not used in the codebase",
+                },
+                "module": "itchiodl",
+                "location": {"file": str(Path("pyproject.toml")), "line": None, "column": None},
+            },
+            {
+                "error": {
+                    "code": "DEP002",
                     "message": "'requests' defined as a dependency but not used in the codebase",
                 },
                 "module": "requests",
@@ -67,5 +75,10 @@ def test_cli_with_pep_621(pip_venv_factory: PipVenvFactory) -> None:
                 "error": {"code": "DEP001", "message": "'white' imported but missing from the dependency definitions"},
                 "module": "white",
                 "location": {"file": str(Path("src/main.py")), "line": 6, "column": 8},
+            },
+            {
+                "error": {"code": "DEP003", "message": "'bs4' imported but it is a transitive dependency"},
+                "module": "bs4",
+                "location": {"file": str(Path("src/main.py")), "line": 9, "column": 8},
             },
         ]
