@@ -7,10 +7,11 @@ import shutil
 import subprocess
 import sys
 import venv
+from collections.abc import Generator
 from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Generator
+from typing import Any
 
 from deptry.reporters.text import COLORS
 from tests.functional.utils import DEPTRY_WHEEL_DIRECTORY

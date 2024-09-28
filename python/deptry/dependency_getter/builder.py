@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 import logging
+from collections.abc import Mapping
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import TYPE_CHECKING, Mapping
+from typing import TYPE_CHECKING
 
 from deptry.dependency_getter.pep621.base import PEP621DependencyGetter
 from deptry.dependency_getter.pep621.pdm import PDMDependencyGetter
