@@ -174,10 +174,13 @@ def test__get_stdlib_packages_with_stdlib_module_names_future_version(version_in
 )
 def test__get_stdlib_packages_unsupported(version_info: tuple[int | str, ...]) -> None:
     """It should raise an error when Python version is unsupported."""
-    with mock.patch("sys.version_info", version_info), pytest.raises(
-        UnsupportedPythonVersionError,
-        match=re.escape(
-            f"Python version {version_info[0]}.{version_info[1]} is not supported. Only versions >= 3.8 are supported."
+    with (
+        mock.patch("sys.version_info", version_info),
+        pytest.raises(
+            UnsupportedPythonVersionError,
+            match=re.escape(
+                f"Python version {version_info[0]}.{version_info[1]} is not supported. Only versions >= 3.9 are supported."
+            ),
         ),
     ):
         Core._get_standard_library_modules()

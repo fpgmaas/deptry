@@ -12,7 +12,7 @@ from deptry.violations import (
 )
 
 if TYPE_CHECKING:
-    from typing import Mapping
+    from collections.abc import Mapping
 
     from deptry.dependency import Dependency
     from deptry.module import ModuleLocations

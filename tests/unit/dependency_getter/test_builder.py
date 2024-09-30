@@ -136,11 +136,15 @@ def test_dependency_specification_not_found_raises_exception(tmp_path: Path, cap
         with pyproject_toml_path.open("w") as f:
             f.write('[build-system]\nrequires = ["maturin>=1.5,<2.0"]\nbuild-backend = "maturin"')
 
-    with caplog.at_level(logging.DEBUG), run_within_dir(tmp_path), pytest.raises(
-        DependencySpecificationNotFoundError,
-        match=re.escape(
-            "No file called 'pyproject.toml' with a [tool.poetry.dependencies], [tool.pdm] or [project] section or"
-            " file(s) called 'req/req.txt' found. Exiting."
+    with (
+        caplog.at_level(logging.DEBUG),
+        run_within_dir(tmp_path),
+        pytest.raises(
+            DependencySpecificationNotFoundError,
+            match=re.escape(
+                "No file called 'pyproject.toml' with a [tool.poetry.dependencies], [tool.pdm] or [project] section or"
+                " file(s) called 'req/req.txt' found. Exiting."
+            ),
         ),
     ):
         DependencyGetterBuilder(Path("pyproject.toml"), requirements_files=("req/req.txt",)).build()

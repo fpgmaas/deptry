@@ -3,7 +3,7 @@ from __future__ import annotations
 import logging
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import TYPE_CHECKING, Mapping
+from typing import TYPE_CHECKING
 
 from deptry.dependency_getter.pep621.base import PEP621DependencyGetter
 from deptry.dependency_getter.pep621.pdm import PDMDependencyGetter
@@ -14,6 +14,7 @@ from deptry.exceptions import DependencySpecificationNotFoundError
 from deptry.utils import load_pyproject_toml
 
 if TYPE_CHECKING:
+    from collections.abc import Mapping
     from typing import Any
 
     from deptry.dependency_getter.base import DependencyGetter

@@ -10,10 +10,13 @@ import venv
 from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Generator
+from typing import TYPE_CHECKING, Any
 
 from deptry.reporters.text import COLORS
 from tests.functional.utils import DEPTRY_WHEEL_DIRECTORY
+
+if TYPE_CHECKING:
+    from collections.abc import Generator
 
 
 @dataclass
