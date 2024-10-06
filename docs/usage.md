@@ -36,20 +36,15 @@ To determine the project's dependencies, _deptry_ will scan the directory it is 
     - development dependencies from `[tool.poetry.group.dev.dependencies]` or `[tool.poetry.dev-dependencies]` section
 1. If a `pyproject.toml` file with a `[tool.pdm.dev-dependencies]` section is found, _deptry_ will assume it uses PDM and extract:
     - dependencies from `[project.dependencies]` and `[project.optional-dependencies]` sections
-    - development dependencies from `[tool.pdm.dev-dependencies]` section and from the groups under `[project.optional-dependencies]` passed via the [`--pep621-dev-dependency-groups`](#pep-621-dev-dependency-groups) argument.
+    - development dependencies from `[tool.pdm.dev-dependencies]` section and from the groups under `[project.optional-dependencies]` passed via the [`--pep621-dev-dependency-groups`](#pep-621-dev-dependency-groups) argument
 1. If a `pyproject.toml` file with a `[tool.uv.dev-dependencies]` section is found, _deptry_ will assume it uses uv and extract:
     - dependencies from `[project.dependencies]` and `[project.optional-dependencies]` sections
-    - development dependencies from `[tool.uv.dev-dependencies]` section and from the groups under `[project.optional-dependencies]` passed via the [`--pep621-dev-dependency-groups`](#pep-621-dev-dependency-groups) argument.
-1. If a `pyproject.toml` file containing the following is found:
-    1. a `[build-system]` section containing `build-backend = "setuptools.build_meta"` and,
-    2. a `[project]` section with a `dynamic` key, where the corresponding list includes `"dependencies"` and,
-    3. a `[tool.setuptools.dynamic]` section containing `dependencies = { file = [some_requirements_file] }`,
-
-   then _deptry_ will assume the project uses setuptools with dynamic dependencies. It will extract dependencies
-   from the file specified in the `[tool.setuptools.dynamic]` section.
+    - development dependencies from `[tool.uv.dev-dependencies]` section and from the groups under `[project.optional-dependencies]` passed via the [`--pep621-dev-dependency-groups`](#pep-621-dev-dependency-groups) argument
 1. If a `pyproject.toml` file with a `[project]` section is found, _deptry_ will assume it uses [PEP 621](https://peps.python.org/pep-0621/) for dependency specification and extract:
-    - dependencies from `[project.dependencies]` and `[project.optional-dependencies]`.
-    - development dependencies from the groups under `[project.optional-dependencies]` passed via the [`--pep621-dev-dependency-groups`](#pep-621-dev-dependency-groups) argument.
+    - dependencies from:
+        - `[project.dependencies]` (or `dependencies` requirements files under `[tool.setuptools.dynamic]` section if the project uses `setuptools.build_meta` as a build backend, and a `dynamic` key under `[project]` section includes `"dependencies"`)
+        - `[project.optional-dependencies]` (or requirements files under `[tool.setuptools.dynamic.optional-dependencies]` section if the project uses `setuptools.build_meta` as a build backend, and a `dynamic` key under `[project]` section includes `"optional-dependencies"`)
+    - development dependencies from the groups under `[project.optional-dependencies]` (or `setuptools` equivalent) passed via the [`--pep621-dev-dependency-groups`](#pep-621-dev-dependency-groups) argument.
 1. If a `requirements.in` or `requirements.txt` file is found, _deptry_ will:
     - extract dependencies from that file.
     - extract development dependencies from `dev-dependencies.txt` and `dependencies-dev.txt`, if any exist
