@@ -54,13 +54,13 @@ class DependencyGetterBuilder:
                 return UvDependencyGetter(self.config, self.package_module_name_map, self.pep621_dev_dependency_groups)
 
             if self._project_uses_setuptools(pyproject_toml):
-                project_uses_dynamic_dependencies, requirements_files = (
+                project_uses_dynamic_dependencies, requirements_files, requirements_files_dev = (
                     self._project_uses_setuptools_dynamic_dependencies(pyproject_toml)
                 )
 
                 if project_uses_dynamic_dependencies:
                     return RequirementsTxtDependencyGetter(
-                        self.config, self.package_module_name_map, requirements_files, ()
+                        self.config, self.package_module_name_map, requirements_files, requirements_files_dev
                     )
 
             if self._project_uses_pep_621(pyproject_toml):
@@ -156,8 +156,9 @@ class DependencyGetterBuilder:
             )
             return False
 
-    @staticmethod
-    def _project_uses_setuptools_dynamic_dependencies(pyproject_toml: dict[str, Any]) -> tuple[bool, tuple[str, ...]]:
+    def _project_uses_setuptools_dynamic_dependencies(
+        self, pyproject_toml: dict[str, Any]
+    ) -> tuple[bool, tuple[str, ...], tuple[str, ...]]:
         try:
             if "dependencies" not in pyproject_toml["project"]["dynamic"]:
                 logging.debug(
@@ -170,14 +171,26 @@ class DependencyGetterBuilder:
                     "pyproject.toml has dependencies listed as dynamic metadata and contains a populated "
                     "tool.setuptools.dynamic.dependencies.file entry, so dynamic dependencies are used."
                 )
-                return True, pyproject_toml["tool"]["setuptools"]["dynamic"]["dependencies"]["file"]
+
+                requirements_files = pyproject_toml["tool"]["setuptools"]["dynamic"]["dependencies"]["file"]
+                requirements_files_dev = []
+
+                for group, specification in (
+                    pyproject_toml["tool"]["setuptools"]["dynamic"].get("optional-dependencies", {}).items()
+                ):
+                    if group in self.pep621_dev_dependency_groups:
+                        requirements_files_dev.extend(specification["file"])
+                    else:
+                        requirements_files.extend(specification["file"])
+
+                return True, tuple(requirements_files), tuple(requirements_files_dev)
         except KeyError:
             logging.debug(
                 "pyproject.toml either does not contain a project.dynamic entry or "
                 "tool.setuptools.dynamic.dependencies.file entry, so dynamic dependencies are not used."
             )
 
-        return False, ()
+        return False, (), ()
 
     @staticmethod
     def _project_uses_pep_621(pyproject_toml: dict[str, Any]) -> bool:
