@@ -17,13 +17,25 @@ if TYPE_CHECKING:
 def test_cli_single_requirements_files(pip_venv_factory: PipVenvFactory) -> None:
     with pip_venv_factory(
         Project.DYNAMIC_DEPENDENCIES,
-        install_command=("pip install -r requirements.txt"),
+        install_command=("pip install -r requirements.txt -r requirements-2.txt"),
     ) as virtual_env:
         issue_report = f"{uuid.uuid4()}.json"
         result = virtual_env.run(f"deptry . -o {issue_report}")
 
         assert result.returncode == 1
         assert get_issues_report(Path(issue_report)) == [
+            {
+                "error": {
+                    "code": "DEP002",
+                    "message": "'packaging' defined as a dependency but not used in the codebase",
+                },
+                "module": "packaging",
+                "location": {
+                    "file": "requirements-2.txt",
+                    "line": None,
+                    "column": None,
+                },
+            },
             {
                 "error": {
                     "code": "DEP002",
