@@ -53,13 +53,15 @@ class DependencyGetterBuilder:
             if self._project_uses_uv(pyproject_toml):
                 return UvDependencyGetter(self.config, self.package_module_name_map, self.pep621_dev_dependency_groups)
 
-            if self._project_uses_setuptools(pyproject_toml) and self._project_uses_dynamic_dependencies(
-                pyproject_toml
-            ):
-                requirements_txt_file = self._project_dynamic_requirements_file(pyproject_toml)
-                return RequirementsTxtDependencyGetter(
-                    self.config, self.package_module_name_map, requirements_txt_file, ()
+            if self._project_uses_setuptools(pyproject_toml):
+                project_uses_dynamic_dependencies, requirements_files = (
+                    self._project_uses_setuptools_dynamic_dependencies(pyproject_toml)
                 )
+
+                if project_uses_dynamic_dependencies:
+                    return RequirementsTxtDependencyGetter(
+                        self.config, self.package_module_name_map, requirements_files, ()
+                    )
 
             if self._project_uses_pep_621(pyproject_toml):
                 return PEP621DependencyGetter(
@@ -138,53 +140,44 @@ class DependencyGetterBuilder:
         try:
             if pyproject_toml["build-system"]["build-backend"] == "setuptools.build_meta":
                 logging.debug(
-                    "pyproject.toml has the entry"
-                    " build-system.build-backend == 'setuptools.build_meta'"
-                    ", so setuptools is used to specify the project's dependencies."
+                    "pyproject.toml has the entry build-system.build-backend == 'setuptools.build_meta', so setuptools is used to specify the project's dependencies."
                 )
                 return True
             else:
                 logging.debug(
-                    "pyproject.toml does not have"
-                    " build-system.build-backend == 'setuptools.build_meta'"
-                    ", so setuptools is not used to specify the project's dependencies."
+                    "pyproject.toml does not have build-system.build-backend == 'setuptools.build_meta', so setuptools "
+                    "is not used to specify the project's dependencies."
                 )
                 return False
         except KeyError:
             logging.debug(
-                "pyproject.toml does not contain a build-system.build-backend entry, "
-                "so setuptools is not used to specify the project's dependencies."
+                "pyproject.toml does not contain a build-system.build-backend entry, so setuptools is not used to "
+                "specify the project's dependencies."
             )
             return False
 
     @staticmethod
-    def _project_uses_dynamic_dependencies(pyproject_toml: dict[str, Any]) -> bool:
+    def _project_uses_setuptools_dynamic_dependencies(pyproject_toml: dict[str, Any]) -> tuple[bool, tuple[str, ...]]:
         try:
             if "dependencies" not in pyproject_toml["project"]["dynamic"]:
                 logging.debug(
-                    "pyproject.toml does not have"
-                    " dependencies listed as dynamic metadata,"
-                    " so dynamic dependencies are not used."
+                    "pyproject.toml does not have dependencies listed as dynamic metadata, so dynamic dependencies are "
+                    "not used."
                 )
-                return False
             else:
                 pyproject_toml["tool"]["setuptools"]["dynamic"]["dependencies"]["file"]
                 logging.debug(
-                    "pyproject.toml has dependencies listed as dynamic metadata"
-                    " and contains a populated tool.setuptools.dynamic.dependencies.file"
-                    " entry, so dynamic dependencies are used."
+                    "pyproject.toml has dependencies listed as dynamic metadata and contains a populated "
+                    "tool.setuptools.dynamic.dependencies.file entry, so dynamic dependencies are used."
                 )
-                return True
+                return True, pyproject_toml["tool"]["setuptools"]["dynamic"]["dependencies"]["file"]
         except KeyError:
             logging.debug(
                 "pyproject.toml either does not contain a project.dynamic entry or "
-                "tool.setuptools.dynamic.dependencies.file entry, so dynamic "
-                "dependencies are not used."
+                "tool.setuptools.dynamic.dependencies.file entry, so dynamic dependencies are not used."
             )
 
-    @staticmethod
-    def _project_dynamic_requirements_file(pyproject_toml: dict[str, Any]) -> tuple[str, ...]:
-        return tuple(pyproject_toml["tool"]["setuptools"]["dynamic"]["dependencies"]["file"])
+        return False, ()
 
     @staticmethod
     def _project_uses_pep_621(pyproject_toml: dict[str, Any]) -> bool:
