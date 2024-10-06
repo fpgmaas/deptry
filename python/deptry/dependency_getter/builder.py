@@ -133,7 +133,8 @@ class DependencyGetterBuilder:
         else:
             return True
 
-    def _project_uses_setuptools(self, pyproject_toml: dict[str, Any]) -> bool:
+    @staticmethod
+    def _project_uses_setuptools(pyproject_toml: dict[str, Any]) -> bool:
         try:
             if pyproject_toml["build-system"]["build-backend"] == "setuptools.build_meta":
                 logging.debug(
@@ -156,7 +157,8 @@ class DependencyGetterBuilder:
             )
             return False
 
-    def _project_uses_dynamic_dependencies(self, pyproject_toml: dict[str, Any]) -> bool:
+    @staticmethod
+    def _project_uses_dynamic_dependencies(pyproject_toml: dict[str, Any]) -> bool:
         try:
             if "dependencies" not in pyproject_toml["project"]["dynamic"]:
                 logging.debug(
@@ -180,7 +182,8 @@ class DependencyGetterBuilder:
                 "dependencies are not used."
             )
 
-    def _project_dynamic_requirements_file(self, pyproject_toml: dict[str, Any]) -> tuple[str, ...]:
+    @staticmethod
+    def _project_dynamic_requirements_file(pyproject_toml: dict[str, Any]) -> tuple[str, ...]:
         return tuple(pyproject_toml["tool"]["setuptools"]["dynamic"]["dependencies"]["file"])
 
     @staticmethod
