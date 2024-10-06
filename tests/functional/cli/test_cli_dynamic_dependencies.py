@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 def test_cli_single_requirements_files(pip_venv_factory: PipVenvFactory) -> None:
     with pip_venv_factory(
         Project.DYNAMIC_DEPENDENCIES,
-        install_command=("pip install -r requirements.txt -r requirements-2.txt"),
+        install_command="pip install -r requirements.txt -r requirements-2.txt -r cli-requirements.txt -r dev-requirements.txt",
     ) as virtual_env:
         issue_report = f"{uuid.uuid4()}.json"
         result = virtual_env.run(f"deptry . -o {issue_report}")
@@ -32,18 +32,6 @@ def test_cli_single_requirements_files(pip_venv_factory: PipVenvFactory) -> None
                 "module": "packaging",
                 "location": {
                     "file": "requirements-2.txt",
-                    "line": None,
-                    "column": None,
-                },
-            },
-            {
-                "error": {
-                    "code": "DEP002",
-                    "message": "'isort' defined as a dependency but not used in the codebase",
-                },
-                "module": "isort",
-                "location": {
-                    "file": str(Path("requirements.txt")),
                     "line": None,
                     "column": None,
                 },
@@ -74,13 +62,25 @@ def test_cli_single_requirements_files(pip_venv_factory: PipVenvFactory) -> None
             },
             {
                 "error": {
+                    "code": "DEP004",
+                    "message": "'isort' imported but declared as a dev dependency",
+                },
+                "module": "isort",
+                "location": {
+                    "file": str(Path("src/main.py")),
+                    "line": 5,
+                    "column": 8,
+                },
+            },
+            {
+                "error": {
                     "code": "DEP001",
                     "message": "'white' imported but missing from the dependency definitions",
                 },
                 "module": "white",
                 "location": {
                     "file": str(Path("src/main.py")),
-                    "line": 5,
+                    "line": 6,
                     "column": 8,
                 },
             },
@@ -92,7 +92,7 @@ def test_cli_single_requirements_files(pip_venv_factory: PipVenvFactory) -> None
                 "module": "urllib3",
                 "location": {
                     "file": str(Path("src/main.py")),
-                    "line": 6,
+                    "line": 7,
                     "column": 1,
                 },
             },
