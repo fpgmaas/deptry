@@ -11,7 +11,7 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:
-  PYTHON_VERSION: '3.12'
+  PYTHON_VERSION: '3.13'
   # renovate: datasource=pypi depName=uv
   UV_VERSION: '0.4.18'
 
@@ -94,7 +94,7 @@ jobs:
         uses: codecov/codecov-action@v4
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-        if: ${{ matrix.os.name == 'linux' && matrix.python-version == '3.12' }}
+        if: ${{ matrix.os.name == 'linux' && matrix.python-version == '3.13' }}
 
   check-docs:
     runs-on: ubuntu-24.04
