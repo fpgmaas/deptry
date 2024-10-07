@@ -4,12 +4,12 @@ import logging
 import shutil
 import sys
 from collections import defaultdict
-from importlib.metadata import version
 from pathlib import Path
 from typing import TYPE_CHECKING
 
 import click
 
+from deptry.compat import importlib_metadata
 from deptry.config import read_configuration_from_pyproject_toml
 from deptry.core import Core
 
@@ -102,7 +102,7 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
     if not value or ctx.resilient_parsing:
         return None
 
-    click.echo(f'deptry {version("deptry")}')
+    click.echo(f'deptry {importlib_metadata.version("deptry")}')
     ctx.exit()
 
 

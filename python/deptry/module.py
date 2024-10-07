@@ -2,8 +2,9 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass, field
-from importlib.metadata import PackageNotFoundError, metadata
 from typing import TYPE_CHECKING
+
+from deptry.distribution import get_distributions_from_package
 
 if TYPE_CHECKING:
     from deptry.dependency import Dependency
@@ -19,7 +20,7 @@ class Module:
         name: The name of the imported module.
         standard_library: Whether the module is part of the Python standard library.
         local_module: Whether the module is a local module.
-        package: The name of the package that contains the module.
+        packages: The names of the packages that contain the module.
         top_levels: A list of dependencies that contain this module in their top-level module
             names. This can be multiple, e.g. `google-cloud-api` and `google-cloud-bigquery` both have
             `google` in their top-level module names.
@@ -32,7 +33,7 @@ class Module:
     name: str
     standard_library: bool = False
     local_module: bool = False
-    package: str | None = None
+    packages: list[str] | None = None
     top_levels: list[str] | None = None
     dev_top_levels: list[str] | None = None
     is_provided_by_dependency: bool | None = None
@@ -96,31 +97,26 @@ class ModuleBuilder:
         if self._is_local_module():
             return Module(self.name, local_module=True)
 
-        package = self._get_package_name_from_metadata()
+        packages = self._get_package_names_from_metadata()
         top_levels = self._get_corresponding_top_levels_from(self.dependencies)
         dev_top_levels = self._get_corresponding_top_levels_from(self.dev_dependencies)
 
-        is_provided_by_dependency = self._has_matching_dependency(package, top_levels)
-        is_provided_by_dev_dependency = self._has_matching_dev_dependency(package, dev_top_levels)
+        is_provided_by_dependency = self._has_matching_dependency(packages, top_levels)
+        is_provided_by_dev_dependency = self._has_matching_dev_dependency(packages, dev_top_levels)
+
         return Module(
             self.name,
-            package=package,
+            packages=packages,
             top_levels=top_levels,
             dev_top_levels=dev_top_levels,
             is_provided_by_dependency=is_provided_by_dependency,
             is_provided_by_dev_dependency=is_provided_by_dev_dependency,
         )
 
-    def _get_package_name_from_metadata(self) -> str | None:
-        """
-        Most packages simply have a field called "Name" in their metadata. This method extracts that field.
-        """
-        try:
-            name: str = metadata(self.name)["Name"]
-        except PackageNotFoundError:
-            return None
-        else:
-            return name
+    def _get_package_names_from_metadata(self) -> list[str] | None:
+        if distributions := get_distributions_from_package(self.name):
+            return list(distributions)
+        return None
 
     def _get_corresponding_top_levels_from(self, dependencies: list[Dependency]) -> list[str]:
         """
@@ -145,15 +141,33 @@ class ModuleBuilder:
         """
         return self.name in self.local_modules
 
-    def _has_matching_dependency(self, package: str | None, top_levels: list[str]) -> bool:
+    def _has_matching_dependency(self, packages: list[str] | None, top_levels: list[str]) -> bool:
         """
         Check if this module is provided by a listed dependency. This is the case if either the package name that was
         found in the metadata is listed as a dependency, or if we found a top-level module name match earlier.
         """
-        return package and (package in [dep.name for dep in self.dependencies]) or len(top_levels) > 0
+        if len(top_levels) > 0:
+            return True
 
-    def _has_matching_dev_dependency(self, package: str | None, dev_top_levels: list[str]) -> bool:
+        if packages:
+            for dep in self.dependencies:
+                for package in packages:
+                    if dep.name == package:
+                        return True
+
+        return False
+
+    def _has_matching_dev_dependency(self, packages: list[str] | None, dev_top_levels: list[str]) -> bool:
         """
         Same as _has_matching_dependency, but for development dependencies.
         """
-        return package and (package in [dep.name for dep in self.dev_dependencies]) or len(dev_top_levels) > 0
+        if len(dev_top_levels) > 0:
+            return True
+
+        if packages:
+            for dep in self.dev_dependencies:
+                for package in packages:
+                    if dep.name == package:
+                        return True
+
+        return False
