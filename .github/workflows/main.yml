@@ -94,7 +94,7 @@ jobs:
         uses: codecov/codecov-action@v4
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-        if: ${{ matrix.os.name == 'linux' && matrix.python-version == '3.13' }}
+        if: ${{ matrix.os.name == 'linux' && matrix.python-version == env.PYTHON_VERSION }}
 
   check-docs:
     runs-on: ubuntu-24.04
