@@ -8,7 +8,6 @@ DEPTRY_WHEEL_DIRECTORY = "build/functional_tests/deptry"
 class Project(str, Enum):
     EXAMPLE = "example_project"
     PEP_621 = "pep_621_project"
-    FUTURE_DEPRECATED_OBSOLETE_ARGUMENT = "project_with_future_deprecated_obsolete_argument"
     GITIGNORE = "project_with_gitignore"
     MULTIPLE_SOURCE_DIRECTORIES = "project_with_multiple_source_directories"
     NAMESPACE = "project_using_namespace"
