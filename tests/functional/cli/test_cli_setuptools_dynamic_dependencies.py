@@ -13,10 +13,10 @@ if TYPE_CHECKING:
     from tests.utils import PipVenvFactory
 
 
-@pytest.mark.xdist_group(name=Project.DYNAMIC_DEPENDENCIES)
-def test_cli_single_requirements_files(pip_venv_factory: PipVenvFactory) -> None:
+@pytest.mark.xdist_group(name=Project.SETUPTOOLS_DYNAMIC_DEPENDENCIES)
+def test_cli_setuptools_dynamic_dependencies(pip_venv_factory: PipVenvFactory) -> None:
     with pip_venv_factory(
-        Project.DYNAMIC_DEPENDENCIES,
+        Project.SETUPTOOLS_DYNAMIC_DEPENDENCIES,
         install_command="pip install -r requirements.txt -r requirements-2.txt -r cli-requirements.txt -r dev-requirements.txt",
     ) as virtual_env:
         issue_report = f"{uuid.uuid4()}.json"
