@@ -124,7 +124,7 @@ def test_setuptools_dynamic_dependencies(tmp_path: Path) -> None:
             """)
 
         spec = DependencyGetterBuilder(Path("pyproject.toml")).build()
-        assert isinstance(spec, RequirementsTxtDependencyGetter)
+        assert isinstance(spec, PEP621DependencyGetter)
 
 
 def test_requirements_files(tmp_path: Path) -> None:
@@ -180,10 +180,6 @@ def test_dependency_specification_not_found_raises_exception(tmp_path: Path, cap
         (
             "pyproject.toml does not contain a [tool.uv.dev-dependencies] section, so uv is not used to specify the"
             " project's dependencies."
-        ),
-        (
-            "pyproject.toml does not have build-system.build-backend == 'setuptools.build_meta', so setuptools is"
-            " not used to specify the project's dependencies."
         ),
         (
             "pyproject.toml does not contain a [project] section, so PEP 621 is not used to specify the project's"
