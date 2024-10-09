@@ -3,11 +3,12 @@ from __future__ import annotations
 import re
 from typing import TYPE_CHECKING
 from unittest import mock
+from unittest.mock import patch
 
 import click
 import pytest
 
-from deptry.cli import CommaSeparatedMappingParamType, CommaSeparatedTupleParamType
+from deptry.cli import CommaSeparatedMappingParamType, CommaSeparatedTupleParamType, display_deptry_version
 
 if TYPE_CHECKING:
     from collections.abc import MutableMapping, Sequence
@@ -174,3 +175,38 @@ def test_comma_separated_mapping_param_type_convert_err(
 
     with pytest.raises(err_type, match=err_msg_matcher):
         param_type.convert(value=value, param=param, ctx=ctx)
+
+
+def test_display_deptry_version(capsys: pytest.CaptureFixture[str]) -> None:
+    ctx = mock.Mock(resilient_parsing=False, spec=click.Context)
+    param = mock.Mock(spec=click.Parameter)
+
+    with patch("deptry.cli.importlib_metadata.version", return_value="1.2.3"):
+        display_deptry_version(ctx, param, True)
+
+    assert capsys.readouterr().out == "deptry 1.2.3\n"
+
+
+@pytest.mark.parametrize(
+    ("resilient_parsing", "value"),
+    [
+        (
+            False,
+            False,
+        ),
+        (
+            True,
+            False,
+        ),
+        (
+            True,
+            True,
+        ),
+    ],
+)
+def test_display_deptry_version_none(resilient_parsing: bool, value: bool, capsys: pytest.CaptureFixture[str]) -> None:
+    ctx = mock.Mock(resilient_parsing=resilient_parsing, spec=click.Context)
+    param = mock.Mock(spec=click.Parameter)
+
+    display_deptry_version(ctx, param, value)
+    assert capsys.readouterr().out == ""

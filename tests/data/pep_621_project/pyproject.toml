@@ -16,7 +16,8 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-    "black==22.10.0",
+    # Allows testing that package normalization is correctly applied, as the canonical name is `importlib-metadata`.
+    "Importlib_Metadata==8.5.0",
     "mypy==0.982",
 ]
 test = ["pytest==7.2.0"]

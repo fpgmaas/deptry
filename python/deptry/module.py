@@ -2,8 +2,9 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass, field
-from importlib.metadata import PackageNotFoundError, metadata
 from typing import TYPE_CHECKING
+
+from deptry.compat import importlib_metadata
 
 if TYPE_CHECKING:
     from deptry.dependency import Dependency
@@ -116,8 +117,8 @@ class ModuleBuilder:
         Most packages simply have a field called "Name" in their metadata. This method extracts that field.
         """
         try:
-            name: str = metadata(self.name)["Name"]
-        except PackageNotFoundError:
+            name: str = importlib_metadata.metadata(self.name)["Name"]
+        except importlib_metadata.PackageNotFoundError:
             return None
         else:
             return name
