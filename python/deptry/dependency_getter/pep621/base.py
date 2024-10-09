@@ -3,10 +3,15 @@ from __future__ import annotations
 import logging
 import re
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 
 from deptry.dependency import Dependency
 from deptry.dependency_getter.base import DependenciesExtract, DependencyGetter
+from deptry.dependency_getter.requirements_files import get_dependencies_from_requirements_files
 from deptry.utils import load_pyproject_toml
+
+if TYPE_CHECKING:
+    from typing import Any
 
 
 @dataclass
@@ -51,11 +56,29 @@ class PEP621DependencyGetter(DependencyGetter):
 
     def _get_dependencies(self) -> list[Dependency]:
         pyproject_data = load_pyproject_toml(self.config)
+
+        if self._project_uses_setuptools(pyproject_data) and "dependencies" in pyproject_data["project"].get(
+            "dynamic", {}
+        ):
+            return get_dependencies_from_requirements_files(
+                pyproject_data["tool"]["setuptools"]["dynamic"]["dependencies"]["file"], self.package_module_name_map
+            )
+
         dependency_strings: list[str] = pyproject_data["project"].get("dependencies", [])
         return self._extract_pep_508_dependencies(dependency_strings)
 
     def _get_optional_dependencies(self) -> dict[str, list[Dependency]]:
         pyproject_data = load_pyproject_toml(self.config)
+
+        if self._project_uses_setuptools(pyproject_data) and "optional-dependencies" in pyproject_data["project"].get(
+            "dynamic", {}
+        ):
+            return {
+                group: get_dependencies_from_requirements_files(specification["file"], self.package_module_name_map)
+                for group, specification in pyproject_data["tool"]["setuptools"]["dynamic"]
+                .get("optional-dependencies", {})
+                .items()
+            }
 
         return {
             group: self._extract_pep_508_dependencies(dependencies)
@@ -64,6 +87,28 @@ class PEP621DependencyGetter(DependencyGetter):
 
     def _get_dev_dependencies(self, dev_dependencies_from_optional: list[Dependency]) -> list[Dependency]:
         return dev_dependencies_from_optional
+
+    @staticmethod
+    def _project_uses_setuptools(pyproject_toml: dict[str, Any]) -> bool:
+        try:
+            if pyproject_toml["build-system"]["build-backend"] == "setuptools.build_meta":
+                logging.debug(
+                    "pyproject.toml has the entry build-system.build-backend == 'setuptools.build_meta', so setuptools"
+                    "is used to specify the project's dependencies."
+                )
+                return True
+            else:
+                logging.debug(
+                    "pyproject.toml does not have build-system.build-backend == 'setuptools.build_meta', so setuptools "
+                    "is not used to specify the project's dependencies."
+                )
+                return False
+        except KeyError:
+            logging.debug(
+                "pyproject.toml does not contain a build-system.build-backend entry, so setuptools is not used to "
+                "specify the project's dependencies."
+            )
+            return False
 
     def _check_for_invalid_group_names(self, optional_dependencies: dict[str, list[Dependency]]) -> None:
         missing_groups = set(self.pep621_dev_dependency_groups) - set(optional_dependencies.keys())
