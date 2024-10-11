@@ -40,15 +40,15 @@ class DEP004MisplacedDevDependenciesFinder(ViolationsFinder):
                 continue
 
             logging.debug("Scanning module %s...", module.name)
-            corresponding_package_name = self._get_package_name(module)
+            corresponding_package_names = self._get_package_names(module)
 
-            if corresponding_package_name and self._is_development_dependency(module, corresponding_package_name):
+            if corresponding_package_names and self._is_development_dependency(module, corresponding_package_names):
                 for location in module_with_locations.locations:
                     misplaced_dev_dependencies.append(self.violation(module, location))
 
         return misplaced_dev_dependencies
 
-    def _is_development_dependency(self, module: Module, corresponding_package_name: str) -> bool:
+    def _is_development_dependency(self, module: Module, corresponding_package_names: list[str]) -> bool:
         # Module can be provided both by a regular and by a development dependency.
         # Only continue if module is ONLY provided by a dev dependency.
         if not module.is_provided_by_dev_dependency or module.is_provided_by_dependency:
@@ -57,16 +57,16 @@ class DEP004MisplacedDevDependenciesFinder(ViolationsFinder):
         if module.name in self.ignored_modules:
             logging.debug(
                 "Dependency '%s' found to be a misplaced development dependency, but ignoring.",
-                corresponding_package_name,
+                corresponding_package_names,
             )
             return False
 
-        logging.debug("Dependency '%s' marked as a misplaced development dependency.", corresponding_package_name)
+        logging.debug("Dependency '%s' marked as a misplaced development dependency.", corresponding_package_names)
         return True
 
-    def _get_package_name(self, module: Module) -> str | None:
-        if module.package:
-            return module.package
+    def _get_package_names(self, module: Module) -> str | None:
+        if module.packages:
+            return module.packages[0]
         if module.dev_top_levels:
             if len(module.dev_top_levels) > 1:
                 logging.debug(

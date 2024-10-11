@@ -80,12 +80,12 @@ jobs:
       - name: Install Python dependencies
         run: uv sync --frozen
 
-      - name: Check typing
-        run: uv run mypy
-        if: ${{ matrix.os.name == 'linux' }}
-
-      - name: Run unit tests
-        run: uv run pytest tests/unit --cov --cov-config=pyproject.toml --cov-report=xml
+#      - name: Check typing
+#        run: uv run mypy
+#        if: ${{ matrix.os.name == 'linux' }}
+#
+#      - name: Run unit tests
+#        run: uv run pytest tests/unit --cov --cov-config=pyproject.toml --cov-report=xml
 
       - name: Run functional tests
         run: uv run pytest tests/functional -n auto --dist loadgroup

@@ -26,6 +26,7 @@ classifiers = [
 dependencies = [
     "click>=8.0.0,<9",
     "colorama>=0.4.6; sys_platform == 'win32'",
+    "importlib-metadata>=4.13.0; python_version < '3.11'",
     "tomli>=2.0.1; python_version < '3.11'"
 ]
 
@@ -153,6 +154,8 @@ select = [
     "PT",
     # flake8-simplify
     "SIM",
+    # flake8-tidy-imports
+    "TID",
     # flake8-type-checking
     "TCH",
     # flake8-use-pathlib
@@ -181,6 +184,9 @@ ignore = [
     "E501",
 ]
 
+[tool.ruff.lint.flake8-tidy-imports.banned-api]
+"importlib.metadata".msg = "Import from `deptry.compat.importlib_metadata` instead."
+
 [tool.ruff.lint.flake8-type-checking]
 strict = true
 
@@ -189,4 +195,5 @@ known-first-party = ["deptry"]
 required-imports = ["from __future__ import annotations"]
 
 [tool.ruff.lint.per-file-ignores]
+"compat.py" = ["TID251"]
 "tests/*" = ["S101", "S603"]

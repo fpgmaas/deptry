@@ -40,7 +40,7 @@ class DEP001MissingDependenciesFinder(ViolationsFinder):
 
     def _is_missing(self, module: Module) -> bool:
         if any([
-            module.package is not None,
+            module.packages is not None,
             module.is_provided_by_dependency,
             module.is_provided_by_dev_dependency,
             module.local_module,
