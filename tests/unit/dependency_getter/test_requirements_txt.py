@@ -63,7 +63,8 @@ def test_parse_requirements_files_urls(tmp_path: Path) -> None:
 https://github.com/urllib3/urllib3/archive/refs/tags/1.26.8.zip
 git+https://github.com/baz/foo-bar.git@asd#egg=foo-bar
 git+https://github.com/baz/foo-bar.git@asd
-git+https://github.com/abc123/bar-foo@xyz789#egg=bar-fooo"""
+git+https://github.com/abc123/bar-foo@xyz789#egg=bar-fooo
+https://unsupported-specification.com"""
 
     with run_within_dir(tmp_path):
         with Path("requirements.txt").open("w") as f:
