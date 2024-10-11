@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from deptry.dependency_getter.requirements_files import RequirementsTxtDependencyGetter
+from deptry.dependency_getter.requirements_files import RequirementsTxtDependencyGetter, _line_is_url
 from tests.utils import run_within_dir
 
 
@@ -200,4 +200,4 @@ def test_dev_multiple_with_arguments(tmp_path: Path) -> None:
     ],
 )
 def test__line_is_url(line: str, expected: bool) -> None:
-    assert RequirementsTxtDependencyGetter._line_is_url(line) is expected
+    assert _line_is_url(line) is expected
