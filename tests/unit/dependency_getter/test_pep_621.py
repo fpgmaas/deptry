@@ -165,3 +165,163 @@ def test_dependency_getter_empty_dependencies(tmp_path: Path) -> None:
 
         assert len(dependencies_extract.dependencies) == 0
         assert len(dependencies_extract.dev_dependencies) == 0
+
+
+def test_dependency_getter_with_setuptools_dynamic_dependencies(tmp_path: Path) -> None:
+    fake_pyproject_toml = """[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+# PEP 621 project metadata
+# See https://www.python.org/dev/peps/pep-0621/
+dynamic = ["dependencies", "optional-dependencies"]
+
+[tool.setuptools.dynamic]
+dependencies = { file = ["requirements.txt", "requirements-2.txt"] }
+
+[tool.setuptools.dynamic.optional-dependencies]
+cli = { file = ["cli-requirements.txt"] }
+dev = { file = ["dev-requirements.txt"] }
+"""
+
+    with run_within_dir(tmp_path):
+        with Path("pyproject.toml").open("w") as f:
+            f.write(fake_pyproject_toml)
+
+        with Path("requirements.txt").open("w") as f:
+            f.write("foo==1.2.3")
+
+        with Path("requirements-2.txt").open("w") as f:
+            f.write("bar==1.2.3")
+
+        with Path("cli-requirements.txt").open("w") as f:
+            f.write("cli-dep==1.2.3")
+
+        with Path("dev-requirements.txt").open("w") as f:
+            f.write("dev-dep==1.2.3")
+
+        extract = PEP621DependencyGetter(config=Path("pyproject.toml"), pep621_dev_dependency_groups=("dev",)).get()
+        dependencies = extract.dependencies
+        dev_dependencies = extract.dev_dependencies
+
+        assert len(dependencies) == 3
+        assert len(dev_dependencies) == 1
+
+        assert dependencies[0].name == "foo"
+        assert dependencies[1].name == "bar"
+        assert dependencies[2].name == "cli-dep"
+        assert dev_dependencies[0].name == "dev-dep"
+
+
+def test_dependency_getter_with_setuptools_dynamic_dependencies_without_build_backend(tmp_path: Path) -> None:
+    fake_pyproject_toml = """[project]
+# PEP 621 project metadata
+# See https://www.python.org/dev/peps/pep-0621/
+dynamic = ["dependencies", "optional-dependencies"]
+
+[tool.setuptools.dynamic]
+dependencies = { file = ["requirements.txt", "requirements-2.txt"] }
+
+[tool.setuptools.dynamic.optional-dependencies]
+cli = { file = ["cli-requirements.txt"] }
+dev = { file = ["dev-requirements.txt"] }
+"""
+
+    with run_within_dir(tmp_path):
+        with Path("pyproject.toml").open("w") as f:
+            f.write(fake_pyproject_toml)
+
+        with Path("requirements.txt").open("w") as f:
+            f.write("foo==1.2.3")
+
+        with Path("requirements-2.txt").open("w") as f:
+            f.write("bar==1.2.3")
+
+        with Path("cli-requirements.txt").open("w") as f:
+            f.write("cli-dep==1.2.3")
+
+        with Path("dev-requirements.txt").open("w") as f:
+            f.write("dev-dep==1.2.3")
+
+        extract = PEP621DependencyGetter(config=Path("pyproject.toml"), pep621_dev_dependency_groups=("dev",)).get()
+        dependencies = extract.dependencies
+        dev_dependencies = extract.dev_dependencies
+
+        assert len(dependencies) == 0
+        assert len(dev_dependencies) == 0
+
+
+def test_dependency_getter_with_setuptools_dynamic_dependencies_with_another_build_backend(tmp_path: Path) -> None:
+    fake_pyproject_toml = """[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[project]
+# PEP 621 project metadata
+# See https://www.python.org/dev/peps/pep-0621/
+dynamic = ["dependencies", "optional-dependencies"]
+
+[tool.setuptools.dynamic]
+dependencies = { file = ["requirements.txt", "requirements-2.txt"] }
+
+[tool.setuptools.dynamic.optional-dependencies]
+cli = { file = ["cli-requirements.txt"] }
+dev = { file = ["dev-requirements.txt"] }
+"""
+
+    with run_within_dir(tmp_path):
+        with Path("pyproject.toml").open("w") as f:
+            f.write(fake_pyproject_toml)
+
+        with Path("requirements.txt").open("w") as f:
+            f.write("foo==1.2.3")
+
+        with Path("requirements-2.txt").open("w") as f:
+            f.write("bar==1.2.3")
+
+        with Path("cli-requirements.txt").open("w") as f:
+            f.write("cli-dep==1.2.3")
+
+        with Path("dev-requirements.txt").open("w") as f:
+            f.write("dev-dep==1.2.3")
+
+        extract = PEP621DependencyGetter(config=Path("pyproject.toml"), pep621_dev_dependency_groups=("dev",)).get()
+        dependencies = extract.dependencies
+        dev_dependencies = extract.dev_dependencies
+
+        assert len(dependencies) == 0
+        assert len(dev_dependencies) == 0
+
+
+def test_dependency_getter_with_setuptools_dynamic_dependencies_only_optional(tmp_path: Path) -> None:
+    fake_pyproject_toml = """[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+# PEP 621 project metadata
+# See https://www.python.org/dev/peps/pep-0621/
+dependencies = ["foo==1.2.3"]
+dynamic = ["optional-dependencies"]
+
+[tool.setuptools.dynamic.optional-dependencies]
+dev = { file = ["dev-requirements.txt"] }
+"""
+
+    with run_within_dir(tmp_path):
+        with Path("pyproject.toml").open("w") as f:
+            f.write(fake_pyproject_toml)
+
+        with Path("dev-requirements.txt").open("w") as f:
+            f.write("dev-dep==1.2.3")
+
+        extract = PEP621DependencyGetter(config=Path("pyproject.toml"), pep621_dev_dependency_groups=("dev",)).get()
+        dependencies = extract.dependencies
+        dev_dependencies = extract.dev_dependencies
+
+        assert len(dependencies) == 1
+        assert len(dev_dependencies) == 1
+
+        assert dependencies[0].name == "foo"
+        assert dev_dependencies[0].name == "dev-dep"
