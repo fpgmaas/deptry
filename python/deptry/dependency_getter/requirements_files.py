@@ -24,25 +24,12 @@ class RequirementsTxtDependencyGetter(DependencyGetter):
     requirements_files_dev: tuple[str, ...] = ("dev-requirements.txt", "requirements-dev.txt")
 
     def get(self) -> DependenciesExtract:
-        dependencies = list(
-            itertools.chain(
-                *(
-                    get_dependencies_from_requirements_file(file_name, self.package_module_name_map)
-                    for file_name in self.requirements_files
-                )
-            )
+        return DependenciesExtract(
+            get_dependencies_from_requirements_files(self.requirements_files, self.package_module_name_map),
+            get_dependencies_from_requirements_files(
+                self._scan_for_dev_requirements_files(), self.package_module_name_map
+            ),
         )
-
-        dev_dependencies = list(
-            itertools.chain(
-                *(
-                    get_dependencies_from_requirements_file(file_name, self.package_module_name_map)
-                    for file_name in self._scan_for_dev_requirements_files()
-                )
-            )
-        )
-
-        return DependenciesExtract(dependencies, dev_dependencies)
 
     def _scan_for_dev_requirements_files(self) -> list[str]:
         """
@@ -52,6 +39,19 @@ class RequirementsTxtDependencyGetter(DependencyGetter):
         if dev_requirements_files:
             logging.debug("Found files with development requirements! %s", dev_requirements_files)
         return dev_requirements_files
+
+
+def get_dependencies_from_requirements_files(
+    file_names: Sequence[str], package_module_name_map: Mapping[str, Sequence[str]], is_dev: bool = False
+) -> list[Dependency]:
+    return list(
+        itertools.chain(
+            *(
+                get_dependencies_from_requirements_file(file_name, package_module_name_map, is_dev)
+                for file_name in file_names
+            )
+        )
+    )
 
 
 def get_dependencies_from_requirements_file(
