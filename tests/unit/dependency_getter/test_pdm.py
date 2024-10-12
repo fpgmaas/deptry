@@ -19,14 +19,16 @@ dependencies = [
     "fox-python",  # top level module is called "fox"
 ]
 
+[dependency-groups]
+dev-group = ["foo", "baz"]
+all = [{include-group = "dev-group"}, "foobaz"]
+
 [tool.pdm.dev-dependencies]
 test = [
     "qux",
     "bar; python_version < 3.11"
 ]
-tox = [
-    "foo-bar",
-]
+tox = ["foo-bar"]
 """
 
     with run_within_dir(tmp_path):
@@ -42,6 +44,7 @@ tox = [
         dev_dependencies = dependencies_extract.dev_dependencies
 
         assert len(dependencies) == 5
+        assert len(dev_dependencies) == 6
 
         assert dependencies[0].name == "qux"
         assert "qux" in dependencies[0].top_levels
@@ -58,13 +61,20 @@ tox = [
         assert dependencies[4].name == "fox-python"
         assert "fox" in dependencies[4].top_levels
 
-        assert len(dev_dependencies) == 3
+        assert dev_dependencies[0].name == "foo"
+        assert "foo" in dev_dependencies[0].top_levels
 
-        assert dev_dependencies[0].name == "qux"
-        assert "qux" in dev_dependencies[0].top_levels
+        assert dev_dependencies[1].name == "baz"
+        assert "baz" in dev_dependencies[1].top_levels
 
-        assert dev_dependencies[1].name == "bar"
-        assert "bar" in dev_dependencies[1].top_levels
+        assert dev_dependencies[2].name == "foobaz"
+        assert "foobaz" in dev_dependencies[2].top_levels
 
-        assert dev_dependencies[2].name == "foo-bar"
-        assert "foo_bar" in dev_dependencies[2].top_levels
+        assert dev_dependencies[3].name == "qux"
+        assert "qux" in dev_dependencies[3].top_levels
+
+        assert dev_dependencies[4].name == "bar"
+        assert "bar" in dev_dependencies[4].top_levels
+
+        assert dev_dependencies[5].name == "foo-bar"
+        assert "foo_bar" in dev_dependencies[5].top_levels

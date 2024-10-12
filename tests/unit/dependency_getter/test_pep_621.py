@@ -74,17 +74,15 @@ def test_dependency_getter_with_dev_dependencies(tmp_path: Path) -> None:
     fake_pyproject_toml = """[project]
 # PEP 621 project metadata
 # See https://www.python.org/dev/peps/pep-0621/
-dependencies = [
-"qux",
-]
+dependencies = ["qux"]
 
 [project.optional-dependencies]
-group1 = [
-    "foobar",
-]
-group2 = [
-    "barfoo",
-]
+group1 = ["foobar"]
+group2 = ["barfoo"]
+
+[dependency-groups]
+dev-group = ["foo", "baz"]
+all = [{include-group = "dev-group"}, "foobaz"]
 """
 
     with run_within_dir(tmp_path):
@@ -96,6 +94,7 @@ group2 = [
         dev_dependencies = getter.get().dev_dependencies
 
         assert len(dependencies) == 2
+        assert len(dev_dependencies) == 4
 
         assert dependencies[0].name == "qux"
         assert "qux" in dependencies[0].top_levels
@@ -103,26 +102,28 @@ group2 = [
         assert dependencies[1].name == "foobar"
         assert "foobar" in dependencies[1].top_levels
 
-        assert len(dev_dependencies) == 1
-        assert dev_dependencies[0].name == "barfoo"
-        assert "barfoo" in dev_dependencies[0].top_levels
+        assert dev_dependencies[0].name == "foo"
+        assert "foo" in dev_dependencies[0].top_levels
+
+        assert dev_dependencies[1].name == "baz"
+        assert "baz" in dev_dependencies[1].top_levels
+
+        assert dev_dependencies[2].name == "foobaz"
+        assert "foobaz" in dev_dependencies[2].top_levels
+
+        assert dev_dependencies[3].name == "barfoo"
+        assert "barfoo" in dev_dependencies[3].top_levels
 
 
 def test_dependency_getter_with_incorrect_dev_group(tmp_path: Path, caplog: LogCaptureFixture) -> None:
     fake_pyproject_toml = """[project]
 # PEP 621 project metadata
 # See https://www.python.org/dev/peps/pep-0621/
-dependencies = [
-"qux",
-]
+dependencies = ["qux"]
 
 [project.optional-dependencies]
-group1 = [
-    "foobar",
-]
-group2 = [
-    "barfoo",
-]
+group1 = ["foobar"]
+group2 = ["barfoo"]
 """
 
     with run_within_dir(tmp_path), caplog.at_level(logging.INFO):
