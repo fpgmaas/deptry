@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import itertools
 import logging
 import re
 from dataclasses import dataclass
@@ -40,21 +41,24 @@ class PEP621DependencyGetter(DependencyGetter):
     def get(self) -> DependenciesExtract:
         dependencies = self._get_dependencies()
         optional_dependencies = self._get_optional_dependencies()
+        dependency_groups_dependencies = self._get_dependency_groups_dependencies()
 
         dev_dependencies_from_optional, remaining_optional_dependencies = (
             self._split_development_dependencies_from_optional_dependencies(optional_dependencies)
         )
         return DependenciesExtract(
             [*dependencies, *remaining_optional_dependencies],
-            self._get_dev_dependencies(dev_dependencies_from_optional),
+            self._get_dev_dependencies(dependency_groups_dependencies, dev_dependencies_from_optional),
         )
 
     def _get_dependencies(self) -> list[Dependency]:
+        """Extract dependencies from `[project.dependencies]` (https://packaging.python.org/en/latest/specifications/pyproject-toml/#dependencies-optional-dependencies)."""
         pyproject_data = load_pyproject_toml(self.config)
         dependency_strings: list[str] = pyproject_data["project"].get("dependencies", [])
         return self._extract_pep_508_dependencies(dependency_strings)
 
     def _get_optional_dependencies(self) -> dict[str, list[Dependency]]:
+        """Extract dependencies from `[project.optional-dependencies]` (https://packaging.python.org/en/latest/specifications/pyproject-toml/#dependencies-optional-dependencies)."""
         pyproject_data = load_pyproject_toml(self.config)
 
         return {
@@ -62,8 +66,27 @@ class PEP621DependencyGetter(DependencyGetter):
             for group, dependencies in pyproject_data["project"].get("optional-dependencies", {}).items()
         }
 
-    def _get_dev_dependencies(self, dev_dependencies_from_optional: list[Dependency]) -> list[Dependency]:
-        return dev_dependencies_from_optional
+    def _get_dependency_groups_dependencies(self) -> dict[str, list[Dependency]]:
+        """Extract dependencies from `[dependency-groups]` (https://peps.python.org/pep-0735/)."""
+        pyproject_data = load_pyproject_toml(self.config)
+
+        return {
+            # PEP 735 supports maps in dependency groups, to for instance extend existing
+            # groups (https://peps.python.org/pep-0735/#dependency-group-include). Since we do not need to treat group
+            # extension right now, and there are no other existing key, we want to filter out non-string items.
+            group: self._extract_pep_508_dependencies(list(filter(lambda x: isinstance(x, str), dependencies)))
+            for group, dependencies in pyproject_data.get("dependency-groups", {}).items()
+        }
+
+    def _get_dev_dependencies(
+        self,
+        dependency_groups_dependencies: dict[str, list[Dependency]],
+        dev_dependencies_from_optional: list[Dependency],
+    ) -> list[Dependency]:
+        return [
+            *itertools.chain(*dependency_groups_dependencies.values()),
+            *dev_dependencies_from_optional,
+        ]
 
     def _check_for_invalid_group_names(self, optional_dependencies: dict[str, list[Dependency]]) -> None:
         missing_groups = set(self.pep621_dev_dependency_groups) - set(optional_dependencies.keys())

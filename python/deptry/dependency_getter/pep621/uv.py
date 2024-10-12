@@ -18,7 +18,11 @@ class UvDependencyGetter(PEP621DependencyGetter):
     uses uv for its dependency management.
     """
 
-    def _get_dev_dependencies(self, dev_dependencies_from_optional: list[Dependency]) -> list[Dependency]:
+    def _get_dev_dependencies(
+        self,
+        dependency_groups_dependencies: dict[str, list[Dependency]],
+        dev_dependencies_from_optional: list[Dependency],
+    ) -> list[Dependency]:
         """
         Retrieve dev dependencies from pyproject.toml, which in uv are specified as:
 
@@ -31,7 +35,7 @@ class UvDependencyGetter(PEP621DependencyGetter):
 
         Dev dependencies marked as such from optional dependencies are also added to the list of dev dependencies found.
         """
-        dev_dependencies = super()._get_dev_dependencies(dev_dependencies_from_optional)
+        dev_dependencies = super()._get_dev_dependencies(dependency_groups_dependencies, dev_dependencies_from_optional)
 
         pyproject_data = load_pyproject_toml(self.config)
 
