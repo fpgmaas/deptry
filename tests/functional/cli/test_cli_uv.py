@@ -48,12 +48,48 @@ def test_cli_with_uv(uv_venv_factory: UvVenvFactory) -> None:
             {
                 "error": {
                     "code": "DEP004",
+                    "message": "'mkdocs' imported but declared as a dev dependency",
+                },
+                "module": "mkdocs",
+                "location": {
+                    "file": str(Path("src/main.py")),
+                    "line": 6,
+                    "column": 8,
+                },
+            },
+            {
+                "error": {
+                    "code": "DEP004",
+                    "message": "'mkdocs_material' imported but declared as a dev dependency",
+                },
+                "module": "mkdocs_material",
+                "location": {
+                    "file": str(Path("src/main.py")),
+                    "line": 7,
+                    "column": 8,
+                },
+            },
+            {
+                "error": {
+                    "code": "DEP004",
                     "message": "'mypy' imported but declared as a dev dependency",
                 },
                 "module": "mypy",
                 "location": {
                     "file": str(Path("src/main.py")),
-                    "line": 6,
+                    "line": 8,
+                    "column": 8,
+                },
+            },
+            {
+                "error": {
+                    "code": "DEP004",
+                    "message": "'packaging' imported but declared as a dev dependency",
+                },
+                "module": "packaging",
+                "location": {
+                    "file": str(Path("src/main.py")),
+                    "line": 9,
                     "column": 8,
                 },
             },
@@ -65,7 +101,7 @@ def test_cli_with_uv(uv_venv_factory: UvVenvFactory) -> None:
                 "module": "pytest",
                 "location": {
                     "file": str(Path("src/main.py")),
-                    "line": 7,
+                    "line": 10,
                     "column": 8,
                 },
             },
@@ -77,7 +113,7 @@ def test_cli_with_uv(uv_venv_factory: UvVenvFactory) -> None:
                 "module": "pytest_cov",
                 "location": {
                     "file": str(Path("src/main.py")),
-                    "line": 8,
+                    "line": 11,
                     "column": 8,
                 },
             },
@@ -89,7 +125,7 @@ def test_cli_with_uv(uv_venv_factory: UvVenvFactory) -> None:
                 "module": "white",
                 "location": {
                     "file": str(Path("src/main.py")),
-                    "line": 9,
+                    "line": 12,
                     "column": 8,
                 },
             },

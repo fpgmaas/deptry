@@ -58,11 +58,26 @@ def test_cli_with_pep_621(pip_venv_factory: PipVenvFactory) -> None:
             {
                 "error": {"code": "DEP004", "message": "'black' imported but declared as a dev dependency"},
                 "module": "black",
-                "location": {"file": str(Path("src/main.py")), "line": 4, "column": 8},
+                "location": {"file": str(Path("src/main.py")), "line": 5, "column": 8},
+            },
+            {
+                "error": {"code": "DEP004", "message": "'mkdocs' imported but declared as a dev dependency"},
+                "module": "mkdocs",
+                "location": {"file": str(Path("src/main.py")), "line": 7, "column": 8},
+            },
+            {
+                "error": {"code": "DEP004", "message": "'mkdocs_material' imported but declared as a dev dependency"},
+                "module": "mkdocs_material",
+                "location": {"file": str(Path("src/main.py")), "line": 8, "column": 8},
+            },
+            {
+                "error": {"code": "DEP004", "message": "'packaging' imported but declared as a dev dependency"},
+                "module": "packaging",
+                "location": {"file": str(Path("src/main.py")), "line": 9, "column": 8},
             },
             {
                 "error": {"code": "DEP001", "message": "'white' imported but missing from the dependency definitions"},
                 "module": "white",
-                "location": {"file": str(Path("src/main.py")), "line": 6, "column": 8},
+                "location": {"file": str(Path("src/main.py")), "line": 10, "column": 8},
             },
         ]
