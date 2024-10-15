@@ -109,6 +109,24 @@ def test_both(tmp_path: Path) -> None:
         assert isinstance(spec, PoetryDependencyGetter)
 
 
+def test_setuptools_dynamic_dependencies(tmp_path: Path) -> None:
+    with run_within_dir(tmp_path):
+        with Path("requirements.txt").open("w") as f:
+            f.write("foo >= 1.0")
+        with Path("pyproject.toml").open("w") as f:
+            f.write("""
+            [build-system]
+            build-backend = "setuptools.build_meta"
+            [project]
+            dynamic = ["dependencies"]
+            [tool.setuptools.dynamic]
+            dependencies = {file = ["requirements.txt"]}
+            """)
+
+        spec = DependencyGetterBuilder(Path("pyproject.toml")).build()
+        assert isinstance(spec, PEP621DependencyGetter)
+
+
 def test_requirements_files(tmp_path: Path) -> None:
     with run_within_dir(tmp_path):
         with Path("requirements.txt").open("w") as f:
