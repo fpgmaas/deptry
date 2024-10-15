@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from deptry.dependency_getter.requirements_files import RequirementsTxtDependencyGetter
+from deptry.dependency_getter.requirements_files import RequirementsTxtDependencyGetter, _line_is_url
 from tests.utils import run_within_dir
 
 
@@ -63,7 +63,8 @@ def test_parse_requirements_files_urls(tmp_path: Path) -> None:
 https://github.com/urllib3/urllib3/archive/refs/tags/1.26.8.zip
 git+https://github.com/baz/foo-bar.git@asd#egg=foo-bar
 git+https://github.com/baz/foo-bar.git@asd
-git+https://github.com/abc123/bar-foo@xyz789#egg=bar-fooo"""
+git+https://github.com/abc123/bar-foo@xyz789#egg=bar-fooo
+https://unsupported-specification.com"""
 
     with run_within_dir(tmp_path):
         with Path("requirements.txt").open("w") as f:
@@ -200,4 +201,4 @@ def test_dev_multiple_with_arguments(tmp_path: Path) -> None:
     ],
 )
 def test__line_is_url(line: str, expected: bool) -> None:
-    assert RequirementsTxtDependencyGetter._line_is_url(line) is expected
+    assert _line_is_url(line) is expected
