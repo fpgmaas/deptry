@@ -17,6 +17,13 @@ foo = [
 ]
 bar = ["requests==2.32.3"]
 
+[dependency-groups]
+doc = [
+    "mkdocs==1.6.1",
+    "mkdocs-material==9.5.40",
+]
+all = [{include-group = "doc"}, "packaging==24.1"]
+
 [tool.uv]
 dev-dependencies = [
     "black==24.8.0",

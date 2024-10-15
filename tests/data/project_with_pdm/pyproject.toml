@@ -18,6 +18,13 @@ bar = ["requests>=2.28.1"]
 [tool.pdm]
 version = {source = "scm"}
 
+[dependency-groups]
+doc = [
+    "mkdocs==1.6.1",
+    "mkdocs-material==9.5.40",
+]
+all = [{include-group = "doc"}, "packaging==24.1"]
+
 [tool.pdm.dev-dependencies]
 lint = [
     "black>=22.6.0",
