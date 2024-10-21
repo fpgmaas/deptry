@@ -16,6 +16,7 @@ class Project(str, Enum):
     PYPROJECT_DIFFERENT_DIRECTORY = "project_with_pyproject_different_directory"
     REQUIREMENTS_TXT = "project_with_requirements_txt"
     REQUIREMENTS_IN = "project_with_requirements_in"
+    SETUPTOOLS_DYNAMIC_DEPENDENCIES = "project_with_setuptools_dynamic_dependencies"
     SRC_DIRECTORY = "project_with_src_directory"
     UV = "project_with_uv"
 
