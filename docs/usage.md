@@ -20,37 +20,16 @@ If you want to configure _deptry_ using `pyproject.toml`, or if your dependencie
 
 ## Dependencies extraction
 
-_deptry_ extracts dependencies into 2 separate groups:
+_deptry_ can extract dependencies from a broad range of [dependency managers](supported-dependency-managers.md).
 
-- "production" ones, meant to be used in the codebase
+Dependencies are always extracted into two separate groups:
+
+- regular ones, meant to be used in the codebase
 - development ones
 
 This is an important distinction, as development dependencies are usually meant to only be used outside the
-codebase (for instance in tests, or as CLI tools for type-checking, formatting, etc.). For this reason, _deptry_ will
+codebase (e.g. `pytest` to run tests, Mypy for type-checking, or Ruff for formatting). For this reason, _deptry_ will
 not run [Unused dependencies (DEP002)](rules-violations.md#unused-dependencies-dep002) for development dependencies.
-
-To determine the project's dependencies, _deptry_ will scan the directory it is run from for files in the following order:
-
-1. If a `pyproject.toml` file with a `[tool.poetry.dependencies]` section is found, _deptry_ will assume it uses Poetry and extract:
-    - dependencies from `[tool.poetry.dependencies]` section
-    - development dependencies from `[tool.poetry.group.dev.dependencies]` or `[tool.poetry.dev-dependencies]` section
-1. If a `pyproject.toml` file with a `[tool.pdm.dev-dependencies]` section is found, _deptry_ will assume it uses PDM and extract:
-    - dependencies from `[project.dependencies]` and `[project.optional-dependencies]` sections
-    - development dependencies from `[tool.pdm.dev-dependencies]` section and from the groups under `[project.optional-dependencies]` passed via the [`--pep621-dev-dependency-groups`](#pep-621-dev-dependency-groups) argument
-1. If a `pyproject.toml` file with a `[tool.uv.dev-dependencies]` section is found, _deptry_ will assume it uses uv and extract:
-    - dependencies from `[project.dependencies]` and `[project.optional-dependencies]` sections
-    - development dependencies from `[tool.uv.dev-dependencies]` section and from the groups under `[project.optional-dependencies]` passed via the [`--pep621-dev-dependency-groups`](#pep-621-dev-dependency-groups) argument
-1. If a `pyproject.toml` file with a `[project]` section is found, _deptry_ will assume it uses [PEP 621](https://peps.python.org/pep-0621/) for dependency specification and extract:
-    - dependencies from:
-        - `[project.dependencies]` (or `dependencies` requirements files under `[tool.setuptools.dynamic]` section if the project uses `setuptools.build_meta` as a build backend, and a `dynamic` key under `[project]` section includes `"dependencies"`)
-        - `[project.optional-dependencies]` (or requirements files under `[tool.setuptools.dynamic.optional-dependencies]` section if the project uses `setuptools.build_meta` as a build backend, and a `dynamic` key under `[project]` section includes `"optional-dependencies"`)
-    - development dependencies from the groups under `[dependency-groups]`, and the ones under `[project.optional-dependencies]` (or `setuptools` equivalent) passed via the [`--pep621-dev-dependency-groups`](#pep-621-dev-dependency-groups) argument
-1. If a `requirements.in` or `requirements.txt` file is found, _deptry_ will:
-    - extract dependencies from that file.
-    - extract development dependencies from `dev-dependencies.txt` and `dependencies-dev.txt`, if any exist
-
-_deptry_ can be configured to look for `pip` requirements files with other names or in other directories.
-See [Requirements files](#requirements-files) and [Requirements files dev](#requirements-files-dev).
 
 ## Imports extraction
 
@@ -456,30 +435,32 @@ deptry . --package-module-name-map "foo-python=foo,bar-python=bar"
 
 #### PEP 621 dev dependency groups
 
-PEP 621 does [not define](https://peps.python.org/pep-0621/#recommend-that-tools-put-development-related-dependencies-into-a-dev-extra) a standard convention for specifying development dependencies. However, deptry offers a mechanism to interpret specific optional dependency groups as development dependencies.
+Historically, PEP 621
+did [not define](https://peps.python.org/pep-0621/#recommend-that-tools-put-development-related-dependencies-into-a-dev-extra)
+a standard convention for specifying development dependencies. [PEP 735](https://peps.python.org/pep-0735/) now covers
+this, but in the meantime, several projects defined development dependencies under `[project.optional-dependencies]`.
+_deptry_ offers a mechanism to interpret specific optional dependency groups as development dependencies.
 
-By default, all dependencies under `[project.dependencies]` and `[project.optional-dependencies]` are extracted as regular dependencies. By using the `--pep621-dev-dependency-groups` argument, users can specify which groups defined under `[project.optional-dependencies]` should be treated as development dependencies instead. This is particularly useful for projects that adhere to PEP 621 but do not employ a separate build tool for declaring development dependencies.
+By default, all dependencies under `[project.dependencies]` and `[project.optional-dependencies]` are extracted as
+regular dependencies. By using the `--pep621-dev-dependency-groups` argument, users can specify which groups defined
+under `[project.optional-dependencies]` should be treated as development dependencies instead. This is particularly
+useful for projects that adhere to PEP 621 but do not employ a separate build tool for declaring development
+dependencies.
 
 For example, consider a project with the following `pyproject.toml`:
 
 ```toml
 [project]
 ...
-dependencies = [
-    "httpx",
-]
+dependencies = ["httpx"]
 
 [project.optional-dependencies]
-test = [
-    "pytest < 5.0.0",
-]
-plot = [
-    "matplotlib",
-]
+plot = ["matplotlib"]
+test = ["pytest"]
 ```
 
-By default, `httpx`, `pytest` and `matplotlib` are extracted as regular dependencies. By specifying `--pep621-dev-dependency-groups=test`,
-the dependency `pytest` will be considered a development dependency instead.
+By default, `httpx`, `matplotlib` and `pytest` are extracted as regular dependencies. By specifying
+`--pep621-dev-dependency-groups=test`, `pytest` dependency will be treated as a development dependency instead.
 
 - Type: `list[str]`
 - Default: `[]`
@@ -498,7 +479,7 @@ deptry . --pep621-dev-dependency-groups "test,docs"
 #### Experimental namespace package
 
 !!! warning
-    This option is experimental and disabled by default for now, as it could degrade performance in large codebases.
+This option is experimental and disabled by default for now, as it could degrade performance in large codebases.
 
 Enable experimental namespace package ([PEP 420](https://peps.python.org/pep-0420/)) support.
 
