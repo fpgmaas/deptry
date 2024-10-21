@@ -13,7 +13,7 @@ extensions, but also from package managers that do not (or used to not) support 
 ## PEP 621
 
 _deptry_ fully supports [PEP 621 standard](https://packaging.python.org/en/latest/specifications/pyproject-toml/), and
-use the presence of a `[project]` section in `pyproject.toml` to determine that the project uses PEP 621.
+uses the presence of a `[project]` section in `pyproject.toml` to determine that the project uses PEP 621.
 
 By default, _deptry_ extracts, from `pyproject.toml`:
 
