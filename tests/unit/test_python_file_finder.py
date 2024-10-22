@@ -174,3 +174,110 @@ def test_duplicates_are_removed(tmp_path: Path) -> None:
         files = get_all_python_files_in((Path(), Path()), exclude=(), extend_exclude=(), using_default_exclude=False)
 
         assert sorted(files) == [Path("dir/subdir/file1.py")]
+
+
+def test_gitignore_used_in_git_project(tmp_path: Path) -> None:
+    """Test that gitignore files are respected when project uses git."""
+    git_project_path = tmp_path / "git_project"
+    git_project_path.mkdir()
+
+    # Simulate the presence of a gitignore outside the git project, that should not be used.
+    with (tmp_path / ".gitignore").open("w") as f:
+        f.write("*")
+
+    with run_within_dir(tmp_path / git_project_path):
+        # Simulate the fact that the project is a git repository.
+        Path(".git").mkdir()
+
+        create_files([
+            Path("file1.py"),
+            Path("file2.py"),
+            Path("file3.py"),
+            Path("dir1/file.py"),
+            Path("dir2/file2.py"),
+            Path("dir3/file3.py"),
+            Path("dir3/file4.py"),
+        ])
+
+        with Path(".gitignore").open("w") as f:
+            f.write("""/file1.py
+/dir1/file.py
+file2.py""")
+
+        with Path("dir3/.gitignore").open("w") as f:
+            f.write("/file3.py")
+
+        files = get_all_python_files_in((Path(),), exclude=(), extend_exclude=(), using_default_exclude=True)
+
+        assert sorted(files) == [
+            Path("dir3/file4.py"),
+            Path("file3.py"),
+        ]
+
+
+def test_gitignore_ignored_when_not_using_default_exclude(tmp_path: Path) -> None:
+    """Test that gitignore files are ignored when project uses git but does not use default exclude."""
+    git_project_path = tmp_path / "git_project"
+    git_project_path.mkdir()
+
+    # Simulate the presence of a gitignore outside the git project, that should not be used.
+    with (tmp_path / ".gitignore").open("w") as f:
+        f.write("*")
+
+    with run_within_dir(tmp_path / git_project_path):
+        # Simulate the fact that the project is a git repository.
+        Path(".git").mkdir()
+
+        create_files([
+            Path("file1.py"),
+            Path("file2.py"),
+            Path("file3.py"),
+            Path("dir1/file.py"),
+            Path("dir2/file2.py"),
+            Path("dir3/file3.py"),
+            Path("dir3/file4.py"),
+        ])
+
+        with Path(".gitignore").open("w") as f:
+            f.write("""/file1.py
+/dir1/file.py
+file2.py""")
+
+        with Path("dir3/.gitignore").open("w") as f:
+            f.write("/file3.py")
+
+        files = get_all_python_files_in(
+            (Path(),),
+            exclude=("file3.py",),
+            extend_exclude=(),
+            using_default_exclude=False,
+        )
+
+        assert sorted(files) == [
+            Path("dir1/file.py"),
+            Path("dir2/file2.py"),
+            Path("dir3/file3.py"),
+            Path("dir3/file4.py"),
+            Path("file1.py"),
+            Path("file2.py"),
+        ]
+
+
+def test_gitignore_ignored_in_non_git_project(tmp_path: Path) -> None:
+    """Test that gitignore files are ignored when project does not use git."""
+    with run_within_dir(tmp_path):
+        create_files([
+            Path("file1.py"),
+            Path("file2.py"),
+        ])
+
+        # This will be ignored, since project is not a git project.
+        with Path(".gitignore").open("w") as f:
+            f.write("/file1.py")
+
+        files = get_all_python_files_in((Path(),), exclude=(), extend_exclude=(), using_default_exclude=True)
+
+        assert sorted(files) == [
+            Path("file1.py"),
+            Path("file2.py"),
+        ]
