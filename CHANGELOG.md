@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.21.0 - 2024-10-??
+
+### Features
+
+* _deptry_ now detects development dependencies from `[dependency-groups]` section, introduced
+  by [PEP 735](https://peps.python.org/pep-0735/) ([#892](https://github.com/fpgmaas/deptry/pull/892))
+* _deptry_ now supports `setuptools` dynamic dependencies set in `[tool.setuptools.dynamic]` section,
+  see https://deptry.com/supported-dependency-managers/#setuptools for more
+  details ([#894](https://github.com/fpgmaas/deptry/pull/894), [#724](https://github.com/fpgmaas/deptry/pull/724))
+
+
 ## 0.20.0 - 2024-08-27
 
 ### Breaking changes
@@ -23,6 +34,7 @@ Those flags have now been removed. If you relied on them, you should now use, re
   help ([#817](https://github.com/fpgmaas/deptry/pull/817))
 * Remove deprecated `--requirements-txt`/`--requirements-txt-dev`
   flags ([#819](https://github.com/fpgmaas/deptry/pull/819))
+
 
 ## 0.19.1 - 2024-08-10
 
