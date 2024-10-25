@@ -7,13 +7,16 @@ import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING
-from urllib.parse import urlparse
+
+import requirements
 
 from deptry.dependency import Dependency
 from deptry.dependency_getter.base import DependenciesExtract, DependencyGetter
 
 if TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
+
+    from requirements.requirement import Requirement
 
 
 @dataclass
@@ -58,68 +61,45 @@ def get_dependencies_from_requirements_file(
     file_name: str, package_module_name_map: Mapping[str, Sequence[str]], is_dev: bool = False
 ) -> list[Dependency]:
     logging.debug("Scanning %s for %s", file_name, "dev dependencies" if is_dev else "dependencies")
+
     dependencies = []
+    requirements_file = Path(file_name)
 
-    file_path = Path(file_name)
-
-    with file_path.open() as f:
-        data = f.readlines()
-
-    for line in data:
-        dependency = _extract_dependency_from_line(line, file_path, package_module_name_map)
-        if dependency:
-            dependencies.append(dependency)
+    with requirements_file.open() as requirements_file_content:
+        for requirement in requirements.parse(requirements_file_content):
+            if (
+                dependency := _build_dependency_from_requirement(
+                    requirement, requirements_file, package_module_name_map
+                )
+            ) is not None:
+                dependencies.append(dependency)
 
     return dependencies
 
 
-def _extract_dependency_from_line(
-    line: str, file_path: Path, package_module_name_map: Mapping[str, Sequence[str]]
+def _build_dependency_from_requirement(
+    requirement: Requirement, requirements_file: Path, package_module_name_map: Mapping[str, Sequence[str]]
 ) -> Dependency | None:
     """
-    Extract a dependency from a single line of a requirements.txt file.
+    Build a dependency from an extracted requirement.
     """
-    line = _remove_comments_from(line)
-    line = _remove_newlines_from(line)
-    name = _find_dependency_name_in(line)
-    if name:
-        return Dependency(
-            name=name,
-            definition_file=file_path,
-            module_names=package_module_name_map.get(name),
-        )
-    else:
+    # Explicitly set types, as "name" and "uri" default to `None` in `Requirement`, and are not typed, so `mypy` always
+    # assume that they both will be `None`.
+    dependency_name: str | None = requirement.name
+    dependency_uri: str | None = requirement.uri
+
+    # If the dependency name could not be guessed, and we have a URI, try to guess it from the URI.
+    if not dependency_name and dependency_uri:
+        dependency_name = _extract_name_from_url(dependency_uri)
+
+    if dependency_name is None:
         return None
 
-
-def _find_dependency_name_in(line: str) -> str | None:
-    """
-    Find the dependency name of a dependency specified according to the pip-standards for requirement.txt
-    """
-    if _line_is_url(line):
-        return _extract_name_from_url(line)
-    else:
-        match = re.search("^[^-][a-zA-Z0-9-_]+", line)
-        if match:
-            return match.group(0)
-    return None
-
-
-def _remove_comments_from(line: str) -> str:
-    """
-    Removes comments from a line. A comment is defined as any text
-    following a '#' that is either at the start of the line or preceded by a space.
-    This ensures that fragments like '#egg=' in URLs are not mistakenly removed.
-    """
-    return re.sub(r"(?<!\S)#.*", "", line).strip()
-
-
-def _remove_newlines_from(line: str) -> str:
-    return line.replace("\n", "")
-
-
-def _line_is_url(line: str) -> bool:
-    return urlparse(line).scheme != ""
+    return Dependency(
+        name=dependency_name,
+        definition_file=requirements_file,
+        module_names=package_module_name_map.get(dependency_name),
+    )
 
 
 def _extract_name_from_url(line: str) -> str | None:

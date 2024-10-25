@@ -2,9 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-import pytest
-
-from deptry.dependency_getter.requirements_files import RequirementsTxtDependencyGetter, _line_is_url
+from deptry.dependency_getter.requirements_files import RequirementsTxtDependencyGetter
 from tests.utils import run_within_dir
 
 
@@ -180,25 +178,3 @@ def test_dev_multiple_with_arguments(tmp_path: Path) -> None:
 
         assert dev_dependencies[0].name == "click"
         assert dev_dependencies[1].name == "bar"
-
-
-@pytest.mark.parametrize(
-    ("line", "expected"),
-    [
-        ("foo", False),
-        ("http", False),
-        ("https", False),
-        ("httpx", False),
-        ("git+http", False),
-        ("git+https", False),
-        ("http://", True),
-        ("https://", True),
-        ("git+http://", True),
-        ("git+https://", True),
-        ("file://", True),
-        ("file:///", True),
-        ("httpx://", True),
-    ],
-)
-def test__line_is_url(line: str, expected: bool) -> None:
-    assert _line_is_url(line) is expected
