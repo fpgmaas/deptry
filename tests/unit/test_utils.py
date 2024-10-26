@@ -2,28 +2,37 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import pytest
+
+from deptry.exceptions import PyprojectFileNotFoundError
 from deptry.utils import load_pyproject_toml
+from tests.utils import run_within_dir
 
 
-def test_load_pyproject_toml() -> None:
-    assert load_pyproject_toml(Path("tests/fixtures/example_project/pyproject.toml")) == {
-        "tool": {
-            "deptry": {"per_rule_ignores": {"DEP002": ["pkginfo"]}},
-            "poetry": {
-                "authors": ["test <test@test.com>"],
-                "dependencies": {
-                    "click": "^8.1.3",
-                    "isort": "^5.10.1",
-                    "pkginfo": "^1.8.3",
-                    "python": ">=3.7,<4.0",
-                    "requests": "^2.28.1",
-                    "toml": "^0.10.2",
-                    "urllib3": "^1.26.12",
-                },
-                "description": "A test project",
-                "dev-dependencies": {"black": "^22.6.0"},
-                "name": "test",
-                "version": "0.0.1",
+def test_load_pyproject_toml(tmp_path: Path) -> None:
+    pyproject_toml = """\
+[project]
+name = "foo"
+dependencies = ["bar", "baz>=20.9",]
+
+[dependency-groups]
+dev = ["foobar", "foobaz"]
+"""
+    with run_within_dir(tmp_path):
+        with Path("pyproject.toml").open("w") as f:
+            f.write(pyproject_toml)
+
+        assert load_pyproject_toml(Path("pyproject.toml")) == {
+            "project": {
+                "name": "foo",
+                "dependencies": ["bar", "baz>=20.9"],
+            },
+            "dependency-groups": {
+                "dev": ["foobar", "foobaz"],
             },
         }
-    }
+
+
+def test_load_pyproject_toml_not_found(tmp_path: Path) -> None:
+    with run_within_dir(tmp_path), pytest.raises(PyprojectFileNotFoundError):
+        load_pyproject_toml(Path("non_existing_pyproject.toml"))

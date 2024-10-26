@@ -56,7 +56,7 @@ def test_import_parser_py() -> None:
 
 
 def test_import_parser_ipynb() -> None:
-    notebook_path = Path("tests/fixtures/example_project/src/notebook.ipynb")
+    notebook_path = Path("tests/fixtures/some_imports.ipynb")
 
     assert get_imported_modules_from_list_of_files([notebook_path]) == {
         "click": [Location(notebook_path, 4, 8)],
