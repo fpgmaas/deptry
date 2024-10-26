@@ -57,8 +57,8 @@ def test_cli_single_requirements_files(pip_venv_factory: PipVenvFactory) -> None
                 "location": {"file": str(Path("src/main.py")), "line": 7, "column": 8},
             },
             {
-                "error": {"code": "DEP001", "message": "'tomli' imported but missing from the dependency definitions"},
-                "module": "tomli",
+                "error": {"code": "DEP001", "message": "'arrow' imported but missing from the dependency definitions"},
+                "module": "arrow",
                 "location": {"file": str(Path("src/notebook.ipynb")), "line": 3, "column": 8},
             },
         ]
@@ -104,8 +104,8 @@ def test_cli_multiple_requirements_files(pip_venv_factory: PipVenvFactory) -> No
                 "location": {"file": str(Path("src/main.py")), "line": 7, "column": 8},
             },
             {
-                "error": {"code": "DEP001", "message": "'tomli' imported but missing from the dependency definitions"},
-                "module": "tomli",
+                "error": {"code": "DEP001", "message": "'arrow' imported but missing from the dependency definitions"},
+                "module": "arrow",
                 "location": {"file": str(Path("src/notebook.ipynb")), "line": 3, "column": 8},
             },
         ]

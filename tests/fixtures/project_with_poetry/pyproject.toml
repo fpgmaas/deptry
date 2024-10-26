@@ -6,8 +6,8 @@ authors = []
 
 [tool.poetry.dependencies]
 python = ">=3.9"
+arrow = "1.3.0"
 pkginfo = "1.11.2"
-tomli = "2.0.2"
 urllib3 = "2.2.3"
 
 click = { version = "8.1.7", optional = true }

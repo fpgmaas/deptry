@@ -32,8 +32,8 @@ def test_cli_with_namespace(pip_venv_factory: PipVenvFactory) -> None:
                 "location": {"file": str(Path("foo/database/bar.py")), "line": 5, "column": 8},
             },
             {
-                "error": {"code": "DEP002", "message": "'tomli' defined as a dependency but not used in the codebase"},
-                "module": "tomli",
+                "error": {"code": "DEP002", "message": "'arrow' defined as a dependency but not used in the codebase"},
+                "module": "arrow",
                 "location": {"file": str(Path("pyproject.toml")), "line": None, "column": None},
             },
         ]
@@ -63,8 +63,8 @@ def test_cli_with_namespace_without_experimental_flag(pip_venv_factory: PipVenvF
                 "location": {"file": str(Path("foo/database/bar.py")), "line": 7, "column": 1},
             },
             {
-                "error": {"code": "DEP002", "message": "'tomli' defined as a dependency but not used in the codebase"},
-                "module": "tomli",
+                "error": {"code": "DEP002", "message": "'arrow' defined as a dependency but not used in the codebase"},
+                "module": "arrow",
                 "location": {"file": str(Path("pyproject.toml")), "line": None, "column": None},
             },
         ]

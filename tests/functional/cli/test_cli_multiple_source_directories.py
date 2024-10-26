@@ -22,8 +22,8 @@ def test_cli_with_multiple_source_directories(pip_venv_factory: PipVenvFactory) 
         assert result.returncode == 1
         assert get_issues_report(Path(issue_report)) == [
             {
-                "error": {"code": "DEP002", "message": "'tomli' defined as a dependency but not used in the codebase"},
-                "module": "tomli",
+                "error": {"code": "DEP002", "message": "'arrow' defined as a dependency but not used in the codebase"},
+                "module": "arrow",
                 "location": {"file": str(Path("pyproject.toml")), "line": None, "column": None},
             },
             {
