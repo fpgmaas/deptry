@@ -102,7 +102,7 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
     if not value or ctx.resilient_parsing:
         return None
 
-    click.echo(f'deptry {version("deptry")}')
+    click.echo(f"deptry {version('deptry')}")
     ctx.exit()
 
 
