@@ -85,18 +85,6 @@ def test_cli_ignore_notebooks(poetry_venv_factory: PoetryVenvFactory) -> None:
             {
                 "error": {
                     "code": "DEP002",
-                    "message": "'toml' defined as a dependency but not used in the codebase",
-                },
-                "module": "toml",
-                "location": {
-                    "file": str(Path("pyproject.toml")),
-                    "line": None,
-                    "column": None,
-                },
-            },
-            {
-                "error": {
-                    "code": "DEP002",
                     "message": "'isort' defined as a dependency but not used in the codebase",
                 },
                 "module": "isort",
@@ -112,6 +100,18 @@ def test_cli_ignore_notebooks(poetry_venv_factory: PoetryVenvFactory) -> None:
                     "message": "'requests' defined as a dependency but not used in the codebase",
                 },
                 "module": "requests",
+                "location": {
+                    "file": str(Path("pyproject.toml")),
+                    "line": None,
+                    "column": None,
+                },
+            },
+            {
+                "error": {
+                    "code": "DEP002",
+                    "message": "'tomli' defined as a dependency but not used in the codebase",
+                },
+                "module": "tomli",
                 "location": {
                     "file": str(Path("pyproject.toml")),
                     "line": None,
@@ -172,18 +172,6 @@ def test_cli_exclude(poetry_venv_factory: PoetryVenvFactory) -> None:
             {
                 "error": {
                     "code": "DEP002",
-                    "message": "'toml' defined as a dependency but not used in the codebase",
-                },
-                "module": "toml",
-                "location": {
-                    "file": str(Path("pyproject.toml")),
-                    "line": None,
-                    "column": None,
-                },
-            },
-            {
-                "error": {
-                    "code": "DEP002",
                     "message": "'isort' defined as a dependency but not used in the codebase",
                 },
                 "module": "isort",
@@ -199,6 +187,18 @@ def test_cli_exclude(poetry_venv_factory: PoetryVenvFactory) -> None:
                     "message": "'requests' defined as a dependency but not used in the codebase",
                 },
                 "module": "requests",
+                "location": {
+                    "file": str(Path("pyproject.toml")),
+                    "line": None,
+                    "column": None,
+                },
+            },
+            {
+                "error": {
+                    "code": "DEP002",
+                    "message": "'tomli' defined as a dependency but not used in the codebase",
+                },
+                "module": "tomli",
                 "location": {
                     "file": str(Path("pyproject.toml")),
                     "line": None,
@@ -243,18 +243,6 @@ def test_cli_extend_exclude(poetry_venv_factory: PoetryVenvFactory) -> None:
             {
                 "error": {
                     "code": "DEP002",
-                    "message": "'toml' defined as a dependency but not used in the codebase",
-                },
-                "module": "toml",
-                "location": {
-                    "file": str(Path("pyproject.toml")),
-                    "line": None,
-                    "column": None,
-                },
-            },
-            {
-                "error": {
-                    "code": "DEP002",
                     "message": "'isort' defined as a dependency but not used in the codebase",
                 },
                 "module": "isort",
@@ -270,6 +258,18 @@ def test_cli_extend_exclude(poetry_venv_factory: PoetryVenvFactory) -> None:
                     "message": "'requests' defined as a dependency but not used in the codebase",
                 },
                 "module": "requests",
+                "location": {
+                    "file": str(Path("pyproject.toml")),
+                    "line": None,
+                    "column": None,
+                },
+            },
+            {
+                "error": {
+                    "code": "DEP002",
+                    "message": "'tomli' defined as a dependency but not used in the codebase",
+                },
+                "module": "tomli",
                 "location": {
                     "file": str(Path("pyproject.toml")),
                     "line": None,

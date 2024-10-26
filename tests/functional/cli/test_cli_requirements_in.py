@@ -56,6 +56,11 @@ def test_cli_single_requirements_files(pip_venv_factory: PipVenvFactory) -> None
                 "module": "white",
                 "location": {"file": str(Path("src/main.py")), "line": 7, "column": 8},
             },
+            {
+                "error": {"code": "DEP001", "message": "'tomli' imported but missing from the dependency definitions"},
+                "module": "tomli",
+                "location": {"file": str(Path("src/notebook.ipynb")), "line": 3, "column": 8},
+            },
         ]
 
 
@@ -97,5 +102,10 @@ def test_cli_multiple_requirements_files(pip_venv_factory: PipVenvFactory) -> No
                 "error": {"code": "DEP001", "message": "'white' imported but missing from the dependency definitions"},
                 "module": "white",
                 "location": {"file": str(Path("src/main.py")), "line": 7, "column": 8},
+            },
+            {
+                "error": {"code": "DEP001", "message": "'tomli' imported but missing from the dependency definitions"},
+                "module": "tomli",
+                "location": {"file": str(Path("src/notebook.ipynb")), "line": 3, "column": 8},
             },
         ]
