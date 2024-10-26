@@ -6,7 +6,7 @@ from deptry.utils import load_pyproject_toml
 
 
 def test_load_pyproject_toml() -> None:
-    assert load_pyproject_toml(Path("tests/data/example_project/pyproject.toml")) == {
+    assert load_pyproject_toml(Path("tests/fixtures/example_project/pyproject.toml")) == {
         "tool": {
             "deptry": {"per_rule_ignores": {"DEP002": ["pkginfo"]}},
             "poetry": {

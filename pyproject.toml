@@ -91,7 +91,7 @@ source = ["python/deptry"]
 mypy_path = "python"
 files = ["python/deptry", "scripts", "tests"]
 explicit_package_bases = true
-exclude = ["tests/data"]
+exclude = ["tests/fixtures"]
 disallow_any_unimported = true
 enable_error_code = [
     "ignore-without-code",
@@ -119,12 +119,12 @@ DEP001 = ["tomllib"]
 [tool.pytest.ini_options]
 addopts = "--doctest-modules"
 filterwarnings = ["error"]
-norecursedirs = ["data*"]
+norecursedirs = ["fixtures*"]
 
 [tool.ruff]
 line-length = 120
 fix = true
-extend-exclude = ["tests/data/*"]
+extend-exclude = ["tests/fixtures/*"]
 
 [tool.ruff.format]
 preview = true

@@ -87,7 +87,7 @@ class VirtualEnvironment:
         virtual_env = venv.EnvBuilder(with_pip=True)
         virtual_env.create(self.project_path)
 
-        shutil.copytree(deptry_directory / "tests/data" / self.project, self.project_path / "project")
+        shutil.copytree(deptry_directory / "tests/fixtures" / self.project, self.project_path / "project")
 
         path_to_wheel_file = self._get_path_to_wheel_file(deptry_directory / DEPTRY_WHEEL_DIRECTORY)
 
