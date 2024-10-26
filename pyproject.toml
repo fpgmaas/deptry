@@ -32,7 +32,7 @@ dependencies = [
 [tool.uv]
 dev-dependencies = [
     "mkdocs==1.6.1",
-    "mkdocs-material==9.5.41",
+    "mkdocs-material==9.5.42",
     "mypy[faster-cache]==1.13.0; implementation_name == 'cpython'",
     # orjson does not compile on PyPy.
     "mypy==1.13.0; implementation_name != 'cpython'",
