@@ -210,10 +210,5 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
-      - name: Install Python dependencies
-        run: uv sync --frozen --no-install-project
-
       - name: Deploy documentation
-        # `--no-project` is a workaround to avoid the installation of deptry
-        # itself (https://github.com/astral-sh/uv/issues/6578)
-        run: uv run --no-project mkdocs gh-deploy --force
+        run: uv run --only-group docs mkdocs gh-deploy --force

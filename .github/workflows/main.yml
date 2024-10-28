@@ -33,7 +33,7 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Install Python dependencies
-        run: uv sync --frozen --no-install-project
+        run: uv sync --frozen
 
       - name: Setup Rust toolchain
         run: rustup component add clippy rustfmt
@@ -78,7 +78,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Install Python dependencies
-        run: uv sync --frozen
+        run: uv sync --frozen --group test --group typing
 
       - name: Check typing
         run: uv run mypy
@@ -111,11 +111,5 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-
-      - name: Install Python dependencies
-        run: uv sync --frozen --no-install-project
-
       - name: Check if documentation can be built
-        # `--no-project` is a workaround to avoid the installation of deptry
-        # itself (https://github.com/astral-sh/uv/issues/6578)
-        run: uv run --no-project mkdocs build --strict
+        run: uv run --only-group docs mkdocs build --strict
