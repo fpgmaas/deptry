@@ -61,9 +61,8 @@ fn build_walker(
 
     walk_builder
         .types(build_types(ignore_notebooks).unwrap())
+        .standard_filters(use_git_ignore)
         .hidden(false)
-        .git_ignore(use_git_ignore)
-        .require_git(false)
         .filter_entry(move |entry| entry_satisfies_predicate(entry, re.as_ref()))
         .build()
 }
