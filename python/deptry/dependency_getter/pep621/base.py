@@ -2,17 +2,18 @@ from __future__ import annotations
 
 import itertools
 import logging
-import re
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from deptry.dependency import Dependency
+from deptry.dependency import parse_pep_508_dependency
 from deptry.dependency_getter.base import DependenciesExtract, DependencyGetter
 from deptry.dependency_getter.requirements_files import get_dependencies_from_requirements_files
 from deptry.utils import load_pyproject_toml
 
 if TYPE_CHECKING:
     from typing import Any
+
+    from deptry.dependency import Dependency
 
 
 @dataclass
@@ -168,25 +169,10 @@ class PEP621DependencyGetter(DependencyGetter):
         """
         Given a list of dependency specifications (e.g. "django>2.1; os_name != 'nt'"), convert them to Dependency objects.
         """
-        extracted_dependencies = []
+        extracted_dependencies: list[Dependency] = []
 
-        for spec in dependencies:
-            # An example of a spec is `"tomli>=1.1.0; python_version < \"3.11\""`
-            name = self._find_dependency_name_in(spec)
-            if name:
-                extracted_dependencies.append(
-                    Dependency(
-                        name,
-                        self.config,
-                        module_names=self.package_module_name_map.get(name),
-                    )
-                )
+        for dependency in dependencies:
+            if extracted_dependency := parse_pep_508_dependency(dependency, self.config, self.package_module_name_map):
+                extracted_dependencies.append(extracted_dependency)
 
         return extracted_dependencies
-
-    @staticmethod
-    def _find_dependency_name_in(spec: str) -> str | None:
-        match = re.search("[a-zA-Z0-9-_]+", spec)
-        if match:
-            return match.group(0)
-        return None

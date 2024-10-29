@@ -19,7 +19,7 @@ dependencies = [
     "qux",
     "bar>=20.9",
     "optional-foo[option]>=0.12.11",
-    "conditional-bar>=1.1.0; python_version < 3.11",
+    "conditional-bar>=1.1.0; python_version < '3.11'",
     "fox-python",  # top level module is called "fox"
 ]
 
