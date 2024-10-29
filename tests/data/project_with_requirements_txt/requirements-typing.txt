@@ -1,1 +1,0 @@
-types-jsonschema==4.16.1

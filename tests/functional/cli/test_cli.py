@@ -85,9 +85,9 @@ def test_cli_ignore_notebooks(poetry_venv_factory: PoetryVenvFactory) -> None:
             {
                 "error": {
                     "code": "DEP002",
-                    "message": "'toml' defined as a dependency but not used in the codebase",
+                    "message": "'arrow' defined as a dependency but not used in the codebase",
                 },
-                "module": "toml",
+                "module": "arrow",
                 "location": {
                     "file": str(Path("pyproject.toml")),
                     "line": None,
@@ -172,9 +172,9 @@ def test_cli_exclude(poetry_venv_factory: PoetryVenvFactory) -> None:
             {
                 "error": {
                     "code": "DEP002",
-                    "message": "'toml' defined as a dependency but not used in the codebase",
+                    "message": "'arrow' defined as a dependency but not used in the codebase",
                 },
-                "module": "toml",
+                "module": "arrow",
                 "location": {
                     "file": str(Path("pyproject.toml")),
                     "line": None,
@@ -243,9 +243,9 @@ def test_cli_extend_exclude(poetry_venv_factory: PoetryVenvFactory) -> None:
             {
                 "error": {
                     "code": "DEP002",
-                    "message": "'toml' defined as a dependency but not used in the codebase",
+                    "message": "'arrow' defined as a dependency but not used in the codebase",
                 },
-                "module": "toml",
+                "module": "arrow",
                 "location": {
                     "file": str(Path("pyproject.toml")),
                     "line": None,
