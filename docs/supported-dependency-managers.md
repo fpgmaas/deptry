@@ -183,6 +183,10 @@ the following dependencies will be extracted:
 - regular dependencies: `click`, `orjson`
 - development dependencies: `mkdocs`, `pytest`, `pytest-cov`
 
+If a requirements
+file [references other requirements files](https://pip.pypa.io/en/stable/reference/requirements-file-format/#referring-to-other-requirements-files),
+for instance with `-r other-requirements.txt`, _deptry_ will also include the dependencies from the referenced files.
+
 !!! note
 
     If using different files for regular dependencies, [`--requirements-files`](usage.md#requirements-files) (or its
