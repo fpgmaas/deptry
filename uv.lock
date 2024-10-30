@@ -214,14 +214,18 @@ dependencies = [
 ]
 
 [package.dependency-groups]
-dev = [
+docs = [
     { name = "mkdocs" },
     { name = "mkdocs-material" },
-    { name = "mypy" },
-    { name = "mypy", extra = ["faster-cache"], marker = "implementation_name == 'cpython'" },
+]
+test = [
     { name = "pytest" },
     { name = "pytest-cov" },
     { name = "pytest-xdist", extra = ["psutil"] },
+]
+typing = [
+    { name = "mypy" },
+    { name = "mypy", extra = ["faster-cache"], marker = "implementation_name == 'cpython'" },
     { name = "types-colorama", marker = "sys_platform == 'win32'" },
 ]
 
@@ -234,14 +238,18 @@ requires-dist = [
 ]
 
 [package.metadata.dependency-groups]
-dev = [
+docs = [
     { name = "mkdocs", specifier = "==1.6.1" },
     { name = "mkdocs-material", specifier = "==9.5.42" },
-    { name = "mypy", marker = "implementation_name != 'cpython'", specifier = "==1.13.0" },
-    { name = "mypy", extras = ["faster-cache"], marker = "implementation_name == 'cpython'", specifier = "==1.13.0" },
+]
+test = [
     { name = "pytest", specifier = "==8.3.3" },
     { name = "pytest-cov", specifier = "==5.0.0" },
     { name = "pytest-xdist", extras = ["psutil"], specifier = "==3.6.1" },
+]
+typing = [
+    { name = "mypy", marker = "implementation_name != 'cpython'", specifier = "==1.13.0" },
+    { name = "mypy", extras = ["faster-cache"], marker = "implementation_name == 'cpython'", specifier = "==1.13.0" },
     { name = "types-colorama", marker = "sys_platform == 'win32'", specifier = "==0.4.15.20240311" },
 ]
 

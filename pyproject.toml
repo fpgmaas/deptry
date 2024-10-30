@@ -30,16 +30,20 @@ dependencies = [
     "tomli>=2.0.1; python_version < '3.11'",
 ]
 
-[tool.uv]
-dev-dependencies = [
+[dependency-groups]
+docs = [
     "mkdocs==1.6.1",
     "mkdocs-material==9.5.42",
-    "mypy[faster-cache]==1.13.0; implementation_name == 'cpython'",
-    # orjson does not compile on PyPy.
-    "mypy==1.13.0; implementation_name != 'cpython'",
+]
+test = [
     "pytest==8.3.3",
     "pytest-cov==5.0.0",
     "pytest-xdist[psutil]==3.6.1",
+]
+typing = [
+    "mypy[faster-cache]==1.13.0; implementation_name == 'cpython'",
+    # orjson does not compile on PyPy.
+    "mypy==1.13.0; implementation_name != 'cpython'",
     "types-colorama==0.4.15.20240311; sys_platform == 'win32'",
 ]
 
