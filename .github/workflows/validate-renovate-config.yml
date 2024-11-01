@@ -2,13 +2,15 @@ name: validate-renovate-config
 
 on:
   pull_request:
-    paths: [renovate.json5]
+    paths:
+      - ".github/workflows/validate-renovate-config.yml"
+      - "renovate.json5"
   push:
     branches: [main]
 
 env:
   # renovate: datasource=node depName=node versioning=node
-  NODE_VERSION: "20"
+  NODE_VERSION: "22"
 
 jobs:
   validate-renovate-config:
