@@ -2,7 +2,9 @@ name: validate-codecov-config
 
 on:
   pull_request:
-    paths: [codecov.yaml]
+    paths:
+      - ".github/workflows/validate-codecov-config.yml"
+      - "codecov.yaml"
   push:
     branches: [main]
 

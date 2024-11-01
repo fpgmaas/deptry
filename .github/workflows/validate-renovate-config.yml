@@ -2,7 +2,9 @@ name: validate-renovate-config
 
 on:
   pull_request:
-    paths: [renovate.json5]
+    paths:
+      - ".github/workflows/validate-renovate-config.yml"
+      - "renovate.json5"
   push:
     branches: [main]
 
