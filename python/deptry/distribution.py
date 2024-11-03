@@ -16,7 +16,7 @@ def normalize_distribution_name(name: str) -> str:
 
 
 @lru_cache(maxsize=1)
-def get_packages_normalized_distributions() -> dict[str, set[str]]:
+def get_packages_to_normalized_distributions_mapping() -> dict[str, set[str]]:
     """
     Return a mapping of top-level packages to their normalized distributions.
     Cache ensures that we only build this mapping once, since it should not change during the invocation of deptry.
@@ -28,14 +28,14 @@ def get_packages_normalized_distributions() -> dict[str, set[str]]:
 
 
 @lru_cache(maxsize=1)
-def get_normalized_distributions_packages() -> dict[str, set[str]]:
+def get_normalized_distributions_to_packages_mapping() -> dict[str, set[str]]:
     """
     Return a mapping of normalized distributions to their top-level packages.
     Cache ensures that we only build this mapping once, since it should not change during the invocation of deptry.
     """
     distributions_packages: dict[str, set[str]] = defaultdict(set)
 
-    for package, distributions in get_packages_normalized_distributions().items():
+    for package, distributions in get_packages_to_normalized_distributions_mapping().items():
         for distribution in distributions:
             distributions_packages[distribution].add(package)
 
@@ -46,11 +46,11 @@ def get_distributions_from_package(name: str) -> set[str] | None:
     """
     Retrieve the distributions provided by the package, if any.
     """
-    return get_packages_normalized_distributions().get(name)
+    return get_packages_to_normalized_distributions_mapping().get(name)
 
 
 def get_packages_from_distribution(name: str) -> set[str] | None:
     """
     Normalize the distribution and retrieve the packages it provides, if any.
     """
-    return get_normalized_distributions_packages().get(normalize_distribution_name(name))
+    return get_normalized_distributions_to_packages_mapping().get(normalize_distribution_name(name))

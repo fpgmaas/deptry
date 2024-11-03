@@ -6,9 +6,9 @@ import pytest
 
 from deptry.distribution import (
     get_distributions_from_package,
-    get_normalized_distributions_packages,
+    get_normalized_distributions_to_packages_mapping,
     get_packages_from_distribution,
-    get_packages_normalized_distributions,
+    get_packages_to_normalized_distributions_mapping,
     normalize_distribution_name,
 )
 
@@ -29,9 +29,9 @@ def test_normalize_distribution_name(name: str) -> None:
     assert normalize_distribution_name(name) == "friendly-bard"
 
 
-def test_get_packages_normalized_distributions() -> None:
+def test_get_packages_to_normalized_distributions_mapping() -> None:
     # Clear cache before calling the function, as it is also populated during testing.
-    get_packages_normalized_distributions.cache_clear()
+    get_packages_to_normalized_distributions_mapping.cache_clear()
 
     with patch(
         "deptry.distribution.importlib_metadata.packages_distributions",
@@ -44,13 +44,13 @@ def test_get_packages_normalized_distributions() -> None:
             "setuptools": ["setuptools"],
         },
     ) as mock_packages_distributions:
-        normalized_packages_distributions = get_packages_normalized_distributions()
+        normalized_packages_distributions = get_packages_to_normalized_distributions_mapping()
 
         # Call function a second time, to ensure that we only call `packages_distributions` once.
-        get_packages_normalized_distributions()
+        get_packages_to_normalized_distributions_mapping()
 
     # Clear cache after calling the function to avoid keeping our mocked values, in case test invocation depend on it.
-    get_packages_normalized_distributions.cache_clear()
+    get_packages_to_normalized_distributions_mapping.cache_clear()
 
     assert normalized_packages_distributions == {
         "requests": {"requests"},
@@ -63,12 +63,12 @@ def test_get_packages_normalized_distributions() -> None:
     mock_packages_distributions.assert_called_once()
 
 
-def test_get_normalized_distributions_packages() -> None:
+def test_get_normalized_distributions_to_packages_mapping() -> None:
     # Clear cache before calling the function, as it is also populated during testing.
-    get_normalized_distributions_packages.cache_clear()
+    get_normalized_distributions_to_packages_mapping.cache_clear()
 
     with patch(
-        "deptry.distribution.get_packages_normalized_distributions",
+        "deptry.distribution.get_packages_to_normalized_distributions_mapping",
         return_value={
             "requests": {"requests"},
             "charset_normalizer": {"charset-normalizer"},
@@ -78,13 +78,13 @@ def test_get_normalized_distributions_packages() -> None:
             "setuptools": {"setuptools"},
         },
     ) as mock_packages_distributions:
-        distributions_packages = get_normalized_distributions_packages()
+        distributions_packages = get_normalized_distributions_to_packages_mapping()
 
         # Call function a second time, to ensure that we only call `packages_distributions` once.
-        get_normalized_distributions_packages()
+        get_normalized_distributions_to_packages_mapping()
 
     # Clear cache after calling the function to avoid keeping our mocked values, in case test invocation depend on it.
-    get_normalized_distributions_packages.cache_clear()
+    get_normalized_distributions_to_packages_mapping.cache_clear()
 
     assert distributions_packages == {
         "requests": {"requests"},
@@ -97,7 +97,7 @@ def test_get_normalized_distributions_packages() -> None:
 
 def test_get_distributions_from_package() -> None:
     with patch(
-        "deptry.distribution.get_packages_normalized_distributions",
+        "deptry.distribution.get_packages_to_normalized_distributions_mapping",
         return_value={
             "bar": {"foo-bar"},
             "foo": {"foo-bar", "foo"},
@@ -107,5 +107,7 @@ def test_get_distributions_from_package() -> None:
 
 
 def test_get_packages_from_distribution() -> None:
-    with patch("deptry.distribution.get_normalized_distributions_packages", return_value={"foo-bar": {"bar", "foo"}}):
+    with patch(
+        "deptry.distribution.get_normalized_distributions_to_packages_mapping", return_value={"foo-bar": {"bar", "foo"}}
+    ):
         assert get_packages_from_distribution("foo_Bar") == {"bar", "foo"}
