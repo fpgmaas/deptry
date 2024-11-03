@@ -56,9 +56,12 @@ def test_cli_with_pep_621(pip_venv_factory: PipVenvFactory) -> None:
                 "location": {"file": "pyproject.toml", "line": None, "column": None},
             },
             {
-                "error": {"code": "DEP004", "message": "'black' imported but declared as a dev dependency"},
-                "module": "black",
-                "location": {"file": str(Path("src/main.py")), "line": 5, "column": 8},
+                "error": {
+                    "code": "DEP004",
+                    "message": "'importlib_metadata' imported but declared as a dev dependency",
+                },
+                "module": "importlib_metadata",
+                "location": {"file": str(Path("src/main.py")), "line": 6, "column": 8},
             },
             {
                 "error": {"code": "DEP004", "message": "'mkdocs' imported but declared as a dev dependency"},
