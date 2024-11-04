@@ -48,21 +48,21 @@ def test_cli_with_uv(uv_venv_factory: UvVenvFactory) -> None:
             {
                 "error": {
                     "code": "DEP004",
-                    "message": "'mkdocs' imported but declared as a dev dependency",
+                    "message": "'certifi' imported but declared as a dev dependency",
                 },
-                "module": "mkdocs",
+                "module": "certifi",
                 "location": {
                     "file": str(Path("src/main.py")),
-                    "line": 6,
+                    "line": 5,
                     "column": 8,
                 },
             },
             {
                 "error": {
                     "code": "DEP004",
-                    "message": "'mkdocs_material' imported but declared as a dev dependency",
+                    "message": "'idna' imported but declared as a dev dependency",
                 },
-                "module": "mkdocs_material",
+                "module": "idna",
                 "location": {
                     "file": str(Path("src/main.py")),
                     "line": 7,

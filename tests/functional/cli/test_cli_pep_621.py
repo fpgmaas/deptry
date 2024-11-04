@@ -61,13 +61,13 @@ def test_cli_with_pep_621(pip_venv_factory: PipVenvFactory) -> None:
                 "location": {"file": str(Path("src/main.py")), "line": 5, "column": 8},
             },
             {
-                "error": {"code": "DEP004", "message": "'mkdocs' imported but declared as a dev dependency"},
-                "module": "mkdocs",
-                "location": {"file": str(Path("src/main.py")), "line": 7, "column": 8},
+                "error": {"code": "DEP004", "message": "'certifi' imported but declared as a dev dependency"},
+                "module": "certifi",
+                "location": {"file": str(Path("src/main.py")), "line": 6, "column": 8},
             },
             {
-                "error": {"code": "DEP004", "message": "'mkdocs_material' imported but declared as a dev dependency"},
-                "module": "mkdocs_material",
+                "error": {"code": "DEP004", "message": "'idna' imported but declared as a dev dependency"},
+                "module": "idna",
                 "location": {"file": str(Path("src/main.py")), "line": 8, "column": 8},
             },
             {
