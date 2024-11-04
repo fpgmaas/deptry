@@ -3,9 +3,9 @@ from pathlib import Path
 
 import asyncio
 import black
+import certifi
 import click
-import mkdocs
-import mkdocs_material
+import idna
 import packaging
 import white as w
 from urllib3 import contrib
