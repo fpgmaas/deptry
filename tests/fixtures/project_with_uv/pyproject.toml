@@ -16,11 +16,11 @@ foo = [
 bar = ["requests==2.32.3"]
 
 [dependency-groups]
-doc = [
-    "mkdocs==1.6.1",
-    "mkdocs-material==9.5.42",
+foo = [
+    "certifi==2024.8.30",
+    "idna==3.10",
 ]
-all = [{include-group = "doc"}, "packaging==24.1"]
+all = [{include-group = "foo"}, "packaging==24.1"]
 
 [tool.uv]
 dev-dependencies = [

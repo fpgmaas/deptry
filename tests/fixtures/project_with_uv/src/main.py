@@ -2,9 +2,9 @@ from os import chdir, walk
 from pathlib import Path
 
 import black
+import certifi
 import click
-import mkdocs
-import mkdocs_material
+import idna
 import mypy
 import packaging
 import pytest
