@@ -209,6 +209,7 @@ source = { editable = "." }
 dependencies = [
     { name = "click" },
     { name = "colorama", marker = "sys_platform == 'win32'" },
+    { name = "packaging" },
     { name = "requirements-parser" },
     { name = "tomli", marker = "python_full_version < '3.11'" },
 ]
@@ -233,6 +234,7 @@ typing = [
 requires-dist = [
     { name = "click", specifier = ">=8.0.0,<9" },
     { name = "colorama", marker = "sys_platform == 'win32'", specifier = ">=0.4.6" },
+    { name = "packaging", specifier = ">=23.2" },
     { name = "requirements-parser", specifier = ">=0.11.0,<1" },
     { name = "tomli", marker = "python_full_version < '3.11'", specifier = ">=2.0.1" },
 ]

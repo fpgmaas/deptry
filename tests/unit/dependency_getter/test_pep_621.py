@@ -13,13 +13,12 @@ if TYPE_CHECKING:
 
 def test_dependency_getter(tmp_path: Path) -> None:
     fake_pyproject_toml = """[project]
-# PEP 621 project metadata
-# See https://www.python.org/dev/peps/pep-0621/
+name = "foo"
 dependencies = [
     "qux",
     "bar>=20.9",
     "optional-foo[option]>=0.12.11",
-    "conditional-bar>=1.1.0; python_version < 3.11",
+    "conditional-bar>=1.1.0; python_version < '3.11'",
     "fox-python",  # top level module is called "fox"
 ]
 
@@ -72,8 +71,7 @@ group2 = [
 
 def test_dependency_getter_with_dev_dependencies(tmp_path: Path) -> None:
     fake_pyproject_toml = """[project]
-# PEP 621 project metadata
-# See https://www.python.org/dev/peps/pep-0621/
+name = "foo"
 dependencies = ["qux"]
 
 [project.optional-dependencies]
@@ -117,8 +115,7 @@ all = [{include-group = "dev-group"}, "foobaz"]
 
 def test_dependency_getter_with_incorrect_dev_group(tmp_path: Path, caplog: LogCaptureFixture) -> None:
     fake_pyproject_toml = """[project]
-# PEP 621 project metadata
-# See https://www.python.org/dev/peps/pep-0621/
+name = "foo"
 dependencies = ["qux"]
 
 [project.optional-dependencies]
@@ -152,8 +149,7 @@ group2 = ["barfoo"]
 
 def test_dependency_getter_empty_dependencies(tmp_path: Path) -> None:
     fake_pyproject_toml = """[project]
-# PEP 621 project metadata
-# See https://www.python.org/dev/peps/pep-0621/
+name = "foo"
 """
 
     with run_within_dir(tmp_path):
@@ -167,14 +163,40 @@ def test_dependency_getter_empty_dependencies(tmp_path: Path) -> None:
         assert len(dependencies_extract.dev_dependencies) == 0
 
 
+def test_dependency_getter_invalid_dependencies(tmp_path: Path) -> None:
+    """Test that invalid dependencies are skipped, but valid dependencies are still parsed."""
+    fake_pyproject_toml = """[project]
+name = "foo"
+dependencies = [
+    "qux",
+    # Invalid dependency, as the dependency marker does not exist.
+    "foo-bar>=1.1.0; java_version < '3.11'",
+    "bar>=20.9",
+]
+"""
+
+    with run_within_dir(tmp_path):
+        with Path("pyproject.toml").open("w") as f:
+            f.write(fake_pyproject_toml)
+
+        dependencies = PEP621DependencyGetter(config=Path("pyproject.toml")).get().dependencies
+
+        assert len(dependencies) == 2
+
+        assert dependencies[0].name == "qux"
+        assert "qux" in dependencies[0].top_levels
+
+        assert dependencies[1].name == "bar"
+        assert "bar" in dependencies[1].top_levels
+
+
 def test_dependency_getter_with_setuptools_dynamic_dependencies(tmp_path: Path) -> None:
     fake_pyproject_toml = """[build-system]
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
-# PEP 621 project metadata
-# See https://www.python.org/dev/peps/pep-0621/
+name = "foo"
 dynamic = ["dependencies", "optional-dependencies"]
 
 [tool.setuptools.dynamic]
@@ -216,8 +238,7 @@ dev = { file = ["dev-requirements.txt"] }
 
 def test_dependency_getter_with_setuptools_dynamic_dependencies_without_build_backend(tmp_path: Path) -> None:
     fake_pyproject_toml = """[project]
-# PEP 621 project metadata
-# See https://www.python.org/dev/peps/pep-0621/
+name = "foo"
 dynamic = ["dependencies", "optional-dependencies"]
 
 [tool.setuptools.dynamic]
@@ -258,8 +279,7 @@ requires = ["pdm-backend"]
 build-backend = "pdm.backend"
 
 [project]
-# PEP 621 project metadata
-# See https://www.python.org/dev/peps/pep-0621/
+name = "foo"
 dynamic = ["dependencies", "optional-dependencies"]
 
 [tool.setuptools.dynamic]
@@ -300,8 +320,7 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
-# PEP 621 project metadata
-# See https://www.python.org/dev/peps/pep-0621/
+name = "foo"
 dependencies = ["foo==1.2.3"]
 dynamic = ["optional-dependencies"]
 
