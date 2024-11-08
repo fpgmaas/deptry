@@ -1,5 +1,65 @@
 # Changelog
 
+## 0.21.0 - 2024-11-08
+
+### Breaking changes
+
+#### Ignore files handling
+
+Unless [`--exclude`](https://deptry.com/usage/#exclude) is used, _deptry_ excludes files found in common ignore
+files (`.gitignore`, `.ignore`, `$HOME/.config/git/ignore`. ...), by using [`ignore`](https://crates.io/crates/ignore)
+Rust crate. The default behaviour has been changed, so that now:
+
+- git-related ignore rules (`.gitignore`, `$HOME/.config/git/ignore`, ...) are only used if _deptry_ is run inside a git
+  repository
+- `.gitignore` files that are in parent directories of the git repository from where deptry is run are not
+  used (previously, _deptry_ would traverse parent directories up to the root system)
+
+If you were using `.gitignore` files for non-git repositories, you might want to switch to `.ignore` files, or use
+[`--extend-exclude`](https://deptry.com/usage/#extend-exclude).
+
+#### Requirements files parsing
+
+_deptry_ now uses [`requirements-parser`](https://pypi.org/project/requirements-parser/) to parse dependencies from
+requirements files, meaning that it can now extract nested requirements files referenced in other requirements files
+without having to explicitly configure it in _deptry_.
+
+For instance, if you have:
+
+```python
+# requirements.txt
+-r cli-requirements.txt
+httpx==0.27.2
+```
+
+```python
+# cli-requirements.txt
+click==8.1.7
+```
+
+With the default configuration, when parsing `requirements.txt`, both `httpx` and `click` will now be listed as
+dependencies by _deptry_, while previously, only `httpx` was, unless _deptry_ was instructed about
+`cli-requirements.txt` by using [`--requirements-files`](https://deptry.com/usage/#requirements-files). This new
+behaviour also impacts development requirements files, that can be overridden by
+using [`--requirements-files-dev`](https://deptry.com/usage/#requirements-files-dev).
+
+#### Python 3.8 support dropped
+
+Support for Python 3.8 has been dropped, as it has reached its end of life.
+
+### Features
+
+* _deptry_ now detects development dependencies from `[dependency-groups]` section, introduced
+  by [PEP 735](https://peps.python.org/pep-0735/) ([#892](https://github.com/fpgmaas/deptry/pull/892))
+* _deptry_ now supports `setuptools` dynamic dependencies set in `[tool.setuptools.dynamic]` section,
+  see https://deptry.com/supported-dependency-managers/#setuptools for more
+  details ([#894](https://github.com/fpgmaas/deptry/pull/894), [#724](https://github.com/fpgmaas/deptry/pull/724))
+* Drop support for Python 3.8 ([#874](https://github.com/fpgmaas/deptry/pull/874))
+* Improve ignore handling ([#908](https://github.com/fpgmaas/deptry/pull/908))
+* Parse requirements files with `requirements-parser`, adding support for parsing nested requirements
+  files referenced with `-r <requirement_file>` ([#913](https://github.com/fpgmaas/deptry/pull/913))
+
+
 ## 0.20.0 - 2024-08-27
 
 ### Breaking changes
@@ -23,6 +83,7 @@ Those flags have now been removed. If you relied on them, you should now use, re
   help ([#817](https://github.com/fpgmaas/deptry/pull/817))
 * Remove deprecated `--requirements-txt`/`--requirements-txt-dev`
   flags ([#819](https://github.com/fpgmaas/deptry/pull/819))
+
 
 ## 0.19.1 - 2024-08-10
 
