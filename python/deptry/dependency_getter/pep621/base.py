@@ -64,9 +64,11 @@ class PEP621DependencyGetter(DependencyGetter):
         if self._project_uses_setuptools(pyproject_data) and "dependencies" in pyproject_data["project"].get(
             "dynamic", {}
         ):
-            return get_dependencies_from_requirements_files(
-                pyproject_data["tool"]["setuptools"]["dynamic"]["dependencies"]["file"], self.package_module_name_map
-            )
+            dependencies_files = pyproject_data["tool"]["setuptools"]["dynamic"]["dependencies"]["file"]
+            if isinstance(dependencies_files, str):
+                dependencies_files = [dependencies_files]
+
+            return get_dependencies_from_requirements_files(dependencies_files, self.package_module_name_map)
 
         dependency_strings: list[str] = pyproject_data["project"].get("dependencies", [])
         return self._extract_pep_508_dependencies(dependency_strings)
@@ -79,7 +81,10 @@ class PEP621DependencyGetter(DependencyGetter):
             "dynamic", {}
         ):
             return {
-                group: get_dependencies_from_requirements_files(specification["file"], self.package_module_name_map)
+                group: get_dependencies_from_requirements_files(
+                    [specification["file"]] if isinstance(specification["file"], str) else specification["file"],
+                    self.package_module_name_map,
+                )
                 for group, specification in pyproject_data["tool"]["setuptools"]["dynamic"]
                 .get("optional-dependencies", {})
                 .items()

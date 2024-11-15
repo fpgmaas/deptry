@@ -12,7 +12,8 @@ dynamic = ["dependencies", "optional-dependencies"]
 dependencies = { file = ["requirements.txt", "requirements-2.txt"] }
 
 [tool.setuptools.dynamic.optional-dependencies]
-cli = { file = ["cli-requirements.txt"] }
+# Both strings and list of strings are accepted.
+cli = { file = "cli-requirements.txt" }
 dev = { file = ["dev-requirements.txt"] }
 
 [tool.deptry]
