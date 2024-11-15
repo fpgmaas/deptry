@@ -203,7 +203,8 @@ dynamic = ["dependencies", "optional-dependencies"]
 dependencies = { file = ["requirements.txt", "requirements-2.txt"] }
 
 [tool.setuptools.dynamic.optional-dependencies]
-cli = { file = ["cli-requirements.txt"] }
+# Both strings and list of strings are accepted.
+cli = { file = "cli-requirements.txt" }
 dev = { file = ["dev-requirements.txt"] }
 """
 
@@ -245,7 +246,8 @@ dynamic = ["dependencies", "optional-dependencies"]
 dependencies = { file = ["requirements.txt", "requirements-2.txt"] }
 
 [tool.setuptools.dynamic.optional-dependencies]
-cli = { file = ["cli-requirements.txt"] }
+# Both strings and list of strings are accepted.
+cli = { file = "cli-requirements.txt" }
 dev = { file = ["dev-requirements.txt"] }
 """
 
@@ -286,7 +288,8 @@ dynamic = ["dependencies", "optional-dependencies"]
 dependencies = { file = ["requirements.txt", "requirements-2.txt"] }
 
 [tool.setuptools.dynamic.optional-dependencies]
-cli = { file = ["cli-requirements.txt"] }
+# Both strings and list of strings are accepted.
+cli = { file = "cli-requirements.txt" }
 dev = { file = ["dev-requirements.txt"] }
 """
 
@@ -344,3 +347,34 @@ dev = { file = ["dev-requirements.txt"] }
 
         assert dependencies[0].name == "foo"
         assert dev_dependencies[0].name == "dev-dep"
+
+
+def test_dependency_getter_with_setuptools_dynamic_dependencies_only_dependencies(tmp_path: Path) -> None:
+    fake_pyproject_toml = """[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "foo"
+dependencies = ["foo==1.2.3"]
+dynamic = ["dependencies"]
+
+[tool.setuptools.dynamic]
+dependencies = { file = "requirements.txt" }
+"""
+
+    with run_within_dir(tmp_path):
+        with Path("pyproject.toml").open("w") as f:
+            f.write(fake_pyproject_toml)
+
+        with Path("requirements.txt").open("w") as f:
+            f.write("foo==1.2.3")
+
+        extract = PEP621DependencyGetter(config=Path("pyproject.toml"), pep621_dev_dependency_groups=("dev",)).get()
+        dependencies = extract.dependencies
+        dev_dependencies = extract.dev_dependencies
+
+        assert len(dependencies) == 1
+        assert len(dev_dependencies) == 0
+
+        assert dependencies[0].name == "foo"
