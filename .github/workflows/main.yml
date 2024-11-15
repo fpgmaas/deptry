@@ -91,7 +91,7 @@ jobs:
         run: uv run pytest tests/functional -n auto --dist loadgroup
 
       - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         if: ${{ matrix.os.name == 'linux' && matrix.python-version == env.PYTHON_VERSION }}
