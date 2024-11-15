@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.21.1 - 2024-11-15
+
+### Bug Fixes
+
+* Handle string requirements files for `setuptools` dynamic
+  dependencies ([#945](https://github.com/fpgmaas/deptry/pull/945))
+
+### Full Changelog
+
+https://github.com/fpgmaas/deptry/compare/0.21.0...0.21.1
+
+
 ## 0.21.0 - 2024-11-08
 
 ### Breaking changes
@@ -59,6 +71,10 @@ Support for Python 3.8 has been dropped, as it has reached its end of life.
 * Parse requirements files with `requirements-parser`, adding support for parsing nested requirements
   files referenced with `-r <requirement_file>` ([#913](https://github.com/fpgmaas/deptry/pull/913))
 
+### Full Changelog
+
+https://github.com/fpgmaas/deptry/compare/0.20.0...0.21.0
+
 
 ## 0.20.0 - 2024-08-27
 
@@ -84,6 +100,10 @@ Those flags have now been removed. If you relied on them, you should now use, re
 * Remove deprecated `--requirements-txt`/`--requirements-txt-dev`
   flags ([#819](https://github.com/fpgmaas/deptry/pull/819))
 
+### Full Changelog
+
+https://github.com/fpgmaas/deptry/compare/0.19.1...0.20.0
+
 
 ## 0.19.1 - 2024-08-10
 
@@ -108,7 +128,7 @@ This release reverts https://github.com/fpgmaas/deptry/pull/753 that caused a no
 codebases. The intent of the initial PR was to support projects following PEP 420, so if your project currently relies
 on this behaviour, feel free to manifest your interest in https://github.com/fpgmaas/deptry/issues/740.
 
-### Fixes
+### Bug Fixes
 
 * Revert "fix(core): use `rglob` to guess local Python modules (#753)" ([#798](https://github.com/fpgmaas/deptry/pull/798))
 
