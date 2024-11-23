@@ -150,10 +150,10 @@ class ModuleBuilder:
         Check if this module is provided by a listed dependency. This is the case if either the package name that was
         found in the metadata is listed as a dependency, or if we found a top-level module name match earlier.
         """
-        return package and (package in [dep.name for dep in self.dependencies]) or len(top_levels) > 0
+        return (package and (package in [dep.name for dep in self.dependencies])) or len(top_levels) > 0
 
     def _has_matching_dev_dependency(self, package: str | None, dev_top_levels: list[str]) -> bool:
         """
         Same as _has_matching_dependency, but for development dependencies.
         """
-        return package and (package in [dep.name for dep in self.dev_dependencies]) or len(dev_top_levels) > 0
+        return (package and (package in [dep.name for dep in self.dev_dependencies])) or len(dev_top_levels) > 0
