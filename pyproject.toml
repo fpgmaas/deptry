@@ -34,7 +34,7 @@ dependencies = [
 [dependency-groups]
 docs = [
     "mkdocs==1.6.1",
-    "mkdocs-material==9.5.44",
+    "mkdocs-material==9.5.45",
 ]
 test = [
     "pytest==8.3.3",
