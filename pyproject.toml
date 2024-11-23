@@ -162,7 +162,7 @@ select = [
     # flake8-simplify
     "SIM",
     # flake8-type-checking
-    "TCH",
+    "TC",
     # flake8-use-pathlib
     "PTH",
     # isort
