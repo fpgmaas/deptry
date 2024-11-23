@@ -13,16 +13,16 @@ from deptry.violations.dep005_standard_library.finder import DEP005StandardLibra
 from deptry.violations.dep005_standard_library.violation import DEP005StandardLibraryDependencyViolation
 
 __all__ = (
-    "DEP001MissingDependencyViolation",
-    "DEP002UnusedDependencyViolation",
-    "DEP003TransitiveDependencyViolation",
-    "DEP004MisplacedDevDependencyViolation",
-    "DEP005StandardLibraryDependencyViolation",
     "DEP001MissingDependenciesFinder",
+    "DEP001MissingDependencyViolation",
     "DEP002UnusedDependenciesFinder",
+    "DEP002UnusedDependencyViolation",
     "DEP003TransitiveDependenciesFinder",
+    "DEP003TransitiveDependencyViolation",
     "DEP004MisplacedDevDependenciesFinder",
+    "DEP004MisplacedDevDependencyViolation",
     "DEP005StandardLibraryDependenciesFinder",
+    "DEP005StandardLibraryDependencyViolation",
     "Violation",
     "ViolationsFinder",
 )
