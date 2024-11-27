@@ -4,7 +4,6 @@ use crate::visitor;
 use location::Location;
 use pyo3::exceptions::PySyntaxError;
 use pyo3::prelude::*;
-use pyo3::types::{PyDict, PyList};
 use ruff_python_ast::visitor::Visitor;
 use ruff_python_ast::{Mod, ModModule};
 use ruff_python_parser::{parse, Mode, Parsed};
@@ -73,25 +72,6 @@ pub fn convert_imports_with_textranges_to_location_objects(
         imports_with_locations.insert(module, locations);
     }
     imports_with_locations
-}
-
-/// Transforms a Rust `HashMap` containing import data into a Python dictionary suitable for Python-side consumption.
-pub fn convert_to_python_dict(
-    py: Python<'_>,
-    imports_with_locations: FileToImportsMap,
-) -> PyResult<PyObject> {
-    let imports_dict = PyDict::new_bound(py);
-
-    for (module, locations) in imports_with_locations {
-        let py_locations: Vec<PyObject> = locations
-            .into_iter()
-            .map(|location| location.into_py(py))
-            .collect();
-        let locations_list = PyList::new_bound(py, &py_locations);
-        imports_dict.set_item(module, locations_list)?;
-    }
-
-    Ok(imports_dict.into())
 }
 
 // Shared logic for merging results from different threads.
