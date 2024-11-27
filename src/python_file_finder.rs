@@ -1,8 +1,7 @@
 use ignore::types::{Types, TypesBuilder};
 use ignore::{DirEntry, Walk, WalkBuilder};
 use path_slash::PathExt;
-use pyo3::types::PyList;
-use pyo3::{pyfunction, PyObject, PyResult, Python};
+use pyo3::{pyfunction, Bound, IntoPyObject, PyAny, Python};
 use regex::Regex;
 use std::path::PathBuf;
 
@@ -15,7 +14,7 @@ pub fn find_python_files(
     extend_exclude: Vec<String>,
     using_default_exclude: bool,
     ignore_notebooks: bool,
-) -> PyResult<PyObject> {
+) -> Bound<'_, PyAny> {
     let mut unique_directories = directories;
     unique_directories.dedup();
 
@@ -37,7 +36,7 @@ pub fn find_python_files(
     })
     .collect();
 
-    Ok(PyList::new_bound(py, &python_files).into())
+    python_files.into_pyobject(py).unwrap()
 }
 
 fn build_walker(

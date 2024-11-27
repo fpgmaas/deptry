@@ -1,19 +1,19 @@
 use crate::file_utils;
 use crate::location;
 
+use super::shared;
 use file_utils::read_file;
 use location::Location;
 use pyo3::exceptions::PySyntaxError;
 use pyo3::prelude::*;
+use pyo3::types::PyDict;
 use rayon::prelude::*;
 use std::collections::HashMap;
-
-use super::shared;
 
 /// Processes multiple Python files in parallel to extract import statements and their locations.
 /// Accepts a list of file paths and returns a dictionary mapping module names to their import locations.
 #[pyfunction]
-pub fn get_imports_from_ipynb_files(py: Python, file_paths: Vec<String>) -> PyResult<PyObject> {
+pub fn get_imports_from_ipynb_files(py: Python, file_paths: Vec<String>) -> Bound<'_, PyDict> {
     let results: Vec<_> = file_paths
         .par_iter()
         .map(|path_str| {
@@ -28,7 +28,7 @@ pub fn get_imports_from_ipynb_files(py: Python, file_paths: Vec<String>) -> PyRe
     let (all_imports, errors) = shared::merge_results_from_threads(results);
     shared::log_python_errors_as_warnings(&errors);
 
-    shared::convert_to_python_dict(py, all_imports)
+    all_imports.into_pyobject(py).unwrap()
 }
 
 /// Core helper function that extracts import statements and their locations from a single .ipynb file.
