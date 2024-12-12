@@ -13,5 +13,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - name: Validate codecov configuration
         run: curl -sSL --fail-with-body --data-binary @codecov.yaml https://codecov.io/validate
