@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.21.2 - 2024-12-19
+
+### Miscellaneous
+
+* Provide wheels for musllinux ([#979](https://github.com/fpgmaas/deptry/pull/979))
+
+### Full Changelog
+
+https://github.com/fpgmaas/deptry/compare/0.21.1...0.21.2
+
+
 ## 0.21.1 - 2024-11-15
 
 ### Bug Fixes
