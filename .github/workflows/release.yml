@@ -1,8 +1,8 @@
 name: Release
 
 on:
-  release:
-    types: [published]
+  pull_request:
+    types: [opened, synchronize, reopened]
   workflow_dispatch:
 
 env:
@@ -18,70 +18,17 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Export tag
-        id: vars
-        run: echo tag=${GITHUB_REF#refs/*/} >> $GITHUB_OUTPUT
-        if: ${{ github.event_name == 'release' }}
-
-      - name: Update project version
-        run: |
-          sed -i "s/^version = \".*\"/version = \"$RELEASE_VERSION\"/" pyproject.toml
-        env:
-          RELEASE_VERSION: ${{ steps.vars.outputs.tag }}
-        if: ${{ github.event_name == 'release' }}
-
       - name: Upload updated pyproject.toml
         uses: actions/upload-artifact@v4
         with:
           name: pyproject-toml
           path: pyproject.toml
 
-  linux:
-    runs-on: ubuntu-24.04
-    needs: [set-version]
-    strategy:
-      matrix:
-        target: [x86_64, aarch64]
-        manylinux: [auto, musllinux_1_1]
-        python: ['3.13', 'pypy3.10']
-    steps:
-      - name: Check out
-        uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-
-      - name: Download updated pyproject.toml
-        uses: actions/download-artifact@v4
-        with:
-          name: pyproject-toml
-
-      - name: Install Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python }}
-
-      - name: Build wheels
-        uses: PyO3/maturin-action@v1
-        with:
-          target: ${{ matrix.target }}
-          manylinux: ${{ matrix.manylinux }}
-          args: --release --out dist --interpreter ${{ startsWith(matrix.python, 'pypy') && matrix.python || format('python{0}', matrix.python) }}
-          sccache: 'true'
-
-      - name: Upload wheels
-        uses: actions/upload-artifact@v4
-        with:
-          name: wheels-linux-${{ matrix.target }}-${{ matrix.manylinux }}-${{ matrix.python }}
-          path: dist
-
   windows:
     runs-on: windows-2022
     needs: [set-version]
     strategy:
       matrix:
-        target: [x64]
-        python: ['3.13', 'pypy3.10']
-        # PyPy doesn't support Windows ARM64.
         include:
           - python: '3.13'
             target: aarch64
@@ -100,130 +47,17 @@ jobs:
         uses: actions/setup-python@v5
         id: setup-python
         with:
-          python-version: ${{ matrix.python }}
+          python-version: '3.13'
 
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
-          target: ${{ matrix.target }}
+          target: aarch64
           args: --release --out dist --interpreter ${{ steps.setup-python.outputs.python-path }}
           sccache: 'true'
 
       - name: Upload wheels
         uses: actions/upload-artifact@v4
         with:
-          name: wheels-windows-${{ matrix.target }}-${{ matrix.python }}
+          name: wheels-windows-aarch64-3.13
           path: dist
-
-  macos:
-    runs-on: macos-15
-    needs: [set-version]
-    strategy:
-      matrix:
-        target: [x86_64, aarch64]
-        python: ['3.13', 'pypy3.10']
-    steps:
-      - name: Check out
-        uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-
-      - name: Download updated pyproject.toml
-        uses: actions/download-artifact@v4
-        with:
-          name: pyproject-toml
-
-      - name: Install Python
-        uses: actions/setup-python@v5
-        id: setup-python
-        with:
-          python-version: ${{ matrix.python }}
-
-      - name: Build wheels
-        uses: PyO3/maturin-action@v1
-        with:
-          target: ${{ matrix.target }}
-          args: --release --out dist --interpreter ${{ steps.setup-python.outputs.python-path }}
-          sccache: 'true'
-
-      - name: Upload wheels
-        uses: actions/upload-artifact@v4
-        with:
-          name: wheels-macos-${{ matrix.target }}-${{ matrix.python }}
-          path: dist
-
-  sdist:
-    runs-on: ubuntu-24.04
-    needs: [set-version]
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-
-      - name: Install Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-
-      - name: Download updated pyproject.toml
-        uses: actions/download-artifact@v4
-        with:
-          name: pyproject-toml
-
-      - name: Build sdist
-        uses: PyO3/maturin-action@v1
-        with:
-          command: sdist
-          args: --out dist
-
-      - name: Upload sdist
-        uses: actions/upload-artifact@v4
-        with:
-          name: wheels-sdist
-          path: dist
-
-  publish:
-    name: Publish
-    runs-on: ubuntu-24.04
-    needs: [linux, windows, macos, sdist]
-    if: ${{ github.event_name == 'release' }}
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          persist-credentials: false
-
-      - name: Install Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-
-      - name: Publish to PyPI
-        uses: PyO3/maturin-action@v1
-        env:
-          MATURIN_PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
-        with:
-          command: upload
-          args: --non-interactive --skip-existing wheels-*/*
-
-  check-docs:
-    runs-on: ubuntu-24.04
-    needs: publish
-    if: ${{ github.event_name == 'release' }}
-    steps:
-      - name: Check out
-        uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-
-      - name: Install uv
-        uses: astral-sh/setup-uv@v4
-        with:
-          version: ${{ env.UV_VERSION }}
-
-      - name: Install Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-
-      - name: Deploy documentation
-        run: uv run --only-group docs mkdocs gh-deploy --force
