@@ -58,7 +58,7 @@ jobs:
           - name: macos
             image: macos-15
           - name: windows
-            image: windows-2022
+            image: windows-2025
         python-version: ['3.9', '3.10', '3.11', '3.12', '3.13', 'pypy3.10']
       fail-fast: false
     runs-on: ${{ matrix.os.image }}
