@@ -42,6 +42,7 @@ jobs:
     strategy:
       matrix:
         target: [x86_64, aarch64]
+        manylinux: [auto, musllinux_1_1]
         python: ['3.13', 'pypy3.10']
     steps:
       - name: Check out
@@ -63,14 +64,14 @@ jobs:
         uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.target }}
+          manylinux: ${{ matrix.manylinux }}
           args: --release --out dist --interpreter ${{ startsWith(matrix.python, 'pypy') && matrix.python || format('python{0}', matrix.python) }}
           sccache: 'true'
-          manylinux: auto
 
       - name: Upload wheels
         uses: actions/upload-artifact@v4
         with:
-          name: wheels-linux-${{ matrix.target }}-${{ matrix.python }}
+          name: wheels-linux-${{ matrix.target }}-${{ matrix.manylinux }}-${{ matrix.python }}
           path: dist
 
   windows:
