@@ -15,6 +15,25 @@ wheels = [
 ]
 
 [[package]]
+name = "beautifulsoup4"
+version = "4.12.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "soupsieve" },
+]
+sdist = { 
+    url = "https://files.pythonhosted.org/packages/b1/fe/e8c672695b37eecc5cbf43e1d0638d88d66ba3a44c4d321c796f4e59167f/beautifulsoup4-4.12.3.tar.gz", 
+    hash = "sha256:fcf60b5f924bbb12c4c69361e4c5870531479cf5768c55c71f8ff0f84cc113b6" 
+}
+wheels = [
+    { 
+        url = "https://files.pythonhosted.org/packages/b1/fe/e8c672695b37eecc5cbf43e1d0638d88d66ba3a44c4d321c796f4e59167f/beautifulsoup4-4.12.3-py3-none-any.whl", 
+        hash = "sha256:b80878c9f40111313e55da8ba20bdba06d8fa3969fc68304167741bbf9e082ed" 
+    },
+]
+
+
+[[package]]
 name = "certifi"
 version = "2024.8.30"
 source = { registry = "https://pypi.org/simple" }
@@ -207,6 +226,7 @@ name = "deptry"
 version = "0.0.1"
 source = { editable = "." }
 dependencies = [
+    { name = "beautifulsoup4" },
     { name = "click" },
     { name = "colorama", marker = "sys_platform == 'win32'" },
     { name = "packaging" },
@@ -232,6 +252,7 @@ typing = [
 
 [package.metadata]
 requires-dist = [
+    { name = "beautifulsoup4" },
     { name = "click", specifier = ">=8.0.0,<9" },
     { name = "colorama", marker = "sys_platform == 'win32'", specifier = ">=0.4.6" },
     { name = "packaging", specifier = ">=23.2" },
@@ -923,6 +944,22 @@ sdist = { url = "https://files.pythonhosted.org/packages/71/39/171f1c67cd00715f1
 wheels = [
     { url = "https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl", hash = "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254", size = 11053 },
 ]
+
+[[package]]
+name = "soupsieve"
+version = "2.4.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { 
+    url = "https://files.pythonhosted.org/packages/49/37/673d6490efc51ec46d198c75903d99de59baffdd47aea3d071b80a9e4e89/soupsieve-2.4.1.tar.gz", 
+    hash = "sha256:7b3b65bc288f3141b3664457669b1e6a16e87b222af2ef53cdf0067923e5959" 
+}
+wheels = [
+    { 
+        url = "https://files.pythonhosted.org/packages/49/37/673d6490efc51ec46d198c75903d99de59baffdd47aea3d071b80a9e4e89/soupsieve-2.4.1-py3-none-any.whl", 
+        hash = "sha256:1c1bfee6819544a3447586c889157365a27e10d88cde3ad3da0cf0ddf646feb8" 
+    },
+]
+
 
 [[package]]
 name = "tomli"

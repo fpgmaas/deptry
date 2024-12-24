@@ -18,7 +18,7 @@ def test_top_level() -> None:
     dependency = Dependency("beautifulsoup4", Path("pyproject.toml"))
     dependency.top_levels = {"bs4"}
     module = ModuleBuilder("bs4", {"foo", "bar"}, frozenset(), [dependency]).build()
-    assert module.package is None
+    assert module.package == 'bs4'
     assert module.standard_library is False
     assert module.local_module is False
 

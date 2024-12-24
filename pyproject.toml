@@ -24,6 +24,7 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
 ]
 dependencies = [
+    "beautifulsoup4>=4.12.3",
     "click>=8.0.0,<9",
     "colorama>=0.4.6; sys_platform == 'win32'",
     "packaging>=23.2",
