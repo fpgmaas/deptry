@@ -105,8 +105,6 @@ jobs:
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
-          # Recent versions (last one tested 1.7.8) lead to failures on Windows aarch64, so forcing the version for now.
-          maturin-version: '1.7.4'
           target: ${{ matrix.target }}
           args: --release --out dist --interpreter ${{ steps.setup-python.outputs.python-path }}
           sccache: 'true'
