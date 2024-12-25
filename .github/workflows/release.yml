@@ -191,8 +191,6 @@ jobs:
     if: ${{ github.event_name == 'release' }}
     steps:
       - uses: actions/download-artifact@v4
-        with:
-          persist-credentials: false
 
       - name: Install Python
         uses: actions/setup-python@v5
@@ -207,9 +205,11 @@ jobs:
           command: upload
           args: --non-interactive --skip-existing wheels-*/*
 
-  check-docs:
+  publish-docs:
     runs-on: ubuntu-24.04
     needs: publish
+    permissions:
+      contents: write
     if: ${{ github.event_name == 'release' }}
     steps:
       - name: Check out
