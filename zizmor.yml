@@ -1,0 +1,5 @@
+rules:
+  artipacked:
+    ignore:
+      # Required for publishing documentation to `gh-pages` branch.
+      - release.yml:215
