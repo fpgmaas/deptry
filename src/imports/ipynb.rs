@@ -17,7 +17,7 @@ pub fn get_imports_from_ipynb_files(py: Python, file_paths: Vec<String>) -> Boun
     let results: Vec<_> = file_paths
         .par_iter()
         .map(|path_str| {
-            let result = _get_imports_from_ipynb_file(path_str);
+            let result = get_imports_from_ipynb_file(path_str);
             shared::ThreadResult {
                 file: path_str.to_string(),
                 result,
@@ -33,14 +33,14 @@ pub fn get_imports_from_ipynb_files(py: Python, file_paths: Vec<String>) -> Boun
 
 /// Core helper function that extracts import statements and their locations from a single .ipynb file.
 /// Ensures robust error handling and provides clearer, more detailed comments.
-fn _get_imports_from_ipynb_file(path_str: &str) -> PyResult<HashMap<String, Vec<Location>>> {
+fn get_imports_from_ipynb_file(path_str: &str) -> PyResult<HashMap<String, Vec<Location>>> {
     let file_content = read_file(path_str)?;
     let notebook: serde_json::Value =
         serde_json::from_str(&file_content).map_err(|e| PySyntaxError::new_err(e.to_string()))?;
     let cells = notebook["cells"]
         .as_array()
         .ok_or_else(|| PySyntaxError::new_err("Expected 'cells' to be an array"))?;
-    let python_code = _extract_code_from_notebook_cells(cells);
+    let python_code = extract_code_from_notebook_cells(cells);
 
     let parsed = shared::parse_file_content(&python_code)?;
     let imported_modules = shared::extract_imports_from_parsed_file_content(parsed);
@@ -53,7 +53,7 @@ fn _get_imports_from_ipynb_file(path_str: &str) -> PyResult<HashMap<String, Vec<
 }
 
 /// Extracts and concatenates code from notebook code cells.
-fn _extract_code_from_notebook_cells(cells: &[serde_json::Value]) -> String {
+fn extract_code_from_notebook_cells(cells: &[serde_json::Value]) -> String {
     let code_lines: Vec<String> = cells
         .iter()
         .filter(|cell| cell["cell_type"] == "code")
