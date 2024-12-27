@@ -1,5 +1,3 @@
-// file_utils.rs
-
 use chardetng::EncodingDetector;
 use encoding_rs::Encoding;
 use pyo3::exceptions::{PyFileNotFoundError, PyIOError};

@@ -16,7 +16,7 @@ pub fn get_imports_from_py_files(py: Python, file_paths: Vec<String>) -> Bound<'
     let results: Vec<_> = file_paths
         .par_iter()
         .map(|path_str| {
-            let result = _get_imports_from_py_file(path_str);
+            let result = get_imports_from_py_file(path_str);
             shared::ThreadResult {
                 file: path_str.to_string(),
                 result,
@@ -32,7 +32,7 @@ pub fn get_imports_from_py_files(py: Python, file_paths: Vec<String>) -> Bound<'
 
 /// Core helper function that extracts import statements and their locations from the content of a single Python file.
 /// Used internally by both parallel and single file processing functions.
-fn _get_imports_from_py_file(path_str: &str) -> PyResult<HashMap<String, Vec<Location>>> {
+fn get_imports_from_py_file(path_str: &str) -> PyResult<HashMap<String, Vec<Location>>> {
     let file_content = read_file(path_str)?;
     let ast = shared::parse_file_content(&file_content)?;
     let imported_modules = shared::extract_imports_from_parsed_file_content(ast);

@@ -36,7 +36,7 @@ impl ImportVisitor {
     /// top-level module to the `imports` map.
     ///
     /// Imports of the `importlib` package are handled as a special case: its name (or alias),
-    /// suffixed with ".import_module", is stored in `import_module_names`. This is done to
+    /// suffixed with `.import_module`, is stored in `import_module_names`. This is done to
     /// indicate how we should look out for dynamic imports in the code that follows.
     fn handle_import(&mut self, import_stmt: &StmtImport) {
         for alias in &import_stmt.names {
@@ -50,10 +50,10 @@ impl ImportVisitor {
                 let name = alias
                     .asname
                     .as_ref()
-                    .map(|id| id.as_str())
-                    .unwrap_or("importlib");
+                    .map_or("importlib", ruff_python_ast::Identifier::as_str);
+
                 self.import_module_names
-                    .insert(format!("{}.import_module", name));
+                    .insert(format!("{name}.import_module"));
             }
         }
     }
@@ -81,8 +81,7 @@ impl ImportVisitor {
                             let name = alias
                                 .asname
                                 .as_ref()
-                                .map(|id| id.as_str())
-                                .unwrap_or("import_module");
+                                .map_or("import_module", ruff_python_ast::Identifier::as_str);
                             self.import_module_names.insert(name.to_string());
                         }
                     }
