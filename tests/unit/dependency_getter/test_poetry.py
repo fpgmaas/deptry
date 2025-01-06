@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from deptry.dependency_getter.poetry import PoetryDependencyGetter
+from deptry.dependency_getter.pep621.poetry import PoetryDependencyGetter
 from tests.utils import run_within_dir
 
 

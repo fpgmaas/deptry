@@ -7,8 +7,8 @@ from typing import TYPE_CHECKING
 
 from deptry.dependency_getter.pep621.base import PEP621DependencyGetter
 from deptry.dependency_getter.pep621.pdm import PDMDependencyGetter
+from deptry.dependency_getter.pep621.poetry import PoetryDependencyGetter
 from deptry.dependency_getter.pep621.uv import UvDependencyGetter
-from deptry.dependency_getter.poetry import PoetryDependencyGetter
 from deptry.dependency_getter.requirements_files import RequirementsTxtDependencyGetter
 from deptry.exceptions import DependencySpecificationNotFoundError
 from deptry.utils import load_pyproject_toml
@@ -45,7 +45,9 @@ class DependencyGetterBuilder:
             pyproject_toml = load_pyproject_toml(self.config)
 
             if self._project_uses_poetry(pyproject_toml):
-                return PoetryDependencyGetter(self.config, self.package_module_name_map)
+                return PoetryDependencyGetter(
+                    self.config, self.package_module_name_map, self.pep621_dev_dependency_groups
+                )
 
             if self._project_uses_uv(pyproject_toml):
                 return UvDependencyGetter(self.config, self.package_module_name_map, self.pep621_dev_dependency_groups)
