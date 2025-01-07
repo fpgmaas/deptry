@@ -50,14 +50,14 @@ class _BaseVenvFactory:
 class PDMVenvFactory(_BaseVenvFactory):
     @contextmanager
     def __call__(self, project: str) -> Generator[VirtualEnvironment, None, None]:
-        with self.venv(project, [_get_tool_install_command(Tool.PDM), "pdm install --no-self"]) as virtual_env:
+        with self.venv(project, ["pdm install --no-self"]) as virtual_env:
             yield virtual_env
 
 
 class UvVenvFactory(_BaseVenvFactory):
     @contextmanager
     def __call__(self, project: str) -> Generator[VirtualEnvironment, None, None]:
-        with self.venv(project, [_get_tool_install_command(Tool.UV), "uv sync"]) as virtual_env:
+        with self.venv(project, ["uv sync"]) as virtual_env:
             yield virtual_env
 
 
@@ -65,7 +65,7 @@ class UvVenvFactory(_BaseVenvFactory):
 class PoetryVenvFactory(_BaseVenvFactory):
     @contextmanager
     def __call__(self, project: str) -> Generator[VirtualEnvironment, None, None]:
-        with self.venv(project, [_get_tool_install_command(Tool.POETRY), "poetry install --no-root"]) as virtual_env:
+        with self.venv(project, ["poetry install --no-root"]) as virtual_env:
             yield virtual_env
 
 
@@ -78,10 +78,9 @@ class PipVenvFactory(_BaseVenvFactory):
             yield virtual_env
 
 
-def _get_tool_install_command(tool: Tool) -> str:
+def _get_tool_version(tool: Tool) -> str:
     with Path("tests/tool-versions.json").open() as f:
-        tool_versions = json.load(f)
-        return f"pip install {tool.value}=={tool_versions[tool.value]}"
+        return json.load(f)[tool.value]
 
 
 @dataclass
