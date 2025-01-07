@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import enum
 import json
 import os
 import shlex
@@ -17,6 +18,12 @@ from tests.functional.utils import DEPTRY_WHEEL_DIRECTORY
 
 if TYPE_CHECKING:
     from collections.abc import Generator
+
+
+class Tool(enum.Enum):
+    PDM = "pdm"
+    POETRY = "poetry"
+    UV = "uv"
 
 
 @dataclass
@@ -43,14 +50,14 @@ class _BaseVenvFactory:
 class PDMVenvFactory(_BaseVenvFactory):
     @contextmanager
     def __call__(self, project: str) -> Generator[VirtualEnvironment, None, None]:
-        with self.venv(project, ["pip install pdm", "pdm install --no-self"]) as virtual_env:
+        with self.venv(project, [_get_tool_install_command(Tool.PDM), "pdm install --no-self"]) as virtual_env:
             yield virtual_env
 
 
 class UvVenvFactory(_BaseVenvFactory):
     @contextmanager
     def __call__(self, project: str) -> Generator[VirtualEnvironment, None, None]:
-        with self.venv(project, ["pip install uv", "uv sync"]) as virtual_env:
+        with self.venv(project, [_get_tool_install_command(Tool.UV), "uv sync"]) as virtual_env:
             yield virtual_env
 
 
@@ -58,7 +65,7 @@ class UvVenvFactory(_BaseVenvFactory):
 class PoetryVenvFactory(_BaseVenvFactory):
     @contextmanager
     def __call__(self, project: str) -> Generator[VirtualEnvironment, None, None]:
-        with self.venv(project, ["pip install poetry", "poetry install --no-root"]) as virtual_env:
+        with self.venv(project, [_get_tool_install_command(Tool.POETRY), "poetry install --no-root"]) as virtual_env:
             yield virtual_env
 
 
@@ -69,6 +76,12 @@ class PipVenvFactory(_BaseVenvFactory):
     ) -> Generator[VirtualEnvironment, None, None]:
         with self.venv(project, [install_command]) as virtual_env:
             yield virtual_env
+
+
+def _get_tool_install_command(tool: Tool) -> str:
+    with Path("tests/tool-versions.json").open() as f:
+        tool_versions = json.load(f)
+        return f"pip install {tool.value}=={tool_versions[tool.value]}"
 
 
 @dataclass
