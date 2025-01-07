@@ -174,11 +174,11 @@ def test_dependency_specification_not_found_raises_exception(tmp_path: Path, cap
             " project's dependencies."
         ),
         (
-            "pyproject.toml does not contain a [tool.pdm.dev-dependencies] section, so PDM is not used to specify the"
+            "pyproject.toml does not contain a [tool.uv.dev-dependencies] section, so uv is not used to specify the"
             " project's dependencies."
         ),
         (
-            "pyproject.toml does not contain a [tool.uv.dev-dependencies] section, so uv is not used to specify the"
+            "pyproject.toml does not contain a [tool.pdm.dev-dependencies] section, so PDM is not used to specify the"
             " project's dependencies."
         ),
         (
