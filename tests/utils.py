@@ -31,13 +31,15 @@ class _BaseVenvFactory:
     venvs_directory: Path
 
     @contextmanager
-    def venv(self, project: str, setup_commands: list[str]) -> Generator[VirtualEnvironment, None, None]:
+    def venv(
+        self, project: str, setup_command: str, setup_from_python_executable: bool = True
+    ) -> Generator[VirtualEnvironment, None, None]:
         venv_path = self.venvs_directory / project
 
         old_cwd = Path.cwd()
 
         virtual_env = VirtualEnvironment(venv_path, project)
-        virtual_env.setup(setup_commands, old_cwd)
+        virtual_env.setup(setup_command, old_cwd, setup_from_python_executable)
 
         os.chdir(venv_path / "project")
 
@@ -50,14 +52,14 @@ class _BaseVenvFactory:
 class PDMVenvFactory(_BaseVenvFactory):
     @contextmanager
     def __call__(self, project: str) -> Generator[VirtualEnvironment, None, None]:
-        with self.venv(project, ["pdm install --no-self"]) as virtual_env:
+        with self.venv(project, "pdm install --no-self", setup_from_python_executable=False) as virtual_env:
             yield virtual_env
 
 
 class UvVenvFactory(_BaseVenvFactory):
     @contextmanager
     def __call__(self, project: str) -> Generator[VirtualEnvironment, None, None]:
-        with self.venv(project, ["uv sync"]) as virtual_env:
+        with self.venv(project, "uv sync", setup_from_python_executable=False) as virtual_env:
             yield virtual_env
 
 
@@ -65,7 +67,7 @@ class UvVenvFactory(_BaseVenvFactory):
 class PoetryVenvFactory(_BaseVenvFactory):
     @contextmanager
     def __call__(self, project: str) -> Generator[VirtualEnvironment, None, None]:
-        with self.venv(project, ["poetry install --no-root"]) as virtual_env:
+        with self.venv(project, "poetry install --no-root", setup_from_python_executable=False) as virtual_env:
             yield virtual_env
 
 
@@ -74,7 +76,7 @@ class PipVenvFactory(_BaseVenvFactory):
     def __call__(
         self, project: str, install_command: str = "pip install ."
     ) -> Generator[VirtualEnvironment, None, None]:
-        with self.venv(project, [install_command]) as virtual_env:
+        with self.venv(project, install_command) as virtual_env:
             yield virtual_env
 
 
@@ -92,7 +94,7 @@ class VirtualEnvironment:
     def __post_init__(self) -> None:
         self.python_executable = self.project_path / ("Scripts/python.exe" if sys.platform == "win32" else "bin/python")
 
-    def setup(self, setup_commands: list[str], deptry_directory: Path) -> None:
+    def setup(self, setup_command: str, deptry_directory: Path, from_python_executable: bool = True) -> None:
         if self.project_path.exists():
             return
 
@@ -101,17 +103,20 @@ class VirtualEnvironment:
 
         shutil.copytree(deptry_directory / "tests/fixtures" / self.project, self.project_path / "project")
 
+        self.run(
+            setup_command, check=True, from_python_executable=from_python_executable, cwd=self.project_path / "project"
+        )
+
         path_to_wheel_file = self._get_path_to_wheel_file(deptry_directory / DEPTRY_WHEEL_DIRECTORY)
+        self.run(f"pip install --no-cache-dir {path_to_wheel_file}", check=True, cwd=self.project_path / "project")
 
-        for setup_command in [
-            f"pip install --no-cache-dir {path_to_wheel_file}",
-            *setup_commands,
-        ]:
-            self.run(setup_command, check=True, cwd=self.project_path / "project")
+    def run(
+        self, command: str, check: bool = False, from_python_executable: bool = True, cwd: Path | None = None
+    ) -> subprocess.CompletedProcess[str]:
+        shell_command = f"{self.python_executable} -m {command}" if from_python_executable else command
 
-    def run(self, command: str, check: bool = False, cwd: Path | None = None) -> subprocess.CompletedProcess[str]:
         return subprocess.run(
-            shlex.split(f"{self.python_executable} -m {command}", posix=sys.platform != "win32"),
+            shlex.split(shell_command, posix=sys.platform != "win32"),
             env={**os.environ, "VIRTUAL_ENV": str(self.project_path)},
             capture_output=True,
             text=True,

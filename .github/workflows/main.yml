@@ -16,50 +16,50 @@ env:
   UV_VERSION: '0.5.14'
 
 jobs:
-#  quality:
-#    runs-on: ubuntu-24.04
-#    steps:
-#      - name: Check out
-#        uses: actions/checkout@v4
-#        with:
-#          persist-credentials: false
-#
-#      - name: Install uv
-#        uses: astral-sh/setup-uv@v5
-#        with:
-#          version: ${{ env.UV_VERSION }}
-#
-#      - name: Install Python
-#        uses: actions/setup-python@v5
-#        with:
-#          python-version: ${{ env.PYTHON_VERSION }}
-#
-#      - name: Install Python dependencies
-#        run: uv sync --frozen
-#
-#      - name: Setup Rust toolchain
-#        run: rustup component add clippy rustfmt
-#
-#      - name: Run pre-commit
-#        run: uvx pre-commit@${PRE_COMMIT_VERSION} run -a --show-diff-on-failure
-#        env:
-#          # renovate: datasource=pypi depName=pre-commit
-#          PRE_COMMIT_VERSION: '4.0.1'
-#
-#      - name: Inspect dependencies with deptry
-#        run: uv run deptry python
+  quality:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: ${{ env.UV_VERSION }}
+
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install Python dependencies
+        run: uv sync --frozen
+
+      - name: Setup Rust toolchain
+        run: rustup component add clippy rustfmt
+
+      - name: Run pre-commit
+        run: uvx pre-commit@${PRE_COMMIT_VERSION} run -a --show-diff-on-failure
+        env:
+          # renovate: datasource=pypi depName=pre-commit
+          PRE_COMMIT_VERSION: '4.0.1'
+
+      - name: Inspect dependencies with deptry
+        run: uv run deptry python
 
   tests:
     strategy:
       matrix:
         os:
-#          - name: linux
-#            image: ubuntu-24.04
-#          - name: macos
-#            image: macos-15
+          - name: linux
+            image: ubuntu-24.04
+          - name: macos
+            image: macos-15
           - name: windows
             image: windows-2025
-        python-version: ['3.9', '3.10', '3.11']
+        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13', 'pypy3.10']
       fail-fast: false
     runs-on: ${{ matrix.os.image }}
     name: ${{ matrix.os.name }} (${{ matrix.python-version }})
@@ -88,11 +88,11 @@ jobs:
 #        run: uv run mypy
 #        if: ${{ matrix.os.name == 'linux' }}
 
-#      - name: Run unit tests
-#        run: uv run pytest tests/unit --cov --cov-config=pyproject.toml --cov-report=xml
+      - name: Run unit tests
+        run: uv run pytest tests/unit --cov --cov-config=pyproject.toml --cov-report=xml
 
       - name: Run functional tests
-        run: uv run pytest tests/functional/cli/test_cli_poetry.py -vvv
+        run: uv run pytest tests/functional -n auto --dist loadgroup
 
 #      - name: Upload coverage reports to Codecov
 #        uses: codecov/codecov-action@v5
