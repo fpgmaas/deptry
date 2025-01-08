@@ -22,18 +22,6 @@
     "regexManagers:githubActionsVersions",
   ],
 
-  // https://docs.renovatebot.com/configuration-options/#ignorepresets
-  ignorePresets: [
-    // https://docs.renovatebot.com/presets-default/#ignoremodulesandtests
-    // By default, some directories, including "tests", are ignored. Since we do want Renovate to pick up some
-    // dependencies in "tests" directory, we explicitly opt out from this preset, instead ignoring specific
-    // subdirectories.
-    ":ignoreModulesAndTests",
-  ],
-
-  // https://docs.renovatebot.com/configuration-options/#ignorepaths
-  ignorePaths: ["tests/fixtures/**"],
-
   // https://docs.renovatebot.com/configuration-options/#labels
   labels: ["dependencies"],
 
@@ -61,16 +49,6 @@
     {
       matchPackageNames: ["astral-sh/ruff-pre-commit"],
       customChangelogUrl: "https://github.com/astral-sh/ruff",
-    },
-  ],
-
-  // https://docs.renovatebot.com/configuration-options/#custommanagers
-  customManagers: [
-    {
-      customType: "regex",
-      fileMatch: ["^tests/tool-versions\.json$"],
-      matchStrings: ['"(?<depName>.*?)":\\s*"(?<currentValue>.*?)",?\\s'],
-      datasourceTemplate: "pypi",
     },
   ],
 }
