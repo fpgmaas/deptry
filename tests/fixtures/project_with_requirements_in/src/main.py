@@ -6,3 +6,4 @@ import click
 import h11
 import white as w
 from urllib3 import contrib
+from bs4 import BeautifulSoup

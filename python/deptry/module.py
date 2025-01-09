@@ -4,6 +4,7 @@ import logging
 from dataclasses import dataclass, field
 from importlib.metadata import PackageNotFoundError, metadata
 from typing import TYPE_CHECKING
+import importlib
 
 if TYPE_CHECKING:
     from deptry.dependency import Dependency
@@ -118,9 +119,17 @@ class ModuleBuilder:
         try:
             name: str = metadata(self.name)["Name"]
         except PackageNotFoundError:
+            name = self.is_package_installed(self.name)
+            if name:
+                return name
             return None
         else:
             return name
+
+    def is_package_installed(self, package_name: str):
+        if importlib.util.find_spec(package_name):
+            return package_name
+        return None
 
     def _get_corresponding_top_levels_from(self, dependencies: list[Dependency]) -> list[str]:
         """

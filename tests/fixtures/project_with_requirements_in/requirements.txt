@@ -16,3 +16,5 @@ urllib3==2.2.3
     # via -r requirements.in
 uvicorn==0.32.0
     # via -r requirements.in
+
+beautifulsoup4

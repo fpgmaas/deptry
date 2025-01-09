@@ -29,9 +29,16 @@ def test_cli_single_requirements_files(pip_venv_factory: PipVenvFactory) -> None
         assert result.returncode == 1
         assert get_issues_report(Path(issue_report)) == [
             {
-                "error": {"code": "DEP002", "message": "'isort' defined as a dependency but not used in the codebase"},
+                "error": {
+                    "code": "DEP002",
+                    "message": "'isort' defined as a dependency but not used in the codebase"
+                },
                 "module": "isort",
-                "location": {"file": str(Path("requirements.in")), "line": None, "column": None},
+                "location": {
+                    "file": str(Path("requirements.in")),
+                    "line": None,
+                    "column": None
+                },
             },
             {
                 "error": {
@@ -39,27 +46,71 @@ def test_cli_single_requirements_files(pip_venv_factory: PipVenvFactory) -> None
                     "message": "'uvicorn' defined as a dependency but not used in the codebase",
                 },
                 "module": "uvicorn",
-                "location": {"file": str(Path("requirements.in")), "line": None, "column": None},
+                "location": {
+                    "file": str(Path("requirements.in")),
+                    "line": None,
+                    "column": None
+                },
             },
             {
-                "error": {"code": "DEP004", "message": "'black' imported but declared as a dev dependency"},
+                "error": {
+                    "code": "DEP004",
+                    "message": "'black' imported but declared as a dev dependency"
+                },
                 "module": "black",
-                "location": {"file": str(Path("src/main.py")), "line": 4, "column": 8},
+                "location": {
+                    "file": str(Path("src/main.py")),
+                    "line": 4,
+                    "column": 8
+                },
             },
             {
-                "error": {"code": "DEP003", "message": "'h11' imported but it is a transitive dependency"},
+                "error": {
+                    "code": "DEP003",
+                    "message": "'h11' imported but it is a transitive dependency"
+                },
                 "module": "h11",
-                "location": {"file": str(Path("src/main.py")), "line": 6, "column": 8},
+                "location": {
+                    "file": str(Path("src/main.py")),
+                    "line": 6,
+                    "column": 8
+                },
             },
             {
-                "error": {"code": "DEP001", "message": "'white' imported but missing from the dependency definitions"},
+                "error": {
+                    "code": "DEP001",
+                    "message": "'white' imported but missing from the dependency definitions"
+                },
                 "module": "white",
-                "location": {"file": str(Path("src/main.py")), "line": 7, "column": 8},
+                "location": {
+                    "file": str(Path("src/main.py")),
+                    "line": 7,
+                    "column": 8
+                },
             },
             {
-                "error": {"code": "DEP001", "message": "'arrow' imported but missing from the dependency definitions"},
+                "error": {
+                    "code": "DEP003",
+                    "message": "'bs4' imported but it is a transitive dependency"
+                },
+                "module": "bs4",
+                "location": {
+                    "file": str(Path("src/main.py")),
+                    "line": 9,
+                    "column": 1
+                },
+            },
+            {
+                "error": {
+                    "code": "DEP001",
+                    "message": "'arrow' imported but missing from the dependency definitions"
+                },
                 "module": "arrow",
-                "location": {"file": str(Path("src/notebook.ipynb")), "line": 3, "column": 8},
+                "location": {
+                    "file": str(Path("src/notebook.ipynb")),
+                    "line": 3,
+                    "column": 8
+                },
             },
         ]
 
@@ -81,9 +132,16 @@ def test_cli_multiple_requirements_files(pip_venv_factory: PipVenvFactory) -> No
         assert result.returncode == 1
         assert get_issues_report(Path(issue_report)) == [
             {
-                "error": {"code": "DEP002", "message": "'isort' defined as a dependency but not used in the codebase"},
+                "error": {
+                    "code": "DEP002",
+                    "message": "'isort' defined as a dependency but not used in the codebase"
+                },
                 "module": "isort",
-                "location": {"file": str(Path("requirements.txt")), "line": None, "column": None},
+                "location": {
+                    "file": str(Path("requirements.txt")),
+                    "line": None,
+                    "column": None
+                },
             },
             {
                 "error": {
@@ -91,21 +149,46 @@ def test_cli_multiple_requirements_files(pip_venv_factory: PipVenvFactory) -> No
                     "message": "'uvicorn' defined as a dependency but not used in the codebase",
                 },
                 "module": "uvicorn",
-                "location": {"file": str(Path("requirements.txt")), "line": None, "column": None},
+                "location": {
+                    "file": str(Path("requirements.txt")),
+                    "line": None,
+                    "column": None
+                },
             },
             {
-                "error": {"code": "DEP004", "message": "'black' imported but declared as a dev dependency"},
+                "error": {
+                    "code": "DEP004",
+                    "message": "'black' imported but declared as a dev dependency"
+                },
                 "module": "black",
-                "location": {"file": str(Path("src/main.py")), "line": 4, "column": 8},
+                "location": {
+                    "file": str(Path("src/main.py")),
+                    "line": 4,
+                    "column": 8
+                },
             },
             {
-                "error": {"code": "DEP001", "message": "'white' imported but missing from the dependency definitions"},
+                "error": {
+                    "code": "DEP001",
+                    "message": "'white' imported but missing from the dependency definitions"
+                },
                 "module": "white",
-                "location": {"file": str(Path("src/main.py")), "line": 7, "column": 8},
+                "location": {
+                    "file": str(Path("src/main.py")),
+                    "line": 7,
+                    "column": 8
+                },
             },
             {
-                "error": {"code": "DEP001", "message": "'arrow' imported but missing from the dependency definitions"},
+                "error": {
+                    "code": "DEP001",
+                    "message": "'arrow' imported but missing from the dependency definitions"
+                },
                 "module": "arrow",
-                "location": {"file": str(Path("src/notebook.ipynb")), "line": 3, "column": 8},
+                "location": {
+                    "file": str(Path("src/notebook.ipynb")),
+                    "line": 3,
+                    "column": 8
+                },
             },
         ]
