@@ -61,7 +61,7 @@ class PEP621DependencyGetter(DependencyGetter):
         """Extract dependencies from `[project.dependencies]` (https://packaging.python.org/en/latest/specifications/pyproject-toml/#dependencies-optional-dependencies)."""
         pyproject_data = load_pyproject_toml(self.config)
 
-        if self._project_uses_setuptools(pyproject_data) and "dependencies" in pyproject_data["project"].get(
+        if self._project_uses_setuptools(pyproject_data) and "dependencies" in pyproject_data.get("project", {}).get(
             "dynamic", {}
         ):
             dependencies_files = pyproject_data["tool"]["setuptools"]["dynamic"]["dependencies"]["file"]
@@ -70,16 +70,16 @@ class PEP621DependencyGetter(DependencyGetter):
 
             return get_dependencies_from_requirements_files(dependencies_files, self.package_module_name_map)
 
-        dependency_strings: list[str] = pyproject_data["project"].get("dependencies", [])
+        dependency_strings: list[str] = pyproject_data.get("project", {}).get("dependencies", [])
         return self._extract_pep_508_dependencies(dependency_strings)
 
     def _get_optional_dependencies(self) -> dict[str, list[Dependency]]:
         """Extract dependencies from `[project.optional-dependencies]` (https://packaging.python.org/en/latest/specifications/pyproject-toml/#dependencies-optional-dependencies)."""
         pyproject_data = load_pyproject_toml(self.config)
 
-        if self._project_uses_setuptools(pyproject_data) and "optional-dependencies" in pyproject_data["project"].get(
-            "dynamic", {}
-        ):
+        if self._project_uses_setuptools(pyproject_data) and "optional-dependencies" in pyproject_data.get(
+            "project", {}
+        ).get("dynamic", {}):
             return {
                 group: get_dependencies_from_requirements_files(
                     [specification["file"]] if isinstance(specification["file"], str) else specification["file"],
@@ -92,7 +92,7 @@ class PEP621DependencyGetter(DependencyGetter):
 
         return {
             group: self._extract_pep_508_dependencies(dependencies)
-            for group, dependencies in pyproject_data["project"].get("optional-dependencies", {}).items()
+            for group, dependencies in pyproject_data.get("project", {}).get("optional-dependencies", {}).items()
         }
 
     def _get_dependency_groups_dependencies(self) -> dict[str, list[Dependency]]:

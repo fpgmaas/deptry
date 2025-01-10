@@ -5,10 +5,12 @@ standard [PEP 621 format](https://packaging.python.org/en/latest/specifications/
 dependencies in `pyproject.toml`, not all of them do. Even those that do often provide additional ways to define
 dependencies that are not standardized.
 
-_deptry_ can extract dependencies from most of the package managers that support PEP
-621 (e.g. [uv](https://docs.astral.sh/uv/), [PDM](https://pdm-project.org/en/latest/)), including tool-specific
-extensions, but also from package managers that do not (or used to not) support PEP
-621 (e.g. [Poetry](https://python-poetry.org/), [pip](https://pip.pypa.io/en/stable/reference/requirements-file-format/)).
+_deptry_ can extract dependencies for any dependency manager that supports standard PEP 621, while also extracting them
+from locations that are specific to some dependency managers that support this standard, but provide additional ways of
+defining dependencies (e.g., [uv](https://docs.astral.sh/uv/), [Poetry](https://python-poetry.org/)).
+
+_deptry_ can also extract dependencies from dependency managers that do not support PEP 621 at
+all (e.g., [pip](https://pip.pypa.io/en/stable/reference/requirements-file-format/)).
 
 ## PEP 621
 
@@ -22,7 +24,7 @@ By default, _deptry_ extracts, from `pyproject.toml`:
     - groups under `[project.optional-dependencies]` section
 - development dependencies from groups under `[dependency-groups]` section
 
-For instance, with this `pyproject.toml`:
+For instance, given this `pyproject.toml`:
 
 ```toml title="pyproject.toml"
 [project]
@@ -57,7 +59,8 @@ the following dependencies will be extracted:
 
 ### uv
 
-Additionally to PEP 621 dependencies, _deptry_ will
+If a `[tool.uv.dev-dependencies]` section is found, _deptry_ will assume that uv is used as a dependency manager, and
+will, additionally to PEP 621 dependencies,
 extract [uv development dependencies](https://docs.astral.sh/uv/concepts/dependencies/#development-dependencies) from
 `dev-dependencies` entry under `[tool.uv]` section, for instance:
 
@@ -70,9 +73,84 @@ dev-dependencies = [
 ]
 ```
 
+### Poetry
+
+Until [version 2.0](https://python-poetry.org/blog/announcing-poetry-2.0.0/), Poetry did not support PEP 621 syntax to
+define project dependencies, instead relying on a specific syntax.
+
+Because Poetry now supports PEP 621, it is now treated as an extension of PEP 621 manager, allowing _deptry_ to retrieve
+dependencies defined under `[project.dependencies]` and `[project.optional-dependencies]`, while still allowing
+retrieving:
+
+- regular dependencies from `[tool.poetry.dependencies]` (which is still supported in Poetry 2.0)
+- development dependencies from `[tool.poetry.group.<group>.dependencies]` and `[tool.poetry.dev-dependencies]`
+
+#### Regular dependencies
+
+Which regular dependencies are extracted depend on how you define your dependencies with Poetry, as _deptry_ will
+closely
+match [Poetry's behavior](https://python-poetry.org/docs/dependency-specification/#projectdependencies-and-toolpoetrydependencies).
+
+If `[project.dependencies]` is not set, or is empty, regular dependencies will be extracted from
+`[tool.poetry.dependencies]`. For instance, in this case:
+
+```toml title="pyproject.toml"
+[project]
+name = "foo"
+
+[tool.poetry.dependencies]
+httpx = "0.28.1"
+```
+
+`httpx` will be extracted as a regular dependency.
+
+If `[project.dependencies]` contains at least one dependency, then dependencies will **NOT** be extracted from
+`[tool.poetry.dependencies]`, as in that case, Poetry will only consider that data in this section enriches dependencies
+already defined in `[project.dependencies]` (for instance, to set a specific source), and not defining new dependencies.
+
+For instance, in this case:
+
+```toml title="pyproject.toml"
+[project]
+name = "foo"
+dependencies = ["httpx"]
+
+[tool.poetry.dependencies]
+httpx = { git = "https://github.com/encode/httpx", tag = "0.28.1" }
+urllib3 = "2.3.0"
+```
+
+although `[tool.poetry.dependencies]` contains both `httpx` and `urllib3`, only `httpx` will be extracted as a regular
+dependency, as `[project.dependencies]` contains at least one dependency, so Poetry itself will not consider `urllib3`
+to be a dependency of the project.
+
+#### Development dependencies
+
+In Poetry, [development dependencies](https://python-poetry.org/docs/managing-dependencies/#dependency-groups) can be
+defined under either (or both):
+
+- `[tool.poetry.group.<group>.dependencies]` sections
+- `[tool.poetry.dev-dependencies]` section (which is considered legacy)
+
+_deptry_ will extract dependencies from all those sections, for instance:
+
+```toml title="pyproject.toml"
+[tool.poetry.dev-dependencies]
+mypy = "1.14.1"
+ruff = "0.8.6"
+
+[tool.poetry.group.docs.dependencies]
+mkdocs = "1.6.1"
+
+[tool.poetry.group.test.dependencies]
+pytest = "8.3.3"
+pytest-cov = "5.0.0"
+```
+
 ### PDM
 
-Additionally to PEP 621 dependencies, _deptry_ will
+If a `[tool.pdm.dev-dependencies]` section is found, _deptry_ will assume that PDM is used as a dependency manager, and
+will, additionally to PEP 621 dependencies,
 extract [PDM development dependencies](https://pdm-project.org/en/latest/usage/dependency/#add-development-only-dependencies)
 from `[tool.pdm.dev-dependencies]` section, for instance:
 
@@ -114,43 +192,6 @@ In this example, regular dependencies will be extracted from both `requirements.
     Groups under `[tool.setuptools.dynamic.optional-dependencies]` can be flagged as development dependency groups by
     using [`--pep621-dev-dependency-groups`](usage.md#pep-621-dev-dependency-groups) argument (or its
     `pep_621_dev_dependency_groups` equivalent in `pyproject.toml`).
-
-## Poetry
-
-_deptry_ supports
-extracting [dependencies defined using Poetry](https://python-poetry.org/docs/pyproject/#dependencies-and-dependency-groups),
-and uses the presence of a `[tool.poetry.dependencies]` section in `pyproject.toml` to determine that the project uses
-Poetry.
-
-In a `pyproject.toml` file where Poetry is used, _deptry_ will extract:
-
-- regular dependencies from entries under `[tool.poetry.dependencies]` section
-- development dependencies from entries under each `[tool.poetry.group.<group>.dependencies]` section (or the
-  legacy `[tool.poetry.dev-dependencies]` section)
-
-For instance, given the following `pyproject.toml` file:
-
-```toml title="pyproject.toml"
-[tool.poetry.dependencies]
-python = "^3.10"
-orjson = "^3.0.0"
-click = { version = "^8.0.0", optional = true }
-
-[tool.poetry.extras]
-cli = ["click"]
-
-[tool.poetry.group.docs.dependencies]
-mkdocs = "1.6.1"
-
-[tool.poetry.group.test.dependencies]
-pytest = "8.3.3"
-pytest-cov = "5.0.0"
-```
-
-the following dependencies will be extracted:
-
-- regular dependencies: `orjson`, `click`
-- development dependencies: `mkdocs`, `pytest`, `pytest-cov`
 
 ## `requirements.txt` (pip, pip-tools)
 
