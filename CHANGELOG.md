@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.22.0 - 2025-01-10
+
+Poetry 2.0 introduced support
+for [defining project metadata in PEP 621](https://python-poetry.org/blog/announcing-poetry-2.0.0/). This is now
+supported by _deptry_. [Documentation](https://deptry.com/supported-dependency-managers/#poetry) has been updated to
+detail _deptry_'s behavior.
+
+### Features
+
+* Support PEP 621 in Poetry 2.0+ ([#1003](https://github.com/fpgmaas/deptry/pull/1003))
+
+### Full Changelog
+
+https://github.com/fpgmaas/deptry/compare/0.21.2...0.22.0
+
+
 ## 0.21.2 - 2024-12-19
 
 ### Miscellaneous
