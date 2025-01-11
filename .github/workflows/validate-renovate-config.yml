@@ -4,7 +4,7 @@ on:
   pull_request:
     paths:
       - ".github/workflows/validate-renovate-config.yml"
-      - "renovate.json5"
+      - ".github/renovate.json5"
   push:
     branches: [main]
 
