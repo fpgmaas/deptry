@@ -60,6 +60,9 @@
       groupName: "all test dependencies",
       groupSlug: "all-test-dependencies",
       separateMajorMinor: false,
+      lockFileMaintenance: {
+        enabled: false,
+      },
       automerge: true,
     },
     {
