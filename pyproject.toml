@@ -201,3 +201,7 @@ required-imports = ["from __future__ import annotations"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["S101", "S603"]
+# https://github.com/astral-sh/ruff/issues/15399
+# Since modules are not in the root directory, this shouldn't be problematic.
+"python/deptry/reporters/json.py" = ["A005"]
+"tests/functional/types.py" = ["A005"]
