@@ -66,9 +66,5 @@
       matchPackageNames: ["uv", "astral-sh/uv-pre-commit"],
       groupName: "uv-version",
     },
-    {
-      matchPackageNames: ["astral-sh/ruff-pre-commit"],
-      customChangelogUrl: "https://github.com/astral-sh/ruff",
-    },
   ],
 }
