@@ -22,6 +22,14 @@
     "regexManagers:githubActionsVersions",
   ],
 
+  // https://docs.renovatebot.com/configuration-options/#ignorepresets
+  ignorePresets: [
+    // https://docs.renovatebot.com/presets-default/#ignoremodulesandtests
+    // By default, some directories, including "tests", are ignored. Since we do want Renovate to pick up dependencies
+    // in "tests" directory, we explicitly opt out from this preset.
+    ":ignoreModulesAndTests",
+  ],
+
   // https://docs.renovatebot.com/configuration-options/#labels
   labels: ["dependencies"],
 
@@ -42,6 +50,18 @@
 
   // https://docs.renovatebot.com/configuration-options/#packagerules
   packageRules: [
+    {
+      // Create dedicated branch to update dependencies in tests.
+      matchFileNames: ["tests/**"],
+      commitMessageTopic: "dependencies in tests",
+      semanticCommitType: "test",
+      semanticCommitScope: null,
+      additionalBranchPrefix: "tests-",
+      groupName: "all test dependencies",
+      groupSlug: "all-test-dependencies",
+      separateMajorMinor: false,
+      automerge: true,
+    },
     {
       matchPackageNames: ["uv", "astral-sh/uv-pre-commit"],
       groupName: "uv-version",
