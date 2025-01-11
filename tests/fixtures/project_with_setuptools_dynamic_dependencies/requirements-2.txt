@@ -1,1 +1,1 @@
-packaging==24.1
+packaging==24.2
