@@ -60,6 +60,7 @@
       groupName: "all test dependencies",
       groupSlug: "all-test-dependencies",
       separateMajorMinor: false,
+      separateMinorPatch: false,
       lockFileMaintenance: {
         enabled: false,
       },
