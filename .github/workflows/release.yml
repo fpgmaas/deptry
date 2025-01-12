@@ -18,17 +18,12 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Export tag
-        if: ${{ github.event_name == 'release' }}
-        id: vars
-        run: echo tag=${GITHUB_REF#refs/*/} >> $GITHUB_OUTPUT
-
       - name: Update project version
         if: ${{ github.event_name == 'release' }}
         run: |
           sed -i "s/^version = \".*\"/version = \"$RELEASE_VERSION\"/" pyproject.toml
         env:
-          RELEASE_VERSION: ${{ steps.vars.outputs.tag }}
+          RELEASE_VERSION: ${{ github.ref_name }}
 
       - name: Upload updated pyproject.toml
         uses: actions/upload-artifact@v4
