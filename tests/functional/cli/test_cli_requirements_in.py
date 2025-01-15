@@ -90,18 +90,6 @@ def test_cli_single_requirements_files(pip_venv_factory: PipVenvFactory) -> None
             },
             {
                 "error": {
-                    "code": "DEP003",
-                    "message": "'bs4' imported but it is a transitive dependency"
-                },
-                "module": "bs4",
-                "location": {
-                    "file": str(Path("src/main.py")),
-                    "line": 9,
-                    "column": 1
-                },
-            },
-            {
-                "error": {
                     "code": "DEP001",
                     "message": "'arrow' imported but missing from the dependency definitions"
                 },
@@ -142,6 +130,18 @@ def test_cli_multiple_requirements_files(pip_venv_factory: PipVenvFactory) -> No
                     "line": None,
                     "column": None
                 },
+            },
+            {
+                'error': {
+                    'code': 'DEP002',
+                    'message': "'soupsieve' defined as a dependency but not used in the codebase"
+                },
+                'module': 'soupsieve',
+                'location': {
+                    'file': 'requirements.txt',
+                    'line': None,
+                    'column': None
+                }
             },
             {
                 "error": {

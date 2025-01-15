@@ -3,8 +3,8 @@ from __future__ import annotations
 import logging
 from dataclasses import dataclass, field
 from importlib.metadata import PackageNotFoundError, metadata
+from importlib.util import find_spec
 from typing import TYPE_CHECKING
-import importlib
 
 if TYPE_CHECKING:
     from deptry.dependency import Dependency
@@ -61,6 +61,7 @@ class ModuleLocations:
 
 
 class ModuleBuilder:
+
     def __init__(
         self,
         name: str,
@@ -119,17 +120,15 @@ class ModuleBuilder:
         try:
             name: str = metadata(self.name)["Name"]
         except PackageNotFoundError:
-            name = self.is_package_installed(self.name)
-            if name:
-                return name
-            return None
+            return self.name if self._is_package_installed() else None
         else:
             return name
 
-    def is_package_installed(self, package_name: str):
-        if importlib.util.find_spec(package_name):
-            return package_name
-        return None
+    def _is_package_installed(self) -> bool:
+        try:
+            return find_spec(self.name) is not None
+        except (ModuleNotFoundError, ValueError):
+            return False
 
     def _get_corresponding_top_levels_from(self, dependencies: list[Dependency]) -> list[str]:
         """

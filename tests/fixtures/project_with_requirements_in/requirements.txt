@@ -4,6 +4,8 @@
 #
 #    pip-compile
 #
+beautifulsoup4==4.12.3
+    # via -r requirements.in
 click==8.1.7
     # via
     #   -r requirements.in
@@ -12,9 +14,9 @@ h11==0.14.0
     # via uvicorn
 isort==5.13.2
     # via -r requirements.in
+soupsieve==2.6
+    # via beautifulsoup4
 urllib3==2.2.3
     # via -r requirements.in
 uvicorn==0.32.0
     # via -r requirements.in
-
-beautifulsoup4
