@@ -61,7 +61,6 @@ class ModuleLocations:
 
 
 class ModuleBuilder:
-
     def __init__(
         self,
         name: str,
