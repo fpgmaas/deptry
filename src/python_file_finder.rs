@@ -19,8 +19,8 @@ pub fn find_python_files(
     unique_directories.dedup();
 
     let python_files: Vec<_> = build_walker(
-        unique_directories,
-        [exclude, extend_exclude].concat(),
+        unique_directories.as_ref(),
+        [exclude, extend_exclude].concat().as_ref(),
         using_default_exclude,
         ignore_notebooks,
     )
@@ -40,8 +40,8 @@ pub fn find_python_files(
 }
 
 fn build_walker(
-    directories: Vec<PathBuf>,
-    excluded_patterns: Vec<String>,
+    directories: &[PathBuf],
+    excluded_patterns: &[String],
     use_git_ignore: bool,
     ignore_notebooks: bool,
 ) -> Walk {

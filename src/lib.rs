@@ -1,5 +1,3 @@
-// lib.rs
-
 use pyo3::prelude::*;
 
 mod file_utils;

@@ -37,14 +37,16 @@ docs = [
     "mkdocs-material==9.5.49",
 ]
 test = [
+    "pdm==2.22.2",
+    "poetry==2.0.0",
     "pytest==8.3.4",
     "pytest-cov==6.0.0",
     "pytest-xdist[psutil]==3.6.1",
 ]
 typing = [
-    "mypy[faster-cache]==1.14.0; implementation_name == 'cpython'",
+    "mypy[faster-cache]==1.14.1; implementation_name == 'cpython'",
     # orjson does not compile on PyPy.
-    "mypy==1.14.0; implementation_name != 'cpython'",
+    "mypy==1.14.1; implementation_name != 'cpython'",
     "types-colorama==0.4.15.20240311; sys_platform == 'win32'",
 ]
 
@@ -199,3 +201,7 @@ required-imports = ["from __future__ import annotations"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["S101", "S603"]
+# https://github.com/astral-sh/ruff/issues/15399
+# Since modules are not in the root directory, this shouldn't be problematic.
+"python/deptry/reporters/json.py" = ["A005"]
+"tests/functional/types.py" = ["A005"]

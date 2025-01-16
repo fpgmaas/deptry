@@ -13,7 +13,7 @@ concurrency:
 env:
   PYTHON_VERSION: '3.13'
   # renovate: datasource=pypi depName=uv
-  UV_VERSION: '0.5.11'
+  UV_VERSION: '0.5.17'
 
 jobs:
   quality:
@@ -28,6 +28,8 @@ jobs:
         uses: astral-sh/setup-uv@v5
         with:
           version: ${{ env.UV_VERSION }}
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
 
       - name: Install Python
         uses: actions/setup-python@v5
@@ -40,8 +42,14 @@ jobs:
       - name: Setup Rust toolchain
         run: rustup component add clippy rustfmt
 
+      - name: Load pre-commit cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pre-commit
+          key: pre-commit-${{ env.PYTHON_VERSION }}-${{ hashFiles('.pre-commit-config.yaml') }}
+
       - name: Run pre-commit
-        run: uvx pre-commit@${PRE_COMMIT_VERSION} run -a --show-diff-on-failure
+        run: uvx pre-commit@${PRE_COMMIT_VERSION} run --all-files --show-diff-on-failure
         env:
           # renovate: datasource=pypi depName=pre-commit
           PRE_COMMIT_VERSION: '4.0.1'
@@ -73,7 +81,8 @@ jobs:
         uses: astral-sh/setup-uv@v5
         with:
           version: ${{ env.UV_VERSION }}
-          enable-cache: 'true'
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
           cache-suffix: ${{ matrix.python-version }}
 
       - name: Install Python
@@ -112,6 +121,8 @@ jobs:
         uses: astral-sh/setup-uv@v5
         with:
           version: ${{ env.UV_VERSION }}
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
 
       - name: Install Python
         uses: actions/setup-python@v5

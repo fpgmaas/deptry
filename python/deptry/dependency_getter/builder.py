@@ -7,8 +7,8 @@ from typing import TYPE_CHECKING
 
 from deptry.dependency_getter.pep621.base import PEP621DependencyGetter
 from deptry.dependency_getter.pep621.pdm import PDMDependencyGetter
+from deptry.dependency_getter.pep621.poetry import PoetryDependencyGetter
 from deptry.dependency_getter.pep621.uv import UvDependencyGetter
-from deptry.dependency_getter.poetry import PoetryDependencyGetter
 from deptry.dependency_getter.requirements_files import RequirementsTxtDependencyGetter
 from deptry.exceptions import DependencySpecificationNotFoundError
 from deptry.utils import load_pyproject_toml
@@ -23,12 +23,12 @@ if TYPE_CHECKING:
 @dataclass
 class DependencyGetterBuilder:
     """
-    Class to detect how dependencies are specified:
-    - Either find a pyproject.toml with a [poetry.tool.dependencies] section
-    - Otherwise, find a pyproject.toml with a [tool.pdm] section
-    - Otherwise, find a pyproject.toml with a [tool.uv.dev-dependencies] section
-    - Otherwise, find a pyproject.toml with a [project] section
-    - Otherwise, find a requirements.txt.
+    Class to detect how dependencies are specified, in this specific order:
+    - pyproject.toml found, with a [tool.poetry] section
+    - pyproject.toml found, with a [tool.uv.dev-dependencies] section
+    - pyproject.toml found, with a [tool.pdm.dev-dependencies] section
+    - pyproject.toml found, with a [project] section
+    - requirements.txt found
     """
 
     config: Path
@@ -45,13 +45,15 @@ class DependencyGetterBuilder:
             pyproject_toml = load_pyproject_toml(self.config)
 
             if self._project_uses_poetry(pyproject_toml):
-                return PoetryDependencyGetter(self.config, self.package_module_name_map)
-
-            if self._project_uses_pdm(pyproject_toml):
-                return PDMDependencyGetter(self.config, self.package_module_name_map, self.pep621_dev_dependency_groups)
+                return PoetryDependencyGetter(
+                    self.config, self.package_module_name_map, self.pep621_dev_dependency_groups
+                )
 
             if self._project_uses_uv(pyproject_toml):
                 return UvDependencyGetter(self.config, self.package_module_name_map, self.pep621_dev_dependency_groups)
+
+            if self._project_uses_pdm(pyproject_toml):
+                return PDMDependencyGetter(self.config, self.package_module_name_map, self.pep621_dev_dependency_groups)
 
             if self._project_uses_pep_621(pyproject_toml):
                 return PEP621DependencyGetter(
