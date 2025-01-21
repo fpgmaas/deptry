@@ -2,4 +2,4 @@ click==8.1.7
 isort==5.13.2
 urllib3==2.2.3
 uvicorn==0.32.0
-beautifulsoup4==4.12.3
+itchiodl==2.3.0

@@ -57,6 +57,11 @@ def test_cli_single_requirements_files(pip_venv_factory: PipVenvFactory) -> None
                 "location": {"file": str(Path("src/main.py")), "line": 7, "column": 8},
             },
             {
+                "error": {"code": "DEP003", "message": "'bs4' imported but it is a transitive dependency"},
+                "module": "bs4",
+                "location": {"file": str(Path("src/main.py")), "line": 9, "column": 8},
+            },
+            {
                 "error": {"code": "DEP001", "message": "'arrow' imported but missing from the dependency definitions"},
                 "module": "arrow",
                 "location": {"file": str(Path("src/notebook.ipynb")), "line": 3, "column": 8},
@@ -81,8 +86,47 @@ def test_cli_multiple_requirements_files(pip_venv_factory: PipVenvFactory) -> No
         assert result.returncode == 1
         assert get_issues_report(Path(issue_report)) == [
             {
+                "error": {"code": "DEP002", "message": "'args' defined as a dependency but not used in the codebase"},
+                "module": "args",
+                "location": {"file": str(Path("requirements.txt")), "line": None, "column": None},
+            },
+            {
+                "error": {
+                    "code": "DEP002",
+                    "message": "'certifi' defined as a dependency but not used in the codebase",
+                },
+                "module": "certifi",
+                "location": {"file": str(Path("requirements.txt")), "line": None, "column": None},
+            },
+            {
+                "error": {
+                    "code": "DEP002",
+                    "message": "'charset-normalizer' defined as a dependency but not used in the codebase",
+                },
+                "module": "charset-normalizer",
+                "location": {"file": str(Path("requirements.txt")), "line": None, "column": None},
+            },
+            {
+                "error": {"code": "DEP002", "message": "'clint' defined as a dependency but not used in the codebase"},
+                "module": "clint",
+                "location": {"file": str(Path("requirements.txt")), "line": None, "column": None},
+            },
+            {
+                "error": {"code": "DEP002", "message": "'idna' defined as a dependency but not used in the codebase"},
+                "module": "idna",
+                "location": {"file": str(Path("requirements.txt")), "line": None, "column": None},
+            },
+            {
                 "error": {"code": "DEP002", "message": "'isort' defined as a dependency but not used in the codebase"},
                 "module": "isort",
+                "location": {"file": str(Path("requirements.txt")), "line": None, "column": None},
+            },
+            {
+                "error": {
+                    "code": "DEP002",
+                    "message": "'requests' defined as a dependency but not used in the codebase",
+                },
+                "module": "requests",
                 "location": {"file": str(Path("requirements.txt")), "line": None, "column": None},
             },
             {
