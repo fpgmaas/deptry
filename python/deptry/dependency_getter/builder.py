@@ -24,11 +24,13 @@ if TYPE_CHECKING:
 class DependencyGetterBuilder:
     """
     Class to detect how dependencies are specified, in this specific order:
-    - pyproject.toml found, with a [tool.poetry] section
-    - pyproject.toml found, with a [tool.uv.dev-dependencies] section
-    - pyproject.toml found, with a [tool.pdm.dev-dependencies] section
-    - pyproject.toml found, with a [project] section
-    - requirements.txt found
+    - If not using default requirements txt files (i.e. the user specified them explicitly), use requirements txt files.
+    - Else:
+        - Search for pyproject.toml with a [tool.poetry] section
+        - Search for pyproject.toml with a [tool.uv.dev-dependencies] section
+        - Search for pyproject.toml with a [tool.pdm.dev-dependencies] section
+        - Search for pyproject.toml with a [project] section
+        - Search for requirements.txt or requirements.in files
     """
 
     config: Path
@@ -172,5 +174,5 @@ class DependencyGetterBuilder:
             return True, self.requirements_files
         return False, ()
 
-    def _any_requirements_files_exists(self):
+    def _any_requirements_files_exists(self) -> bool:
         return any(Path(requirements_files).is_file() for requirements_files in self.requirements_files)
