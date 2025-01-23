@@ -150,6 +150,23 @@ def test_requirements_files_overrides_pyproject_toml_when_passed_explicitly(tmp_
         assert isinstance(spec, RequirementsTxtDependencyGetter)
 
 
+def test_requirements_txt_not_found_raises_exception(tmp_path: Path, caplog: pytest.LogCaptureFixture) -> None:
+    with (
+        run_within_dir(tmp_path),
+        caplog.at_level(logging.DEBUG),
+        run_within_dir(tmp_path),
+        pytest.raises(
+            DependencySpecificationNotFoundError,
+            match=re.escape(
+                "Requirements files were configured explicitly, but none of the requirements file(s) called 'requirements.txt' found. Exiting."
+            ),
+        ),
+    ):
+        DependencyGetterBuilder(
+            Path("pyproject.toml"), requirements_files=("requirements.txt",), using_default_requirements_files=False
+        ).build()
+
+
 def test_requirements_files_with_argument_not_root_directory(tmp_path: Path) -> None:
     with run_within_dir(tmp_path):
         Path("req").mkdir()

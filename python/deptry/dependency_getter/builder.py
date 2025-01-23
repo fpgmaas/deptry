@@ -45,7 +45,9 @@ class DependencyGetterBuilder:
 
         if not self.using_default_requirements_files:
             if not self._any_requirements_files_exists():
-                raise DependencySpecificationNotFoundError(self.requirements_files)
+                raise FileNotFoundError(  # noqa: TRY003
+                    f"Requirements files were configured explicitly, but none of the requirements file(s) called '{', '.join(self.requirements_files)}' found. Exiting."
+                )
             return RequirementsTxtDependencyGetter(
                 self.config, self.package_module_name_map, self.requirements_files, self.requirements_files_dev
             )
