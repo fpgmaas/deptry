@@ -156,7 +156,7 @@ def test_requirements_txt_not_found_raises_exception(tmp_path: Path, caplog: pyt
         caplog.at_level(logging.DEBUG),
         run_within_dir(tmp_path),
         pytest.raises(
-            DependencySpecificationNotFoundError,
+            FileNotFoundError,
             match=re.escape(
                 "Requirements files were configured explicitly, but none of the requirements file(s) called 'requirements.txt' found. Exiting."
             ),
