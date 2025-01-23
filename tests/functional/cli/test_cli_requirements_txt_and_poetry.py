@@ -36,7 +36,7 @@ def test_cli_requirements_files_overrides_pyproject_toml_when_passed_explicitly(
                 },
                 "location": {
                     "column": 8,
-                    "file": "src/main.py",
+                    "file": str(Path("src/main.py")),
                     "line": 1,
                 },
                 "module": "black",
@@ -47,6 +47,6 @@ def test_cli_requirements_files_overrides_pyproject_toml_when_passed_explicitly(
                     "message": "'arrow' imported but missing from the dependency definitions",
                 },
                 "module": "arrow",
-                "location": {"file": "src/notebook.ipynb", "line": 2, "column": 8},
+                "location": {"file": str(Path("src/notebook.ipynb")), "line": 2, "column": 8},
             },
         ]
