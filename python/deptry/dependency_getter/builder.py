@@ -41,6 +41,13 @@ class DependencyGetterBuilder:
     def build(self) -> DependencyGetter:
         pyproject_toml_found = self._project_contains_pyproject_toml()
 
+        if not self.using_default_requirements_files:
+            if not self._any_requirements_files_exists():
+                raise DependencySpecificationNotFoundError(self.requirements_files)
+            return RequirementsTxtDependencyGetter(
+                self.config, self.package_module_name_map, self.requirements_files, self.requirements_files_dev
+            )
+
         if pyproject_toml_found:
             pyproject_toml = load_pyproject_toml(self.config)
 
@@ -156,7 +163,7 @@ class DependencyGetterBuilder:
             )
             return True, ("requirements.in",)
 
-        check = any(Path(requirements_files).is_file() for requirements_files in self.requirements_files)
+        check = self._any_requirements_files_exists()
         if check:
             logging.debug(
                 "Dependency specification found in '%s'. Will use this to determine the project's dependencies.\n",
@@ -164,3 +171,6 @@ class DependencyGetterBuilder:
             )
             return True, self.requirements_files
         return False, ()
+
+    def _any_requirements_files_exists(self):
+        return any(Path(requirements_files).is_file() for requirements_files in self.requirements_files)

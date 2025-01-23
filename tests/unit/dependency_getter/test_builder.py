@@ -136,6 +136,20 @@ def test_requirements_files(tmp_path: Path) -> None:
         assert isinstance(spec, RequirementsTxtDependencyGetter)
 
 
+def test_requirements_files_overrides_pyproject_toml_when_passed_explicitly(tmp_path: Path) -> None:
+    with run_within_dir(tmp_path):
+        with Path("requirements.txt").open("w") as f:
+            f.write('foo >= "1.0"')
+
+        with Path("pyproject.toml").open("w") as f:
+            f.write('[project]\ndependencies=["foo"]')
+
+        spec = DependencyGetterBuilder(
+            Path("pyproject.toml"), requirements_files=("requirements.txt",), using_default_requirements_files=False
+        ).build()
+        assert isinstance(spec, RequirementsTxtDependencyGetter)
+
+
 def test_requirements_files_with_argument_not_root_directory(tmp_path: Path) -> None:
     with run_within_dir(tmp_path):
         Path("req").mkdir()
