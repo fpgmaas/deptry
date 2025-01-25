@@ -230,9 +230,9 @@ dependencies = [
 
 [[package]]
 name = "itertools"
-version = "0.13.0"
+version = "0.14.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "413ee7dfc52ee1a4949ceeb7dbc8a33f2d6c088194d9f922fb8318faf1f01186"
+checksum = "2b192c782037fadd9cfa75548310488aabdbf3d2da73885b31bd0abd03351285"
 dependencies = [
  "either",
 ]
@@ -519,7 +519,7 @@ checksum = "2b15c43186be67a4fd63bee50d0303afffcef381492ebe2c5d87f324e1b8815c"
 [[package]]
 name = "ruff_python_ast"
 version = "0.0.0"
-source = "git+https://github.com/astral-sh/ruff?tag=0.8.1#b3b2c982cdfb487bec7c38ca4e04cebbe0f1964e"
+source = "git+https://github.com/astral-sh/ruff?tag=0.9.3#90589372daf58ec4d314cbd15db8d2ef572c33cc"
 dependencies = [
  "aho-corasick",
  "bitflags",
@@ -536,7 +536,7 @@ dependencies = [
 [[package]]
 name = "ruff_python_parser"
 version = "0.0.0"
-source = "git+https://github.com/astral-sh/ruff?tag=0.8.1#b3b2c982cdfb487bec7c38ca4e04cebbe0f1964e"
+source = "git+https://github.com/astral-sh/ruff?tag=0.9.3#90589372daf58ec4d314cbd15db8d2ef572c33cc"
 dependencies = [
  "bitflags",
  "bstr",
@@ -555,7 +555,7 @@ dependencies = [
 [[package]]
 name = "ruff_python_trivia"
 version = "0.0.0"
-source = "git+https://github.com/astral-sh/ruff?tag=0.8.1#b3b2c982cdfb487bec7c38ca4e04cebbe0f1964e"
+source = "git+https://github.com/astral-sh/ruff?tag=0.9.3#90589372daf58ec4d314cbd15db8d2ef572c33cc"
 dependencies = [
  "itertools",
  "ruff_source_file",
@@ -566,7 +566,7 @@ dependencies = [
 [[package]]
 name = "ruff_source_file"
 version = "0.0.0"
-source = "git+https://github.com/astral-sh/ruff?tag=0.8.1#b3b2c982cdfb487bec7c38ca4e04cebbe0f1964e"
+source = "git+https://github.com/astral-sh/ruff?tag=0.9.3#90589372daf58ec4d314cbd15db8d2ef572c33cc"
 dependencies = [
  "memchr",
  "ruff_text_size",
@@ -575,7 +575,7 @@ dependencies = [
 [[package]]
 name = "ruff_text_size"
 version = "0.0.0"
-source = "git+https://github.com/astral-sh/ruff?tag=0.8.1#b3b2c982cdfb487bec7c38ca4e04cebbe0f1964e"
+source = "git+https://github.com/astral-sh/ruff?tag=0.9.3#90589372daf58ec4d314cbd15db8d2ef572c33cc"
 
 [[package]]
 name = "rustc-hash"
