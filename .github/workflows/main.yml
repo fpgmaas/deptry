@@ -13,7 +13,9 @@ concurrency:
 env:
   PYTHON_VERSION: '3.13'
   # renovate: datasource=pypi depName=uv
-  UV_VERSION: '0.5.21'
+  UV_VERSION: '0.5.24'
+
+permissions: {}
 
 jobs:
   quality:
@@ -52,7 +54,7 @@ jobs:
         run: uvx pre-commit@${PRE_COMMIT_VERSION} run --all-files --show-diff-on-failure
         env:
           # renovate: datasource=pypi depName=pre-commit
-          PRE_COMMIT_VERSION: '4.0.1'
+          PRE_COMMIT_VERSION: '4.1.0'
 
       - name: Inspect dependencies with deptry
         run: uv run deptry python

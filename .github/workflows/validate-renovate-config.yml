@@ -12,6 +12,8 @@ env:
   # renovate: datasource=node depName=node versioning=node
   NODE_VERSION: "22"
 
+permissions: {}
+
 jobs:
   validate-renovate-config:
     runs-on: ubuntu-24.04
