@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.23.0 - 2025-01-25
+
+### Features
+
+* Correctly detect transitive dependencies with different module names ([#1033](https://github.com/fpgmaas/deptry/pull/1033))
+
+### Full Changelog
+
+https://github.com/fpgmaas/deptry/compare/0.22.0...0.23.0
+
+
 ## 0.22.0 - 2025-01-10
 
 Poetry 2.0 introduced support
