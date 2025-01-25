@@ -41,7 +41,7 @@ def test_local_module() -> None:
     assert module.local_module is True
 
 
-def test_transitive_module():
+def test_transitive_module() -> None:
     with (
         patch("deptry.module.metadata", side_effect=PackageNotFoundError),
         patch("deptry.module.find_spec", return_value="bar"),
@@ -53,7 +53,7 @@ def test_transitive_module():
     assert module.local_module is False
 
 
-def test_transitive_module_no_spec():
+def test_transitive_module_no_spec() -> None:
     with (
         patch("deptry.module.metadata", side_effect=PackageNotFoundError),
         patch("deptry.module.find_spec", return_value=None),
@@ -66,7 +66,7 @@ def test_transitive_module_no_spec():
 
 
 @pytest.mark.parametrize("exception", [ModuleNotFoundError, ValueError])
-def test_transitive_module_spec_error(exception):
+def test_transitive_module_spec_error(exception: Exception) -> None:
     with (
         patch("deptry.module.metadata", side_effect=PackageNotFoundError),
         patch("deptry.module.find_spec", side_effect=exception),
