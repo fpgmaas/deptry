@@ -4,15 +4,35 @@
 #
 #    pip-compile
 #
-click==8.1.8
+args==0.1.0
+    # via clint
+beautifulsoup4==4.12.3
+    # via itchiodl
+certifi==2024.12.14
+    # via requests
+charset-normalizer==3.4.1
+    # via requests
+click==8.1.7
     # via
     #   -r requirements.in
     #   uvicorn
+clint==0.5.1
+    # via itchiodl
 h11==0.14.0
     # via uvicorn
+idna==3.10
+    # via requests
 isort==5.13.2
     # via -r requirements.in
-urllib3==2.3.0
+itchiodl==2.3.0
     # via -r requirements.in
-uvicorn==0.34.0
+requests==2.32.3
+    # via itchiodl
+soupsieve==2.6
+    # via beautifulsoup4
+urllib3==2.2.3
+    # via
+    #   -r requirements.in
+    #   requests
+uvicorn==0.32.0
     # via -r requirements.in
