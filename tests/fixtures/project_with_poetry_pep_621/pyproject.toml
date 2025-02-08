@@ -16,15 +16,15 @@ requests = { git = "https://github.com/psf/requests", tag = "v2.32.3" }
 [project.optional-dependencies]
 foo = [
     "click==8.1.8",
-    "isort==5.13.2",
+    "isort==6.0.0",
 ]
 bar = ["urllib3==2.3.0"]
 
 [tool.poetry.dev-dependencies]
-black = "24.10.0"
+black = "25.1.0"
 
 [tool.poetry.group.lint.dependencies]
-mypy = "1.14.1"
+mypy = "1.15.0"
 
 [tool.poetry.group.test.dependencies]
 pytest = "8.3.4"
