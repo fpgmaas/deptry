@@ -34,7 +34,7 @@ class GithubReporter(Reporter):
                 title=violation.error_code,
                 message=violation.get_error_message()
             )
-            print(ret)
+            print(ret)  # noqa: T201
 
 def _build_workflow_command(
     command_name: str,
