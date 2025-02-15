@@ -384,6 +384,36 @@ json_output = "deptry_report.txt"
 deptry . --json-output deptry_report.txt
 ```
 
+#### GitHub Reporter
+When enabled with the `--github-output` flag, deptry prints GitHub Actions annotations for detected dependency issues.
+
+Annotations follow this format:
+```shell
+::error file=<file>,line=<line>,col=<column>,title=<error_code>::<error message>
+```
+By default, violations are annotated as errors. To report specific violation codes as warnings instead, use the `--github-warning-errors` option. For example, to treat violations with code `DEP001` as warnings:
+```shell
+deptry . --github-output --github-warning-errors DEP001
+```
+When a violation's error code is included in the warning list, the annotation uses the `warning` severity.
+
+- Type: `bool` (for `github_output`), `list[str]` (for `github_warning_errors`)
+- Default: `False` (for `github_output`), `[]` (for `github_warning_errors`)
+- `pyproject.toml` option names: `github_output`, `github_warning_errors`
+- CLI option names: `--github-output`, `--github-warning-errors`
+
+- `pyproject.toml` example:
+```toml
+[tool.deptry]
+github_output = true
+github_warning_errors = ["DEP001"]
+```
+
+- CLI example:
+```shell
+deptry . --github-output --github-warning-errors DEP001
+```
+
 #### Package module name map
 
 Deptry will automatically detect top level modules names that belong to a
