@@ -17,8 +17,7 @@ if TYPE_CHECKING:
 
 # Extract violation instance as a parameter
 violation_instance = DEP001MissingDependencyViolation(
-    Module("foo", package="foo-package"),
-    Location(Path("foo.py"), 1, 2)
+    Module("foo", package="foo-package"), Location(Path("foo.py"), 1, 2)
 )
 
 expected_warning = _build_workflow_command(
@@ -27,17 +26,13 @@ expected_warning = _build_workflow_command(
     1,
     column=2,
     title="DEP001",
-    message="'foo' imported but missing from the dependency definitions"
+    message="'foo' imported but missing from the dependency definitions",
 )
 
 expected_error = _build_workflow_command(
-    "error",
-    "foo.py",
-    1,
-    column=2,
-    title="DEP001",
-    message="'foo' imported but missing from the dependency definitions"
+    "error", "foo.py", 1, column=2, title="DEP001", message="'foo' imported but missing from the dependency definitions"
 )
+
 
 @pytest.mark.parametrize(
     ("violation", "warning_ids", "expected"),
@@ -46,7 +41,9 @@ expected_error = _build_workflow_command(
         (violation_instance, [], expected_error),
     ],
 )
-def test_github_annotation(monkeypatch: pytest.MonkeyPatch, violation: Violation, warning_ids: list[str], expected: str) -> None:
+def test_github_annotation(
+    monkeypatch: pytest.MonkeyPatch, violation: Violation, warning_ids: list[str], expected: str
+) -> None:
     reporter = GithubReporter(violations=[violation], warning_ids=warning_ids)
 
     captured_output = io.StringIO()
@@ -55,6 +52,7 @@ def test_github_annotation(monkeypatch: pytest.MonkeyPatch, violation: Violation
     reporter.report()
     output = captured_output.getvalue().strip()
     assert output == expected
+
 
 def test_build_workflow_command_escaping() -> None:
     # Directly test _build_workflow_command with characters needing escape.

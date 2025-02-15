@@ -8,6 +8,7 @@ from deptry.reporters.base import Reporter
 if TYPE_CHECKING:
     from deptry.violations import Violation
 
+
 @dataclass
 class GithubReporter(Reporter):
     warning_ids: list[str] = field(default_factory=list)  # list of error codes to print as warnings
@@ -32,9 +33,10 @@ class GithubReporter(Reporter):
                 violation.location.line,
                 column=violation.location.column,
                 title=violation.error_code,
-                message=violation.get_error_message()
+                message=violation.get_error_message(),
             )
             print(ret)  # noqa: T201
+
 
 def _build_workflow_command(
     command_name: str,
