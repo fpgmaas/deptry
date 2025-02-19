@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-import io
-import sys
+import logging
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -13,6 +12,8 @@ from deptry.reporters.github import GithubReporter, _build_workflow_command, _es
 from deptry.violations import DEP001MissingDependencyViolation
 
 if TYPE_CHECKING:
+    from _pytest.logging import LogCaptureFixture
+
     from deptry.violations import Violation
 
 # Extract violation instance as a parameter
@@ -33,7 +34,6 @@ expected_error = _build_workflow_command(
     "error", "foo.py", 1, column=2, title="DEP001", message="'foo' imported but missing from the dependency definitions"
 )
 
-
 @pytest.mark.parametrize(
     ("violation", "warning_ids", "expected"),
     [
@@ -41,18 +41,13 @@ expected_error = _build_workflow_command(
         (violation_instance, [], expected_error),
     ],
 )
-def test_github_annotation(
-    monkeypatch: pytest.MonkeyPatch, violation: Violation, warning_ids: list[str], expected: str
-) -> None:
+def test_github_annotation(caplog: LogCaptureFixture, violation: Violation, warning_ids: list[str], expected: str) -> None:
     reporter = GithubReporter(violations=[violation], warning_ids=warning_ids)
 
-    captured_output = io.StringIO()
-    monkeypatch.setattr(sys, "stdout", captured_output)
+    with caplog.at_level(logging.INFO):
+        reporter.report()
 
-    reporter.report()
-    output = captured_output.getvalue().strip()
-    assert output == expected
-
+    assert expected in caplog.text.strip()
 
 def test_build_workflow_command_escaping() -> None:
     # Directly test _build_workflow_command with characters needing escape.

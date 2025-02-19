@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
@@ -35,7 +36,7 @@ class GithubReporter(Reporter):
                 title=violation.error_code,
                 message=violation.get_error_message(),
             )
-            print(ret)  # noqa: T201
+            logging.info(ret)
 
 
 def _build_workflow_command(
