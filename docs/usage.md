@@ -385,6 +385,7 @@ deptry . --json-output deptry_report.txt
 ```
 
 #### GitHub Reporter
+
 When enabled with the `--github-output` flag, deptry prints GitHub Actions annotations for detected dependency issues.
 
 Annotations follow this format:
