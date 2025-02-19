@@ -221,7 +221,7 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
     "--github-output",
     "-go",
     is_flag=True,
-    help="""If specified, dependency issues found will be written in the format of github annotation.""",
+    help="""If specified, dependency issues found will be written in the format of GitHub annotation.""",
 )
 @click.option(
     "--github-warning-errors",
