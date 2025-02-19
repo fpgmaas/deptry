@@ -43,7 +43,7 @@ class Core:
     pep621_dev_dependency_groups: tuple[str, ...]
     experimental_namespace_package: bool
     github_output: bool
-    github_warning_errors: list[str]
+    github_warning_errors: tuple[str, ...]
 
     def run(self) -> None:
         self._log_config()

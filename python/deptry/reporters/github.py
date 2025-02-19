@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 @dataclass
 class GithubReporter(Reporter):
-    warning_ids: list[str] = field(default_factory=list)  # list of error codes to print as warnings
+    warning_ids: tuple[str, ...] = field(default_factory=tuple)  # tuple of error codes to print as warnings
 
     def report(self) -> None:
         self._log_and_exit()

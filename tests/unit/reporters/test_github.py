@@ -34,6 +34,7 @@ expected_error = _build_workflow_command(
     "error", "foo.py", 1, column=2, title="DEP001", message="'foo' imported but missing from the dependency definitions"
 )
 
+
 @pytest.mark.parametrize(
     ("violation", "warning_ids", "expected"),
     [
@@ -41,13 +42,16 @@ expected_error = _build_workflow_command(
         (violation_instance, [], expected_error),
     ],
 )
-def test_github_annotation(caplog: LogCaptureFixture, violation: Violation, warning_ids: list[str], expected: str) -> None:
+def test_github_annotation(
+    caplog: LogCaptureFixture, violation: Violation, warning_ids: tuple[str, ...], expected: str
+) -> None:
     reporter = GithubReporter(violations=[violation], warning_ids=warning_ids)
 
     with caplog.at_level(logging.INFO):
         reporter.report()
 
     assert expected in caplog.text.strip()
+
 
 def test_build_workflow_command_escaping() -> None:
     # Directly test _build_workflow_command with characters needing escape.
