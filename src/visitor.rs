@@ -1,4 +1,4 @@
-use ruff_python_ast::visitor::{walk_stmt, Visitor};
+use ruff_python_ast::visitor::{Visitor, walk_stmt};
 use ruff_python_ast::{
     self, Expr, ExprAttribute, ExprName, Stmt, StmtExpr, StmtIf, StmtImport, StmtImportFrom,
 };
@@ -99,14 +99,12 @@ impl ImportVisitor {
         // Check for dynamic imports using `importlib.import_module`
         if let Expr::Call(call_expr) = expr_stmt.value.as_ref() {
             let is_import_module = match call_expr.func.as_ref() {
-                Expr::Attribute(attr_expr) => {
-                    if let Expr::Name(name) = attr_expr.value.as_ref() {
-                        self.import_module_names
-                            .contains(&format!("{}.import_module", name.id.as_str()))
-                    } else {
-                        false
-                    }
-                }
+                Expr::Attribute(attr_expr) => match attr_expr.value.as_ref() {
+                    Expr::Name(name) => self
+                        .import_module_names
+                        .contains(&format!("{}.import_module", name.id.as_str())),
+                    _ => false,
+                },
                 Expr::Name(name) => self.import_module_names.contains(name.id.as_str()),
                 _ => false,
             };

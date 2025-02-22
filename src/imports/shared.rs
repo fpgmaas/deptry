@@ -6,7 +6,7 @@ use pyo3::exceptions::PySyntaxError;
 use pyo3::prelude::*;
 use ruff_python_ast::visitor::Visitor;
 use ruff_python_ast::{Mod, ModModule};
-use ruff_python_parser::{parse, Mode, Parsed};
+use ruff_python_parser::{Mode, Parsed, parse};
 use ruff_source_file::LineIndex;
 use ruff_text_size::TextRange;
 use std::collections::HashMap;

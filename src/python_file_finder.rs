@@ -1,7 +1,7 @@
 use ignore::types::{Types, TypesBuilder};
 use ignore::{DirEntry, Walk, WalkBuilder};
 use path_slash::PathExt;
-use pyo3::{pyfunction, Bound, IntoPyObject, PyAny, Python};
+use pyo3::{Bound, IntoPyObject, PyAny, Python, pyfunction};
 use regex::Regex;
 use std::path::PathBuf;
 
