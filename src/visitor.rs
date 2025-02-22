@@ -1,4 +1,4 @@
-use ruff_python_ast::visitor::{walk_stmt, Visitor};
+use ruff_python_ast::visitor::{Visitor, walk_stmt};
 use ruff_python_ast::{
     self, Expr, ExprAttribute, ExprName, Stmt, StmtExpr, StmtIf, StmtImport, StmtImportFrom,
 };
