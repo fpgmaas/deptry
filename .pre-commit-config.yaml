@@ -17,7 +17,7 @@ repos:
       - id: ruff-format
 
   - repo: https://github.com/astral-sh/uv-pre-commit
-    rev: "0.6.2"
+    rev: "0.6.3"
     hooks:
       - id: uv-lock
         name: check uv lock file consistency
