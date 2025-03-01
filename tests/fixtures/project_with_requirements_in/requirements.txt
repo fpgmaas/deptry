@@ -22,7 +22,7 @@ h11==0.14.0
     # via uvicorn
 idna==3.10
     # via requests
-isort==6.0.0
+isort==6.0.1
     # via -r requirements.in
 itchiodl==2.3.0
     # via -r requirements.in

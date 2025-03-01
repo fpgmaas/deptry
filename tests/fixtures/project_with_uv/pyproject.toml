@@ -11,7 +11,7 @@ dependencies = [
 [project.optional-dependencies]
 foo = [
     "click==8.1.8",
-    "isort==6.0.0",
+    "isort==6.0.1",
 ]
 bar = ["requests==2.32.3"]
 

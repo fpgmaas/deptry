@@ -16,7 +16,7 @@ requests = { git = "https://github.com/psf/requests", tag = "v2.32.3" }
 [project.optional-dependencies]
 foo = [
     "click==8.1.8",
-    "isort==6.0.0",
+    "isort==6.0.1",
 ]
 bar = ["urllib3==2.3.0"]
 
