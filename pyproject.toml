@@ -39,7 +39,7 @@ docs = [
 test = [
     "pdm==2.22.4",
     "poetry==2.1.1",
-    "pytest==8.3.4",
+    "pytest==8.3.5",
     "pytest-cov==6.0.0",
     "pytest-xdist[psutil]==3.6.1",
 ]
