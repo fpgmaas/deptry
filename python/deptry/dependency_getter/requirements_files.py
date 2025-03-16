@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import itertools
 import logging
-import os
 import re
 from dataclasses import dataclass
 from pathlib import Path
@@ -38,9 +37,15 @@ class RequirementsTxtDependencyGetter(DependencyGetter):
         """
         Check if any of the files passed as requirements_files_dev exist, and if so; return them.
         """
-        dev_requirements_files = [file_name for file_name in self.requirements_files_dev if file_name in os.listdir()]
+        project_path = Path()
+
+        dev_requirements_files = [
+            file_name for file_name in self.requirements_files_dev if (project_path / file_name).exists()
+        ]
+
         if dev_requirements_files:
             logging.debug("Found files with development requirements! %s", dev_requirements_files)
+
         return dev_requirements_files
 
 
