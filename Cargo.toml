@@ -15,7 +15,7 @@ ignore = "=0.4.23"
 log = "=0.4.26"
 path-slash = "=0.2.1"
 pyo3 = { version = "=0.23.5", features = ["abi3-py39", "generate-import-lib"] }
-pyo3-log = "=0.12.1"
+pyo3-log = "=0.12.2"
 rayon = "=1.10.0"
 regex = "=1.11.1"
 ruff_python_ast = { git = "https://github.com/astral-sh/ruff", tag = "0.9.3" }
