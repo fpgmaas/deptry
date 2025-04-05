@@ -461,7 +461,7 @@ docs = [
     { name = "mkdocs-material", specifier = "==9.6.11" },
 ]
 test = [
-    { name = "pdm", specifier = "==2.22.4" },
+    { name = "pdm", specifier = "==2.23.0" },
     { name = "poetry", specifier = "==2.1.2" },
     { name = "pytest", specifier = "==8.3.5" },
     { name = "pytest-cov", specifier = "==6.0.0" },
@@ -1199,7 +1199,7 @@ install = [
 
 [[package]]
 name = "pdm"
-version = "2.22.4"
+version = "2.23.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "blinker" },
@@ -1227,9 +1227,9 @@ dependencies = [
     { name = "unearth" },
     { name = "virtualenv" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/9c/b9/0b150ec7aae72771ece43539163892366fff3def8da6e4a512ed7b8e39c5/pdm-2.22.4.tar.gz", hash = "sha256:8483f3d2285039cea7e07c5ba6ac7e1fcba358129f8831fb75065a797d27b923", size = 2647094 }
+sdist = { url = "https://files.pythonhosted.org/packages/0f/72/e61e3c7c5f1db957fffdf6ce6244597090735ebbd97ce40542c0ecfcd030/pdm-2.23.0.tar.gz", hash = "sha256:ec5ce439648b42b928f4afa91c2b6251e6a33f40cc83779d899ca970bd9eb131", size = 2648692 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/b4/2d/5647ddbdd26a0c83002bf83847514a0d1acf14ca547a1d67a18e22860e00/pdm-2.22.4-py3-none-any.whl", hash = "sha256:2859a1f788fee571803a0f1f27d6d05dbc95267a071d7f2e01c230c58836d971", size = 284174 },
+    { url = "https://files.pythonhosted.org/packages/53/bf/d1430d5449a0856113b83209c79165c25a14d1f8a7ef8b4b2dc55f241d29/pdm-2.23.0-py3-none-any.whl", hash = "sha256:965087f3ce1ad1f9ef84dc11c499ef5d1c5e0a5f09a1437148d9beaf7502d6c9", size = 285525 },
 ]
 
 [[package]]
