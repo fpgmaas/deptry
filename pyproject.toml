@@ -40,7 +40,7 @@ test = [
     "pdm==2.23.0",
     "poetry==2.1.2",
     "pytest==8.3.5",
-    "pytest-cov==6.0.0",
+    "pytest-cov==6.1.1",
     "pytest-xdist[psutil]==3.6.1",
 ]
 typing = [
