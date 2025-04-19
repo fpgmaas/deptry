@@ -18,7 +18,7 @@ foo = [
     "click==8.1.8",
     "isort==6.0.1",
 ]
-bar = ["urllib3==2.3.0"]
+bar = ["urllib3==2.4.0"]
 
 [tool.poetry.dev-dependencies]
 black = "25.1.0"
