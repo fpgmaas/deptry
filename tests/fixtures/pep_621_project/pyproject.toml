@@ -9,7 +9,7 @@ dependencies = [
     "isort==6.0.1",
     "pkginfo==1.12.1.2",
     "requests==2.32.3",
-    "urllib3==2.3.0",
+    "urllib3==2.4.0",
 ]
 
 [project.optional-dependencies]
@@ -25,7 +25,7 @@ foo = [
     "certifi==2025.1.31",
     "idna==3.10",
 ]
-all = [{include-group = "foo"}, "packaging==24.2"]
+all = [{include-group = "foo"}, "packaging==25.0"]
 
 [build-system]
 requires = ["setuptools>=61.0.0"]
