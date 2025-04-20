@@ -6,7 +6,7 @@
 #
 args==0.1.0
     # via clint
-beautifulsoup4==4.13.3
+beautifulsoup4==4.13.4
     # via itchiodl
 certifi==2025.1.31
     # via requests
@@ -28,11 +28,11 @@ itchiodl==2.3.0
     # via -r requirements.in
 requests==2.32.3
     # via itchiodl
-soupsieve==2.6
+soupsieve==2.7
     # via beautifulsoup4
-urllib3==2.3.0
+urllib3==2.4.0
     # via
     #   -r requirements.in
     #   requests
-uvicorn==0.34.0
+uvicorn==0.34.2
     # via -r requirements.in
