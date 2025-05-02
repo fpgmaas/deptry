@@ -1,17 +1,57 @@
 from __future__ import annotations
 
+import json
 import logging
 import re
+import tempfile
+import zipfile
 from contextlib import suppress
 from importlib import metadata
+from pathlib import Path
 from typing import TYPE_CHECKING
 
+import urllib3
 from packaging.requirements import InvalidRequirement, Requirement
 
 if TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
     from importlib.metadata import Distribution
-    from pathlib import Path
+
+http = urllib3.PoolManager()
+
+
+def fetch_json(url: str) -> dict:
+    r = http.request("GET", url)
+    if r.status != 200:
+        return {}
+    return json.loads(r.data.decode("utf-8"))
+
+
+def download_file(url: str, dest_path: Path) -> None:
+    r = http.request("GET", url)
+    if r.status != 200:
+        return
+    with dest_path.open("wb") as f:
+        f.write(r.data)
+
+
+def get_imports_from_pypi_package(package_name: str) -> set[str]:
+    info = fetch_json(f"https://pypi.org/pypi/{package_name}/json")
+    wheel_url = next((entry["url"] for entry in info["urls"] if entry["filename"].endswith(".whl")), None)
+    if not wheel_url:
+        return set()
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        wheel_path = Path(tmpdir, Path(wheel_url).name)
+        download_file(wheel_url, wheel_path)
+        with zipfile.ZipFile(wheel_path, "r") as zip_ref:
+            zip_ref.extractall(tmpdir)
+
+        top_level_file = next(Path(tmpdir).glob("*.dist-info/top_level.txt"), None)
+        if top_level_file and top_level_file.exists():
+            return set(top_level_file.read_text().strip().splitlines())
+        else:
+            return set()
 
 
 class Dependency:
@@ -64,6 +104,11 @@ class Dependency:
 
             with suppress(FileNotFoundError):
                 return self._get_top_level_module_names_from_record_file(distribution)
+
+        # download metadata from PyPI
+        module_names = get_imports_from_pypi_package(name)
+        if module_names:
+            return module_names
 
         # No metadata or other configuration has been found. As a fallback
         # we'll guess the name.

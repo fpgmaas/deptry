@@ -426,6 +426,7 @@ dependencies = [
     { name = "packaging" },
     { name = "requirements-parser" },
     { name = "tomli", marker = "python_full_version < '3.11'" },
+    { name = "urllib3" },
 ]
 
 [package.dev-dependencies]
@@ -453,6 +454,7 @@ requires-dist = [
     { name = "packaging", specifier = ">=23.2" },
     { name = "requirements-parser", specifier = ">=0.11.0,<1" },
     { name = "tomli", marker = "python_full_version < '3.11'", specifier = ">=2.0.1" },
+    { name = "urllib3" },
 ]
 
 [package.metadata.requires-dev]

@@ -29,6 +29,7 @@ dependencies = [
     "packaging>=23.2",
     "requirements-parser>=0.11.0,<1",
     "tomli>=2.0.1; python_version < '3.11'",
+    "urllib3",
 ]
 
 [dependency-groups]
