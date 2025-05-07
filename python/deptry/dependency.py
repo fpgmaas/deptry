@@ -20,13 +20,6 @@ if TYPE_CHECKING:
 http = urllib3.PoolManager()
 
 
-def fetch_json(url: str) -> dict:
-    r = http.request("GET", url)
-    if r.status != 200:
-        return {}
-    return json.loads(r.data.decode("utf-8"))
-
-
 def download_file(url: str, dest_path: Path) -> None:
     r = http.request("GET", url)
     if r.status != 200:
@@ -36,7 +29,10 @@ def download_file(url: str, dest_path: Path) -> None:
 
 
 def get_imports_from_pypi_package(package_name: str) -> set[str]:
-    info = fetch_json(f"https://pypi.org/pypi/{package_name}/json")
+    r = http.request("GET", f"https://pypi.org/pypi/{package_name}/json")
+    if r.status != 200:
+        return set()
+    info = json.loads(r.data.decode("utf-8"))
     wheel_url = next((entry["url"] for entry in info["urls"] if entry["filename"].endswith(".whl")), None)
     if not wheel_url:
         return set()
