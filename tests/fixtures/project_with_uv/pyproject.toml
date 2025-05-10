@@ -17,7 +17,7 @@ bar = ["requests==2.32.3"]
 
 [dependency-groups]
 foo = [
-    "certifi==2025.1.31",
+    "certifi==2025.4.26",
     "idna==3.10",
 ]
 all = [{include-group = "foo"}, "packaging==25.0"]
