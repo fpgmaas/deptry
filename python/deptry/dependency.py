@@ -28,14 +28,14 @@ def download_file(url: str, dest_path: Path) -> None:
         f.write(r.data)
 
 
-def get_imports_from_pypi_package(package_name: str) -> set[str]:
+def get_imports_from_pypi_package(package_name: str) -> list[str]:
     r = http.request("GET", f"https://pypi.org/pypi/{package_name}/json")
     if r.status != 200:
-        return set()
+        return []
     info = json.loads(r.data.decode("utf-8"))
     wheel_url = next((entry["url"] for entry in info["urls"] if entry["filename"].endswith(".whl")), None)
     if not wheel_url:
-        return set()
+        return []
 
     with tempfile.TemporaryDirectory() as tmpdir:
         wheel_path = Path(tmpdir, Path(wheel_url).name)
@@ -45,9 +45,8 @@ def get_imports_from_pypi_package(package_name: str) -> set[str]:
 
         top_level_file = next(Path(tmpdir).glob("*.dist-info/top_level.txt"), None)
         if top_level_file and top_level_file.exists():
-            return set(top_level_file.read_text().strip().splitlines())
-        else:
-            return set()
+            return top_level_file.read_text().strip().splitlines()
+        return []
 
 
 class Dependency:
@@ -104,7 +103,7 @@ class Dependency:
         # download metadata from PyPI
         module_names = get_imports_from_pypi_package(name)
         if module_names:
-            return module_names
+            return set(module_names)
 
         # No metadata or other configuration has been found. As a fallback
         # we'll guess the name.
