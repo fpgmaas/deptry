@@ -10,14 +10,14 @@ dependencies = [
 
 [project.optional-dependencies]
 foo = [
-    "click==8.1.8",
+    "click==8.2.0",
     "isort==6.0.1",
 ]
 bar = ["requests==2.32.3"]
 
 [dependency-groups]
 foo = [
-    "certifi==2025.1.31",
+    "certifi==2025.4.26",
     "idna==3.10",
 ]
 all = [{include-group = "foo"}, "packaging==25.0"]
