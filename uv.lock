@@ -487,7 +487,7 @@ docs = [
     { name = "mkdocs-material", specifier = "==9.6.14" },
 ]
 test = [
-    { name = "pdm", specifier = "==2.24.1" },
+    { name = "pdm", specifier = "==2.24.2" },
     { name = "poetry", specifier = "==2.1.3" },
     { name = "pytest", specifier = "==8.3.5" },
     { name = "pytest-cov", specifier = "==6.1.1" },
@@ -949,7 +949,6 @@ dependencies = [
     { name = "colorama", marker = "sys_platform == 'win32'" },
     { name = "ghp-import" },
     { name = "importlib-metadata", version = "8.6.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
-    { name = "importlib-metadata", version = "8.7.0", source = { registry = "https://pypi.org/simple" }, marker = "python_version < '0'" },
     { name = "jinja2" },
     { name = "markdown" },
     { name = "markupsafe" },
@@ -1267,7 +1266,7 @@ install = [
 
 [[package]]
 name = "pdm"
-version = "2.24.1"
+version = "2.24.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "blinker" },
@@ -1296,9 +1295,9 @@ dependencies = [
     { name = "unearth" },
     { name = "virtualenv" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/f2/ca/29bfb48005d956c1f67385f9c6e134aea0a7ab298181fc82e201fa27ae78/pdm-2.24.1.tar.gz", hash = "sha256:fc8adf011caa4ee2b0f25dabf890152aa4153cc21599ea67fe0c14e533dcd6d9", size = 2655876, upload-time = "2025-04-23T09:36:23.521Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/32/8c/ff7e0c846c573771001a207346cf6c6fb1902f2d530fb1e44d8fda0ca3c7/pdm-2.24.2.tar.gz", hash = "sha256:ce0d5e9005fe26238b8ba5cf0e37ac00acab2fb90f904bf0219a5e8445849dfb", size = 2657737, upload-time = "2025-05-23T01:02:37.503Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/b1/9a/079e57adc78b523c05e336691981d8f1af5a1833e133f8578273a13b564a/pdm-2.24.1-py3-none-any.whl", hash = "sha256:4e496d6396de0633e011c33f971db08fc8f3b5b4c794163e4d867cf411960f16", size = 289669, upload-time = "2025-04-23T09:36:21.364Z" },
+    { url = "https://files.pythonhosted.org/packages/e9/c3/21e367c965ac29309c3ed2c6b80cebf19f73f8b38cfbe4d4cfc0440ac2ba/pdm-2.24.2-py3-none-any.whl", hash = "sha256:8d6b3733abf331267d7c99aac4a243f4cfdc70232ba44820842c22a2a129a072", size = 290563, upload-time = "2025-05-23T01:02:35.249Z" },
 ]
 
 [[package]]
