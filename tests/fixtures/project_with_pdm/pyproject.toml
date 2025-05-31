@@ -10,7 +10,7 @@ dependencies = [
 
 [project.optional-dependencies]
 baz = [
-    "click==8.1.8",
+    "click==8.2.1",
     "isort==6.0.1",
 ]
 bar = ["requests==2.32.3"]
@@ -20,7 +20,7 @@ version = {source = "scm"}
 
 [dependency-groups]
 foo = [
-    "certifi==2025.1.31",
+    "certifi==2025.4.26",
     "idna==3.10",
 ]
 all = [{include-group = "foo"}, "packaging==25.0"]
@@ -28,7 +28,7 @@ all = [{include-group = "foo"}, "packaging==25.0"]
 [tool.pdm.dev-dependencies]
 lint = [
     "black==25.1.0",
-    "mypy==1.15.0",
+    "mypy==1.16.0",
 ]
 test = [
     "pytest==8.3.5",
