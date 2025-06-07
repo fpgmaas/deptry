@@ -15,7 +15,7 @@ requests = { git = "https://github.com/psf/requests", tag = "v2.32.3" }
 
 [project.optional-dependencies]
 foo = [
-    "click==8.1.8",
+    "click==8.2.1",
     "isort==6.0.1",
 ]
 bar = ["urllib3==2.4.0"]
@@ -24,10 +24,10 @@ bar = ["urllib3==2.4.0"]
 black = "25.1.0"
 
 [tool.poetry.group.lint.dependencies]
-mypy = "1.15.0"
+mypy = "1.16.0"
 
 [tool.poetry.group.test.dependencies]
-pytest = "8.3.5"
+pytest = "8.4.0"
 pytest-cov = "6.1.1"
 
 [tool.deptry.per_rule_ignores]
