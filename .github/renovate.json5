@@ -20,6 +20,9 @@
 
     // https://docs.renovatebot.com/presets-customManagers/#custommanagersgithubactionsversions
     "customManagers:githubActionsVersions",
+
+    // https://docs.renovatebot.com/presets-helpers/#helperspingithubactiondigests
+    "helpers:pinGitHubActionDigests",
   ],
 
   // https://docs.renovatebot.com/configuration-options/#ignorepresets
