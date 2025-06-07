@@ -932,7 +932,7 @@ No user facing change.
 
 ### Features
 
-* Add a warning to not install `deptry` globally, but within virtual environment ([#]())
+* Add a warning to not install `deptry` globally, but within virtual environment ([#93](https://github.com/fpgmaas/deptry/pull/93))
 
 ### Bug Fixes
 
