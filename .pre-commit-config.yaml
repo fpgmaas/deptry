@@ -53,6 +53,6 @@ repos:
         pass_filenames: false
 
   - repo: https://github.com/woodruffw/zizmor-pre-commit
-    rev: "v1.5.2"
+    rev: "v1.9.0"
     hooks:
       - id: zizmor
