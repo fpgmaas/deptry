@@ -18,7 +18,7 @@ dev = [
     "mypy==1.15.0",
 ]
 test = ["pytest==8.3.5"]
-plot = ["matplotlib==3.10.1"]
+plot = ["matplotlib==3.9.4"]
 
 [dependency-groups]
 foo = [
