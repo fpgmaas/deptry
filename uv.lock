@@ -487,7 +487,7 @@ docs = [
     { name = "mkdocs-material", specifier = "==9.6.14" },
 ]
 test = [
-    { name = "pdm", specifier = "==2.24.2" },
+    { name = "pdm", specifier = "==2.25.1" },
     { name = "poetry", specifier = "==2.1.3" },
     { name = "pytest", specifier = "==8.3.5" },
     { name = "pytest-cov", specifier = "==6.2.1" },
@@ -1262,7 +1262,7 @@ install = [
 
 [[package]]
 name = "pdm"
-version = "2.24.2"
+version = "2.25.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "blinker" },
@@ -1276,7 +1276,6 @@ dependencies = [
     { name = "id" },
     { name = "importlib-metadata", version = "8.6.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
     { name = "installer" },
-    { name = "msgpack" },
     { name = "packaging" },
     { name = "pbs-installer" },
     { name = "platformdirs" },
@@ -1291,9 +1290,9 @@ dependencies = [
     { name = "unearth" },
     { name = "virtualenv" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/32/8c/ff7e0c846c573771001a207346cf6c6fb1902f2d530fb1e44d8fda0ca3c7/pdm-2.24.2.tar.gz", hash = "sha256:ce0d5e9005fe26238b8ba5cf0e37ac00acab2fb90f904bf0219a5e8445849dfb", size = 2657737, upload-time = "2025-05-23T01:02:37.503Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/34/ce/3c407a53b386b1113ad3145e6d660c6690c2f141ca39aa1fe3d6a5e0c666/pdm-2.25.1.tar.gz", hash = "sha256:3145251f37a3f94fa211ade992e7db7792da4c3e8e3eeeb1993d952adebe0b96", size = 2662443, upload-time = "2025-06-14T14:02:32.303Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e9/c3/21e367c965ac29309c3ed2c6b80cebf19f73f8b38cfbe4d4cfc0440ac2ba/pdm-2.24.2-py3-none-any.whl", hash = "sha256:8d6b3733abf331267d7c99aac4a243f4cfdc70232ba44820842c22a2a129a072", size = 290563, upload-time = "2025-05-23T01:02:35.249Z" },
+    { url = "https://files.pythonhosted.org/packages/2a/e5/88d5e46c3542f76591b50d4e9ec0c91e373fbdadf737c3e73cace03c5131/pdm-2.25.1-py3-none-any.whl", hash = "sha256:3d438237ade916cc220ae5fce2d2af9fe9b42eab2dcb29188954bde0b04eaa9e", size = 296003, upload-time = "2025-06-14T14:02:30.145Z" },
 ]
 
 [[package]]
