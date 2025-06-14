@@ -8,21 +8,21 @@ dependencies = [
     "click==8.1.8",
     "isort==6.0.1",
     "pkginfo==1.12.1.2",
-    "requests==2.32.3",
+    "requests==2.32.4",
     "urllib3==2.4.0",
 ]
 
 [project.optional-dependencies]
 dev = [
     "black==25.1.0",
-    "mypy==1.15.0",
+    "mypy==1.16.0",
 ]
-test = ["pytest==8.3.5"]
+test = ["pytest==8.4.0"]
 plot = ["matplotlib==3.9.4"]
 
 [dependency-groups]
 foo = [
-    "certifi==2025.1.31",
+    "certifi==2025.4.26",
     "idna==3.10",
 ]
 all = [{include-group = "foo"}, "packaging==25.0"]
