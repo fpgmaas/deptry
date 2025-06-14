@@ -70,6 +70,18 @@
       automerge: true,
     },
     {
+      matchFileNames: ["tests/**"],
+      matchPackageNames: ["click"],
+      // 8.2.0 dropped support for Python 3.9.
+      allowedVersions: "<8.2",
+    },
+    {
+      matchFileNames: ["tests/**"],
+      matchPackageNames: ["matplotlib"],
+      // 3.10.0 dropped support for Python 3.9.
+      allowedVersions: "<3.10",
+    },
+    {
       matchPackageNames: ["uv", "astral-sh/uv-pre-commit"],
       groupName: "uv-version",
     },
