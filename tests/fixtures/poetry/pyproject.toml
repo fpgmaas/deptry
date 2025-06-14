@@ -12,7 +12,7 @@ urllib3 = "2.4.0"
 
 click = { version = "8.1.8", optional = true }
 isort = { version = "6.0.1", optional = true }
-requests = { version = "2.32.3", optional = true }
+requests = { version = "2.32.4", optional = true }
 
 [tool.poetry.extras]
 foo = [
@@ -23,11 +23,11 @@ bar = ["requests"]
 
 [tool.poetry.group.lint.dependencies]
 black = "25.1.0"
-mypy = "1.15.0"
+mypy = "1.16.0"
 
 [tool.poetry.group.test.dependencies]
-pytest = "8.3.5"
-pytest-cov = "6.1.1"
+pytest = "8.4.0"
+pytest-cov = "6.2.1"
 
 [tool.deptry.per_rule_ignores]
 DEP002 = ["pkginfo"]

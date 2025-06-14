@@ -13,11 +13,11 @@ foo = [
     "click==8.1.8",
     "isort==6.0.1",
 ]
-bar = ["requests==2.32.3"]
+bar = ["requests==2.32.4"]
 
 [dependency-groups]
 foo = [
-    "certifi==2025.1.31",
+    "certifi==2025.4.26",
     "idna==3.10",
 ]
 all = [{include-group = "foo"}, "packaging==25.0"]
@@ -25,9 +25,9 @@ all = [{include-group = "foo"}, "packaging==25.0"]
 [tool.uv]
 dev-dependencies = [
     "black==25.1.0",
-    "mypy==1.15.0",
-    "pytest==8.3.5",
-    "pytest-cov==6.1.1",
+    "mypy==1.16.0",
+    "pytest==8.4.0",
+    "pytest-cov==6.2.1",
 ]
 
 [tool.deptry]
