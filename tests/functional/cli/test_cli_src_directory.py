@@ -88,7 +88,7 @@ def test_cli_with_src_directory(pip_venv_factory: PipVenvFactory) -> None:
                 },
                 "module": "white",
                 "location": {
-                    "file": str(Path("src/project_with_src_directory/foo.py")),
+                    "file": str(Path("src/src_directory/foo.py")),
                     "line": 6,
                     "column": 8,
                 },
