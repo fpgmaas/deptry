@@ -104,6 +104,8 @@ jobs:
 
       - name: Run functional tests
         run: uv run pytest tests/functional -n auto --dist loadgroup
+        env:
+          PYTHONIOENCODING: 'utf-8'
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@18283e04ce6e62d37312384ff67231eb8fd56d24 # v5

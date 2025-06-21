@@ -28,8 +28,8 @@ def pytest_sessionstart(session: pytest.Session) -> None:
         result = subprocess.run(
             shlex.split(f"uv build --verbose --wheel --out-dir {deptry_wheel_path}", posix=sys.platform != "win32"),
             capture_output=True,
-            text=True,
             check=True,
+            encoding="utf-8",
         )
         print(f"uv build output: {result.stdout}")  # noqa: T201
         print(f"uv build errors: {result.stderr}")  # noqa: T201
