@@ -9,20 +9,20 @@ dependencies = [
     "isort==6.0.1",
     "pkginfo==1.12.1.2",
     "requests==2.32.4",
-    "urllib3==2.4.0",
+    "urllib3==2.5.0",
 ]
 
 [project.optional-dependencies]
 dev = [
     "black==25.1.0",
-    "mypy==1.16.0",
+    "mypy==1.16.1",
 ]
-test = ["pytest==8.4.0"]
+test = ["pytest==8.4.1"]
 plot = ["matplotlib==3.9.4"]
 
 [dependency-groups]
 foo = [
-    "certifi==2025.4.26",
+    "certifi==2025.6.15",
     "idna==3.10",
 ]
 all = [{include-group = "foo"}, "packaging==25.0"]

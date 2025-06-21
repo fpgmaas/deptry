@@ -18,16 +18,16 @@ foo = [
     "click==8.1.8",
     "isort==6.0.1",
 ]
-bar = ["urllib3==2.4.0"]
+bar = ["urllib3==2.5.0"]
 
 [tool.poetry.dev-dependencies]
 black = "25.1.0"
 
 [tool.poetry.group.lint.dependencies]
-mypy = "1.16.0"
+mypy = "1.16.1"
 
 [tool.poetry.group.test.dependencies]
-pytest = "8.4.0"
+pytest = "8.4.1"
 pytest-cov = "6.2.1"
 
 [tool.deptry.per_rule_ignores]

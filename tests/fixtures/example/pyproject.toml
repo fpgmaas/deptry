@@ -11,7 +11,7 @@ click = "8.1.8"
 isort = "6.0.1"
 pkginfo = "1.12.1.2"
 requests = "2.32.4"
-urllib3 = "2.4.0"
+urllib3 = "2.5.0"
 
 [tool.poetry.dev-dependencies]
 black = "25.1.0"
