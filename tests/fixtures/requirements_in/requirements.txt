@@ -8,7 +8,7 @@ args==0.1.0
     # via clint
 beautifulsoup4==4.13.4
     # via itchiodl
-certifi==2025.4.26
+certifi==2025.6.15
     # via requests
 charset-normalizer==3.4.2
     # via requests
@@ -30,7 +30,7 @@ requests==2.32.4
     # via itchiodl
 soupsieve==2.7
     # via beautifulsoup4
-urllib3==2.4.0
+urllib3==2.5.0
     # via
     #   -r requirements.in
     #   requests
