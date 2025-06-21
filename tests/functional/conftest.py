@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import shlex
 import subprocess
 import sys
@@ -28,10 +29,10 @@ def pytest_sessionstart(session: pytest.Session) -> None:
         result = subprocess.run(
             shlex.split(f"uv build --verbose --wheel --out-dir {deptry_wheel_path}", posix=sys.platform != "win32"),
             capture_output=True,
-            text=True,
             check=True,
+            encoding="utf-8",
+            env={**os.environ, "PYTHONIOENCODING": "utf-8"},
         )
-        print(f"uv build output: {result.stdout}")  # noqa: T201
         print(f"uv build errors: {result.stderr}")  # noqa: T201
     except subprocess.CalledProcessError as e:
         print(f"Output: {e.output}")  # noqa: T201
