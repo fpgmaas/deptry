@@ -241,6 +241,15 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
     is_flag=True,
     help="Enable experimental support for namespace package (PEP 420) when detecting local modules (https://peps.python.org/pep-0420/).",
 )
+@click.option(
+    "--typing-alias",
+    "-ta",
+    type=str,
+    multiple=True,
+    help="Alias for typing module.",
+    default=(),
+    show_default=True,
+)
 def cli(
     root: tuple[Path, ...],
     config: Path,
@@ -257,6 +266,7 @@ def cli(
     package_module_name_map: MutableMapping[str, tuple[str, ...]],
     pep621_dev_dependency_groups: tuple[str, ...],
     experimental_namespace_package: bool,
+    typing_alias: tuple[str, ...],
 ) -> None:
     """Find dependency issues in your Python project.
 
@@ -290,6 +300,7 @@ def cli(
         package_module_name_map=package_module_name_map,
         pep621_dev_dependency_groups=pep621_dev_dependency_groups,
         experimental_namespace_package=experimental_namespace_package,
+        typing_alias=typing_alias,
     ).run()
 
 

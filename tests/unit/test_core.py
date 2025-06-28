@@ -129,6 +129,7 @@ def test__get_local_modules(
                 pep621_dev_dependency_groups=(),
                 using_default_requirements_files=True,
                 experimental_namespace_package=experimental_namespace_package,
+                typing_alias=(),
             )._get_local_modules()
             == expected
         )
