@@ -54,6 +54,8 @@ if TYPE_CHECKING:
     import mypy_boto3_s3
 ```
 
+If you import `typing` with alias (`import typing as t`) see [`--typing-alias`](#typing-module-alias) config
+
 There is some support for imports created with [`importlib.import_module`](https://docs.python.org/3/library/importlib.html#importlib.import_module) that use a string literal:
 
 ```python
@@ -500,3 +502,31 @@ experimental_namespace_package = true
 ```shell
 deptry . --experimental-namespace-package
 ```
+
+#### Typing module alias
+
+If you import typing module with alias:
+
+```python
+import typing as t
+
+if t.TYPE_CHECKING:
+    ...
+```
+
+for properly work of `TYPE_CHECKING` guard, you can define `typing_alias` setting
+
+- Type: `list[str]`
+- Default: `[]`
+- `pyproject.toml` option name: `typing_alias`
+- CLI option name: `--typing-alias`
+- `pyproject.toml` example:
+```toml
+[tool.deptry]
+typing_alias = ["t", "typ"]
+```
+- CLI example:
+```shell
+deptry . --typing-alias "t,typ"
+```
+
