@@ -244,8 +244,7 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
 @click.option(
     "--typing-alias",
     "-ta",
-    type=str,
-    multiple=True,
+    type=COMMA_SEPARATED_TUPLE,
     help="Alias for typing module.",
     default=(),
     show_default=True,
