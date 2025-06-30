@@ -529,4 +529,3 @@ typing_alias = ["t", "typ"]
 ```shell
 deptry . --typing-alias "t,typ"
 ```
-
