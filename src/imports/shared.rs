@@ -100,9 +100,7 @@ pub fn merge_results_from_threads(results: Vec<ThreadResult>) -> (FileToImportsM
 pub fn log_python_errors_as_warnings(errors: &[(String, PyErr)]) {
     for (path, error) in errors {
         log::warn!(
-            "Warning: Skipping processing of {} because of the following error: \"{}\".",
-            path,
-            error
+            "Warning: Skipping processing of {path} because of the following error: \"{error}\"."
         );
     }
 }
