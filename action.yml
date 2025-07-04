@@ -1,0 +1,49 @@
+# GitHub Action to analyze Python project dependencies using deptry
+# This action checks for unused, missing, and transitive dependencies in a Python project
+name: 'Deptry'
+description: 'Run deptry as a GitHub action'
+author: 'Thomas Schmelzer'
+branding:
+  icon: 'package'
+  color: 'blue'
+
+inputs:
+  python-version:
+    description: 'Path to a custom Jinja2 template file (.html.j2) for the indeIf not provided, the default Tailwind CSS template will be used.'
+    required: false
+    default: '3.12'
+  source-folder:
+    description: 'Source folder containing the Python code to analyze for dependency issues'
+    required: true
+    # No default provided as this should be explicitly set for each project
+  options:
+    description: 'Extra options for deptry (e.g., --json, --skip-unused, etc.)'
+    required: false
+    default: ''  # No extra options by default
+
+runs:
+  using: "composite"
+  steps:
+    # Step 1: Check out the repository code
+    # This ensures we have the latest code from the specified ref
+    - name: 📦 Checkout repository
+      uses: actions/checkout@v4
+
+    # Step 2: Set up the Python environment with uv
+    # This installs the uv package manager which provides the uvx command
+    - name: 🚀 Install uv
+      uses: astral-sh/setup-uv@v6
+      with:
+        python-version: '${{ inputs.python-version }}'
+        cache-dependency-glob: '/dev/null'
+    
+    # Step 3: Run deptry to analyze dependencies
+    # This executes deptry on the specified source folder with any provided options
+    - name: Run Deptry
+      shell: bash
+      run: |
+        # Run deptry using uvx (uv execute) to avoid installing it globally
+        # This will check for unused, missing, and transitive dependencies
+        uvx deptry ${{ inputs.source-folder }} ${{ inputs.options }}
+    
+        ignore-nothing-to-cache: 'true'
