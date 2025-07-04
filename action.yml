@@ -35,7 +35,6 @@ runs:
       uses: astral-sh/setup-uv@v6
       with:
         python-version: '${{ inputs.python-version }}'
-        cache-dependency-glob: '/dev/null'
     
     # Step 3: Run deptry to analyze dependencies
     # This executes deptry on the specified source folder with any provided options
