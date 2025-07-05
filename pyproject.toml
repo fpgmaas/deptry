@@ -41,7 +41,7 @@ test = [
     "poetry==2.1.3",
     "pytest==8.4.1",
     "pytest-cov==6.2.1",
-    "pytest-xdist[psutil]==3.7.0",
+    "pytest-xdist[psutil]==3.8.0",
 ]
 typing = [
     "mypy[faster-cache]==1.16.1; implementation_name == 'cpython'",
