@@ -22,7 +22,7 @@ plot = ["matplotlib==3.9.4"]
 
 [dependency-groups]
 foo = [
-    "certifi==2025.6.15",
+    "certifi==2025.7.9",
     "idna==3.10",
 ]
 all = [{include-group = "foo"}, "packaging==25.0"]
