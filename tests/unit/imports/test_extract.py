@@ -19,8 +19,9 @@ if TYPE_CHECKING:
 
 def test_import_parser_py() -> None:
     some_imports_path = Path("tests/fixtures/some_imports.py")
+    typing_alias = ("t",)
 
-    assert get_imported_modules_from_list_of_files([some_imports_path]) == {
+    assert get_imported_modules_from_list_of_files([some_imports_path], typing_alias) == {
         "barfoo": [Location(some_imports_path, 25, 8)],
         "baz": [Location(some_imports_path, 21, 5)],
         "click": [Location(some_imports_path, 35, 12)],
@@ -49,6 +50,7 @@ def test_import_parser_py() -> None:
         "typing": [
             Location(some_imports_path, 1, 8),
             Location(some_imports_path, 4, 1),
+            Location(some_imports_path, 54, 8),
         ],
         "uvicorn": [Location(some_imports_path, line=50, column=1)],
         "xml": [Location(some_imports_path, line=52, column=1)],

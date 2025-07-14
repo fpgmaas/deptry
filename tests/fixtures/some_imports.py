@@ -50,3 +50,9 @@ importlib.import_module("polars")
 im("uvicorn")
 import_module("http.server")
 il.import_module("xml.etree.ElementTree")
+
+import typing as t
+
+if t.TYPE_CHECKING:
+    import mypy_boto3_s3
+    import mypy_boto3_sagemaker

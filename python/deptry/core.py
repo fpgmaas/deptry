@@ -42,6 +42,7 @@ class Core:
     package_module_name_map: Mapping[str, tuple[str, ...]]
     pep621_dev_dependency_groups: tuple[str, ...]
     experimental_namespace_package: bool
+    typing_alias: tuple[str, ...]
 
     def run(self) -> None:
         self._log_config()
@@ -74,7 +75,7 @@ class Core:
                 ).build(),
                 locations,
             )
-            for module, locations in get_imported_modules_from_list_of_files(python_files).items()
+            for module, locations in get_imported_modules_from_list_of_files(python_files, self.typing_alias).items()
         ]
 
         violations = find_violations(
