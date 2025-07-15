@@ -10,14 +10,14 @@ repos:
       - id: trailing-whitespace
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: "v0.12.2"
+    rev: "v0.12.3"
     hooks:
       - id: ruff
         args: [--exit-non-zero-on-fix]
       - id: ruff-format
 
   - repo: https://github.com/astral-sh/uv-pre-commit
-    rev: "0.7.19"
+    rev: "0.7.20"
     hooks:
       - id: uv-lock
         name: check uv lock file consistency

@@ -1,1 +1,1 @@
-types-jsonschema==4.24.0.20250528
+types-jsonschema==4.24.0.20250708
