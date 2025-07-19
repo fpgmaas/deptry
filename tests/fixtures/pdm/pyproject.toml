@@ -20,7 +20,7 @@ version = {source = "scm"}
 
 [dependency-groups]
 foo = [
-    "certifi==2025.7.9",
+    "certifi==2025.7.14",
     "idna==3.10",
 ]
 all = [{include-group = "foo"}, "packaging==25.0"]
@@ -28,7 +28,7 @@ all = [{include-group = "foo"}, "packaging==25.0"]
 [tool.pdm.dev-dependencies]
 lint = [
     "black==25.1.0",
-    "mypy==1.16.1",
+    "mypy==1.17.0",
 ]
 test = [
     "pytest==8.4.1",
