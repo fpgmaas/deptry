@@ -57,15 +57,11 @@ pub fn convert_imports_with_textranges_to_location_objects(
         let locations: Vec<Location> = ranges
             .iter()
             .map(|range| {
-                let start_line = line_index.line_index(range.start()).get();
-                let start_col = line_index
-                    .line_column(range.start(), source_code)
-                    .column
-                    .get();
+                let line_column = line_index.line_column(range.start(), source_code);
                 Location {
                     file: file_path.to_owned(),
-                    line: Some(start_line),
-                    column: Some(start_col),
+                    line: Some(line_column.line.get()),
+                    column: Some(line_column.column.get()),
                 }
             })
             .collect();
