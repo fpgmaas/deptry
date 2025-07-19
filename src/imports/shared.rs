@@ -59,7 +59,7 @@ pub fn convert_imports_with_textranges_to_location_objects(
             .map(|range| {
                 let start_line = line_index.line_index(range.start()).get();
                 let start_col = line_index
-                    .source_location(range.start(), source_code)
+                    .line_column(range.start(), source_code)
                     .column
                     .get();
                 Location {
