@@ -6,7 +6,7 @@ use pyo3::exceptions::PySyntaxError;
 use pyo3::prelude::*;
 use ruff_python_ast::visitor::Visitor;
 use ruff_python_ast::{Mod, ModModule};
-use ruff_python_parser::{Mode, Parsed, parse};
+use ruff_python_parser::{Mode, ParseOptions, Parsed, parse};
 use ruff_source_file::LineIndex;
 use ruff_text_size::TextRange;
 use std::collections::HashMap;
@@ -22,8 +22,8 @@ pub struct ThreadResult {
 
 /// Parses the content of a Python file into a parsed source code.
 pub fn parse_file_content(file_content: &str) -> PyResult<Parsed<Mod>> {
-    let parsed =
-        parse(file_content, Mode::Module).map_err(|e| PySyntaxError::new_err(e.to_string()))?;
+    let parsed = parse(file_content, ParseOptions::from(Mode::Module))
+        .map_err(|e| PySyntaxError::new_err(e.to_string()))?;
     Ok(parsed)
 }
 
