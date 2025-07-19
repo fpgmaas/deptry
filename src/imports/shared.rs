@@ -6,7 +6,7 @@ use pyo3::exceptions::PySyntaxError;
 use pyo3::prelude::*;
 use ruff_python_ast::visitor::Visitor;
 use ruff_python_ast::{Mod, ModModule};
-use ruff_python_parser::{Mode, Parsed, parse};
+use ruff_python_parser::{Mode, ParseOptions, Parsed, parse};
 use ruff_source_file::LineIndex;
 use ruff_text_size::TextRange;
 use std::collections::HashMap;
@@ -22,8 +22,8 @@ pub struct ThreadResult {
 
 /// Parses the content of a Python file into a parsed source code.
 pub fn parse_file_content(file_content: &str) -> PyResult<Parsed<Mod>> {
-    let parsed =
-        parse(file_content, Mode::Module).map_err(|e| PySyntaxError::new_err(e.to_string()))?;
+    let parsed = parse(file_content, ParseOptions::from(Mode::Module))
+        .map_err(|e| PySyntaxError::new_err(e.to_string()))?;
     Ok(parsed)
 }
 
@@ -57,15 +57,11 @@ pub fn convert_imports_with_textranges_to_location_objects(
         let locations: Vec<Location> = ranges
             .iter()
             .map(|range| {
-                let start_line = line_index.line_index(range.start()).get();
-                let start_col = line_index
-                    .source_location(range.start(), source_code)
-                    .column
-                    .get();
+                let line_column = line_index.line_column(range.start(), source_code);
                 Location {
                     file: file_path.to_owned(),
-                    line: Some(start_line),
-                    column: Some(start_col),
+                    line: Some(line_column.line.get()),
+                    column: Some(line_column.column.get()),
                 }
             })
             .collect();
