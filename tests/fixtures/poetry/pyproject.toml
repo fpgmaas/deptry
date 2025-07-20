@@ -23,7 +23,7 @@ bar = ["requests"]
 
 [tool.poetry.group.lint.dependencies]
 black = "25.1.0"
-mypy = "1.16.1"
+mypy = "1.17.0"
 
 [tool.poetry.group.test.dependencies]
 pytest = "8.4.1"

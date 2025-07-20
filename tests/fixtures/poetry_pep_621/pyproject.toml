@@ -24,7 +24,7 @@ bar = ["urllib3==2.5.0"]
 black = "25.1.0"
 
 [tool.poetry.group.lint.dependencies]
-mypy = "1.16.1"
+mypy = "1.17.0"
 
 [tool.poetry.group.test.dependencies]
 pytest = "8.4.1"

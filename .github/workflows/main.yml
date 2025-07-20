@@ -13,7 +13,7 @@ concurrency:
 env:
   PYTHON_VERSION: '3.13'
   # renovate: datasource=pypi depName=uv
-  UV_VERSION: '0.7.16'
+  UV_VERSION: '0.8.0'
 
 permissions: {}
 
@@ -27,7 +27,7 @@ jobs:
           persist-credentials: false
 
       - name: Install uv
-        uses: astral-sh/setup-uv@bd01e18f51369d5a26f1651c3cb451d3417e3bba # v6.3.1
+        uses: astral-sh/setup-uv@7edac99f961f18b581bbd960d59d049f04c0002f # v6.4.1
         with:
           version: ${{ env.UV_VERSION }}
           enable-cache: true
@@ -80,7 +80,7 @@ jobs:
           persist-credentials: false
 
       - name: Install uv
-        uses: astral-sh/setup-uv@bd01e18f51369d5a26f1651c3cb451d3417e3bba # v6.3.1
+        uses: astral-sh/setup-uv@7edac99f961f18b581bbd960d59d049f04c0002f # v6.4.1
         with:
           version: ${{ env.UV_VERSION }}
           enable-cache: true
@@ -122,7 +122,7 @@ jobs:
           persist-credentials: false
 
       - name: Install uv
-        uses: astral-sh/setup-uv@bd01e18f51369d5a26f1651c3cb451d3417e3bba # v6.3.1
+        uses: astral-sh/setup-uv@7edac99f961f18b581bbd960d59d049f04c0002f # v6.4.1
         with:
           version: ${{ env.UV_VERSION }}
           enable-cache: true
