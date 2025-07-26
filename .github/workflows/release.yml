@@ -40,7 +40,7 @@ jobs:
       matrix:
         target: [x86_64, aarch64]
         manylinux: [auto, musllinux_1_1]
-        python: ['3.13', 'pypy3.10']
+        python: ['3.13', 'pypy3.11']
     steps:
       - name: Check out
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
@@ -77,7 +77,7 @@ jobs:
     strategy:
       matrix:
         target: [x64]
-        python: ['3.13', 'pypy3.10']
+        python: ['3.13', 'pypy3.11']
         # PyPy doesn't support Windows ARM64.
         include:
           - python: '3.13'
@@ -120,7 +120,7 @@ jobs:
     strategy:
       matrix:
         target: [x86_64, aarch64]
-        python: ['3.13', 'pypy3.10']
+        python: ['3.13', 'pypy3.11']
     steps:
       - name: Check out
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
