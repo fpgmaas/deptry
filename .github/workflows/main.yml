@@ -69,7 +69,14 @@ jobs:
             image: macos-15
           - name: windows
             image: windows-2025
-        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13', 'pypy3.10']
+        python-version:
+          - '3.9'
+          - '3.10'
+          - '3.11'
+          - '3.12'
+          - '3.13'
+          - '3.14-dev'
+          - 'pypy3.10'
       fail-fast: false
     runs-on: ${{ matrix.os.image }}
     name: ${{ matrix.os.name }} (${{ matrix.python-version }})
