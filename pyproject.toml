@@ -129,7 +129,11 @@ DEP001 = ["tomllib"]
 
 [tool.pytest.ini_options]
 addopts = "--doctest-modules"
-filterwarnings = ["error"]
+filterwarnings = [
+    "error",
+    # Triggered by PyPy 3.11 on Windows.
+    "default:check_home argument is deprecated and ignored:DeprecationWarning",
+]
 norecursedirs = ["fixtures*"]
 
 [tool.ruff]
