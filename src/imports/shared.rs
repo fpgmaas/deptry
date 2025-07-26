@@ -31,8 +31,9 @@ pub fn parse_file_content(file_content: &str) -> PyResult<Parsed<Mod>> {
 /// together with their respective `TextRange` for each occurrence.
 pub fn extract_imports_from_parsed_file_content(
     parsed: Parsed<Mod>,
+    typing_alias: Vec<String>,
 ) -> HashMap<String, Vec<TextRange>> {
-    let mut visitor = ImportVisitor::new();
+    let mut visitor = ImportVisitor::new(typing_alias);
 
     if let Mod::Module(ModModule { body, .. }) = parsed.into_syntax() {
         for stmt in body {

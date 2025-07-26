@@ -13,11 +13,15 @@ use std::collections::HashMap;
 /// Processes multiple Python files in parallel to extract import statements and their locations.
 /// Accepts a list of file paths and returns a dictionary mapping module names to their import locations.
 #[pyfunction]
-pub fn get_imports_from_ipynb_files(py: Python, file_paths: Vec<String>) -> Bound<'_, PyDict> {
+pub fn get_imports_from_ipynb_files(
+    py: Python,
+    file_paths: Vec<String>,
+    typing_alias: Vec<String>,
+) -> Bound<'_, PyDict> {
     let results: Vec<_> = file_paths
         .par_iter()
         .map(|path_str| {
-            let result = get_imports_from_ipynb_file(path_str);
+            let result = get_imports_from_ipynb_file(path_str, typing_alias.clone());
             shared::ThreadResult {
                 file: path_str.to_string(),
                 result,
@@ -33,7 +37,10 @@ pub fn get_imports_from_ipynb_files(py: Python, file_paths: Vec<String>) -> Boun
 
 /// Core helper function that extracts import statements and their locations from a single .ipynb file.
 /// Ensures robust error handling and provides clearer, more detailed comments.
-fn get_imports_from_ipynb_file(path_str: &str) -> PyResult<HashMap<String, Vec<Location>>> {
+fn get_imports_from_ipynb_file(
+    path_str: &str,
+    typing_alias: Vec<String>,
+) -> PyResult<HashMap<String, Vec<Location>>> {
     let file_content = read_file(path_str)?;
     let notebook: serde_json::Value =
         serde_json::from_str(&file_content).map_err(|e| PySyntaxError::new_err(e.to_string()))?;
@@ -43,7 +50,7 @@ fn get_imports_from_ipynb_file(path_str: &str) -> PyResult<HashMap<String, Vec<L
     let python_code = extract_code_from_notebook_cells(cells);
 
     let parsed = shared::parse_file_content(&python_code)?;
-    let imported_modules = shared::extract_imports_from_parsed_file_content(parsed);
+    let imported_modules = shared::extract_imports_from_parsed_file_content(parsed, typing_alias);
 
     Ok(shared::convert_imports_with_textranges_to_location_objects(
         imported_modules,

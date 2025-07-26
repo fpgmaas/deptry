@@ -4,11 +4,13 @@ use ruff_python_ast::{
 };
 use ruff_text_size::TextRange;
 use std::collections::{HashMap, HashSet};
+use std::str::FromStr;
 
 #[derive(Debug, Clone)]
 pub struct ImportVisitor {
     imports: HashMap<String, Vec<TextRange>>,
     import_module_names: HashSet<String>,
+    typing_alias: Vec<String>,
 }
 
 /// Visitor for tracking Python imports in AST.
@@ -19,10 +21,11 @@ pub struct ImportVisitor {
 /// refer to the `importlib.import_module` function itself, i.e. the import
 /// alias for `importlib` package and/or the `importlib.import_module` function.
 impl ImportVisitor {
-    pub fn new() -> Self {
+    pub fn new(typing_alias: Vec<String>) -> Self {
         Self {
             imports: HashMap::new(),
             import_module_names: HashSet::new(),
+            typing_alias,
         }
     }
 
@@ -130,7 +133,7 @@ impl<'a> Visitor<'a> for ImportVisitor {
             Stmt::Import(import_stmt) => self.handle_import(import_stmt),
             Stmt::ImportFrom(import_from_stmt) => self.handle_import_from(import_from_stmt),
             Stmt::Expr(expr_stmt) => self.handle_expr(expr_stmt),
-            Stmt::If(if_stmt) if is_guarded_by_type_checking(if_stmt) => {
+            Stmt::If(if_stmt) if is_guarded_by_type_checking(if_stmt, &self.typing_alias) => {
                 // Avoid parsing imports that are only evaluated by type checkers.
             }
             _ => walk_stmt(self, stmt), // Delegate other statements to walk_stmt
@@ -149,11 +152,14 @@ fn get_top_level_module_name(module_name: &str) -> String {
 }
 
 /// Checks if we are in a block guarded by `typing.TYPE_CHECKING`.
-fn is_guarded_by_type_checking(if_stmt: &StmtIf) -> bool {
+fn is_guarded_by_type_checking(if_stmt: &StmtIf, typing_alias: &[String]) -> bool {
     match &if_stmt.test.as_ref() {
         Expr::Attribute(ExprAttribute { value, attr, .. }) => {
             if let Expr::Name(ExprName { id, .. }) = value.as_ref() {
-                if id.as_str() == "typing" && attr.as_str() == "TYPE_CHECKING" {
+                if (id.as_str() == "typing"
+                    || typing_alias.contains(&String::from_str(id.as_str()).unwrap()))
+                    && attr.as_str() == "TYPE_CHECKING"
+                {
                     return true;
                 }
             }
