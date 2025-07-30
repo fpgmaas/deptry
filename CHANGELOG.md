@@ -6,7 +6,6 @@
 
 * Improve handling of `TYPE_CHECKING` blocks by supporting `import typing as t` and checking `t.TYPE_CHECKING` ([#1218](https://github.com/fpgmaas/deptry/pull/1218))
 * Fix missing hyperlink in report output ([#1162](https://github.com/fpgmaas/deptry/pull/1162))
-* Enforce UTF-8 encoding when building wheels to avoid encoding issues ([#1182](https://github.com/fpgmaas/deptry/pull/1182))
 
 ### Full Changelog
 
