@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.23.1 - 2025-07-30
+
+### Bug Fixes
+
+* Improve handling of `TYPE_CHECKING` blocks by supporting `import typing as t` and checking `t.TYPE_CHECKING` ([#1218](https://github.com/fpgmaas/deptry/pull/1218))
+* Fix missing hyperlink in report output ([#1162](https://github.com/fpgmaas/deptry/pull/1162))
+* Enforce UTF-8 encoding when building wheels to avoid encoding issues ([#1182](https://github.com/fpgmaas/deptry/pull/1182))
+
+### Full Changelog
+
+https://github.com/fpgmaas/deptry/compare/0.23.0...0.23.1
+
+
 ## 0.23.0 - 2025-01-25
 
 ### Features
