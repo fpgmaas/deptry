@@ -48,7 +48,7 @@ typing = [
     "mypy[faster-cache]==1.17.1; implementation_name == 'cpython'",
     # orjson does not compile on PyPy.
     "mypy==1.17.1; implementation_name != 'cpython'",
-    "types-colorama==0.4.15.20240311; sys_platform == 'win32'",
+    "types-colorama==0.4.15.20250801; sys_platform == 'win32'",
 ]
 
 [project.urls]
