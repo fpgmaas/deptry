@@ -15,14 +15,14 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "black==25.1.0",
-    "mypy==1.17.0",
+    "mypy==1.17.1",
 ]
 test = ["pytest==8.4.1"]
 plot = ["matplotlib==3.9.4"]
 
 [dependency-groups]
 foo = [
-    "certifi==2025.7.14",
+    "certifi==2025.8.3",
     "idna==3.10",
 ]
 all = [{include-group = "foo"}, "packaging==25.0"]
