@@ -8,7 +8,7 @@ use std::path::PathBuf;
 #[pyfunction]
 #[pyo3(signature = (directories, exclude, extend_exclude, using_default_exclude, ignore_notebooks=false))]
 pub fn find_python_files(
-    py: Python,
+    py: Python<'_>,
     directories: Vec<PathBuf>,
     exclude: Vec<String>,
     extend_exclude: Vec<String>,

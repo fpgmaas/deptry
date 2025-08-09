@@ -12,7 +12,7 @@ use std::collections::HashMap;
 /// Processes multiple Python files in parallel to extract import statements and their locations.
 /// Accepts a list of file paths and returns a dictionary mapping module names to their import locations.
 #[pyfunction]
-pub fn get_imports_from_py_files(py: Python, file_paths: Vec<String>) -> Bound<'_, PyDict> {
+pub fn get_imports_from_py_files(py: Python<'_>, file_paths: Vec<String>) -> Bound<'_, PyDict> {
     let results: Vec<_> = file_paths
         .par_iter()
         .map(|path_str| {
