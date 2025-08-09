@@ -8,6 +8,9 @@ resolution-markers = [
     "python_full_version < '3.10' and implementation_name != 'cpython'",
 ]
 
+[manifest]
+overrides = [{ name = "findpython", specifier = "==0.7.0" }]
+
 [[package]]
 name = "anyio"
 version = "4.10.0"
@@ -510,7 +513,7 @@ docs = [
     { name = "mkdocs-material", specifier = "==9.6.16" },
 ]
 test = [
-    { name = "pdm", specifier = "==2.25.4" },
+    { name = "pdm", specifier = "==2.25.5" },
     { name = "poetry", specifier = "==2.1.4" },
     { name = "pytest", specifier = "==8.4.1" },
     { name = "pytest-cov", specifier = "==6.2.1" },
@@ -629,14 +632,15 @@ wheels = [
 
 [[package]]
 name = "findpython"
-version = "0.6.3"
+version = "0.7.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "packaging" },
+    { name = "platformdirs" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/2d/73/ab2c4fb7972145c1595c07837cffc1456c1510a908f5c8bda9745930ee60/findpython-0.6.3.tar.gz", hash = "sha256:5863ea55556d8aadc693481a14ac4f3624952719efc1c5591abb0b4a9e965c94", size = 17827, upload-time = "2025-03-10T02:21:20.869Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/1a/17/5a72566eecc9cbc1609459befe9f7dc65e101b66519a79999cc48044993c/findpython-0.7.0.tar.gz", hash = "sha256:8b31647c76352779a3c1a0806699b68e6a7bdc0b5c2ddd9af2a07a0d40c673dc", size = 18858, upload-time = "2025-07-02T09:22:24.977Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/68/cc/10e4ec45585eba7784a6e86f21990e97b828b8d8927d28ae639b06d50c59/findpython-0.6.3-py3-none-any.whl", hash = "sha256:a85bb589b559cdf1b87227cc233736eb7cad894b9e68021ee498850611939ebc", size = 20564, upload-time = "2025-03-10T02:21:19.624Z" },
+    { url = "https://files.pythonhosted.org/packages/70/e5/00c2aec929c3068eb6b18d4da4a13a12fd6de040a50c78bbc3c222aebdca/findpython-0.7.0-py3-none-any.whl", hash = "sha256:f53cfcc29536f5b83c962cf922bba8ff6d6a3c2a05fda6a45aa58a47d005d8fc", size = 21955, upload-time = "2025-07-02T09:22:23.753Z" },
 ]
 
 [[package]]
@@ -972,7 +976,6 @@ dependencies = [
     { name = "colorama", marker = "sys_platform == 'win32'" },
     { name = "ghp-import" },
     { name = "importlib-metadata", version = "8.6.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
-    { name = "importlib-metadata", version = "8.7.0", source = { registry = "https://pypi.org/simple" }, marker = "python_version < '0'" },
     { name = "jinja2" },
     { name = "markdown" },
     { name = "markupsafe" },
@@ -1303,7 +1306,7 @@ install = [
 
 [[package]]
 name = "pdm"
-version = "2.25.4"
+version = "2.25.5"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "blinker" },
@@ -1331,9 +1334,9 @@ dependencies = [
     { name = "unearth" },
     { name = "virtualenv" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/49/c7/2c406c0e0bb4e3384298eb0078b9332da54916dc6e128397a860570eb23f/pdm-2.25.4.tar.gz", hash = "sha256:bd655d789429928d6e27ff6693c19c82bc81aa75ba51d7b1c6102d039c8f211c", size = 2663701, upload-time = "2025-06-30T01:53:44.692Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/76/1a/01df081e0d17644c49d7968a5f8d22d6e080be09b54507107ac94be1dfc1/pdm-2.25.5.tar.gz", hash = "sha256:063fa211dd6b062d3ca87b722e4010b802093d8b437486bfcf07ced802c544ea", size = 2664410, upload-time = "2025-07-30T06:47:51.373Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/eb/da/f7339d12938b89ab94d7b9c87303ef7ded22f08768885f9878f6659b931d/pdm-2.25.4-py3-none-any.whl", hash = "sha256:3efab7367cb5d9d6e4ef9db6130e4f5620c247343c8e95e18bd0d76b201ff7da", size = 296821, upload-time = "2025-06-30T01:49:44.963Z" },
+    { url = "https://files.pythonhosted.org/packages/f9/29/5929d3fb6b949cbaa310184d00cabccac897906ea1f09856e0d9c28b37a7/pdm-2.25.5-py3-none-any.whl", hash = "sha256:cec8085195cb00507b5214e19d9e29db1b5362f5f6d2649dd1fa3be94561d31a", size = 296864, upload-time = "2025-07-30T06:47:49.195Z" },
 ]
 
 [[package]]
