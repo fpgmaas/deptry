@@ -82,6 +82,14 @@
       allowedVersions: "<3.10",
     },
     {
+      matchFileNames: ["tests/**"],
+      matchPackageNames: ["asyncio"],
+      // We use this dependency in tests to test DEP005 rule. 4.0.0 is now a
+      // noop (https://discuss.python.org/t/no-op-the-asyncio-package-on-pypi/101218), so we need to depend on the
+      // previous version to properly flag the dependency.
+      allowedVersions: "<4",
+    },
+    {
       matchPackageNames: ["uv", "astral-sh/uv-pre-commit"],
       groupName: "uv-version",
     },
