@@ -81,29 +81,29 @@ impl ImportVisitor {
     /// name (or alias), prefixed with "importlib.", is stored in `import_module_names`. This is done to
     /// indicate how we should look out for dynamic imports in the code that follows.
     fn handle_import_from(&mut self, import_from_stmt: &StmtImportFrom) {
-        if let Some(module) = &import_from_stmt.module {
-            if import_from_stmt.level == 0 {
-                let module_name = module.as_str();
-                self.imports
-                    .entry(get_top_level_module_name(module_name))
-                    .or_default()
-                    .push(import_from_stmt.range);
+        if let Some(module) = &import_from_stmt.module
+            && import_from_stmt.level == 0
+        {
+            let module_name = module.as_str();
+            self.imports
+                .entry(get_top_level_module_name(module_name))
+                .or_default()
+                .push(import_from_stmt.range);
 
-                if module_name == "importlib" {
-                    for alias in &import_from_stmt.names {
-                        if alias.name.as_str() == "import_module" {
-                            let name = alias
-                                .asname
-                                .as_ref()
-                                .map_or("import_module", ruff_python_ast::Identifier::as_str);
-                            self.import_module_names.insert(name.to_string());
-                        }
+            if module_name == "importlib" {
+                for alias in &import_from_stmt.names {
+                    if alias.name.as_str() == "import_module" {
+                        let name = alias
+                            .asname
+                            .as_ref()
+                            .map_or("import_module", ruff_python_ast::Identifier::as_str);
+                        self.import_module_names.insert(name.to_string());
                     }
                 }
+            }
 
-                if module_name == "typing" {
-                    self.typing_aliases.insert("typing".to_string());
-                }
+            if module_name == "typing" {
+                self.typing_aliases.insert("typing".to_string());
             }
         }
     }
@@ -129,16 +129,14 @@ impl ImportVisitor {
                 _ => false,
             };
 
-            if is_import_module {
-                if let Some(Expr::StringLiteral(string_literal)) = call_expr.arguments.args.first()
-                {
-                    let top_level_module =
-                        get_top_level_module_name(&string_literal.value.to_string());
-                    self.imports
-                        .entry(top_level_module)
-                        .or_default()
-                        .push(expr_stmt.range);
-                }
+            if is_import_module
+                && let Some(Expr::StringLiteral(string_literal)) = call_expr.arguments.args.first()
+            {
+                let top_level_module = get_top_level_module_name(&string_literal.value.to_string());
+                self.imports
+                    .entry(top_level_module)
+                    .or_default()
+                    .push(expr_stmt.range);
             }
         }
     }
@@ -172,10 +170,11 @@ fn get_top_level_module_name(module_name: &str) -> String {
 fn is_guarded_by_type_checking(if_stmt: &StmtIf, typing_aliases: &HashSet<String>) -> bool {
     match &if_stmt.test.as_ref() {
         Expr::Attribute(ExprAttribute { value, attr, .. }) => {
-            if let Expr::Name(ExprName { id, .. }) = value.as_ref() {
-                if typing_aliases.contains(id.as_str()) && attr.as_str() == "TYPE_CHECKING" {
-                    return true;
-                }
+            if let Expr::Name(ExprName { id, .. }) = value.as_ref()
+                && typing_aliases.contains(id.as_str())
+                && attr.as_str() == "TYPE_CHECKING"
+            {
+                return true;
             }
         }
         Expr::Name(ExprName { id, .. }) => {

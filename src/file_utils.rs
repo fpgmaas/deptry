@@ -41,10 +41,10 @@ fn detect_python_file_encoding_from_regex(buffer: &[u8]) -> Option<&'static Enco
     let re = Regex::new(r"^[ \t\f]*#.*?coding[:=][ \t]*([-_.a-zA-Z0-9]+)").unwrap();
 
     for line in content.lines().take(2) {
-        if let Some(caps) = re.captures(line) {
-            if let Some(m) = caps.get(1) {
-                return Encoding::for_label(m.as_str().as_bytes());
-            }
+        if let Some(caps) = re.captures(line)
+            && let Some(m) = caps.get(1)
+        {
+            return Encoding::for_label(m.as_str().as_bytes());
         }
     }
 
