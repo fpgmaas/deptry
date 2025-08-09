@@ -38,7 +38,7 @@ docs = [
     "mkdocs-material==9.6.16",
 ]
 test = [
-    "pdm==2.25.4",
+    "pdm==2.25.5",
     "poetry==2.1.4",
     "pytest==8.4.1",
     "pytest-cov==6.2.1",
@@ -59,6 +59,10 @@ changelog = "https://github.com/fpgmaas/deptry/blob/main/CHANGELOG.md"
 
 [project.scripts]
 deptry = "deptry.cli:deptry"
+
+[tool.uv]
+# Incompatibility between Poetry (requiring < 0.7.0) and PDM (requiring >= 0.7.0).
+override-dependencies = ["findpython==0.7.0"]
 
 [build-system]
 requires = ["maturin>=1.5,<2.0"]
