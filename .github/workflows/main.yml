@@ -54,7 +54,7 @@ jobs:
         run: uvx pre-commit@${PRE_COMMIT_VERSION} run --all-files --show-diff-on-failure
         env:
           # renovate: datasource=pypi depName=pre-commit
-          PRE_COMMIT_VERSION: '4.2.0'
+          PRE_COMMIT_VERSION: '4.3.0'
 
       - name: Inspect dependencies with deptry
         run: uv run deptry python
