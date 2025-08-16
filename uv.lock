@@ -513,7 +513,7 @@ docs = [
     { name = "mkdocs-material", specifier = "==9.6.16" },
 ]
 test = [
-    { name = "pdm", specifier = "==2.25.5" },
+    { name = "pdm", specifier = "==2.25.6" },
     { name = "poetry", specifier = "==2.1.4" },
     { name = "pytest", specifier = "==8.4.1" },
     { name = "pytest-cov", specifier = "==6.2.1" },
@@ -1306,7 +1306,7 @@ install = [
 
 [[package]]
 name = "pdm"
-version = "2.25.5"
+version = "2.25.6"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "blinker" },
@@ -1334,9 +1334,9 @@ dependencies = [
     { name = "unearth" },
     { name = "virtualenv" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/76/1a/01df081e0d17644c49d7968a5f8d22d6e080be09b54507107ac94be1dfc1/pdm-2.25.5.tar.gz", hash = "sha256:063fa211dd6b062d3ca87b722e4010b802093d8b437486bfcf07ced802c544ea", size = 2664410, upload-time = "2025-07-30T06:47:51.373Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/e6/c2/ebcd3062be915f67dd6aa6e30fc247120e6f9acc9b6cf7468bb52fdbd219/pdm-2.25.6.tar.gz", hash = "sha256:46693c26dde87bdeffecf18eb852ea55434c9b6b2aec42edef237f4ac595763c", size = 2664707, upload-time = "2025-08-14T02:05:42.567Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/f9/29/5929d3fb6b949cbaa310184d00cabccac897906ea1f09856e0d9c28b37a7/pdm-2.25.5-py3-none-any.whl", hash = "sha256:cec8085195cb00507b5214e19d9e29db1b5362f5f6d2649dd1fa3be94561d31a", size = 296864, upload-time = "2025-07-30T06:47:49.195Z" },
+    { url = "https://files.pythonhosted.org/packages/ec/e7/d70c9067af45394d800d32cc3c3a200d447d94136e8ab5b7c480f79ab526/pdm-2.25.6-py3-none-any.whl", hash = "sha256:5f18326edb40cb3d179f96583be1253ee31cf9160cc7ca4299839eaebd079f2a", size = 296930, upload-time = "2025-08-14T02:05:40.346Z" },
 ]
 
 [[package]]
@@ -1879,11 +1879,11 @@ wheels = [
 
 [[package]]
 name = "truststore"
-version = "0.10.3"
+version = "0.10.4"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/5a/19/d90d35e584f58bac270beee003dd93b664335c0b9074b03b8604c6ea36ec/truststore-0.10.3.tar.gz", hash = "sha256:16ff5f6faf692acca470f9b92e66b4c0faccb9b702d0b0486d3d465932b6b3b1", size = 26214, upload-time = "2025-07-29T19:05:31.67Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/53/a3/1585216310e344e8102c22482f6060c7a6ea0322b63e026372e6dcefcfd6/truststore-0.10.4.tar.gz", hash = "sha256:9d91bd436463ad5e4ee4aba766628dd6cd7010cf3e2461756b3303710eebc301", size = 26169, upload-time = "2025-08-12T18:49:02.73Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/2e/49/184050dc32c6ae6a1ef4ebd16ab5128483c02fa1e686d5559df0ba1c08b2/truststore-0.10.3-py3-none-any.whl", hash = "sha256:5bcc0889390f7b69e56be3df02f4912cfbb5a8bdb77a63fdcacb91049707879b", size = 18649, upload-time = "2025-07-29T19:05:30.414Z" },
+    { url = "https://files.pythonhosted.org/packages/19/97/56608b2249fe206a67cd573bc93cd9896e1efb9e98bce9c163bcdc704b88/truststore-0.10.4-py3-none-any.whl", hash = "sha256:adaeaecf1cbb5f4de3b1959b42d41f6fab57b2b1666adb59e89cb0b53361d981", size = 18660, upload-time = "2025-08-12T18:49:01.46Z" },
 ]
 
 [[package]]
