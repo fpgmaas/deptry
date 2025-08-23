@@ -577,10 +577,10 @@ six = ">=1.5"
 
 [[package]]
 name = "requests"
-version = "2.32.4"
+version = "2.32.5"
 description = "Python HTTP for Humans."
 optional = false
-python-versions = ">=3.8"
+python-versions = ">=3.9"
 groups = ["main"]
 files = []
 develop = false
@@ -598,8 +598,8 @@ use-chardet-on-py3 = ["chardet (>=3.0.2,<6)"]
 [package.source]
 type = "git"
 url = "https://github.com/psf/requests"
-reference = "v2.32.4"
-resolved_reference = "021dc729f0b71a3030cefdbec7fb57a0e80a6cfd"
+reference = "v2.32.5"
+resolved_reference = "b25c87d7cb8d6a18a37fa12442b5f883f9e41741"
 
 [[package]]
 name = "six"
@@ -706,4 +706,4 @@ foo = ["click", "isort"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.9"
-content-hash = "5b93a94d661a605a5ab1b762663167cea83edad84061d737c22c9803a65e621f"
+content-hash = "8bbd1f74bc914fdf3d5213850f09a4640bb4769dfcb4cf7a6326450ee9af0952"
