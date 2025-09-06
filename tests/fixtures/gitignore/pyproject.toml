@@ -16,7 +16,7 @@ dev = [
     "black==25.1.0",
     "mypy==1.17.1",
 ]
-test = ["pytest==8.4.1"]
+test = ["pytest==8.4.2"]
 
 [build-system]
 requires = ["setuptools>=61.0.0"]
