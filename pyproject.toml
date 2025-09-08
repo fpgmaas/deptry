@@ -6,6 +6,7 @@ authors = [{ name = "Florian Maas", email = "fpgmaas@gmail.com" }]
 maintainers = [{ name = "Mathieu Kniewallner", email = "mathieu.kniewallner@gmail.com" }]
 requires-python = ">=3.9"
 license = { file = "LICENSE" }
+readme = "README.md"
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Environment :: Console",
