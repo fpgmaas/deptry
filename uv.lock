@@ -501,7 +501,7 @@ requires-dist = [
 [package.metadata.requires-dev]
 docs = [
     { name = "mkdocs", specifier = "==1.6.1" },
-    { name = "mkdocs-material", specifier = "==9.6.18" },
+    { name = "mkdocs-material", specifier = "==9.6.20" },
 ]
 test = [
     { name = "pdm", specifier = "==2.25.9" },
@@ -987,7 +987,6 @@ dependencies = [
     { name = "colorama", marker = "sys_platform == 'win32'" },
     { name = "ghp-import" },
     { name = "importlib-metadata", version = "8.6.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
-    { name = "importlib-metadata", version = "8.7.0", source = { registry = "https://pypi.org/simple" }, marker = "python_version < '0'" },
     { name = "jinja2" },
     { name = "markdown" },
     { name = "markupsafe" },
@@ -1021,7 +1020,7 @@ wheels = [
 
 [[package]]
 name = "mkdocs-material"
-version = "9.6.18"
+version = "9.6.20"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "babel" },
@@ -1038,9 +1037,9 @@ dependencies = [
     { name = "pymdown-extensions" },
     { name = "requests" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/e6/46/db0d78add5aac29dfcd0a593bcc6049c86c77ba8a25b3a5b681c190d5e99/mkdocs_material-9.6.18.tar.gz", hash = "sha256:a2eb253bcc8b66f8c6eaf8379c10ed6e9644090c2e2e9d0971c7722dc7211c05", size = 4034856, upload-time = "2025-08-22T08:21:47.575Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/ba/ee/6ed7fc739bd7591485c8bec67d5984508d3f2733e708f32714c21593341a/mkdocs_material-9.6.20.tar.gz", hash = "sha256:e1f84d21ec5fb730673c4259b2e0d39f8d32a3fef613e3a8e7094b012d43e790", size = 4037822, upload-time = "2025-09-15T08:48:01.816Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/22/0b/545a4f8d4f9057e77f1d99640eb09aaae40c4f9034707f25636caf716ff9/mkdocs_material-9.6.18-py3-none-any.whl", hash = "sha256:dbc1e146a0ecce951a4d84f97b816a54936cdc9e1edd1667fc6868878ac06701", size = 9232642, upload-time = "2025-08-22T08:21:44.52Z" },
+    { url = "https://files.pythonhosted.org/packages/67/d8/a31dd52e657bf12b20574706d07df8d767e1ab4340f9bfb9ce73950e5e59/mkdocs_material-9.6.20-py3-none-any.whl", hash = "sha256:b8d8c8b0444c7c06dd984b55ba456ce731f0035c5a1533cc86793618eb1e6c82", size = 9193367, upload-time = "2025-09-15T08:47:58.722Z" },
 ]
 
 [[package]]
