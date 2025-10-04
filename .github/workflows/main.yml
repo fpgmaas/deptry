@@ -115,7 +115,7 @@ jobs:
           PYTHONIOENCODING: 'utf-8'
 
       - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@fdcc8476540edceab3de004e990f80d881c6cc00 # v5
+        uses: codecov/codecov-action@5a1091511ad55cbe89839c7260b706298ca349f7 # v5
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         if: ${{ matrix.os.name == 'linux' && matrix.python-version == env.PYTHON_VERSION }}
