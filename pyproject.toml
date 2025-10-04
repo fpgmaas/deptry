@@ -36,7 +36,7 @@ dependencies = [
 [dependency-groups]
 docs = [
     "mkdocs==1.6.1",
-    "mkdocs-material==9.6.20",
+    "mkdocs-material==9.6.21",
 ]
 test = [
     "pdm==2.25.9",
