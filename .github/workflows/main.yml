@@ -76,7 +76,7 @@ jobs:
           - '3.12'
           - '3.13'
           - '3.14-dev'
-          - 'pypy3.10'
+          - 'pypy3.11'
       fail-fast: false
     runs-on: ${{ matrix.os.image }}
     name: ${{ matrix.os.name }} (${{ matrix.python-version }})
