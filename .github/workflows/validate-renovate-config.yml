@@ -10,7 +10,7 @@ on:
 
 env:
   # renovate: datasource=node depName=node versioning=node
-  NODE_VERSION: "22"
+  NODE_VERSION: "24"
 
 permissions: {}
 
