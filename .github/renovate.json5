@@ -53,8 +53,15 @@
 
   // https://docs.renovatebot.com/configuration-options/#packagerules
   packageRules: [
+    // Ensure that all Ruff Rust dependencies are updated together, as they use a single versioning.
     {
-      // Create dedicated branch to update dependencies in tests.
+      matchDatasources: ["github-tags"],
+      matchFileNames: ["Cargo.toml"],
+      matchPackageNames: ["astral-sh/ruff"],
+      groupName: "Ruff Rust",
+    },
+    // Create dedicated branch to update dependencies in tests.
+    {
       matchFileNames: ["tests/**"],
       commitMessageTopic: "dependencies in tests",
       semanticCommitType: "test",
