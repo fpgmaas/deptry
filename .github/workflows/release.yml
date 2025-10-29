@@ -28,7 +28,7 @@ jobs:
           RELEASE_VERSION: ${{ github.ref_name }}
 
       - name: Upload updated pyproject.toml
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         with:
           name: pyproject-toml
           path: pyproject.toml
@@ -48,7 +48,7 @@ jobs:
           persist-credentials: false
 
       - name: Download updated pyproject.toml
-        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
+        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
           name: pyproject-toml
 
@@ -66,7 +66,7 @@ jobs:
           sccache: 'true'
 
       - name: Upload wheels
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         with:
           name: wheels-linux-${{ matrix.target }}-${{ matrix.manylinux }}-${{ matrix.python }}
           path: dist
@@ -89,7 +89,7 @@ jobs:
           persist-credentials: false
 
       - name: Download updated pyproject.toml
-        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
+        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
           name: pyproject-toml
 
@@ -109,7 +109,7 @@ jobs:
           sccache: 'true'
 
       - name: Upload wheels
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         with:
           name: wheels-windows-${{ matrix.target }}-${{ matrix.python }}
           path: dist
@@ -128,7 +128,7 @@ jobs:
           persist-credentials: false
 
       - name: Download updated pyproject.toml
-        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
+        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
           name: pyproject-toml
 
@@ -146,7 +146,7 @@ jobs:
           sccache: 'true'
 
       - name: Upload wheels
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         with:
           name: wheels-macos-${{ matrix.target }}-${{ matrix.python }}
           path: dist
@@ -165,7 +165,7 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Download updated pyproject.toml
-        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
+        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
           name: pyproject-toml
 
@@ -176,7 +176,7 @@ jobs:
           args: --out dist
 
       - name: Upload sdist
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         with:
           name: wheels-sdist
           path: dist
@@ -190,7 +190,7 @@ jobs:
       - macos
       - sdist
     steps:
-      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
+      - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
 
       - name: Install Python
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
