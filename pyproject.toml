@@ -39,7 +39,7 @@ docs = [
     "mkdocs-material==9.6.22",
 ]
 test = [
-    "pdm==2.25.9",
+    "pdm==2.26.1",
     "poetry==2.2.1",
     "pytest==8.4.2",
     "pytest-cov==7.0.0",
