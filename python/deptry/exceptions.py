@@ -21,13 +21,6 @@ class PyprojectFileNotFoundError(FileNotFoundError):
         super().__init__(f"No file `pyproject.toml` found in directory {directory}")
 
 
-class UnsupportedPythonVersionError(ValueError):
-    def __init__(self, version: tuple[int, int]) -> None:
-        super().__init__(
-            f"Python version {version[0]}.{version[1]} is not supported. Only versions >= 3.10 are supported."
-        )
-
-
 class InvalidPyprojectTOMLOptionsError(UsageError):
     def __init__(self, invalid_options: list[str]) -> None:
         super().__init__(
