@@ -102,7 +102,7 @@ source = ["python/deptry"]
 
 [tool.mypy]
 mypy_path = "python"
-files = ["python/deptry", "scripts", "tests"]
+files = ["python/deptry", "tests"]
 explicit_package_bases = true
 exclude = ["tests/fixtures"]
 disallow_any_unimported = true
@@ -122,11 +122,7 @@ module = ["xdist.*"]
 ignore_missing_imports = true
 
 [tool.deptry]
-extend_exclude = [
-    "docs",
-    "tests",
-    "scripts",
-]
+extend_exclude = ["docs", "tests"]
 
 [tool.deptry.per_rule_ignores]
 DEP001 = ["tomllib"]
