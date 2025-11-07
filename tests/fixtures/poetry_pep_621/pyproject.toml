@@ -21,14 +21,14 @@ foo = [
 bar = ["urllib3==2.5.0"]
 
 [tool.poetry.dev-dependencies]
-black = "25.1.0"
+black = "25.9.0"
 
 [tool.poetry.group.lint.dependencies]
-mypy = "1.17.1"
+mypy = "1.18.2"
 
 [tool.poetry.group.test.dependencies]
-pytest = "8.4.1"
-pytest-cov = "6.2.1"
+pytest = "8.4.2"
+pytest-cov = "7.0.0"
 
 [tool.deptry.per_rule_ignores]
 DEP002 = ["pkginfo"]
