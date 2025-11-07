@@ -19,39 +19,39 @@ if TYPE_CHECKING:
 
 def test_import_parser_py() -> None:
     some_imports_path = Path("tests/fixtures/some_imports.py")
-
     assert get_imported_modules_from_list_of_files([some_imports_path]) == {
-        "barfoo": [Location(some_imports_path, 25, 8)],
-        "baz": [Location(some_imports_path, 21, 5)],
-        "click": [Location(some_imports_path, 35, 12)],
-        "foobar": [Location(some_imports_path, 23, 12)],
-        "http": [Location(some_imports_path, line=51, column=1)],
-        "httpx": [Location(some_imports_path, 19, 12)],
+        "barfoo": [Location(some_imports_path, 26, 8)],
+        "baz": [Location(some_imports_path, 22, 5)],
+        "click": [Location(some_imports_path, 39, 12)],
+        "foobar": [Location(some_imports_path, 24, 12)],
+        "http": [Location(some_imports_path, 55, 1)],
+        "httpx": [Location(some_imports_path, 20, 12)],
         "importlib": [
-            Location(some_imports_path, line=5, column=1),
-            Location(some_imports_path, line=6, column=1),
-            Location(some_imports_path, line=7, column=8),
-            Location(some_imports_path, line=8, column=8),
+            Location(some_imports_path, 6, 1),
+            Location(some_imports_path, 7, 1),
+            Location(some_imports_path, 8, 8),
+            Location(some_imports_path, 9, 8),
         ],
-        "module_in_class": [Location(some_imports_path, 46, 16)],
-        "module_in_func": [Location(some_imports_path, 41, 12)],
-        "not_click": [Location(some_imports_path, 37, 12)],
+        "module_in_class": [Location(some_imports_path, 50, 16)],
+        "module_in_func": [Location(some_imports_path, 45, 12)],
+        "not_click": [Location(some_imports_path, 41, 12)],
         "numpy": [
-            Location(some_imports_path, 10, 8),
-            Location(some_imports_path, 12, 1),
+            Location(some_imports_path, 11, 8),
+            Location(some_imports_path, 13, 1),
         ],
         "os": [Location(some_imports_path, 2, 1)],
-        "pandas": [Location(some_imports_path, 11, 8)],
+        "pandas": [Location(some_imports_path, 12, 8)],
         "pathlib": [Location(some_imports_path, 3, 1)],
-        "patito": [Location(some_imports_path, line=48, column=1)],
-        "polars": [Location(some_imports_path, line=49, column=1)],
-        "randomizer": [Location(some_imports_path, 26, 1)],
+        "patito": [Location(some_imports_path, 52, 1)],
+        "polars": [Location(some_imports_path, 53, 1)],
+        "randomizer": [Location(some_imports_path, 27, 1)],
         "typing": [
             Location(some_imports_path, 1, 8),
             Location(some_imports_path, 4, 1),
+            Location(some_imports_path, 5, 8),
         ],
-        "uvicorn": [Location(some_imports_path, line=50, column=1)],
-        "xml": [Location(some_imports_path, line=52, column=1)],
+        "uvicorn": [Location(some_imports_path, 54, 1)],
+        "xml": [Location(some_imports_path, 56, 1)],
     }
 
 

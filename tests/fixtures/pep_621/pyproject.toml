@@ -1,0 +1,38 @@
+[project]
+name = "foo"
+version = "0.0.1"
+requires-python = ">=3.10"
+dependencies = [
+    "arrow==1.4.0",
+    "asyncio==3.4.3",
+    "click==8.1.8",
+    "isort==7.0.0",
+    "pkginfo==1.12.1.2",
+    "requests==2.32.5",
+    "urllib3==2.5.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "black==25.9.0",
+    "mypy==1.18.2",
+]
+test = ["pytest==8.4.2"]
+plot = ["matplotlib==3.9.4"]
+
+[dependency-groups]
+foo = [
+    "certifi==2025.10.5",
+    "idna==3.11",
+]
+all = [{include-group = "foo"}, "packaging==25.0"]
+
+[build-system]
+requires = ["setuptools>=61.0.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.deptry]
+pep621_dev_dependency_groups = ["dev"]
+
+[tool.deptry.per_rule_ignores]
+DEP002 = ["pkginfo"]

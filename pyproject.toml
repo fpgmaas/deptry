@@ -4,8 +4,9 @@ version = "0.0.1"
 description = "A command line utility to check for unused, missing and transitive dependencies in a Python project."
 authors = [{ name = "Florian Maas", email = "fpgmaas@gmail.com" }]
 maintainers = [{ name = "Mathieu Kniewallner", email = "mathieu.kniewallner@gmail.com" }]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 license = { file = "LICENSE" }
+readme = "README.md"
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Environment :: Console",
@@ -13,11 +14,11 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: Software Development :: Quality Assurance",
     "Programming Language :: Python",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Programming Language :: Rust",
     "Programming Language :: Python :: Implementation :: CPython",
     "Programming Language :: Python :: Implementation :: PyPy",
@@ -34,20 +35,20 @@ dependencies = [
 [dependency-groups]
 docs = [
     "mkdocs==1.6.1",
-    "mkdocs-material==9.6.8",
+    "mkdocs-material==9.6.22",
 ]
 test = [
-    "pdm==2.22.4",
-    "poetry==2.1.1",
-    "pytest==8.3.5",
-    "pytest-cov==6.0.0",
-    "pytest-xdist[psutil]==3.6.1",
+    "pdm==2.26.1",
+    "poetry==2.2.1",
+    "pytest==8.4.2",
+    "pytest-cov==7.0.0",
+    "pytest-xdist[psutil]==3.8.0",
 ]
 typing = [
-    "mypy[faster-cache]==1.15.0; implementation_name == 'cpython'",
+    "mypy[faster-cache]==1.18.2; implementation_name == 'cpython'",
     # orjson does not compile on PyPy.
-    "mypy==1.15.0; implementation_name != 'cpython'",
-    "types-colorama==0.4.15.20240311; sys_platform == 'win32'",
+    "mypy==1.18.2; implementation_name != 'cpython'",
+    "types-colorama==0.4.15.20250801; sys_platform == 'win32'",
 ]
 
 [project.urls]
@@ -58,6 +59,10 @@ changelog = "https://github.com/fpgmaas/deptry/blob/main/CHANGELOG.md"
 
 [project.scripts]
 deptry = "deptry.cli:deptry"
+
+[tool.uv]
+# Incompatibility between Poetry (requiring < 0.7.0) and PDM (requiring >= 0.7.0).
+override-dependencies = ["findpython==0.7.0"]
 
 [build-system]
 requires = ["maturin>=1.5,<2.0"]
@@ -97,12 +102,13 @@ source = ["python/deptry"]
 
 [tool.mypy]
 mypy_path = "python"
-files = ["python/deptry", "scripts", "tests"]
+files = ["python/deptry", "tests"]
 explicit_package_bases = true
 exclude = ["tests/fixtures"]
 disallow_any_unimported = true
 enable_error_code = [
     "deprecated",
+    "exhaustive-match",
     "ignore-without-code",
     "redundant-expr",
     "truthy-bool",
@@ -116,18 +122,18 @@ module = ["xdist.*"]
 ignore_missing_imports = true
 
 [tool.deptry]
-extend_exclude = [
-    "docs",
-    "tests",
-    "scripts",
-]
+extend_exclude = ["docs", "tests"]
 
 [tool.deptry.per_rule_ignores]
 DEP001 = ["tomllib"]
 
 [tool.pytest.ini_options]
 addopts = "--doctest-modules"
-filterwarnings = ["error"]
+filterwarnings = [
+    "error",
+    # Triggered by PyPy 3.11 on Windows.
+    "default:check_home argument is deprecated and ignored:DeprecationWarning",
+]
 norecursedirs = ["fixtures*"]
 
 [tool.ruff]

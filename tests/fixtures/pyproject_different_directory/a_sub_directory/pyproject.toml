@@ -1,0 +1,26 @@
+[project]
+name = "foo"
+version = "0.0.1"
+requires-python = ">=3.10"
+dependencies = [
+    "arrow==1.4.0",
+    "click==8.1.8",
+    "isort==7.0.0",
+    "pkginfo==1.12.1.2",
+    "requests==2.32.5",
+    "urllib3==2.5.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "black==25.9.0",
+    "mypy==1.18.2",
+]
+test = ["pytest==8.4.2"]
+
+[build-system]
+requires = ["setuptools>=61.0.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.deptry.per_rule_ignores]
+DEP002 = ["pkginfo"]

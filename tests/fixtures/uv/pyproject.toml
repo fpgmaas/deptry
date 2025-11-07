@@ -1,0 +1,37 @@
+[project]
+name = "foo"
+version = "0.0.1"
+requires-python = ">=3.10"
+dependencies = [
+    "arrow==1.4.0",
+    "pkginfo==1.12.1.2",
+    "urllib3==2.5.0",
+]
+
+[project.optional-dependencies]
+foo = [
+    "click==8.1.8",
+    "isort==7.0.0",
+]
+bar = ["requests==2.32.5"]
+
+[dependency-groups]
+foo = [
+    "certifi==2025.10.5",
+    "idna==3.11",
+]
+all = [{include-group = "foo"}, "packaging==25.0"]
+
+[tool.uv]
+dev-dependencies = [
+    "black==25.9.0",
+    "mypy==1.18.2",
+    "pytest==8.4.2",
+    "pytest-cov==7.0.0",
+]
+
+[tool.deptry]
+pep621_dev_dependency_groups = ["bar"]
+
+[tool.deptry.per_rule_ignores]
+DEP002 = ["pkginfo"]

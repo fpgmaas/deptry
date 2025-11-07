@@ -20,6 +20,9 @@
 
     // https://docs.renovatebot.com/presets-customManagers/#custommanagersgithubactionsversions
     "customManagers:githubActionsVersions",
+
+    // https://docs.renovatebot.com/presets-helpers/#helperspingithubactiondigests
+    "helpers:pinGitHubActionDigests",
   ],
 
   // https://docs.renovatebot.com/configuration-options/#ignorepresets
@@ -50,8 +53,15 @@
 
   // https://docs.renovatebot.com/configuration-options/#packagerules
   packageRules: [
+    // Ensure that all Ruff Rust dependencies are updated together, as they use a single versioning.
     {
-      // Create dedicated branch to update dependencies in tests.
+      matchDatasources: ["github-tags"],
+      matchFileNames: ["Cargo.toml"],
+      matchPackageNames: ["astral-sh/ruff"],
+      groupName: "Ruff Rust",
+    },
+    // Create dedicated branch to update dependencies in tests.
+    {
       matchFileNames: ["tests/**"],
       commitMessageTopic: "dependencies in tests",
       semanticCommitType: "test",
@@ -65,6 +75,26 @@
         enabled: false,
       },
       automerge: true,
+    },
+    {
+      matchFileNames: ["tests/**"],
+      matchPackageNames: ["click"],
+      // 8.2.0 dropped support for Python 3.9.
+      allowedVersions: "<8.2",
+    },
+    {
+      matchFileNames: ["tests/**"],
+      matchPackageNames: ["matplotlib"],
+      // 3.10.0 dropped support for Python 3.9.
+      allowedVersions: "<3.10",
+    },
+    {
+      matchFileNames: ["tests/**"],
+      matchPackageNames: ["asyncio"],
+      // We use this dependency in tests to test DEP005 rule. 4.0.0 is now a
+      // noop (https://discuss.python.org/t/no-op-the-asyncio-package-on-pypi/101218), so we need to depend on the
+      // previous version to properly flag the dependency.
+      allowedVersions: "<4",
     },
     {
       matchPackageNames: ["uv", "astral-sh/uv-pre-commit"],

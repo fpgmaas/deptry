@@ -18,7 +18,7 @@ COLORS = {
     "RED": "\033[31m",
     "RESET": "\033[m",
 }
-COLORS_NOOP = {color: "" for color in COLORS}
+COLORS_NOOP = dict.fromkeys(COLORS, "")
 
 
 @dataclass

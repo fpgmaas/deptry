@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import logging
-import re
 import sys
 from pathlib import Path
 from unittest import mock
@@ -11,10 +10,8 @@ import pytest
 from deptry.core import Core
 from deptry.dependency import Dependency
 from deptry.dependency_getter.base import DependenciesExtract
-from deptry.exceptions import UnsupportedPythonVersionError
 from deptry.imports.location import Location
 from deptry.module import Module
-from deptry.stdlibs import STDLIBS_PYTHON
 from deptry.violations import (
     DEP001MissingDependencyViolation,
     DEP002UnusedDependencyViolation,
@@ -136,14 +133,8 @@ def test__get_local_modules(
         )
 
 
-@pytest.mark.skipif(sys.version_info >= (3, 10), reason="mapping is only used for Python < 3.10")
-def test__get_stdlib_packages_without_stdlib_module_names() -> None:
-    assert Core._get_standard_library_modules() == STDLIBS_PYTHON[f"{sys.version_info[0]}{sys.version_info[1]}"]
-
-
-@pytest.mark.skipif(sys.version_info < (3, 10), reason="only Python >= 3.10 has sys.stdlib_module_names")
 def test__get_stdlib_packages_with_stdlib_module_names() -> None:
-    assert Core._get_standard_library_modules() == sys.stdlib_module_names  # type: ignore[attr-defined, unused-ignore]
+    assert Core._get_standard_library_modules() == sys.stdlib_module_names
 
 
 @pytest.mark.parametrize(
@@ -156,36 +147,10 @@ def test__get_stdlib_packages_with_stdlib_module_names() -> None:
         (sys.version_info[0], sys.version_info[1] + 1, 0, "candidate", 1),
     ],
 )
-@pytest.mark.skipif(sys.version_info < (3, 10), reason="only Python >= 3.10 has sys.stdlib_module_names")
 def test__get_stdlib_packages_with_stdlib_module_names_future_version(version_info: tuple[int | str, ...]) -> None:
     """Test that future versions of Python not yet tested on the CI will also work."""
     with mock.patch("sys.version_info", (sys.version_info[0], sys.version_info[1] + 1, 0)):
-        assert Core._get_standard_library_modules() == sys.stdlib_module_names  # type: ignore[attr-defined, unused-ignore]
-
-
-@pytest.mark.parametrize(
-    "version_info",
-    [
-        (2, 1, 0),
-        (2, 7, 0),
-        (2, 7, 15),
-        (3, 6, 0),
-        (3, 6, 7),
-        (3, 6, 7, "candidate", 1),
-    ],
-)
-def test__get_stdlib_packages_unsupported(version_info: tuple[int | str, ...]) -> None:
-    """It should raise an error when Python version is unsupported."""
-    with (
-        mock.patch("sys.version_info", version_info),
-        pytest.raises(
-            UnsupportedPythonVersionError,
-            match=re.escape(
-                f"Python version {version_info[0]}.{version_info[1]} is not supported. Only versions >= 3.9 are supported."
-            ),
-        ),
-    ):
-        Core._get_standard_library_modules()
+        assert Core._get_standard_library_modules() == sys.stdlib_module_names
 
 
 def test__exit_with_violations() -> None:

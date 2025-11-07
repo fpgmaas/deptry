@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "foo"
+version = "0.0.1"
+requires-python = ">=3.10"
+dynamic = ["dependencies", "optional-dependencies"]
+
+[tool.setuptools.dynamic]
+dependencies = { file = ["requirements.txt", "requirements-2.txt"] }
+
+[tool.setuptools.dynamic.optional-dependencies]
+# Both strings and list of strings are accepted.
+cli = { file = "cli-requirements.txt" }
+dev = { file = ["dev-requirements.txt"] }
+
+[tool.deptry]
+pep621_dev_dependency_groups = ["dev"]

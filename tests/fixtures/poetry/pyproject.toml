@@ -1,0 +1,33 @@
+[tool.poetry]
+name = "foo"
+version = "0.0.1"
+description = ""
+authors = []
+
+[tool.poetry.dependencies]
+python = ">=3.10"
+arrow = "1.4.0"
+pkginfo = "1.12.1.2"
+urllib3 = "2.5.0"
+
+click = { version = "8.1.8", optional = true }
+isort = { version = "7.0.0", optional = true }
+requests = { version = "2.32.5", optional = true }
+
+[tool.poetry.extras]
+foo = [
+    "click",
+    "isort",
+]
+bar = ["requests"]
+
+[tool.poetry.group.lint.dependencies]
+black = "25.9.0"
+mypy = "1.18.2"
+
+[tool.poetry.group.test.dependencies]
+pytest = "8.4.2"
+pytest-cov = "7.0.0"
+
+[tool.deptry.per_rule_ignores]
+DEP002 = ["pkginfo"]

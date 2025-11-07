@@ -2,6 +2,7 @@ import typing
 from os import chdir, walk
 from pathlib import Path
 from typing import List, TYPE_CHECKING
+import typing as t
 from importlib import import_module
 from importlib import import_module as im
 import importlib
@@ -30,6 +31,9 @@ if TYPE_CHECKING:
 
 if typing.TYPE_CHECKING:
     import mypy_boto3_sagemaker
+
+if t.TYPE_CHECKING:
+    import mypy_boto3_sagemaker2
 
 try:
     import click
