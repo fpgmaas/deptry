@@ -4,7 +4,7 @@ version = "0.0.1"
 description = "A command line utility to check for unused, missing and transitive dependencies in a Python project."
 authors = [{ name = "Florian Maas", email = "fpgmaas@gmail.com" }]
 maintainers = [{ name = "Mathieu Kniewallner", email = "mathieu.kniewallner@gmail.com" }]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 license = { file = "LICENSE" }
 readme = "README.md"
 classifiers = [
@@ -14,7 +14,6 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: Software Development :: Quality Assurance",
     "Programming Language :: Python",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -103,7 +102,7 @@ source = ["python/deptry"]
 
 [tool.mypy]
 mypy_path = "python"
-files = ["python/deptry", "scripts", "tests"]
+files = ["python/deptry", "tests"]
 explicit_package_bases = true
 exclude = ["tests/fixtures"]
 disallow_any_unimported = true
@@ -123,11 +122,7 @@ module = ["xdist.*"]
 ignore_missing_imports = true
 
 [tool.deptry]
-extend_exclude = [
-    "docs",
-    "tests",
-    "scripts",
-]
+extend_exclude = ["docs", "tests"]
 
 [tool.deptry.per_rule_ignores]
 DEP001 = ["tomllib"]

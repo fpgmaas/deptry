@@ -7,12 +7,10 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from deptry.dependency_getter.builder import DependencyGetterBuilder
-from deptry.exceptions import UnsupportedPythonVersionError
 from deptry.imports.extract import get_imported_modules_from_list_of_files
 from deptry.module import ModuleBuilder, ModuleLocations
 from deptry.python_file_finder import get_all_python_files_in
 from deptry.reporters import JSONReporter, TextReporter
-from deptry.stdlibs import STDLIBS_PYTHON
 from deptry.violations.finder import find_violations
 
 if TYPE_CHECKING:
@@ -139,13 +137,7 @@ class Core:
 
     @staticmethod
     def _get_standard_library_modules() -> frozenset[str]:
-        if sys.version_info[:2] >= (3, 10):
-            return sys.stdlib_module_names
-
-        try:  # type: ignore[unreachable, unused-ignore]
-            return STDLIBS_PYTHON[f"{sys.version_info[0]}{sys.version_info[1]}"]
-        except KeyError as e:
-            raise UnsupportedPythonVersionError((sys.version_info[0], sys.version_info[1])) from e
+        return sys.stdlib_module_names
 
     def _log_config(self) -> None:
         logging.debug("Running with the following configuration:")
