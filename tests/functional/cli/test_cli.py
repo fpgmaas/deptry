@@ -624,6 +624,90 @@ def test_cli_with_json_output(poetry_venv_factory: PoetryVenvFactory) -> None:
         ]
 
 
+@pytest.mark.xdist_group(name=Project.EXAMPLE)
+def test_cli_with_github_output(poetry_venv_factory: PoetryVenvFactory) -> None:
+    with poetry_venv_factory(Project.EXAMPLE) as virtual_env:
+        result = virtual_env.run("deptry . --github-output")
+
+        expected_output = [
+            "Scanning 2 files...",
+            "",
+            stylize(
+                "{BOLD}{file}{RESET}{CYAN}:{RESET} {BOLD}{RED}DEP002{RESET} 'isort' defined as a dependency but not"
+                " used in the codebase",
+                file=Path("pyproject.toml"),
+            ),
+            stylize(
+                "{BOLD}{file}{RESET}{CYAN}:{RESET} {BOLD}{RED}DEP002{RESET} 'requests' defined as a dependency but"
+                " not used in the codebase",
+                file=Path("pyproject.toml"),
+            ),
+            stylize(
+                "{BOLD}{file}{RESET}{CYAN}:{RESET}4{CYAN}:{RESET}8{CYAN}:{RESET} {BOLD}{RED}DEP004{RESET} 'black'"
+                " imported but declared as a dev dependency",
+                file=Path("src/main.py"),
+            ),
+            stylize(
+                "{BOLD}{file}{RESET}{CYAN}:{RESET}6{CYAN}:{RESET}8{CYAN}:{RESET} {BOLD}{RED}DEP001{RESET} 'white'"
+                " imported but missing from the dependency definitions",
+                file=Path("src/main.py"),
+            ),
+            stylize("{BOLD}{RED}Found 4 dependency issues.{RESET}"),
+            "",
+            "For more information, see the documentation: https://deptry.com/",
+            "::error file=pyproject.toml,line=1,title=DEP002::'isort' defined as a dependency but not used in the codebase",
+            "::error file=pyproject.toml,line=1,title=DEP002::'requests' defined as a dependency but not used in the codebase",
+            "::error file=src/main.py,line=4,col=8,title=DEP004::'black' imported but declared as a dev dependency",
+            "::error file=src/main.py,line=6,col=8,title=DEP001::'white' imported but missing from the dependency definitions",
+            "",
+        ]
+
+        assert result.returncode == 1
+        assert result.stderr == "\n".join(expected_output)
+
+
+@pytest.mark.xdist_group(name=Project.EXAMPLE)
+def test_cli_with_github_output_warning_errors(poetry_venv_factory: PoetryVenvFactory) -> None:
+    with poetry_venv_factory(Project.EXAMPLE) as virtual_env:
+        result = virtual_env.run("deptry . --github-output --github-warning-errors DEP001,DEP004")
+
+        expected_output = [
+            "Scanning 2 files...",
+            "",
+            stylize(
+                "{BOLD}{file}{RESET}{CYAN}:{RESET} {BOLD}{RED}DEP002{RESET} 'isort' defined as a dependency but not"
+                " used in the codebase",
+                file=Path("pyproject.toml"),
+            ),
+            stylize(
+                "{BOLD}{file}{RESET}{CYAN}:{RESET} {BOLD}{RED}DEP002{RESET} 'requests' defined as a dependency but"
+                " not used in the codebase",
+                file=Path("pyproject.toml"),
+            ),
+            stylize(
+                "{BOLD}{file}{RESET}{CYAN}:{RESET}4{CYAN}:{RESET}8{CYAN}:{RESET} {BOLD}{RED}DEP004{RESET} 'black'"
+                " imported but declared as a dev dependency",
+                file=Path("src/main.py"),
+            ),
+            stylize(
+                "{BOLD}{file}{RESET}{CYAN}:{RESET}6{CYAN}:{RESET}8{CYAN}:{RESET} {BOLD}{RED}DEP001{RESET} 'white'"
+                " imported but missing from the dependency definitions",
+                file=Path("src/main.py"),
+            ),
+            stylize("{BOLD}{RED}Found 4 dependency issues.{RESET}"),
+            "",
+            "For more information, see the documentation: https://deptry.com/",
+            "::error file=pyproject.toml,line=1,title=DEP002::'isort' defined as a dependency but not used in the codebase",
+            "::error file=pyproject.toml,line=1,title=DEP002::'requests' defined as a dependency but not used in the codebase",
+            "::warning file=src/main.py,line=4,col=8,title=DEP004::'black' imported but declared as a dev dependency",
+            "::warning file=src/main.py,line=6,col=8,title=DEP001::'white' imported but missing from the dependency definitions",
+            "",
+        ]
+
+        assert result.returncode == 1
+        assert result.stderr == "\n".join(expected_output)
+
+
 def test_cli_help() -> None:
     result = CliRunner().invoke(cli, "--help")
 
