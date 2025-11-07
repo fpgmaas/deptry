@@ -305,7 +305,7 @@ def cli(
         known_first_party=known_first_party,
         json_output=json_output,
         github_output=github_output,
-        github_warning_errors=list(github_warning_errors),
+        github_warning_errors=github_warning_errors,
         package_module_name_map=package_module_name_map,
         pep621_dev_dependency_groups=pep621_dev_dependency_groups,
         experimental_namespace_package=experimental_namespace_package,
