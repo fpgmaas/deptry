@@ -23,15 +23,15 @@ violation_instance = DEP001MissingDependencyViolation(
 
 expected_warning = _build_workflow_command(
     "warning",
+    "DEP001",
+    "'foo' imported but missing from the dependency definitions",
     "foo.py",
-    1,
+    line=1,
     column=2,
-    title="DEP001",
-    message="'foo' imported but missing from the dependency definitions",
 )
 
 expected_error = _build_workflow_command(
-    "error", "foo.py", 1, column=2, title="DEP001", message="'foo' imported but missing from the dependency definitions"
+    "error", "DEP001", "'foo' imported but missing from the dependency definitions", "foo.py", line=1, column=2
 )
 
 
@@ -57,6 +57,6 @@ def test_build_workflow_command_escaping() -> None:
     # Directly test _build_workflow_command with characters needing escape.
     message = "Error % occurred\r\nNew line"
     escaped_message = _escape(message)
-    command = _build_workflow_command("warning", "file.py", 10, column=2, title="TEST", message=message)
+    command = _build_workflow_command("warning", "TEST", message, "file.py", line=10, column=2)
     assert "::warning file=file.py,line=10,col=2,title=TEST::" in command
     assert escaped_message in command

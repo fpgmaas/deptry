@@ -30,27 +30,27 @@ class GithubReporter(Reporter):
 
         ret = _build_workflow_command(
             annotation_severity,
+            violation.error_code,
+            violation.get_error_message(),
             str(file_name),
             # For dependency files (like "pyproject.toml"), we don't extract a line. Setting the first line in that case
             # allows a comment to be added in GitHub, even if it's not on the proper line, otherwise it doesn't appear
             # at all.
             line=violation.location.line or 1,
             column=violation.location.column,
-            title=violation.error_code,
-            message=violation.get_error_message(),
         )
         logging.info(ret)
 
 
 def _build_workflow_command(
     command_name: str,
+    title: str,
+    message: str,
     file: str,
     line: int,
     end_line: int | None = None,
     column: int | None = None,
     end_column: int | None = None,
-    title: str | None = None,
-    message: str | None = None,
 ) -> str:
     """Build a command to annotate a workflow."""
     result = f"::{command_name} "
@@ -64,12 +64,9 @@ def _build_workflow_command(
         ("title", title),
     ]
 
-    result = result + ",".join(f"{k}={v}" for k, v in entries if v is not None)
+    result += ",".join(f"{k}={v}" for k, v in entries if v is not None)
 
-    if message is not None:
-        result = result + "::" + _escape(message)
-
-    return result
+    return f"{result}::{_escape(message)}"
 
 
 def _escape(s: str) -> str:
