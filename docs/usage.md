@@ -384,35 +384,48 @@ json_output = "deptry_report.txt"
 deptry . --json-output deptry_report.txt
 ```
 
-#### GitHub Reporter
+#### GitHub output
 
-When enabled with the `--github-output` flag, deptry prints GitHub Actions annotations for detected dependency issues.
+Print [GitHub Actions annotations](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-commands) in the console when dependency issues are detected.
 
 Annotations follow this format:
-```shell
-::error file=<file>,line=<line>,col=<column>,title=<error_code>::<error message>
-```
-By default, violations are annotated as errors. To report specific violation codes as warnings instead, use the `--github-warning-errors` option. For example, to treat violations with code `DEP001` as warnings:
-```shell
-deptry . --github-output --github-warning-errors DEP001
-```
-When a violation's error code is included in the warning list, the annotation uses the `warning` severity.
 
-- Type: `bool` (for `github_output`), `list[str]` (for `github_warning_errors`)
-- Default: `False` (for `github_output`), `[]` (for `github_warning_errors`)
-- `pyproject.toml` option names: `github_output`, `github_warning_errors`
-- CLI option names: `--github-output`, `--github-warning-errors`
+```shell
+::error file=<file>,line=<line>,col=<column>,title=<error_code>::<error_message>
+```
 
+By default, violations are annotated as errors. To report specific violation codes as warnings instead, use the [GitHub warning errors](#github-warning-errors) option.
+
+- Type: `bool`
+- Default: `False`
+- `pyproject.toml` option name: `github_output`
+- CLI option name: `--github-output`
 - `pyproject.toml` example:
 ```toml
 [tool.deptry]
 github_output = true
-github_warning_errors = ["DEP001"]
 ```
-
 - CLI example:
 ```shell
-deptry . --github-output --github-warning-errors DEP001
+deptry . --github-output
+```
+
+#### GitHub warning errors
+
+When [GitHub output](#github-output) option is enabled, this sets the severity of messages to `warning` instead of `error` for the specified error codes.
+
+- Type: `list[str]`
+- Default: `[]`
+- `pyproject.toml` option name: `github_warning_errors`
+- CLI option name: `--github-warning-errors`
+- `pyproject.toml` example:
+```toml
+[tool.deptry]
+github_warning_errors = ["DEP001", "DEP002"]
+```
+- CLI example:
+```shell
+deptry . --github-warning-errors DEP001,DEP002
 ```
 
 #### Package module name map
