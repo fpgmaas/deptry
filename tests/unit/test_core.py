@@ -127,7 +127,7 @@ def test__get_local_modules(
                 using_default_requirements_files=True,
                 experimental_namespace_package=experimental_namespace_package,
                 github_output=False,
-                github_warning_errors=[],
+                github_warning_errors=(),
             )._get_local_modules()
             == expected
         )
