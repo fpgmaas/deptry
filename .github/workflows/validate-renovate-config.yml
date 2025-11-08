@@ -3,14 +3,14 @@ name: validate-renovate-config
 on:
   pull_request:
     paths:
-      - ".github/workflows/validate-renovate-config.yml"
-      - ".github/renovate.json5"
+      - '.github/workflows/validate-renovate-config.yml'
+      - '.github/renovate.json5'
   push:
     branches: [main]
 
 env:
   # renovate: datasource=node depName=node versioning=node
-  NODE_VERSION: "24"
+  NODE_VERSION: '24'
 
 permissions: {}
 

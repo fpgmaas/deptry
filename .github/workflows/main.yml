@@ -31,7 +31,7 @@ jobs:
         with:
           version: ${{ env.UV_VERSION }}
           enable-cache: true
-          cache-dependency-glob: "uv.lock"
+          cache-dependency-glob: 'uv.lock'
 
       - name: Install Python
         uses: actions/setup-python@e797f83bcb11b83ae66e0230d6156d7c80228e7c # v6.0.0
@@ -39,6 +39,8 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Install Python dependencies
+        # We want to install all groups here to make sure that deptry has access to all dependencies for the inspection,
+        # even development ones.
         run: uv sync --frozen
 
       - name: Setup Rust toolchain
@@ -55,6 +57,8 @@ jobs:
         env:
           # renovate: datasource=pypi depName=pre-commit
           PRE_COMMIT_VERSION: '4.3.0'
+          # Skip mypy hook, as mypy is run in "tests" job.
+          SKIP: mypy
 
       - name: Inspect dependencies with deptry
         run: uv run deptry python
@@ -90,7 +94,7 @@ jobs:
         with:
           version: ${{ env.UV_VERSION }}
           enable-cache: true
-          cache-dependency-glob: "uv.lock"
+          cache-dependency-glob: 'uv.lock'
           cache-suffix: ${{ matrix.python-version }}
 
       - name: Install Python
@@ -99,17 +103,17 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Install Python dependencies
-        run: uv sync --frozen --group test --group typing
+        run: uv sync --frozen --no-default-groups --group test --group typing
 
       - name: Check typing
-        run: uv run mypy
+        run: uv run --no-default-groups mypy
         if: ${{ matrix.os.name == 'linux' }}
 
       - name: Run unit tests
-        run: uv run pytest tests/unit --cov --cov-config=pyproject.toml --cov-report=xml
+        run: uv run --no-default-groups pytest tests/unit --cov --cov-config=pyproject.toml --cov-report=xml
 
       - name: Run functional tests
-        run: uv run pytest tests/functional -n auto --dist loadgroup
+        run: uv run --no-default-groups pytest tests/functional -n auto --dist loadgroup
         env:
           PYTHONIOENCODING: 'utf-8'
 
@@ -132,7 +136,7 @@ jobs:
         with:
           version: ${{ env.UV_VERSION }}
           enable-cache: true
-          cache-dependency-glob: "uv.lock"
+          cache-dependency-glob: 'uv.lock'
 
       - name: Install Python
         uses: actions/setup-python@e797f83bcb11b83ae66e0230d6156d7c80228e7c # v6.0.0

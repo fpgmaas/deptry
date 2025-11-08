@@ -6,9 +6,6 @@ resolution-markers = [
     "implementation_name != 'cpython'",
 ]
 
-[manifest]
-overrides = [{ name = "findpython", specifier = "==0.7.0" }]
-
 [[package]]
 name = "anyio"
 version = "4.11.0"
