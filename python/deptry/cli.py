@@ -218,6 +218,21 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
     show_default=True,
 )
 @click.option(
+    "--github-output",
+    "-go",
+    is_flag=True,
+    help="""If specified, dependency issues found will be written in the format of GitHub annotation.""",
+)
+@click.option(
+    "--github-warning-errors",
+    "-gwe",
+    type=COMMA_SEPARATED_TUPLE,
+    help="""A comma-separated list of error codes that should be printed as warnings.
+    If not specified, all violations will be reported as errors.""",
+    default=(),
+    show_default=False,
+)
+@click.option(
     "--package-module-name-map",
     "-pmnm",
     type=COMMA_SEPARATED_MAPPING,
@@ -254,6 +269,8 @@ def cli(
     requirements_files_dev: tuple[str, ...],
     known_first_party: tuple[str, ...],
     json_output: str,
+    github_output: bool,
+    github_warning_errors: tuple[str, ...],
     package_module_name_map: MutableMapping[str, tuple[str, ...]],
     pep621_dev_dependency_groups: tuple[str, ...],
     experimental_namespace_package: bool,
@@ -287,6 +304,8 @@ def cli(
         requirements_files_dev=requirements_files_dev,
         known_first_party=known_first_party,
         json_output=json_output,
+        github_output=github_output,
+        github_warning_errors=github_warning_errors,
         package_module_name_map=package_module_name_map,
         pep621_dev_dependency_groups=pep621_dev_dependency_groups,
         experimental_namespace_package=experimental_namespace_package,

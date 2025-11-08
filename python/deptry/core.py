@@ -10,7 +10,7 @@ from deptry.dependency_getter.builder import DependencyGetterBuilder
 from deptry.imports.extract import get_imported_modules_from_list_of_files
 from deptry.module import ModuleBuilder, ModuleLocations
 from deptry.python_file_finder import get_all_python_files_in
-from deptry.reporters import JSONReporter, TextReporter
+from deptry.reporters import GithubReporter, JSONReporter, TextReporter
 from deptry.violations.finder import find_violations
 
 if TYPE_CHECKING:
@@ -40,6 +40,8 @@ class Core:
     package_module_name_map: Mapping[str, tuple[str, ...]]
     pep621_dev_dependency_groups: tuple[str, ...]
     experimental_namespace_package: bool
+    github_output: bool
+    github_warning_errors: tuple[str, ...]
 
     def run(self) -> None:
         self._log_config()
@@ -86,6 +88,9 @@ class Core:
 
         if self.json_output:
             JSONReporter(violations, self.json_output).report()
+
+        if self.github_output:
+            GithubReporter(violations, warning_ids=self.github_warning_errors).report()
 
         self._exit(violations)
 
