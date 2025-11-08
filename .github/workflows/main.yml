@@ -57,6 +57,8 @@ jobs:
         env:
           # renovate: datasource=pypi depName=pre-commit
           PRE_COMMIT_VERSION: '4.3.0'
+          # Skip mypy hook, as mypy is run in "tests" job.
+          SKIP: mypy
 
       - name: Inspect dependencies with deptry
         run: uv run deptry python

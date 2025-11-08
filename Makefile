@@ -7,8 +7,6 @@ install: ## Install the uv environment.
 check: ## Run code quality tools.
 	@echo "🚀 Linting code: Running pre-commit"
 	@pre-commit run -a
-	@echo "🚀 Static type checking: Running mypy"
-	@uv run mypy
 	@echo "🚀 Checking for dependency issues: Running deptry"
 	@uv run deptry python
 

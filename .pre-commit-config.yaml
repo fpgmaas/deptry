@@ -16,6 +16,16 @@ repos:
         args: [--exit-non-zero-on-fix]
       - id: ruff-format
 
+  - repo: local
+    hooks:
+      - id: mypy
+        name: mypy
+        exclude: ^tests/fixtures
+        entry: uv run mypy
+        language: system
+        types: [python]
+        require_serial: true
+
   - repo: https://github.com/astral-sh/uv-pre-commit
     rev: "0.9.8"
     hooks:
