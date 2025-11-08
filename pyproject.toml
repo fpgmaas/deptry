@@ -60,10 +60,6 @@ changelog = "https://github.com/fpgmaas/deptry/blob/main/CHANGELOG.md"
 [project.scripts]
 deptry = "deptry.cli:deptry"
 
-[tool.uv]
-# Incompatibility between Poetry (requiring < 0.7.0) and PDM (requiring >= 0.7.0).
-override-dependencies = ["findpython==0.7.0"]
-
 [build-system]
 requires = ["maturin>=1.5,<2.0"]
 build-backend = "maturin"
