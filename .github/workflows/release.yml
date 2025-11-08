@@ -8,7 +8,7 @@ on:
 env:
   PYTHON_VERSION: '3.14'
   # renovate: datasource=pypi depName=uv
-  UV_VERSION: '0.9.7'
+  UV_VERSION: '0.9.8'
 
 permissions: {}
 
