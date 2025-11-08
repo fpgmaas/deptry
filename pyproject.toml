@@ -60,6 +60,9 @@ changelog = "https://github.com/fpgmaas/deptry/blob/main/CHANGELOG.md"
 [project.scripts]
 deptry = "deptry.cli:deptry"
 
+[tool.uv]
+default-groups = "all"
+
 [build-system]
 requires = ["maturin>=1.5,<2.0"]
 build-backend = "maturin"
