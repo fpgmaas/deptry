@@ -205,7 +205,7 @@ def test_import_parser_for_ipynb_errors(tmp_path: Path, caplog: LogCaptureFixtur
             ]) == {"numpy": [Location(file=Path("notebook_ok.ipynb"), line=1, column=8)]}
 
         assert re.search(
-            r"WARNING  .*:shared.rs:\d+ Warning: Skipping processing of notebook_with_syntax_error.ipynb because of the following error: \"SyntaxError: Expected ',', found name at byte range 9..23\".",
+            r"WARNING  .*:shared.rs:\d+ Warning: Skipping processing of notebook_with_syntax_error.ipynb because of the following error: \"SyntaxError: Expected `,`, found name at byte range 9..23\".",
             caplog.text,
         )
 
