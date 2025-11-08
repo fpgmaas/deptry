@@ -655,10 +655,10 @@ def test_cli_with_github_output(poetry_venv_factory: PoetryVenvFactory) -> None:
             stylize("{BOLD}{RED}Found 4 dependency issues.{RESET}"),
             "",
             "For more information, see the documentation: https://deptry.com/",
-            "::error file=pyproject.toml,line=1,title=DEP002::'isort' defined as a dependency but not used in the codebase",
-            "::error file=pyproject.toml,line=1,title=DEP002::'requests' defined as a dependency but not used in the codebase",
-            "::error file=src/main.py,line=4,col=8,title=DEP004::'black' imported but declared as a dev dependency",
-            "::error file=src/main.py,line=6,col=8,title=DEP001::'white' imported but missing from the dependency definitions",
+            f"::error file={Path('pyproject.toml')},line=1,title=DEP002::'isort' defined as a dependency but not used in the codebase",
+            f"::error file={Path('pyproject.toml')},line=1,title=DEP002::'requests' defined as a dependency but not used in the codebase",
+            f"::error file={Path('src/main.py')},line=4,col=8,title=DEP004::'black' imported but declared as a dev dependency",
+            f"::error file={Path('src/main.py')},line=6,col=8,title=DEP001::'white' imported but missing from the dependency definitions",
             "",
         ]
 
