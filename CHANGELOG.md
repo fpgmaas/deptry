@@ -1,5 +1,29 @@
 # Changelog
 
+## 0.24.0 - 2025-11-09
+
+### Breaking changes
+
+#### Python 3.9 support dropped
+
+Support for Python 3.9 has been dropped, as it has reached its end of life.
+
+#### PyPy 3.10 support dropped, 3.11 added
+
+Support for PyPy 3.10 has been dropped, since it is unsupported. We now only test against PyPy 3.11, and only publish wheels for this version.
+
+### Features
+
+* Add GitHub Actions annotations reporter ([#1059](https://github.com/fpgmaas/deptry/pull/1059))
+* Add support for Python 3.14 ([#1224](https://github.com/fpgmaas/deptry/pull/1224))
+* Drop support for Python 3.9 ([#1328](https://github.com/fpgmaas/deptry/pull/1328))
+* Publish wheels for PyPy 3.11 and drop 3.10 ([#1227](https://github.com/fpgmaas/deptry/pull/1227))
+
+### Full Changelog
+
+https://github.com/fpgmaas/deptry/compare/0.23.1...0.24.0
+
+
 ## 0.23.1 - 2025-07-30
 
 ### Bug Fixes
