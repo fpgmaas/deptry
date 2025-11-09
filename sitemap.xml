@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+         <loc>https://deptry.com/</loc>
+         <lastmod>2025-11-09</lastmod>
+    </url>
+    <url>
+         <loc>https://deptry.com/CHANGELOG/</loc>
+         <lastmod>2025-11-09</lastmod>
+    </url>
+    <url>
+         <loc>https://deptry.com/contributing/</loc>
+         <lastmod>2025-11-09</lastmod>
+    </url>
+    <url>
+         <loc>https://deptry.com/rules-violations/</loc>
+         <lastmod>2025-11-09</lastmod>
+    </url>
+    <url>
+         <loc>https://deptry.com/supported-dependency-managers/</loc>
+         <lastmod>2025-11-09</lastmod>
+    </url>
+    <url>
+         <loc>https://deptry.com/usage/</loc>
+         <lastmod>2025-11-09</lastmod>
+    </url>
+</urlset>
