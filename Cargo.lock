@@ -659,7 +659,7 @@ checksum = "7a2d987857b319362043e95f5353c0535c1f58eec5336fdfcf626430af7def58"
 [[package]]
 name = "ruff_python_ast"
 version = "0.0.0"
-source = "git+https://github.com/astral-sh/ruff?tag=0.14.4#c7ff9826d614a34a940c924f494ea98dc1030445"
+source = "git+https://github.com/astral-sh/ruff?tag=0.14.5#87dafb8787278c04e0184c4f8fe1acaffa0f640f"
 dependencies = [
  "aho-corasick",
  "bitflags",
@@ -678,7 +678,7 @@ dependencies = [
 [[package]]
 name = "ruff_python_parser"
 version = "0.0.0"
-source = "git+https://github.com/astral-sh/ruff?tag=0.14.4#c7ff9826d614a34a940c924f494ea98dc1030445"
+source = "git+https://github.com/astral-sh/ruff?tag=0.14.5#87dafb8787278c04e0184c4f8fe1acaffa0f640f"
 dependencies = [
  "bitflags",
  "bstr",
@@ -698,7 +698,7 @@ dependencies = [
 [[package]]
 name = "ruff_python_trivia"
 version = "0.0.0"
-source = "git+https://github.com/astral-sh/ruff?tag=0.14.4#c7ff9826d614a34a940c924f494ea98dc1030445"
+source = "git+https://github.com/astral-sh/ruff?tag=0.14.5#87dafb8787278c04e0184c4f8fe1acaffa0f640f"
 dependencies = [
  "itertools",
  "ruff_source_file",
@@ -709,7 +709,7 @@ dependencies = [
 [[package]]
 name = "ruff_source_file"
 version = "0.0.0"
-source = "git+https://github.com/astral-sh/ruff?tag=0.14.4#c7ff9826d614a34a940c924f494ea98dc1030445"
+source = "git+https://github.com/astral-sh/ruff?tag=0.14.5#87dafb8787278c04e0184c4f8fe1acaffa0f640f"
 dependencies = [
  "memchr",
  "ruff_text_size",
@@ -718,7 +718,7 @@ dependencies = [
 [[package]]
 name = "ruff_text_size"
 version = "0.0.0"
-source = "git+https://github.com/astral-sh/ruff?tag=0.14.4#c7ff9826d614a34a940c924f494ea98dc1030445"
+source = "git+https://github.com/astral-sh/ruff?tag=0.14.5#87dafb8787278c04e0184c4f8fe1acaffa0f640f"
 dependencies = [
  "get-size2",
 ]
