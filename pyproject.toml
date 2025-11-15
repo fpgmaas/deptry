@@ -40,7 +40,7 @@ docs = [
 test = [
     "pdm==2.26.1",
     "poetry==2.2.1",
-    "pytest==8.4.2",
+    "pytest==9.0.1",
     "pytest-cov==7.0.0",
     "pytest-xdist[psutil]==3.8.0",
 ]
@@ -126,14 +126,15 @@ extend_exclude = ["docs", "tests"]
 [tool.deptry.per_rule_ignores]
 DEP001 = ["tomllib"]
 
-[tool.pytest.ini_options]
-addopts = "--doctest-modules"
+[tool.pytest]
+addopts = ["--doctest-modules"]
 filterwarnings = [
     "error",
     # Triggered by PyPy 3.11 on Windows.
     "default:check_home argument is deprecated and ignored:DeprecationWarning",
 ]
 norecursedirs = ["fixtures*"]
+strict = true
 
 [tool.ruff]
 line-length = 120
