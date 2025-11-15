@@ -134,6 +134,7 @@ filterwarnings = [
     "default:check_home argument is deprecated and ignored:DeprecationWarning",
 ]
 norecursedirs = ["fixtures*"]
+strict = true
 
 [tool.ruff]
 line-length = 120
