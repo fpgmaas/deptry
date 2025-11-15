@@ -126,8 +126,8 @@ extend_exclude = ["docs", "tests"]
 [tool.deptry.per_rule_ignores]
 DEP001 = ["tomllib"]
 
-[tool.pytest.ini_options]
-addopts = "--doctest-modules"
+[tool.pytest]
+addopts = ["--doctest-modules"]
 filterwarnings = [
     "error",
     # Triggered by PyPy 3.11 on Windows.
