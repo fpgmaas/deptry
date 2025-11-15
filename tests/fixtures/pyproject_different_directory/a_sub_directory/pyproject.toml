@@ -13,10 +13,10 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-    "black==25.9.0",
+    "black==25.11.0",
     "mypy==1.18.2",
 ]
-test = ["pytest==8.4.2"]
+test = ["pytest==9.0.1"]
 
 [build-system]
 requires = ["setuptools>=61.0.0"]
