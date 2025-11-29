@@ -45,9 +45,8 @@ test = [
     "pytest-xdist[psutil]==3.8.0",
 ]
 typing = [
-    "mypy[faster-cache]==1.19.0; implementation_name == 'cpython'",
-    # orjson does not compile on PyPy.
-    "mypy==1.19.0; implementation_name != 'cpython'",
+    # `librt` that `mypy` depends on does not compile on PyPy (https://github.com/mypyc/librt/issues/16).
+    "mypy==1.19.0; implementation_name == 'cpython'",
     "types-colorama==0.4.15.20250801; sys_platform == 'win32'",
 ]
 
@@ -115,6 +114,7 @@ enable_error_code = [
 strict = true
 warn_unreachable = true
 pretty = true
+fixed_format_cache = true
 
 [[tool.mypy.overrides]]
 module = ["xdist.*"]
