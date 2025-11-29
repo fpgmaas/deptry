@@ -14,7 +14,7 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "black==25.11.0",
-    "mypy==1.18.2",
+    "mypy==1.19.0",
 ]
 test = ["pytest==9.0.1"]
 
