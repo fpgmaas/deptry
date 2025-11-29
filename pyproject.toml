@@ -45,9 +45,9 @@ test = [
     "pytest-xdist[psutil]==3.8.0",
 ]
 typing = [
-    "mypy[faster-cache]==1.18.2; implementation_name == 'cpython'",
+    "mypy[faster-cache]==1.19.0; implementation_name == 'cpython'",
     # orjson does not compile on PyPy.
-    "mypy==1.18.2; implementation_name != 'cpython'",
+    "mypy==1.19.0; implementation_name != 'cpython'",
     "types-colorama==0.4.15.20250801; sys_platform == 'win32'",
 ]
 
