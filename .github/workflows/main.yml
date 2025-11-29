@@ -107,7 +107,7 @@ jobs:
 
       - name: Check typing
         run: uv run --no-default-groups mypy
-        if: ${{ matrix.os.name == 'linux' }}
+        if: ${{ matrix.os.name == 'linux' && !startsWith(matrix.python-version, 'pypy') }}
 
       - name: Run unit tests
         run: uv run --no-default-groups pytest tests/unit --cov --cov-config=pyproject.toml --cov-report=xml
