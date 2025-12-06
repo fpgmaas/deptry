@@ -5,7 +5,7 @@ requires-python = ">=3.10"
 dependencies = [
     "arrow==1.4.0",
     "pkginfo==1.12.1.2",
-    "urllib3==2.5.0",
+    "urllib3==2.6.0",
 ]
 
 [project.optional-dependencies]
@@ -28,7 +28,7 @@ all = [{include-group = "foo"}, "packaging==25.0"]
 [tool.pdm.dev-dependencies]
 lint = [
     "black==25.11.0",
-    "mypy==1.18.2",
+    "mypy==1.19.0",
 ]
 test = [
     "pytest==9.0.1",
