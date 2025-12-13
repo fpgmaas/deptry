@@ -708,6 +708,29 @@ def test_cli_with_github_output_warning_errors(poetry_venv_factory: PoetryVenvFa
         assert result.stderr == "\n".join(expected_output)
 
 
+def test_cli_config_does_not_supress_output(poetry_venv_factory: PoetryVenvFactory) -> None:
+    """Regression test that ensures that passing `--config` option does not suppress output."""
+    with poetry_venv_factory(Project.WITHOUT_DEPTRY_OPTION) as virtual_env:
+        result = virtual_env.run("deptry . --config pyproject.toml")
+
+        expected_output = [
+            "Scanning 0 file...",
+            "",
+            stylize(
+                "{BOLD}{file}{RESET}{CYAN}:{RESET} {BOLD}{RED}DEP002{RESET} 'isort' defined as a dependency but not"
+                " used in the codebase",
+                file=Path("pyproject.toml"),
+            ),
+            stylize("{BOLD}{RED}Found 1 dependency issue.{RESET}"),
+            "",
+            "For more information, see the documentation: https://deptry.com/",
+            "",
+        ]
+
+        assert result.returncode == 1
+        assert result.stderr == "\n".join(expected_output)
+
+
 def test_cli_help() -> None:
     result = CliRunner().invoke(cli, "--help")
 

@@ -1,0 +1,9 @@
+[tool.poetry]
+name = "foo"
+version = "0.0.1"
+description = ""
+authors = []
+
+[tool.poetry.dependencies]
+python = ">=3.10"
+isort = "6.0.1"
