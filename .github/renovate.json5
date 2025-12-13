@@ -78,18 +78,6 @@
     },
     {
       matchFileNames: ["tests/**"],
-      matchPackageNames: ["click"],
-      // 8.2.0 dropped support for Python 3.9.
-      allowedVersions: "<8.2",
-    },
-    {
-      matchFileNames: ["tests/**"],
-      matchPackageNames: ["matplotlib"],
-      // 3.10.0 dropped support for Python 3.9.
-      allowedVersions: "<3.10",
-    },
-    {
-      matchFileNames: ["tests/**"],
       matchPackageNames: ["asyncio"],
       // We use this dependency in tests to test DEP005 rule. 4.0.0 is now a
       // noop (https://discuss.python.org/t/no-op-the-asyncio-package-on-pypi/101218), so we need to depend on the
