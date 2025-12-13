@@ -2,8 +2,10 @@
 name = "deptry"
 version = "0.0.1"
 description = "A command line utility to check for unused, missing and transitive dependencies in a Python project."
-authors = [{ name = "Florian Maas", email = "fpgmaas@gmail.com" }]
-maintainers = [{ name = "Mathieu Kniewallner", email = "mathieu.kniewallner@gmail.com" }]
+authors = [
+    { name = "Florian Maas", email = "fpgmaas@gmail.com" },
+    { name = "Mathieu Kniewallner", email = "mathieu.kniewallner@gmail.com" }
+]
 requires-python = ">=3.10"
 license = { file = "LICENSE" }
 readme = "README.md"
