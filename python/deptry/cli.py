@@ -25,6 +25,8 @@ DEFAULT_EXCLUDE = ("venv", r"\.venv", r"\.direnv", "tests", r"\.git", r"setup\.p
 
 DEFAULT_REQUIREMENTS_FILES = ("requirements.txt",)
 
+logging.basicConfig(level=logging.INFO, handlers=[logging.StreamHandler()], format="%(message)s")
+
 
 class CommaSeparatedTupleParamType(click.ParamType):
     """
@@ -93,9 +95,9 @@ class CommaSeparatedMappingParamType(click.ParamType):
 COMMA_SEPARATED_MAPPING = CommaSeparatedMappingParamType()
 
 
-def configure_logger(_ctx: click.Context, _param: click.Parameter, value: bool) -> None:
-    log_level = logging.DEBUG if value else logging.INFO
-    logging.basicConfig(level=log_level, handlers=[logging.StreamHandler()], format="%(message)s")
+def set_debug_level(_ctx: click.Context, _param: click.Parameter, value: bool) -> None:
+    if value:
+        logging.getLogger().setLevel(logging.DEBUG)
 
 
 def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: bool) -> None:
@@ -118,7 +120,7 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
     ),
     expose_value=False,
     is_eager=True,
-    callback=configure_logger,
+    callback=set_debug_level,
 )
 @click.option(
     "--config",
