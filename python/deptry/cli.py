@@ -95,7 +95,7 @@ class CommaSeparatedMappingParamType(click.ParamType):
 COMMA_SEPARATED_MAPPING = CommaSeparatedMappingParamType()
 
 
-def configure_logger(_ctx: click.Context, _param: click.Parameter, value: bool) -> None:
+def set_debug_level(_ctx: click.Context, _param: click.Parameter, value: bool) -> None:
     if value:
         logging.getLogger().setLevel(logging.DEBUG)
 
@@ -120,7 +120,7 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
     ),
     expose_value=False,
     is_eager=True,
-    callback=configure_logger,
+    callback=set_debug_level,
 )
 @click.option(
     "--config",
