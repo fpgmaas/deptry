@@ -87,7 +87,7 @@ all = [{include-group = "dev-group"}, "foobaz"]
         with Path("pyproject.toml").open("w") as f:
             f.write(fake_pyproject_toml)
 
-        getter = PEP621DependencyGetter(config=Path("pyproject.toml"), pep621_dev_dependency_groups=("group2",))
+        getter = PEP621DependencyGetter(config=Path("pyproject.toml"), optional_dependencies_dev_groups=("group2",))
         dependencies = getter.get().dependencies
         dev_dependencies = getter.get().dev_dependencies
 
@@ -127,7 +127,7 @@ group2 = ["barfoo"]
         with Path("pyproject.toml").open("w") as f:
             f.write(fake_pyproject_toml)
 
-        getter = PEP621DependencyGetter(config=Path("pyproject.toml"), pep621_dev_dependency_groups=("group3",))
+        getter = PEP621DependencyGetter(config=Path("pyproject.toml"), optional_dependencies_dev_groups=("group3",))
         dependencies = getter.get().dependencies
 
         assert (
@@ -224,7 +224,7 @@ dev = { file = ["dev-requirements.txt"] }
         with Path("dev-requirements.txt").open("w") as f:
             f.write("dev-dep==1.2.3")
 
-        extract = PEP621DependencyGetter(config=Path("pyproject.toml"), pep621_dev_dependency_groups=("dev",)).get()
+        extract = PEP621DependencyGetter(config=Path("pyproject.toml"), optional_dependencies_dev_groups=("dev",)).get()
         dependencies = extract.dependencies
         dev_dependencies = extract.dev_dependencies
 
@@ -267,7 +267,7 @@ dev = { file = ["dev-requirements.txt"] }
         with Path("dev-requirements.txt").open("w") as f:
             f.write("dev-dep==1.2.3")
 
-        extract = PEP621DependencyGetter(config=Path("pyproject.toml"), pep621_dev_dependency_groups=("dev",)).get()
+        extract = PEP621DependencyGetter(config=Path("pyproject.toml"), optional_dependencies_dev_groups=("dev",)).get()
         dependencies = extract.dependencies
         dev_dependencies = extract.dev_dependencies
 
@@ -309,7 +309,7 @@ dev = { file = ["dev-requirements.txt"] }
         with Path("dev-requirements.txt").open("w") as f:
             f.write("dev-dep==1.2.3")
 
-        extract = PEP621DependencyGetter(config=Path("pyproject.toml"), pep621_dev_dependency_groups=("dev",)).get()
+        extract = PEP621DependencyGetter(config=Path("pyproject.toml"), optional_dependencies_dev_groups=("dev",)).get()
         dependencies = extract.dependencies
         dev_dependencies = extract.dev_dependencies
 
@@ -338,7 +338,7 @@ dev = { file = ["dev-requirements.txt"] }
         with Path("dev-requirements.txt").open("w") as f:
             f.write("dev-dep==1.2.3")
 
-        extract = PEP621DependencyGetter(config=Path("pyproject.toml"), pep621_dev_dependency_groups=("dev",)).get()
+        extract = PEP621DependencyGetter(config=Path("pyproject.toml"), optional_dependencies_dev_groups=("dev",)).get()
         dependencies = extract.dependencies
         dev_dependencies = extract.dev_dependencies
 
@@ -370,7 +370,7 @@ dependencies = { file = "requirements.txt" }
         with Path("requirements.txt").open("w") as f:
             f.write("foo==1.2.3")
 
-        extract = PEP621DependencyGetter(config=Path("pyproject.toml"), pep621_dev_dependency_groups=("dev",)).get()
+        extract = PEP621DependencyGetter(config=Path("pyproject.toml"), optional_dependencies_dev_groups=("dev",)).get()
         dependencies = extract.dependencies
         dev_dependencies = extract.dev_dependencies
 

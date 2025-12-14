@@ -17,4 +17,4 @@ cli = { file = "cli-requirements.txt" }
 dev = { file = ["dev-requirements.txt"] }
 
 [tool.deptry]
-pep621_dev_dependency_groups = ["dev"]
+optional_dependencies_dev_groups = ["dev"]
