@@ -477,7 +477,7 @@ Multiple package name to module name mappings are joined by a comma (`,`):
 deptry . --package-module-name-map "foo-python=foo,bar-python=bar"
 ```
 
-#### PEP 621 dev dependency groups
+#### Optional dependencies dev groups
 
 Historically, PEP 621
 did [not define](https://peps.python.org/pep-0621/#recommend-that-tools-put-development-related-dependencies-into-a-dev-extra)
@@ -486,7 +486,7 @@ this, but in the meantime, several projects defined development dependencies und
 _deptry_ offers a mechanism to interpret specific optional dependency groups as development dependencies.
 
 By default, all dependencies under `[project.dependencies]` and `[project.optional-dependencies]` are extracted as
-regular dependencies. By using the `--pep621-dev-dependency-groups` argument, users can specify which groups defined
+regular dependencies. By using the `--optional-dependencies-dev-groups` argument, users can specify which groups defined
 under `[project.optional-dependencies]` should be treated as development dependencies instead. This is particularly
 useful for projects that adhere to PEP 621 but do not employ a separate build tool for declaring development
 dependencies.
@@ -504,7 +504,27 @@ test = ["pytest"]
 ```
 
 By default, `httpx`, `matplotlib` and `pytest` are extracted as regular dependencies. By specifying
-`--pep621-dev-dependency-groups=test`, `pytest` dependency will be treated as a development dependency instead.
+`--optional-dependencies-dev-groups=test`, `pytest` dependency will be treated as a development dependency instead.
+
+- Type: `list[str]`
+- Default: `[]`
+- `pyproject.toml` option name: `optional_dependencies_dev_groups`
+- CLI option name: `--optional-dependencies-dev-groups` (short: `-oddg`)
+- `pyproject.toml` example:
+```toml
+[tool.deptry]
+optional_dependencies_dev_groups = ["test", "docs"]
+```
+- CLI example:
+```shell
+deptry . --optional-dependencies-dev-groups "test,docs"
+```
+
+#### PEP 621 dev dependency groups
+
+!!! warning
+
+    This option is deprecated. Use [`--optional-dependencies-dev-groups`](#optional-dependencies-dev-groups) instead.
 
 - Type: `list[str]`
 - Default: `[]`
@@ -523,7 +543,8 @@ deptry . --pep621-dev-dependency-groups "test,docs"
 #### Experimental namespace package
 
 !!! warning
-This option is experimental and disabled by default for now, as it could degrade performance in large codebases.
+
+    This option is experimental and disabled by default for now, as it could degrade performance in large codebases.
 
 Enable experimental namespace package ([PEP 420](https://peps.python.org/pep-0420/)) support.
 

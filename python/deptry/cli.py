@@ -12,6 +12,7 @@ import click
 
 from deptry.config import read_configuration_from_pyproject_toml
 from deptry.core import Core
+from deptry.deprecations import handle_deprecations
 
 if TYPE_CHECKING:
     from collections.abc import Mapping, MutableMapping, Sequence
@@ -243,13 +244,21 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
     show_default=False,
 )
 @click.option(
-    "--pep621-dev-dependency-groups",
-    "-ddg",
+    "--optional-dependencies-dev-groups",
+    "-oddg",
     type=COMMA_SEPARATED_TUPLE,
     help="""For projects that use PEP621 and that do not use a build tool that has its own method of declaring development dependencies,
     this argument provides the option to specify which groups under [project.optional-dependencies] in pyproject.toml
-    should be considered development dependencies. For example, use `--pep621-dev-dependency-groups tests,docs` to mark the dependencies in
+    should be considered development dependencies. For example, use `--dev-optional-dependencies tests,docs` to mark the dependencies in
     the groups 'tests' and 'docs' as development dependencies.""",
+    default=(),
+    show_default=False,
+)
+@click.option(
+    "--pep621-dev-dependency-groups",
+    "-ddg",
+    type=COMMA_SEPARATED_TUPLE,
+    help="[DEPRECATED] Use --dev-optional-dependencies instead.",
     default=(),
     show_default=False,
 )
@@ -258,7 +267,9 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
     is_flag=True,
     help="Enable experimental support for namespace package (PEP 420) when detecting local modules (https://peps.python.org/pep-0420/).",
 )
+@click.pass_context
 def cli(
+    ctx: click.Context,
     root: tuple[Path, ...],
     config: Path,
     no_ansi: bool,
@@ -275,6 +286,7 @@ def cli(
     github_warning_errors: tuple[str, ...],
     package_module_name_map: MutableMapping[str, tuple[str, ...]],
     pep621_dev_dependency_groups: tuple[str, ...],
+    optional_dependencies_dev_groups: tuple[str, ...],
     experimental_namespace_package: bool,
 ) -> None:
     """Find dependency issues in your Python project.
@@ -290,6 +302,8 @@ def cli(
         deptry src worker
 
     """
+
+    handle_deprecations(ctx)
 
     Core(
         root=root,
@@ -309,7 +323,7 @@ def cli(
         github_output=github_output,
         github_warning_errors=github_warning_errors,
         package_module_name_map=package_module_name_map,
-        pep621_dev_dependency_groups=pep621_dev_dependency_groups,
+        optional_dependencies_dev_groups=pep621_dev_dependency_groups or optional_dependencies_dev_groups,
         experimental_namespace_package=experimental_namespace_package,
     ).run()
 

@@ -12,4 +12,4 @@ requires = ["setuptools>=61.0.0"]
 build-backend = "setuptools.build_meta"
 
 [tool.deptry]
-pep621_dev_dependency_groups = ["dev"]
+optional_dependencies_dev_groups = ["dev"]

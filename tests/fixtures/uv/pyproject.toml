@@ -31,7 +31,7 @@ dev-dependencies = [
 ]
 
 [tool.deptry]
-pep621_dev_dependency_groups = ["bar"]
+optional_dependencies_dev_groups = ["bar"]
 
 [tool.deptry.per_rule_ignores]
 DEP002 = ["pkginfo"]
