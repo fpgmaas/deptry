@@ -46,19 +46,10 @@ jobs:
       - name: Setup Rust toolchain
         run: rustup component add clippy rustfmt
 
-      - name: Load pre-commit cache
-        uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
+      - uses: j178/prek-action@91fd7d7cf70ae1dee9f4f44e7dfa5d1073fe6623 # v1.0.11
         with:
-          path: ~/.cache/pre-commit
-          key: pre-commit-${{ env.PYTHON_VERSION }}-${{ hashFiles('.pre-commit-config.yaml') }}
-
-      - name: Run pre-commit
-        run: uvx pre-commit@${PRE_COMMIT_VERSION} run --all-files --show-diff-on-failure
-        env:
-          # renovate: datasource=pypi depName=pre-commit
-          PRE_COMMIT_VERSION: '4.5.0'
-          # Skip mypy hook, as mypy is run in "tests" job.
-          SKIP: mypy
+          # We skip mypy hook because it runs in "tests" job.
+          extra-args: '--all-files --skip mypy'
 
       - name: Inspect dependencies with deptry
         run: uv run deptry python
