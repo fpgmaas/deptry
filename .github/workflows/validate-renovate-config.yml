@@ -12,7 +12,7 @@ env:
   # renovate: datasource=node depName=node versioning=node
   NODE_VERSION: '24'
   # renovate: datasource=npm depName=pnpm
-  PNPM_VERSION: '10.24.0'
+  PNPM_VERSION: '10.26.1'
 
 permissions: {}
 
