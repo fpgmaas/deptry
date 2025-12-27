@@ -54,8 +54,8 @@ the following dependencies will be extracted:
 !!! note
 
     Groups under `[project.optional-dependencies]` can be flagged as development dependency groups by
-    using [`--pep621-dev-dependency-groups`](usage.md#pep-621-dev-dependency-groups) argument (or its
-    `pep_621_dev_dependency_groups` equivalent in `pyproject.toml`).
+    using [`--optional-dependencies-dev-groups`](usage.md#optional-dependencies-dev-groups) argument (or its
+    `optional_dependencies_dev_groups` equivalent in `pyproject.toml`).
 
 ### uv
 
