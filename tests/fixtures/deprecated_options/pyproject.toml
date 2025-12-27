@@ -1,0 +1,15 @@
+[project]
+name = "foo"
+version = "0.0.1"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["black==25.11.0"]
+
+[build-system]
+requires = ["setuptools>=61.0.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.deptry]
+pep621_dev_dependency_groups = ["dev"]
