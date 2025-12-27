@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 import re
 from typing import TYPE_CHECKING
 from unittest import mock
@@ -8,7 +9,12 @@ from unittest.mock import patch
 import click
 import pytest
 
-from deptry.cli import CommaSeparatedMappingParamType, CommaSeparatedTupleParamType, display_deptry_version
+from deptry.cli import (
+    CommaSeparatedMappingParamType,
+    CommaSeparatedTupleParamType,
+    display_deptry_version,
+    set_debug_level,
+)
 
 if TYPE_CHECKING:
     from collections.abc import MutableMapping, Sequence
@@ -210,3 +216,21 @@ def test_display_deptry_version_none(resilient_parsing: bool, value: bool, capsy
 
     display_deptry_version(ctx, param, value)
     assert capsys.readouterr().out == ""
+
+
+def test_set_debug_level_verbose() -> None:
+    ctx = mock.Mock(spec=click.Context)
+    param = mock.Mock(spec=click.Parameter)
+
+    with mock.patch("logging.Logger.setLevel") as mock_set_level:
+        set_debug_level(ctx, param, True)
+        mock_set_level.assert_called_with(logging.DEBUG)
+
+
+def test_set_debug_level_not_verbose() -> None:
+    ctx = mock.Mock(spec=click.Context)
+    param = mock.Mock(spec=click.Parameter)
+
+    with mock.patch("logging.Logger.setLevel") as mock_set_level:
+        set_debug_level(ctx, param, False)
+        mock_set_level.assert_not_called()

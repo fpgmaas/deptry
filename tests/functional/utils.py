@@ -20,6 +20,7 @@ class Project(str, Enum):
     SETUPTOOLS_DYNAMIC_DEPENDENCIES = "setuptools_dynamic_dependencies"
     SRC_DIRECTORY = "src_directory"
     UV = "uv"
+    WITHOUT_DEPTRY_OPTION = "without_deptry_option"
 
     def __str__(self) -> str:
         return self.value
