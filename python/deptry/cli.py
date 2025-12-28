@@ -263,6 +263,14 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
     show_default=False,
 )
 @click.option(
+    "--non-dev-dependency-groups",
+    "-nddg",
+    type=COMMA_SEPARATED_TUPLE,
+    help="Specify which groups in [dependency-groups] should be considered as groups containing regular dependencies instead of development ones",
+    default=(),
+    show_default=False,
+)
+@click.option(
     "--experimental-namespace-package",
     is_flag=True,
     help="Enable experimental support for namespace package (PEP 420) when detecting local modules (https://peps.python.org/pep-0420/).",
@@ -287,6 +295,7 @@ def cli(
     package_module_name_map: MutableMapping[str, tuple[str, ...]],
     pep621_dev_dependency_groups: tuple[str, ...],
     optional_dependencies_dev_groups: tuple[str, ...],
+    non_dev_dependency_groups: tuple[str, ...],
     experimental_namespace_package: bool,
 ) -> None:
     """Find dependency issues in your Python project.
@@ -324,6 +333,7 @@ def cli(
         github_warning_errors=github_warning_errors,
         package_module_name_map=package_module_name_map,
         optional_dependencies_dev_groups=pep621_dev_dependency_groups or optional_dependencies_dev_groups,
+        non_dev_dependency_groups=non_dev_dependency_groups,
         experimental_namespace_package=experimental_namespace_package,
     ).run()
 
