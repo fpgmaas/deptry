@@ -100,17 +100,17 @@ all = [{include-group = "dev-group"}, "foobaz"]
         assert dependencies[1].name == "foobar"
         assert "foobar" in dependencies[1].top_levels
 
-        assert dev_dependencies[0].name == "foo"
-        assert "foo" in dev_dependencies[0].top_levels
+        assert dev_dependencies[0].name == "barfoo"
+        assert "barfoo" in dev_dependencies[0].top_levels
 
-        assert dev_dependencies[1].name == "baz"
-        assert "baz" in dev_dependencies[1].top_levels
+        assert dev_dependencies[1].name == "foo"
+        assert "foo" in dev_dependencies[1].top_levels
 
-        assert dev_dependencies[2].name == "foobaz"
-        assert "foobaz" in dev_dependencies[2].top_levels
+        assert dev_dependencies[2].name == "baz"
+        assert "baz" in dev_dependencies[2].top_levels
 
-        assert dev_dependencies[3].name == "barfoo"
-        assert "barfoo" in dev_dependencies[3].top_levels
+        assert dev_dependencies[3].name == "foobaz"
+        assert "foobaz" in dev_dependencies[3].top_levels
 
 
 def test_dependency_getter_with_incorrect_dev_group(tmp_path: Path, caplog: LogCaptureFixture) -> None:

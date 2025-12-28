@@ -20,8 +20,8 @@ class PDMDependencyGetter(PEP621DependencyGetter):
 
     def _get_dev_dependencies(
         self,
-        dependency_groups_dependencies: dict[str, list[Dependency]],
         dev_dependencies_from_optional: list[Dependency],
+        dev_dependencies_from_dependency_groups: list[Dependency],
     ) -> list[Dependency]:
         """
         Retrieve dev dependencies from pyproject.toml, which in PDM are specified as:
@@ -36,7 +36,9 @@ class PDMDependencyGetter(PEP621DependencyGetter):
             "tox-pdm>=0.5",
         ]
         """
-        dev_dependencies = super()._get_dev_dependencies(dependency_groups_dependencies, dev_dependencies_from_optional)
+        dev_dependencies = super()._get_dev_dependencies(
+            dev_dependencies_from_optional, dev_dependencies_from_dependency_groups
+        )
 
         pyproject_data = load_pyproject_toml(self.config)
 
