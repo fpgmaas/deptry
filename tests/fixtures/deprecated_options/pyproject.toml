@@ -2,14 +2,14 @@
 name = "foo"
 version = "0.0.1"
 requires-python = ">=3.10"
-dependencies = ["arrow==1.4.0"]
+dependencies = []
 
 [project.optional-dependencies]
-dev = ["flake8==7.3.0"]
+dev = ["black==25.11.0"]
 
 [build-system]
 requires = ["setuptools>=61.0.0"]
 build-backend = "setuptools.build_meta"
 
 [tool.deptry]
-optional_dependencies_dev_groups = ["dev"]
+pep621_dev_dependency_groups = ["dev"]

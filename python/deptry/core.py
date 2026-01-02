@@ -38,7 +38,7 @@ class Core:
     known_first_party: tuple[str, ...]
     json_output: str
     package_module_name_map: Mapping[str, tuple[str, ...]]
-    pep621_dev_dependency_groups: tuple[str, ...]
+    optional_dependencies_dev_groups: tuple[str, ...]
     experimental_namespace_package: bool
     github_output: bool
     github_warning_errors: tuple[str, ...]
@@ -49,7 +49,7 @@ class Core:
         dependency_getter = DependencyGetterBuilder(
             self.config,
             self.package_module_name_map,
-            self.pep621_dev_dependency_groups,
+            self.optional_dependencies_dev_groups,
             self.requirements_files,
             self.using_default_requirements_files,
             self.requirements_files_dev,

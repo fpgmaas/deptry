@@ -123,7 +123,7 @@ def test__get_local_modules(
                 known_first_party=known_first_party,
                 json_output="",
                 package_module_name_map={},
-                pep621_dev_dependency_groups=(),
+                optional_dependencies_dev_groups=(),
                 using_default_requirements_files=True,
                 experimental_namespace_package=experimental_namespace_package,
                 github_output=False,
