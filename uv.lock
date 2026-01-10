@@ -518,7 +518,7 @@ docs = [
     { name = "mkdocs-material", specifier = "==9.7.1" },
 ]
 test = [
-    { name = "pdm", specifier = "==2.26.2" },
+    { name = "pdm", specifier = "==2.26.4" },
     { name = "poetry", specifier = "==2.2.1" },
     { name = "pytest", specifier = "==9.0.2" },
     { name = "pytest-cov", specifier = "==7.0.0" },
@@ -650,18 +650,22 @@ wheels = [
 
 [[package]]
 name = "hishel"
-version = "0.1.5"
+version = "1.1.7"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "anyio" },
-    { name = "anysqlite" },
-    { name = "httpx" },
     { name = "msgpack" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/e5/64/a104ccac48f123f853254483617b16e0efc1649bd7e35bcdc5a5a5ef0ae2/hishel-0.1.5.tar.gz", hash = "sha256:9d40c682cd94fd6e1394fb05713ae20a75ed8aeba6f5272380444039ce6257f2", size = 75468, upload-time = "2025-10-18T13:32:41.854Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/45/cf/4e1d09cc81c48ff7498398fd82c87fb21800c85e631d03831703d8594506/hishel-1.1.7.tar.gz", hash = "sha256:32c625be581e94dc50b773a8cfb9a65cba487660561950fe976ae49945455179", size = 61473, upload-time = "2025-12-03T09:32:28.524Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/70/83/4f8b77839e62114bb034375ee8e08cfb6af1164754b925b271d3f1ec06ee/hishel-0.1.5-py3-none-any.whl", hash = "sha256:0bfbe9a2b9342090eba82ba6de88258092e1c4c7b730cd4cb4b570e4b40e44a7", size = 92486, upload-time = "2025-10-18T13:32:40.333Z" },
+    { url = "https://files.pythonhosted.org/packages/0c/2a/8134de761e4fd9d0a3b301b897b8c5ce9ccb17af7f846d66c676d8c03fd8/hishel-1.1.7-py3-none-any.whl", hash = "sha256:436c2a5a62d705528e581cbeba85b10d130c47c861906b21262a07ac02463a9f", size = 70569, upload-time = "2025-12-03T09:32:27.144Z" },
+]
+
+[package.optional-dependencies]
+httpx = [
+    { name = "anyio" },
+    { name = "anysqlite" },
+    { name = "httpx" },
 ]
 
 [[package]]
@@ -1260,7 +1264,7 @@ install = [
 
 [[package]]
 name = "pdm"
-version = "2.26.2"
+version = "2.26.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "blinker" },
@@ -1268,7 +1272,7 @@ dependencies = [
     { name = "dep-logic" },
     { name = "filelock" },
     { name = "findpython" },
-    { name = "hishel" },
+    { name = "hishel", extra = ["httpx"] },
     { name = "httpcore" },
     { name = "httpx", extra = ["socks"] },
     { name = "id" },
@@ -1287,9 +1291,9 @@ dependencies = [
     { name = "unearth" },
     { name = "virtualenv" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/a2/f8/cb7f2cdb69885f7c8fe2a166398acf26c2df7c241e315889260c8dc0b4fc/pdm-2.26.2.tar.gz", hash = "sha256:98207f8aabd6913a25ee0b4985e79e1652e2db274915f3ccf9408e33191ede4e", size = 2671330, upload-time = "2025-11-24T03:54:34.05Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/6f/6a/a45447a32bb744e59561abfcac02a3d5ab2dd062e89c6e0d62a420f98b0b/pdm-2.26.4.tar.gz", hash = "sha256:d1030f6bd8e9449b5791e7768f1a856cc54617ee7b00f56fa1a843a84ad77f6e", size = 2673781, upload-time = "2026-01-09T02:15:42.199Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ff/b4/3192a52a9b4cdfc0122270b9768053be459fe263e01001b61e626b685c95/pdm-2.26.2-py3-none-any.whl", hash = "sha256:b3b0199f6eec37284192a6feb26bef21f911d45d5aa4b02323ff211752abf04b", size = 297974, upload-time = "2025-11-24T03:54:31.887Z" },
+    { url = "https://files.pythonhosted.org/packages/3d/3e/9a6c971909bf924dd9e689558059776455442e650e4a27a044f816b07f4b/pdm-2.26.4-py3-none-any.whl", hash = "sha256:87def29545c0665501ded5b431a90554db37de510ab76cb9b9fb79273103e611", size = 300587, upload-time = "2026-01-09T02:15:40.593Z" },
 ]
 
 [[package]]
