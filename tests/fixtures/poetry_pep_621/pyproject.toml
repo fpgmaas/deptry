@@ -15,10 +15,10 @@ requests = { git = "https://github.com/psf/requests", tag = "v2.32.5" }
 
 [project.optional-dependencies]
 foo = [
-    "click==8.1.8",
+    "click==8.3.1",
     "isort==7.0.0",
 ]
-bar = ["urllib3==2.5.0"]
+bar = ["urllib3==2.6.3"]
 
 [tool.poetry.dev-dependencies]
 black = "25.9.0"
