@@ -483,7 +483,7 @@ dependencies = [
     { name = "colorama", marker = "sys_platform == 'win32'" },
     { name = "packaging" },
     { name = "requirements-parser" },
-    { name = "tomli", marker = "python_full_version < '3.11'" },
+    { name = "tomli", marker = "python_full_version < '3.15'" },
 ]
 
 [package.dev-dependencies]
@@ -509,7 +509,7 @@ requires-dist = [
     { name = "colorama", marker = "sys_platform == 'win32'", specifier = ">=0.4.6" },
     { name = "packaging", specifier = ">=23.2" },
     { name = "requirements-parser", specifier = ">=0.11.0,<1" },
-    { name = "tomli", marker = "python_full_version < '3.11'", specifier = ">=2.0.1" },
+    { name = "tomli", marker = "python_full_version < '3.15'", specifier = ">=2.0.1" },
 ]
 
 [package.metadata.requires-dev]
