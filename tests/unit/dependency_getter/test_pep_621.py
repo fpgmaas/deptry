@@ -69,7 +69,7 @@ group2 = [
         assert "dep" in dependencies[7].top_levels
 
 
-def test_dependency_getter_with_dev_dependencies(tmp_path: Path) -> None:
+def test_dependency_getter_optional_dependencies_dev_groups(tmp_path: Path) -> None:
     fake_pyproject_toml = """[project]
 name = "foo"
 dependencies = ["qux"]
@@ -113,7 +113,7 @@ all = [{include-group = "dev-group"}, "foobaz"]
         assert "foobaz" in dev_dependencies[3].top_levels
 
 
-def test_dependency_getter_with_incorrect_dev_group(tmp_path: Path, caplog: LogCaptureFixture) -> None:
+def test_dependency_getter_incorrect_optional_dependencies_dev_group(tmp_path: Path, caplog: LogCaptureFixture) -> None:
     fake_pyproject_toml = """[project]
 name = "foo"
 dependencies = ["qux"]
@@ -145,6 +145,73 @@ group2 = ["barfoo"]
 
         assert dependencies[2].name == "barfoo"
         assert "barfoo" in dependencies[2].top_levels
+
+
+def test_dependency_getter_non_dev_dependency_groups(tmp_path: Path) -> None:
+    fake_pyproject_toml = """[project]
+name = "foo"
+dependencies = ["qux"]
+
+[dependency-groups]
+group1 = ["foobar"]
+group2 = ["barfoo"]
+"""
+
+    with run_within_dir(tmp_path):
+        with Path("pyproject.toml").open("w") as f:
+            f.write(fake_pyproject_toml)
+
+        getter = PEP621DependencyGetter(config=Path("pyproject.toml"), non_dev_dependency_groups=("group2",))
+        dependencies = getter.get().dependencies
+        dev_dependencies = getter.get().dev_dependencies
+
+        assert len(dependencies) == 2
+        assert len(dev_dependencies) == 1
+
+        assert dependencies[0].name == "qux"
+        assert "qux" in dependencies[0].top_levels
+
+        assert dependencies[1].name == "barfoo"
+        assert "barfoo" in dependencies[1].top_levels
+
+        assert dev_dependencies[0].name == "foobar"
+        assert "foobar" in dev_dependencies[0].top_levels
+
+
+def test_dependency_getter_incorrect_dependency_groups_non_dev_group(tmp_path: Path, caplog: LogCaptureFixture) -> None:
+    fake_pyproject_toml = """[project]
+name = "foo"
+dependencies = ["qux"]
+
+[dependency-groups]
+group1 = ["foobar"]
+group2 = ["barfoo"]
+"""
+
+    with run_within_dir(tmp_path), caplog.at_level(logging.INFO):
+        with Path("pyproject.toml").open("w") as f:
+            f.write(fake_pyproject_toml)
+
+        getter = PEP621DependencyGetter(config=Path("pyproject.toml"), non_dev_dependency_groups=("group3",))
+        dependencies = getter.get().dependencies
+        dev_dependencies = getter.get().dev_dependencies
+
+        assert (
+            "Trying to extract the dependencies from the dependency groups ['group3'] as regular dependencies, but the following groups were not found: ['group3']"
+            in caplog.text
+        )
+
+        assert len(dependencies) == 1
+        assert len(dev_dependencies) == 2
+
+        assert dependencies[0].name == "qux"
+        assert "qux" in dependencies[0].top_levels
+
+        assert dev_dependencies[0].name == "foobar"
+        assert "foobar" in dev_dependencies[0].top_levels
+
+        assert dev_dependencies[1].name == "barfoo"
+        assert "barfoo" in dev_dependencies[1].top_levels
 
 
 def test_dependency_getter_empty_dependencies(tmp_path: Path) -> None:

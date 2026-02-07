@@ -540,6 +540,42 @@ pep621_dev_dependency_groups = ["test", "docs"]
 deptry . --pep621-dev-dependency-groups "test,docs"
 ```
 
+#### Non-dev dependency groups
+
+By default, _deptry_ considers that groups defined under `[dependency-groups]` contain development dependencies. Some
+projects use dependency groups to define optional regular dependencies. To account for that, it is possible to specify a
+list of groups that need to be treated as containing regular dependencies.
+
+For example, consider a project with the following `pyproject.toml`:
+
+```toml
+[project]
+...
+dependencies = ["httpx"]
+
+[dependency-groups]
+server = ["uvicorn"]
+telemetry = ["opentelemetry-sdk"]
+```
+
+By default, `uvicorn` and `opentelemetry-sdk` are extracted as development dependencies. By specifying
+`--non-dev-dependency-groups=server,telemetry`, `uvicorn` and `opentelemetry-sdk` will be treated as regular
+dependencies instead.
+
+- Type: `list[str]`
+- Default: `[]`
+- `pyproject.toml` option name: `non_dev_dependency_groups`
+- CLI option name: `--non-dev-dependency-groups` (short: `-nddg`)
+- `pyproject.toml` example:
+```toml
+[tool.deptry]
+non_dev_dependency_groups = ["server", "telemetry"]
+```
+- CLI example:
+```shell
+deptry . --non-dev-dependency-groups "server,telemetry"
+```
+
 #### Experimental namespace package
 
 !!! warning
