@@ -34,6 +34,7 @@ class DependencyGetterBuilder:
     config: Path
     package_module_name_map: Mapping[str, tuple[str, ...]] = field(default_factory=dict)
     optional_dependencies_dev_groups: tuple[str, ...] = ()
+    non_dev_dependency_groups: tuple[str, ...] = ()
     requirements_files: tuple[str, ...] = ()
     using_default_requirements_files: bool = True
     requirements_files_dev: tuple[str, ...] = ()
@@ -46,7 +47,10 @@ class DependencyGetterBuilder:
 
             if self._project_uses_poetry(pyproject_toml):
                 return PoetryDependencyGetter(
-                    self.config, self.package_module_name_map, self.optional_dependencies_dev_groups
+                    self.config,
+                    self.package_module_name_map,
+                    self.optional_dependencies_dev_groups,
+                    self.non_dev_dependency_groups,
                 )
 
             if self._project_uses_uv(pyproject_toml):
