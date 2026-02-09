@@ -13,7 +13,7 @@ concurrency:
 env:
   PYTHON_VERSION: '3.14'
   # renovate: datasource=pypi depName=uv
-  UV_VERSION: '0.9.28'
+  UV_VERSION: '0.10.0'
 
 permissions: {}
 
@@ -27,7 +27,7 @@ jobs:
           persist-credentials: false
 
       - name: Install uv
-        uses: astral-sh/setup-uv@803947b9bd8e9f986429fa0c5a41c367cd732b41 # v7.2.1
+        uses: astral-sh/setup-uv@eac588ad8def6316056a12d4907a9d4d84ff7a3b # v7.3.0
         with:
           version: ${{ env.UV_VERSION }}
           enable-cache: true
@@ -46,7 +46,7 @@ jobs:
       - name: Setup Rust toolchain
         run: rustup component add clippy rustfmt
 
-      - uses: j178/prek-action@564dda4cfa5e96aafdc4a5696c4bf7b46baae5ac # v1.1.0
+      - uses: j178/prek-action@0bb87d7f00b0c99306c8bcb8b8beba1eb581c037 # v1.1.1
         with:
           # We skip mypy hook because it runs in "tests" job.
           extra-args: '--all-files --skip mypy'
@@ -81,7 +81,7 @@ jobs:
           persist-credentials: false
 
       - name: Install uv
-        uses: astral-sh/setup-uv@803947b9bd8e9f986429fa0c5a41c367cd732b41 # v7.2.1
+        uses: astral-sh/setup-uv@eac588ad8def6316056a12d4907a9d4d84ff7a3b # v7.3.0
         with:
           version: ${{ env.UV_VERSION }}
           enable-cache: true
@@ -123,7 +123,7 @@ jobs:
           persist-credentials: false
 
       - name: Install uv
-        uses: astral-sh/setup-uv@803947b9bd8e9f986429fa0c5a41c367cd732b41 # v7.2.1
+        uses: astral-sh/setup-uv@eac588ad8def6316056a12d4907a9d4d84ff7a3b # v7.3.0
         with:
           version: ${{ env.UV_VERSION }}
           enable-cache: true

@@ -8,7 +8,7 @@ on:
 env:
   PYTHON_VERSION: '3.14'
   # renovate: datasource=pypi depName=uv
-  UV_VERSION: '0.9.28'
+  UV_VERSION: '0.10.0'
 
 permissions: {}
 
@@ -58,7 +58,7 @@ jobs:
           python-version: ${{ matrix.python }}
 
       - name: Build wheels
-        uses: PyO3/maturin-action@86b9d133d34bc1b40018696f782949dac11bd380 # v1.49.4
+        uses: PyO3/maturin-action@b1bd829e37fef14c63f19162034228a2f3dc1021 # v1.50.0
         with:
           target: ${{ matrix.target }}
           manylinux: ${{ matrix.manylinux }}
@@ -100,7 +100,7 @@ jobs:
           python-version: ${{ matrix.python }}
 
       - name: Build wheels
-        uses: PyO3/maturin-action@86b9d133d34bc1b40018696f782949dac11bd380 # v1.49.4
+        uses: PyO3/maturin-action@b1bd829e37fef14c63f19162034228a2f3dc1021 # v1.50.0
         with:
           # Recent versions (last one tested 1.7.8) lead to failures on Windows aarch64, so forcing the version for now.
           maturin-version: '1.7.4'
@@ -139,7 +139,7 @@ jobs:
           python-version: ${{ matrix.python }}
 
       - name: Build wheels
-        uses: PyO3/maturin-action@86b9d133d34bc1b40018696f782949dac11bd380 # v1.49.4
+        uses: PyO3/maturin-action@b1bd829e37fef14c63f19162034228a2f3dc1021 # v1.50.0
         with:
           target: ${{ matrix.target }}
           args: --release --out dist --interpreter ${{ steps.setup-python.outputs.python-path }}
@@ -170,7 +170,7 @@ jobs:
           name: pyproject-toml
 
       - name: Build sdist
-        uses: PyO3/maturin-action@86b9d133d34bc1b40018696f782949dac11bd380 # v1.49.4
+        uses: PyO3/maturin-action@b1bd829e37fef14c63f19162034228a2f3dc1021 # v1.50.0
         with:
           command: sdist
           args: --out dist
@@ -199,7 +199,7 @@ jobs:
 
       - name: Publish to PyPI
         if: ${{ github.event_name == 'release' }}
-        uses: PyO3/maturin-action@86b9d133d34bc1b40018696f782949dac11bd380 # v1.49.4
+        uses: PyO3/maturin-action@b1bd829e37fef14c63f19162034228a2f3dc1021 # v1.50.0
         env:
           MATURIN_PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
         with:
@@ -208,7 +208,7 @@ jobs:
 
       - name: '[dry-run] Publish to PyPI'
         if: ${{ github.event_name != 'release' }}
-        uses: PyO3/maturin-action@86b9d133d34bc1b40018696f782949dac11bd380 # v1.49.4
+        uses: PyO3/maturin-action@b1bd829e37fef14c63f19162034228a2f3dc1021 # v1.50.0
         with:
           command: upload
           args: --help
@@ -223,7 +223,7 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Install uv
-        uses: astral-sh/setup-uv@803947b9bd8e9f986429fa0c5a41c367cd732b41 # v7.2.1
+        uses: astral-sh/setup-uv@eac588ad8def6316056a12d4907a9d4d84ff7a3b # v7.3.0
         with:
           version: ${{ env.UV_VERSION }}
           enable-cache: true
