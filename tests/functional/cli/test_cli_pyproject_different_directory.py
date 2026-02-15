@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 import pytest
+from inline_snapshot import snapshot
 
 from tests.functional.utils import Project
 from tests.utils import get_issues_report
@@ -22,18 +23,11 @@ def test_cli_with_pyproject_different_directory(pip_venv_factory: PipVenvFactory
         result = virtual_env.run(f"deptry src --config a_sub_directory/pyproject.toml -o {issue_report}")
 
         assert result.returncode == 1
-        assert get_issues_report(Path(issue_report)) == [
+        assert get_issues_report(Path(issue_report)) == snapshot([
             {
-                "error": {
-                    "code": "DEP002",
-                    "message": "'isort' defined as a dependency but not used in the codebase",
-                },
+                "error": {"code": "DEP002", "message": "'isort' defined as a dependency but not used in the codebase"},
                 "module": "isort",
-                "location": {
-                    "file": str(Path("a_sub_directory/pyproject.toml")),
-                    "line": None,
-                    "column": None,
-                },
+                "location": {"file": "a_sub_directory/pyproject.toml", "line": None, "column": None},
             },
             {
                 "error": {
@@ -41,46 +35,21 @@ def test_cli_with_pyproject_different_directory(pip_venv_factory: PipVenvFactory
                     "message": "'requests' defined as a dependency but not used in the codebase",
                 },
                 "module": "requests",
-                "location": {
-                    "file": str(Path("a_sub_directory/pyproject.toml")),
-                    "line": None,
-                    "column": None,
-                },
+                "location": {"file": "a_sub_directory/pyproject.toml", "line": None, "column": None},
             },
             {
-                "error": {
-                    "code": "DEP002",
-                    "message": "'mypy' defined as a dependency but not used in the codebase",
-                },
+                "error": {"code": "DEP002", "message": "'mypy' defined as a dependency but not used in the codebase"},
                 "module": "mypy",
-                "location": {
-                    "file": str(Path("a_sub_directory/pyproject.toml")),
-                    "line": None,
-                    "column": None,
-                },
+                "location": {"file": "a_sub_directory/pyproject.toml", "line": None, "column": None},
             },
             {
-                "error": {
-                    "code": "DEP002",
-                    "message": "'pytest' defined as a dependency but not used in the codebase",
-                },
+                "error": {"code": "DEP002", "message": "'pytest' defined as a dependency but not used in the codebase"},
                 "module": "pytest",
-                "location": {
-                    "file": str(Path("a_sub_directory/pyproject.toml")),
-                    "line": None,
-                    "column": None,
-                },
+                "location": {"file": "a_sub_directory/pyproject.toml", "line": None, "column": None},
             },
             {
-                "error": {
-                    "code": "DEP001",
-                    "message": "'white' imported but missing from the dependency definitions",
-                },
+                "error": {"code": "DEP001", "message": "'white' imported but missing from the dependency definitions"},
                 "module": "white",
-                "location": {
-                    "file": str(Path("src/src_directory/foo.py")),
-                    "line": 6,
-                    "column": 8,
-                },
+                "location": {"file": "src/src_directory/foo.py", "line": 6, "column": 8},
             },
-        ]
+        ])

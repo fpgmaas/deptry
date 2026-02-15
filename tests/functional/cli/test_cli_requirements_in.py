@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 import pytest
+from inline_snapshot import snapshot
 
 from tests.functional.utils import Project
 from tests.utils import get_issues_report
@@ -27,11 +28,11 @@ def test_cli_single_requirements_files(pip_venv_factory: PipVenvFactory) -> None
         result = virtual_env.run(f"deptry . -o {issue_report}")
 
         assert result.returncode == 1
-        assert get_issues_report(Path(issue_report)) == [
+        assert get_issues_report(Path(issue_report)) == snapshot([
             {
                 "error": {"code": "DEP002", "message": "'isort' defined as a dependency but not used in the codebase"},
                 "module": "isort",
-                "location": {"file": str(Path("requirements.in")), "line": None, "column": None},
+                "location": {"file": "requirements.in", "line": None, "column": None},
             },
             {
                 "error": {
@@ -39,34 +40,34 @@ def test_cli_single_requirements_files(pip_venv_factory: PipVenvFactory) -> None
                     "message": "'uvicorn' defined as a dependency but not used in the codebase",
                 },
                 "module": "uvicorn",
-                "location": {"file": str(Path("requirements.in")), "line": None, "column": None},
+                "location": {"file": "requirements.in", "line": None, "column": None},
             },
             {
                 "error": {"code": "DEP004", "message": "'black' imported but declared as a dev dependency"},
                 "module": "black",
-                "location": {"file": str(Path("src/main.py")), "line": 4, "column": 8},
+                "location": {"file": "src/main.py", "line": 4, "column": 8},
             },
             {
                 "error": {"code": "DEP003", "message": "'h11' imported but it is a transitive dependency"},
                 "module": "h11",
-                "location": {"file": str(Path("src/main.py")), "line": 6, "column": 8},
+                "location": {"file": "src/main.py", "line": 6, "column": 8},
             },
             {
                 "error": {"code": "DEP001", "message": "'white' imported but missing from the dependency definitions"},
                 "module": "white",
-                "location": {"file": str(Path("src/main.py")), "line": 7, "column": 8},
+                "location": {"file": "src/main.py", "line": 7, "column": 8},
             },
             {
                 "error": {"code": "DEP003", "message": "'bs4' imported but it is a transitive dependency"},
                 "module": "bs4",
-                "location": {"file": str(Path("src/main.py")), "line": 9, "column": 8},
+                "location": {"file": "src/main.py", "line": 9, "column": 8},
             },
             {
                 "error": {"code": "DEP001", "message": "'arrow' imported but missing from the dependency definitions"},
                 "module": "arrow",
-                "location": {"file": str(Path("src/notebook.ipynb")), "line": 3, "column": 8},
+                "location": {"file": "src/notebook.ipynb", "line": 3, "column": 8},
             },
-        ]
+        ])
 
 
 @pytest.mark.xdist_group(name=Project.REQUIREMENTS_IN)
@@ -84,11 +85,11 @@ def test_cli_multiple_requirements_files(pip_venv_factory: PipVenvFactory) -> No
         result = virtual_env.run(f"deptry . --requirements-files requirements.txt -o {issue_report}")
 
         assert result.returncode == 1
-        assert get_issues_report(Path(issue_report)) == [
+        assert get_issues_report(Path(issue_report)) == snapshot([
             {
                 "error": {"code": "DEP002", "message": "'args' defined as a dependency but not used in the codebase"},
                 "module": "args",
-                "location": {"file": str(Path("requirements.txt")), "line": None, "column": None},
+                "location": {"file": "requirements.txt", "line": None, "column": None},
             },
             {
                 "error": {
@@ -96,7 +97,7 @@ def test_cli_multiple_requirements_files(pip_venv_factory: PipVenvFactory) -> No
                     "message": "'certifi' defined as a dependency but not used in the codebase",
                 },
                 "module": "certifi",
-                "location": {"file": str(Path("requirements.txt")), "line": None, "column": None},
+                "location": {"file": "requirements.txt", "line": None, "column": None},
             },
             {
                 "error": {
@@ -104,22 +105,22 @@ def test_cli_multiple_requirements_files(pip_venv_factory: PipVenvFactory) -> No
                     "message": "'charset-normalizer' defined as a dependency but not used in the codebase",
                 },
                 "module": "charset-normalizer",
-                "location": {"file": str(Path("requirements.txt")), "line": None, "column": None},
+                "location": {"file": "requirements.txt", "line": None, "column": None},
             },
             {
                 "error": {"code": "DEP002", "message": "'clint' defined as a dependency but not used in the codebase"},
                 "module": "clint",
-                "location": {"file": str(Path("requirements.txt")), "line": None, "column": None},
+                "location": {"file": "requirements.txt", "line": None, "column": None},
             },
             {
                 "error": {"code": "DEP002", "message": "'idna' defined as a dependency but not used in the codebase"},
                 "module": "idna",
-                "location": {"file": str(Path("requirements.txt")), "line": None, "column": None},
+                "location": {"file": "requirements.txt", "line": None, "column": None},
             },
             {
                 "error": {"code": "DEP002", "message": "'isort' defined as a dependency but not used in the codebase"},
                 "module": "isort",
-                "location": {"file": str(Path("requirements.txt")), "line": None, "column": None},
+                "location": {"file": "requirements.txt", "line": None, "column": None},
             },
             {
                 "error": {
@@ -127,7 +128,7 @@ def test_cli_multiple_requirements_files(pip_venv_factory: PipVenvFactory) -> No
                     "message": "'requests' defined as a dependency but not used in the codebase",
                 },
                 "module": "requests",
-                "location": {"file": str(Path("requirements.txt")), "line": None, "column": None},
+                "location": {"file": "requirements.txt", "line": None, "column": None},
             },
             {
                 "error": {
@@ -143,21 +144,21 @@ def test_cli_multiple_requirements_files(pip_venv_factory: PipVenvFactory) -> No
                     "message": "'uvicorn' defined as a dependency but not used in the codebase",
                 },
                 "module": "uvicorn",
-                "location": {"file": str(Path("requirements.txt")), "line": None, "column": None},
+                "location": {"file": "requirements.txt", "line": None, "column": None},
             },
             {
                 "error": {"code": "DEP004", "message": "'black' imported but declared as a dev dependency"},
                 "module": "black",
-                "location": {"file": str(Path("src/main.py")), "line": 4, "column": 8},
+                "location": {"file": "src/main.py", "line": 4, "column": 8},
             },
             {
                 "error": {"code": "DEP001", "message": "'white' imported but missing from the dependency definitions"},
                 "module": "white",
-                "location": {"file": str(Path("src/main.py")), "line": 7, "column": 8},
+                "location": {"file": "src/main.py", "line": 7, "column": 8},
             },
             {
                 "error": {"code": "DEP001", "message": "'arrow' imported but missing from the dependency definitions"},
                 "module": "arrow",
-                "location": {"file": str(Path("src/notebook.ipynb")), "line": 3, "column": 8},
+                "location": {"file": "src/notebook.ipynb", "line": 3, "column": 8},
             },
-        ]
+        ])
