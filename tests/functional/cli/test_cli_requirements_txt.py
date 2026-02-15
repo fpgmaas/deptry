@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 import pytest
+from inline_snapshot import snapshot
 
 from tests.functional.utils import Project
 from tests.utils import get_issues_report
@@ -28,18 +29,11 @@ def test_cli_single_requirements_files(pip_venv_factory: PipVenvFactory) -> None
         )
 
         assert result.returncode == 1
-        assert get_issues_report(Path(issue_report)) == [
+        assert get_issues_report(Path(issue_report)) == snapshot([
             {
-                "error": {
-                    "code": "DEP002",
-                    "message": "'isort' defined as a dependency but not used in the codebase",
-                },
+                "error": {"code": "DEP002", "message": "'isort' defined as a dependency but not used in the codebase"},
                 "module": "isort",
-                "location": {
-                    "file": str(Path("requirements.txt")),
-                    "line": None,
-                    "column": None,
-                },
+                "location": {"file": "requirements.txt", "line": None, "column": None},
             },
             {
                 "error": {
@@ -47,61 +41,29 @@ def test_cli_single_requirements_files(pip_venv_factory: PipVenvFactory) -> None
                     "message": "'requests' defined as a dependency but not used in the codebase",
                 },
                 "module": "requests",
-                "location": {
-                    "file": str(Path("requirements.txt")),
-                    "line": None,
-                    "column": None,
-                },
+                "location": {"file": "requirements.txt", "line": None, "column": None},
             },
             {
-                "error": {
-                    "code": "DEP004",
-                    "message": "'black' imported but declared as a dev dependency",
-                },
+                "error": {"code": "DEP004", "message": "'black' imported but declared as a dev dependency"},
                 "module": "black",
-                "location": {
-                    "file": str(Path("src/main.py")),
-                    "line": 4,
-                    "column": 8,
-                },
+                "location": {"file": "src/main.py", "line": 4, "column": 8},
             },
             {
-                "error": {
-                    "code": "DEP001",
-                    "message": "'white' imported but missing from the dependency definitions",
-                },
+                "error": {"code": "DEP001", "message": "'white' imported but missing from the dependency definitions"},
                 "module": "white",
-                "location": {
-                    "file": str(Path("src/main.py")),
-                    "line": 6,
-                    "column": 8,
-                },
+                "location": {"file": "src/main.py", "line": 6, "column": 8},
             },
             {
-                "error": {
-                    "code": "DEP003",
-                    "message": "'urllib3' imported but it is a transitive dependency",
-                },
+                "error": {"code": "DEP003", "message": "'urllib3' imported but it is a transitive dependency"},
                 "module": "urllib3",
-                "location": {
-                    "file": str(Path("src/main.py")),
-                    "line": 7,
-                    "column": 1,
-                },
+                "location": {"file": "src/main.py", "line": 7, "column": 1},
             },
             {
-                "error": {
-                    "code": "DEP003",
-                    "message": "'urllib3' imported but it is a transitive dependency",
-                },
+                "error": {"code": "DEP003", "message": "'urllib3' imported but it is a transitive dependency"},
                 "module": "urllib3",
-                "location": {
-                    "file": str(Path("src/notebook.ipynb")),
-                    "line": 2,
-                    "column": 1,
-                },
+                "location": {"file": "src/notebook.ipynb", "line": 2, "column": 1},
             },
-        ]
+        ])
 
 
 @pytest.mark.xdist_group(name=Project.REQUIREMENTS_TXT)
@@ -119,18 +81,11 @@ def test_cli_multiple_requirements_files(pip_venv_factory: PipVenvFactory) -> No
         )
 
         assert result.returncode == 1
-        assert get_issues_report(Path(issue_report)) == [
+        assert get_issues_report(Path(issue_report)) == snapshot([
             {
-                "error": {
-                    "code": "DEP002",
-                    "message": "'isort' defined as a dependency but not used in the codebase",
-                },
+                "error": {"code": "DEP002", "message": "'isort' defined as a dependency but not used in the codebase"},
                 "module": "isort",
-                "location": {
-                    "file": str(Path("requirements.txt")),
-                    "line": None,
-                    "column": None,
-                },
+                "location": {"file": "requirements.txt", "line": None, "column": None},
             },
             {
                 "error": {
@@ -138,34 +93,16 @@ def test_cli_multiple_requirements_files(pip_venv_factory: PipVenvFactory) -> No
                     "message": "'requests' defined as a dependency but not used in the codebase",
                 },
                 "module": "requests",
-                "location": {
-                    "file": str(Path("requirements.txt")),
-                    "line": None,
-                    "column": None,
-                },
+                "location": {"file": "requirements.txt", "line": None, "column": None},
             },
             {
-                "error": {
-                    "code": "DEP004",
-                    "message": "'black' imported but declared as a dev dependency",
-                },
+                "error": {"code": "DEP004", "message": "'black' imported but declared as a dev dependency"},
                 "module": "black",
-                "location": {
-                    "file": str(Path("src/main.py")),
-                    "line": 4,
-                    "column": 8,
-                },
+                "location": {"file": "src/main.py", "line": 4, "column": 8},
             },
             {
-                "error": {
-                    "code": "DEP001",
-                    "message": "'white' imported but missing from the dependency definitions",
-                },
+                "error": {"code": "DEP001", "message": "'white' imported but missing from the dependency definitions"},
                 "module": "white",
-                "location": {
-                    "file": str(Path("src/main.py")),
-                    "line": 6,
-                    "column": 8,
-                },
+                "location": {"file": "src/main.py", "line": 6, "column": 8},
             },
-        ]
+        ])
