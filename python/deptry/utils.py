@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 from deptry.exceptions import PyprojectFileNotFoundError
 
-if sys.version_info >= (3, 11):
+if sys.version_info >= (3, 15):  # pragma: no cover
     import tomllib
 else:
     import tomli as tomllib
