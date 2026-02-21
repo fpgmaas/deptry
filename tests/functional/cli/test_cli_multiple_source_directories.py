@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 def test_cli_with_multiple_source_directories(pip_venv_factory: PipVenvFactory) -> None:
     with pip_venv_factory(Project.MULTIPLE_SOURCE_DIRECTORIES) as virtual_env:
         issue_report = f"{uuid.uuid4()}.json"
-        result = virtual_env.run(f"deptry src worker --output-posix-paths -o {issue_report}")
+        result = virtual_env.run_deptry(f"src worker -o {issue_report}")
 
         assert result.returncode == 1
         assert get_issues_report(Path(issue_report)) == snapshot([

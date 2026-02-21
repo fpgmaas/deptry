@@ -20,7 +20,7 @@ if TYPE_CHECKING:
 def test_cli_returns_error(poetry_venv_factory: PoetryVenvFactory) -> None:
     with poetry_venv_factory(Project.EXAMPLE) as virtual_env:
         issue_report = f"{uuid.uuid4()}.json"
-        result = virtual_env.run(f"deptry . --output-posix-paths -o {issue_report}")
+        result = virtual_env.run_deptry(f". -o {issue_report}")
 
         assert result.returncode == 1
         assert get_issues_report(Path(issue_report)) == snapshot([
@@ -54,7 +54,7 @@ def test_cli_returns_error(poetry_venv_factory: PoetryVenvFactory) -> None:
 def test_cli_ignore_notebooks(poetry_venv_factory: PoetryVenvFactory) -> None:
     with poetry_venv_factory(Project.EXAMPLE) as virtual_env:
         issue_report = f"{uuid.uuid4()}.json"
-        result = virtual_env.run(f"deptry . --output-posix-paths --ignore-notebooks -o {issue_report}")
+        result = virtual_env.run_deptry(f". --ignore-notebooks -o {issue_report}")
 
         assert result.returncode == 1
         assert get_issues_report(Path(issue_report)) == snapshot([
@@ -92,9 +92,7 @@ def test_cli_ignore_notebooks(poetry_venv_factory: PoetryVenvFactory) -> None:
 @pytest.mark.xdist_group(name=Project.EXAMPLE)
 def test_cli_ignore_flags(poetry_venv_factory: PoetryVenvFactory) -> None:
     with poetry_venv_factory(Project.EXAMPLE) as virtual_env:
-        result = virtual_env.run(
-            "deptry . --output-posix-paths --per-rule-ignores DEP001=white,DEP002=isort|pkginfo|requests,DEP004=black"
-        )
+        result = virtual_env.run_deptry(". --per-rule-ignores DEP001=white,DEP002=isort|pkginfo|requests,DEP004=black")
 
         assert result.returncode == 0
 
@@ -102,7 +100,7 @@ def test_cli_ignore_flags(poetry_venv_factory: PoetryVenvFactory) -> None:
 @pytest.mark.xdist_group(name=Project.EXAMPLE)
 def test_cli_ignore_flag(poetry_venv_factory: PoetryVenvFactory) -> None:
     with poetry_venv_factory(Project.EXAMPLE) as virtual_env:
-        result = virtual_env.run("deptry . --output-posix-paths --ignore DEP001,DEP002,DEP003,DEP004")
+        result = virtual_env.run_deptry(". --ignore DEP001,DEP002,DEP003,DEP004")
 
         assert result.returncode == 0
 
@@ -111,7 +109,7 @@ def test_cli_ignore_flag(poetry_venv_factory: PoetryVenvFactory) -> None:
 def test_cli_exclude(poetry_venv_factory: PoetryVenvFactory) -> None:
     with poetry_venv_factory(Project.EXAMPLE) as virtual_env:
         issue_report = f"{uuid.uuid4()}.json"
-        result = virtual_env.run(f"deptry . --output-posix-paths --exclude src/notebook.ipynb -o {issue_report}")
+        result = virtual_env.run_deptry(f". --exclude src/notebook.ipynb -o {issue_report}")
 
         assert result.returncode == 1
         assert get_issues_report(Path(issue_report)) == snapshot([
@@ -162,7 +160,7 @@ def test_cli_exclude(poetry_venv_factory: PoetryVenvFactory) -> None:
 def test_cli_extend_exclude(poetry_venv_factory: PoetryVenvFactory) -> None:
     with poetry_venv_factory(Project.EXAMPLE) as virtual_env:
         issue_report = f"{uuid.uuid4()}.json"
-        result = virtual_env.run(f"deptry . --output-posix-paths -ee src/notebook.ipynb -o {issue_report}")
+        result = virtual_env.run_deptry(f". -ee src/notebook.ipynb -o {issue_report}")
 
         assert result.returncode == 1
         assert get_issues_report(Path(issue_report)) == snapshot([
@@ -201,7 +199,7 @@ def test_cli_extend_exclude(poetry_venv_factory: PoetryVenvFactory) -> None:
 def test_cli_known_first_party(poetry_venv_factory: PoetryVenvFactory) -> None:
     with poetry_venv_factory(Project.EXAMPLE) as virtual_env:
         issue_report = f"{uuid.uuid4()}.json"
-        result = virtual_env.run(f"deptry . --output-posix-paths --known-first-party white -o {issue_report}")
+        result = virtual_env.run_deptry(f". --known-first-party white -o {issue_report}")
 
         assert result.returncode == 1
         assert get_issues_report(Path(issue_report)) == snapshot([
@@ -230,7 +228,7 @@ def test_cli_known_first_party(poetry_venv_factory: PoetryVenvFactory) -> None:
 def test_cli_not_verbose(poetry_venv_factory: PoetryVenvFactory) -> None:
     with poetry_venv_factory(Project.EXAMPLE) as virtual_env:
         issue_report = f"{uuid.uuid4()}.json"
-        result = virtual_env.run(f"deptry . --output-posix-paths --no-ansi -o {issue_report}")
+        result = virtual_env.run_deptry(f". --no-ansi -o {issue_report}")
 
         assert result.returncode == 1
         assert "The project contains the following dependencies:" not in result.stderr
@@ -265,7 +263,7 @@ def test_cli_not_verbose(poetry_venv_factory: PoetryVenvFactory) -> None:
 def test_cli_verbose(poetry_venv_factory: PoetryVenvFactory) -> None:
     with poetry_venv_factory(Project.EXAMPLE) as virtual_env:
         issue_report = f"{uuid.uuid4()}.json"
-        result = virtual_env.run(f"deptry . --output-posix-paths --no-ansi --verbose -o {issue_report}")
+        result = virtual_env.run_deptry(f". --no-ansi --verbose -o {issue_report}")
 
         assert result.returncode == 1
         assert "The project contains the following dependencies:" in result.stderr
@@ -302,7 +300,7 @@ def test_cli_with_not_json_output(poetry_venv_factory: PoetryVenvFactory) -> Non
     with poetry_venv_factory(Project.EXAMPLE) as virtual_env:
         json_files_count = len(list(Path().glob("*.json")))
 
-        result = virtual_env.run("deptry . --output-posix-paths --no-ansi")
+        result = virtual_env.run_deptry(". --no-ansi")
 
         assert result.returncode == 1
         # Assert that we have the same number of JSON files as before running the command.
@@ -324,7 +322,7 @@ For more information, see the documentation: https://deptry.com/
 def test_cli_with_json_output(poetry_venv_factory: PoetryVenvFactory) -> None:
     with poetry_venv_factory(Project.EXAMPLE) as virtual_env:
         issue_report = f"{uuid.uuid4()}.json"
-        result = virtual_env.run(f"deptry . --output-posix-paths --no-ansi -o {issue_report}")
+        result = virtual_env.run_deptry(f". --no-ansi -o {issue_report}")
 
         # Assert that we still write to console when generating a JSON report.
         assert result.stderr == snapshot("""\
@@ -368,7 +366,7 @@ For more information, see the documentation: https://deptry.com/
 @pytest.mark.xdist_group(name=Project.EXAMPLE)
 def test_cli_with_github_output(poetry_venv_factory: PoetryVenvFactory) -> None:
     with poetry_venv_factory(Project.EXAMPLE) as virtual_env:
-        result = virtual_env.run("deptry . --output-posix-paths --no-ansi --github-output")
+        result = virtual_env.run_deptry(". --no-ansi --github-output")
 
         assert result.returncode == 1
         assert result.stderr == snapshot("""\
@@ -391,9 +389,7 @@ For more information, see the documentation: https://deptry.com/
 @pytest.mark.xdist_group(name=Project.EXAMPLE)
 def test_cli_with_github_output_warning_errors(poetry_venv_factory: PoetryVenvFactory) -> None:
     with poetry_venv_factory(Project.EXAMPLE) as virtual_env:
-        result = virtual_env.run(
-            "deptry . --output-posix-paths --no-ansi --github-output --github-warning-errors DEP001,DEP004"
-        )
+        result = virtual_env.run_deptry(". --no-ansi --github-output --github-warning-errors DEP001,DEP004")
 
         assert result.returncode == 1
         assert result.stderr == snapshot("""\
@@ -416,7 +412,7 @@ For more information, see the documentation: https://deptry.com/
 def test_cli_config_does_not_supress_output(poetry_venv_factory: PoetryVenvFactory) -> None:
     """Regression test that ensures that passing `--config` option does not suppress output."""
     with poetry_venv_factory(Project.WITHOUT_DEPTRY_OPTION) as virtual_env:
-        result = virtual_env.run("deptry . --output-posix-paths --no-ansi --config pyproject.toml")
+        result = virtual_env.run_deptry(". --no-ansi --config pyproject.toml")
 
         assert result.returncode == 1
         assert result.stderr == snapshot("""\

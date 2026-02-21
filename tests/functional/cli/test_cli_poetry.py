@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 def test_cli_with_poetry(poetry_venv_factory: PoetryVenvFactory) -> None:
     with poetry_venv_factory(Project.POETRY) as virtual_env:
         issue_report = f"{uuid.uuid4()}.json"
-        result = virtual_env.run(f"deptry . --output-posix-paths -o {issue_report}")
+        result = virtual_env.run_deptry(f". -o {issue_report}")
 
         assert result.returncode == 1
         assert get_issues_report(Path(issue_report)) == snapshot([

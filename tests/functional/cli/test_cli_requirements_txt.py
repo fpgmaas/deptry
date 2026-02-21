@@ -23,9 +23,8 @@ def test_cli_single_requirements_files(pip_venv_factory: PipVenvFactory) -> None
         ),
     ) as virtual_env:
         issue_report = f"{uuid.uuid4()}.json"
-        result = virtual_env.run(
-            "deptry . --output-posix-paths --requirements-files requirements.txt --requirements-files-dev requirements-dev.txt -o"
-            f" {issue_report}"
+        result = virtual_env.run_deptry(
+            f". --requirements-files requirements.txt --requirements-files-dev requirements-dev.txt -o {issue_report}"
         )
 
         assert result.returncode == 1
@@ -75,8 +74,8 @@ def test_cli_multiple_requirements_files(pip_venv_factory: PipVenvFactory) -> No
         ),
     ) as virtual_env:
         issue_report = f"{uuid.uuid4()}.json"
-        result = virtual_env.run(
-            "deptry . --output-posix-paths --requirements-files requirements.txt,requirements-2.txt --requirements-files-dev"
+        result = virtual_env.run_deptry(
+            ". --requirements-files requirements.txt,requirements-2.txt --requirements-files-dev"
             f" requirements-dev.txt -o {issue_report}"
         )
 
