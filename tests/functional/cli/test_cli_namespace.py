@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 def test_cli_with_namespace(pip_venv_factory: PipVenvFactory) -> None:
     with pip_venv_factory(Project.NAMESPACE) as virtual_env:
         issue_report = f"{uuid.uuid4()}.json"
-        result = virtual_env.run(f"deptry . --experimental-namespace-package -o {issue_report}")
+        result = virtual_env.run(f"deptry . --output-posix-paths --experimental-namespace-package -o {issue_report}")
 
         assert result.returncode == 1
         assert get_issues_report(Path(issue_report)) == snapshot([
@@ -44,7 +44,7 @@ def test_cli_with_namespace(pip_venv_factory: PipVenvFactory) -> None:
 def test_cli_with_namespace_without_experimental_flag(pip_venv_factory: PipVenvFactory) -> None:
     with pip_venv_factory(Project.NAMESPACE) as virtual_env:
         issue_report = f"{uuid.uuid4()}.json"
-        result = virtual_env.run(f"deptry . -o {issue_report}")
+        result = virtual_env.run(f"deptry . --output-posix-paths -o {issue_report}")
 
         assert result.returncode == 1
         assert get_issues_report(Path(issue_report)) == snapshot([
