@@ -437,7 +437,7 @@ def test_cli_help() -> None:
 def test_cli_paths_respect_windows(poetry_venv_factory: PoetryVenvFactory) -> None:
     with poetry_venv_factory(Project.EXAMPLE) as virtual_env:
         issue_report = f"{uuid.uuid4()}.json"
-        result = virtual_env.run_deptry(f". --no-ansi -o {issue_report} --github-output", output_posix_paths=False)
+        result = virtual_env.run_deptry(f". --no-ansi -o {issue_report} --github-output", enforce_posix_paths=False)
 
         assert result.returncode == 1
         assert result.stderr == snapshot("""\
@@ -488,7 +488,7 @@ For more information, see the documentation: https://deptry.com/
 def test_cli_paths_respect_non_windows(poetry_venv_factory: PoetryVenvFactory) -> None:
     with poetry_venv_factory(Project.EXAMPLE) as virtual_env:
         issue_report = f"{uuid.uuid4()}.json"
-        result = virtual_env.run_deptry(f". --no-ansi -o {issue_report} --github-output", output_posix_paths=False)
+        result = virtual_env.run_deptry(f". --no-ansi -o {issue_report} --github-output", enforce_posix_paths=False)
 
         assert result.returncode == 1
         assert result.stderr == snapshot("""\

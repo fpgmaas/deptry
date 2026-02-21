@@ -269,10 +269,10 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
 )
 # This flag is not exposed because it is used in functional tests to have consistent output between platforms.
 @click.option(
-    "--output-posix-paths",
+    "--enforce-posix-paths",
     is_flag=True,
     hidden=True,
-    help="Output posix paths in reporters.",
+    help="Enforce posix paths in reporters.",
 )
 @click.pass_context
 def cli(
@@ -295,7 +295,7 @@ def cli(
     pep621_dev_dependency_groups: tuple[str, ...],
     optional_dependencies_dev_groups: tuple[str, ...],
     experimental_namespace_package: bool,
-    output_posix_paths: bool,
+    enforce_posix_paths: bool,
 ) -> None:
     """Find dependency issues in your Python project.
 
@@ -333,7 +333,7 @@ def cli(
         package_module_name_map=package_module_name_map,
         optional_dependencies_dev_groups=pep621_dev_dependency_groups or optional_dependencies_dev_groups,
         experimental_namespace_package=experimental_namespace_package,
-        output_posix_paths=output_posix_paths,
+        enforce_posix_paths=enforce_posix_paths,
     ).run()
 
 

@@ -35,7 +35,7 @@ def test_logging_number_multiple(caplog: LogCaptureFixture) -> None:
             ),
             DEP004MisplacedDevDependencyViolation(Module("foo", package="foo-package"), Location(Path("foo.py"), 1, 2)),
         ]
-        TextReporter(violations, output_posix_paths=False).report()
+        TextReporter(violations, enforce_posix_paths=False).report()
 
     assert caplog.messages == [
         (
@@ -72,7 +72,7 @@ def test_logging_number_single(caplog: LogCaptureFixture) -> None:
     with caplog.at_level(logging.INFO):
         TextReporter(
             [DEP001MissingDependencyViolation(Module("foo", package="foo-package"), Location(Path("foo.py"), 1, 2))],
-            output_posix_paths=False,
+            enforce_posix_paths=False,
         ).report()
 
     assert caplog.messages == [
@@ -89,7 +89,7 @@ def test_logging_number_single(caplog: LogCaptureFixture) -> None:
 
 def test_logging_number_none(caplog: LogCaptureFixture) -> None:
     with caplog.at_level(logging.INFO):
-        TextReporter([], output_posix_paths=False).report()
+        TextReporter([], enforce_posix_paths=False).report()
 
     assert caplog.messages == [
         "",
@@ -109,7 +109,7 @@ def test_logging_no_ansi(caplog: LogCaptureFixture) -> None:
             ),
             DEP004MisplacedDevDependencyViolation(Module("foo", package="foo-package"), Location(Path("foo.py"), 1, 2)),
         ]
-        TextReporter(violations, output_posix_paths=False, use_ansi=False).report()
+        TextReporter(violations, enforce_posix_paths=False, use_ansi=False).report()
 
     assert caplog.messages == [
         (
@@ -134,4 +134,4 @@ def test_logging_no_ansi(caplog: LogCaptureFixture) -> None:
     ],
 )
 def test__get_colors(use_ansi: bool, expected: dict[str, str]) -> None:
-    assert TextReporter([], output_posix_paths=False, use_ansi=use_ansi)._get_colors() == expected
+    assert TextReporter([], enforce_posix_paths=False, use_ansi=use_ansi)._get_colors() == expected
