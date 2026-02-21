@@ -85,7 +85,7 @@ Success! No dependency issues found.
 @pytest.mark.xdist_group(name=Project.EXAMPLE)
 def test_cli_exclude(poetry_venv_factory: PoetryVenvFactory) -> None:
     with poetry_venv_factory(Project.EXAMPLE) as virtual_env:
-        result = virtual_env.run_deptry(". --exclude src/notebook.ipynb")
+        result = virtual_env.run_deptry(". --exclude src/notebook\\.ipynb")
 
         assert result.returncode == 1
         assert result.stderr == snapshot("""\
@@ -105,7 +105,7 @@ For more information, see the documentation: https://deptry.com/
 @pytest.mark.xdist_group(name=Project.EXAMPLE)
 def test_cli_extend_exclude(poetry_venv_factory: PoetryVenvFactory) -> None:
     with poetry_venv_factory(Project.EXAMPLE) as virtual_env:
-        result = virtual_env.run_deptry(". -ee src/notebook.ipynb")
+        result = virtual_env.run_deptry(". -ee src/notebook\\.ipynb")
 
         assert result.returncode == 1
         assert result.stderr == snapshot("""\
