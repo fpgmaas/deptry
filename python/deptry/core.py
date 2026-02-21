@@ -40,6 +40,7 @@ class Core:
     package_module_name_map: Mapping[str, tuple[str, ...]]
     optional_dependencies_dev_groups: tuple[str, ...]
     experimental_namespace_package: bool
+    output_posix_paths: bool
     github_output: bool
     github_warning_errors: tuple[str, ...]
 
@@ -84,13 +85,15 @@ class Core:
             self.per_rule_ignores,
             standard_library_modules,
         )
-        TextReporter(violations, use_ansi=not self.no_ansi).report()
+        TextReporter(violations, output_posix_paths=self.output_posix_paths, use_ansi=not self.no_ansi).report()
 
         if self.json_output:
-            JSONReporter(violations, self.json_output).report()
+            JSONReporter(violations, output_posix_paths=self.output_posix_paths, json_output=self.json_output).report()
 
         if self.github_output:
-            GithubReporter(violations, warning_ids=self.github_warning_errors).report()
+            GithubReporter(
+                violations, output_posix_paths=self.output_posix_paths, warning_ids=self.github_warning_errors
+            ).report()
 
         self._exit(violations)
 
