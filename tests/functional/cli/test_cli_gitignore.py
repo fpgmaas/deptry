@@ -66,7 +66,7 @@ def test_cli_gitignore_not_used_when_using_exclude(pip_venv_factory: PipVenvFact
         # Simulate the fact that the project is a git repository.
         Path(".git").mkdir(exist_ok=True)
 
-        result = virtual_env.run_deptry(". --exclude build/|src/bar.py")
+        result = virtual_env.run_deptry(". --exclude build/|src/bar\\.py")
 
         assert result.returncode == 1
         assert result.stderr == snapshot("""\
