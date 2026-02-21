@@ -117,6 +117,14 @@ class VirtualEnvironment:
             cwd=cwd,
         )
 
+    def run_deptry(self, arguments: str = "", output_posix_paths: bool = True) -> subprocess.CompletedProcess[str]:
+        command = f"deptry {arguments}"
+
+        if output_posix_paths:
+            command += " --output-posix-paths"
+
+        return self.run(command)
+
     @staticmethod
     def _get_path_to_wheel_file(directory: Path) -> Path:
         """

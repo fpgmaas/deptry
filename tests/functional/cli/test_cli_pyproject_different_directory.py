@@ -20,9 +20,7 @@ def test_cli_with_pyproject_different_directory(pip_venv_factory: PipVenvFactory
         Project.PYPROJECT_DIFFERENT_DIRECTORY, install_command="pip install ./a_sub_directory"
     ) as virtual_env:
         issue_report = f"{uuid.uuid4()}.json"
-        result = virtual_env.run(
-            f"deptry src --output-posix-paths --config a_sub_directory/pyproject.toml -o {issue_report}"
-        )
+        result = virtual_env.run_deptry(f"src --config a_sub_directory/pyproject.toml -o {issue_report}")
 
         assert result.returncode == 1
         assert get_issues_report(Path(issue_report)) == snapshot([

@@ -22,7 +22,7 @@ def test_cli_gitignore_used(pip_venv_factory: PipVenvFactory) -> None:
         # Simulate the fact that the project is a git repository.
         Path(".git").mkdir(exist_ok=True)
 
-        result = virtual_env.run(f"deptry . --output-posix-paths -o {issue_report}")
+        result = virtual_env.run_deptry(f". -o {issue_report}")
 
         assert result.returncode == 1
         assert get_issues_report(Path(issue_report)) == snapshot([
@@ -55,7 +55,7 @@ def test_cli_gitignore_used_for_non_root_directory(pip_venv_factory: PipVenvFact
         # Simulate the fact that the project is a git repository.
         Path(".git").mkdir(exist_ok=True)
 
-        result = virtual_env.run(f"deptry src --output-posix-paths -o {issue_report}")
+        result = virtual_env.run_deptry(f"src -o {issue_report}")
 
         assert result.returncode == 1
         assert get_issues_report(Path(issue_report)) == snapshot([
@@ -88,7 +88,7 @@ def test_cli_gitignore_not_used_when_using_exclude(pip_venv_factory: PipVenvFact
         # Simulate the fact that the project is a git repository.
         Path(".git").mkdir(exist_ok=True)
 
-        result = virtual_env.run(f"deptry . --output-posix-paths --exclude build/|src/bar.py -o {issue_report}")
+        result = virtual_env.run_deptry(f". --exclude build/|src/bar.py -o {issue_report}")
 
         assert result.returncode == 1
         assert get_issues_report(Path(issue_report)) == snapshot([

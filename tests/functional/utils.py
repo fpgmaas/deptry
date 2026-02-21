@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from enum import Enum
 
+TEST_DEPTRY_COMMAND = "deptry --output-posix-paths"
 DEPTRY_WHEEL_DIRECTORY = "build/functional_tests/deptry"
 
 
