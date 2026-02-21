@@ -299,6 +299,25 @@ For more information, see the documentation: https://deptry.com/
 """)
 
 
+@pytest.mark.xdist_group(name=Project.EXAMPLE)
+def test_ansi(poetry_venv_factory: PoetryVenvFactory) -> None:
+    with poetry_venv_factory(Project.EXAMPLE) as virtual_env:
+        result = virtual_env.run_deptry(".", no_ansi=False)
+
+        assert result.returncode == 1
+        assert result.stderr == snapshot("""\
+Scanning 2 files...
+
+\x1b[1mpyproject.toml\x1b[m\x1b[36m:\x1b[m \x1b[1m\x1b[31mDEP002\x1b[m 'isort' defined as a dependency but not used in the codebase
+\x1b[1mpyproject.toml\x1b[m\x1b[36m:\x1b[m \x1b[1m\x1b[31mDEP002\x1b[m 'requests' defined as a dependency but not used in the codebase
+\x1b[1msrc/main.py\x1b[m\x1b[36m:\x1b[m4\x1b[36m:\x1b[m8\x1b[36m:\x1b[m \x1b[1m\x1b[31mDEP004\x1b[m 'black' imported but declared as a dev dependency
+\x1b[1msrc/main.py\x1b[m\x1b[36m:\x1b[m6\x1b[36m:\x1b[m8\x1b[36m:\x1b[m \x1b[1m\x1b[31mDEP001\x1b[m 'white' imported but missing from the dependency definitions
+\x1b[1m\x1b[31mFound 4 dependency issues.\x1b[m
+
+For more information, see the documentation: https://deptry.com/
+""")
+
+
 def test_cli_help() -> None:
     result = CliRunner().invoke(cli, "--help")
 
