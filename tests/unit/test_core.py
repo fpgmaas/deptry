@@ -3,6 +3,7 @@ from __future__ import annotations
 import logging
 import sys
 from pathlib import Path
+from typing import Any
 from unittest import mock
 
 import pytest
@@ -152,6 +153,76 @@ def test__get_stdlib_packages_with_stdlib_module_names_future_version(version_in
     """Test that future versions of Python not yet tested on the CI will also work."""
     with mock.patch("sys.version_info", (sys.version_info[0], sys.version_info[1] + 1, 0)):
         assert Core._get_standard_library_modules() == sys.stdlib_module_names
+
+
+@mock.patch("deptry.reporters.TextReporter.report")
+@mock.patch("deptry.reporters.JSONReporter.report")
+@mock.patch("deptry.reporters.GithubReporter.report")
+def test_text_reporter_only(
+    mock_github_reporter_report: Any, mock_json_reporter_report: Any, mock_text_reporter_report: Any
+) -> None:
+    with pytest.raises(SystemExit):
+        Core(
+            root=(Path(),),
+            config=Path("pyproject.toml"),
+            no_ansi=False,
+            per_rule_ignores={},
+            ignore=(),
+            exclude=(),
+            extend_exclude=(),
+            using_default_exclude=True,
+            ignore_notebooks=False,
+            requirements_files=(),
+            requirements_files_dev=(),
+            known_first_party=(),
+            json_output="",
+            package_module_name_map={},
+            optional_dependencies_dev_groups=(),
+            using_default_requirements_files=True,
+            experimental_namespace_package=False,
+            github_output=False,
+            github_warning_errors=(),
+            enforce_posix_paths=False,
+        ).run()
+
+    mock_text_reporter_report.assert_called()
+    mock_json_reporter_report.assert_not_called()
+    mock_github_reporter_report.assert_not_called()
+
+
+@mock.patch("deptry.reporters.TextReporter.report")
+@mock.patch("deptry.reporters.JSONReporter.report")
+@mock.patch("deptry.reporters.GithubReporter.report")
+def test_all_reporters(
+    mock_github_reporter_report: Any, mock_json_reporter_report: Any, mock_text_reporter_report: Any
+) -> None:
+    with pytest.raises(SystemExit):
+        Core(
+            root=(Path(),),
+            config=Path("pyproject.toml"),
+            no_ansi=False,
+            per_rule_ignores={},
+            ignore=(),
+            exclude=(),
+            extend_exclude=(),
+            using_default_exclude=True,
+            ignore_notebooks=False,
+            requirements_files=(),
+            requirements_files_dev=(),
+            known_first_party=(),
+            json_output="foo.json",
+            package_module_name_map={},
+            optional_dependencies_dev_groups=(),
+            using_default_requirements_files=True,
+            experimental_namespace_package=False,
+            github_output=True,
+            github_warning_errors=(),
+            enforce_posix_paths=False,
+        ).run()
+
+    mock_text_reporter_report.assert_called()
+    mock_json_reporter_report.assert_called()
+    mock_github_reporter_report.assert_called()
 
 
 def test__exit_with_violations() -> None:
