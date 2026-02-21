@@ -31,7 +31,7 @@ def test_simple(tmp_path: Path) -> None:
                     Module("foo", package="foo-package"), Location(Path("foo.py"), 1, 2)
                 ),
             ],
-            output_posix_paths=False,
+            enforce_posix_paths=False,
             json_output="output.json",
         ).report()
 
