@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import sys
 import uuid
 from pathlib import Path
 from typing import TYPE_CHECKING
@@ -429,3 +430,105 @@ def test_cli_help() -> None:
     result = CliRunner().invoke(cli, "--help")
 
     assert result.exit_code == 0
+
+
+@pytest.mark.xdist_group(name=Project.EXAMPLE)
+@pytest.mark.skipif(sys.platform != "win32", reason="Explicitly tests paths output for Windows systems")
+def test_cli_paths_respect_windows(poetry_venv_factory: PoetryVenvFactory) -> None:
+    with poetry_venv_factory(Project.EXAMPLE) as virtual_env:
+        issue_report = f"{uuid.uuid4()}.json"
+        result = virtual_env.run_deptry(f". --no-ansi -o {issue_report} --github-output", output_posix_paths=False)
+
+        assert result.returncode == 1
+        assert result.stderr == snapshot("""\
+Scanning 2 files...
+
+pyproject.toml: DEP002 'isort' defined as a dependency but not used in the codebase
+pyproject.toml: DEP002 'requests' defined as a dependency but not used in the codebase
+src\\main.py:4:8: DEP004 'black' imported but declared as a dev dependency
+src\\main.py:6:8: DEP001 'white' imported but missing from the dependency definitions
+Found 4 dependency issues.
+
+For more information, see the documentation: https://deptry.com/
+::error file=pyproject.toml,line=1,title=DEP002::'isort' defined as a dependency but not used in the codebase
+::error file=pyproject.toml,line=1,title=DEP002::'requests' defined as a dependency but not used in the codebase
+::error file=src\\main.py,line=4,col=8,title=DEP004::'black' imported but declared as a dev dependency
+::error file=src\\main.py,line=6,col=8,title=DEP001::'white' imported but missing from the dependency definitions
+""")
+
+        assert get_issues_report(Path(issue_report)) == snapshot([
+            {
+                "error": {"code": "DEP002", "message": "'isort' defined as a dependency but not used in the codebase"},
+                "module": "isort",
+                "location": {"file": "pyproject.toml", "line": None, "column": None},
+            },
+            {
+                "error": {
+                    "code": "DEP002",
+                    "message": "'requests' defined as a dependency but not used in the codebase",
+                },
+                "module": "requests",
+                "location": {"file": "pyproject.toml", "line": None, "column": None},
+            },
+            {
+                "error": {"code": "DEP004", "message": "'black' imported but declared as a dev dependency"},
+                "module": "black",
+                "location": {"file": "src\\main.py", "line": 4, "column": 8},
+            },
+            {
+                "error": {"code": "DEP001", "message": "'white' imported but missing from the dependency definitions"},
+                "module": "white",
+                "location": {"file": "src\\main.py", "line": 6, "column": 8},
+            },
+        ])
+
+
+@pytest.mark.xdist_group(name=Project.EXAMPLE)
+@pytest.mark.skipif(sys.platform == "win32", reason="Explicitly tests paths output for non-Windows systems")
+def test_cli_paths_respect_non_windows(poetry_venv_factory: PoetryVenvFactory) -> None:
+    with poetry_venv_factory(Project.EXAMPLE) as virtual_env:
+        issue_report = f"{uuid.uuid4()}.json"
+        result = virtual_env.run_deptry(f". --no-ansi -o {issue_report} --github-output", output_posix_paths=False)
+
+        assert result.returncode == 1
+        assert result.stderr == snapshot("""\
+Scanning 2 files...
+
+pyproject.toml: DEP002 'isort' defined as a dependency but not used in the codebase
+pyproject.toml: DEP002 'requests' defined as a dependency but not used in the codebase
+src/main.py:4:8: DEP004 'black' imported but declared as a dev dependency
+src/main.py:6:8: DEP001 'white' imported but missing from the dependency definitions
+Found 4 dependency issues.
+
+For more information, see the documentation: https://deptry.com/
+::error file=pyproject.toml,line=1,title=DEP002::'isort' defined as a dependency but not used in the codebase
+::error file=pyproject.toml,line=1,title=DEP002::'requests' defined as a dependency but not used in the codebase
+::error file=src/main.py,line=4,col=8,title=DEP004::'black' imported but declared as a dev dependency
+::error file=src/main.py,line=6,col=8,title=DEP001::'white' imported but missing from the dependency definitions
+""")
+
+        assert get_issues_report(Path(issue_report)) == snapshot([
+            {
+                "error": {"code": "DEP002", "message": "'isort' defined as a dependency but not used in the codebase"},
+                "module": "isort",
+                "location": {"file": "pyproject.toml", "line": None, "column": None},
+            },
+            {
+                "error": {
+                    "code": "DEP002",
+                    "message": "'requests' defined as a dependency but not used in the codebase",
+                },
+                "module": "requests",
+                "location": {"file": "pyproject.toml", "line": None, "column": None},
+            },
+            {
+                "error": {"code": "DEP004", "message": "'black' imported but declared as a dev dependency"},
+                "module": "black",
+                "location": {"file": "src/main.py", "line": 4, "column": 8},
+            },
+            {
+                "error": {"code": "DEP001", "message": "'white' imported but missing from the dependency definitions"},
+                "module": "white",
+                "location": {"file": "src/main.py", "line": 6, "column": 8},
+            },
+        ])
