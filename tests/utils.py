@@ -117,11 +117,16 @@ class VirtualEnvironment:
             cwd=cwd,
         )
 
-    def run_deptry(self, arguments: str = "", enforce_posix_paths: bool = True) -> subprocess.CompletedProcess[str]:
+    def run_deptry(
+        self, arguments: str = "", enforce_posix_paths: bool = True, no_ansi: bool = True
+    ) -> subprocess.CompletedProcess[str]:
         command = f"deptry {arguments}"
 
         if enforce_posix_paths:
             command += " --enforce-posix-paths"
+
+        if no_ansi:
+            command += " --no-ansi"
 
         return self.run(command)
 

@@ -1,14 +1,11 @@
 from __future__ import annotations
 
-import uuid
-from pathlib import Path
 from typing import TYPE_CHECKING
 
 import pytest
 from inline_snapshot import snapshot
 
 from tests.functional.utils import Project
-from tests.utils import get_issues_report
 
 if TYPE_CHECKING:
     from tests.utils import PipVenvFactory
@@ -20,53 +17,20 @@ def test_cli_setuptools_dynamic_dependencies(pip_venv_factory: PipVenvFactory) -
         Project.SETUPTOOLS_DYNAMIC_DEPENDENCIES,
         install_command="pip install -r requirements.txt -r requirements-2.txt -r cli-requirements.txt -r dev-requirements.txt",
     ) as virtual_env:
-        issue_report = f"{uuid.uuid4()}.json"
-        result = virtual_env.run_deptry(f". -o {issue_report}")
+        result = virtual_env.run_deptry(".")
 
         assert result.returncode == 1
-        assert get_issues_report(Path(issue_report)) == snapshot([
-            {
-                "error": {
-                    "code": "DEP002",
-                    "message": "'packaging' defined as a dependency but not used in the codebase",
-                },
-                "module": "packaging",
-                "location": {"file": "requirements-2.txt", "line": None, "column": None},
-            },
-            {
-                "error": {
-                    "code": "DEP002",
-                    "message": "'pkginfo' defined as a dependency but not used in the codebase",
-                },
-                "module": "pkginfo",
-                "location": {"file": "requirements.txt", "line": None, "column": None},
-            },
-            {
-                "error": {
-                    "code": "DEP002",
-                    "message": "'requests' defined as a dependency but not used in the codebase",
-                },
-                "module": "requests",
-                "location": {"file": "requirements.txt", "line": None, "column": None},
-            },
-            {
-                "error": {"code": "DEP004", "message": "'isort' imported but declared as a dev dependency"},
-                "module": "isort",
-                "location": {"file": "src/main.py", "line": 5, "column": 8},
-            },
-            {
-                "error": {"code": "DEP001", "message": "'white' imported but missing from the dependency definitions"},
-                "module": "white",
-                "location": {"file": "src/main.py", "line": 6, "column": 8},
-            },
-            {
-                "error": {"code": "DEP003", "message": "'urllib3' imported but it is a transitive dependency"},
-                "module": "urllib3",
-                "location": {"file": "src/main.py", "line": 7, "column": 1},
-            },
-            {
-                "error": {"code": "DEP003", "message": "'urllib3' imported but it is a transitive dependency"},
-                "module": "urllib3",
-                "location": {"file": "src/notebook.ipynb", "line": 2, "column": 1},
-            },
-        ])
+        assert result.stderr == snapshot("""\
+Scanning 2 files...
+
+requirements-2.txt: DEP002 'packaging' defined as a dependency but not used in the codebase
+requirements.txt: DEP002 'pkginfo' defined as a dependency but not used in the codebase
+requirements.txt: DEP002 'requests' defined as a dependency but not used in the codebase
+src/main.py:5:8: DEP004 'isort' imported but declared as a dev dependency
+src/main.py:6:8: DEP001 'white' imported but missing from the dependency definitions
+src/main.py:7:1: DEP003 'urllib3' imported but it is a transitive dependency
+src/notebook.ipynb:2:1: DEP003 'urllib3' imported but it is a transitive dependency
+Found 7 dependency issues.
+
+For more information, see the documentation: https://deptry.com/
+""")
