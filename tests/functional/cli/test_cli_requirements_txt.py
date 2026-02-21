@@ -24,7 +24,7 @@ def test_cli_single_requirements_files(pip_venv_factory: PipVenvFactory) -> None
     ) as virtual_env:
         issue_report = f"{uuid.uuid4()}.json"
         result = virtual_env.run(
-            "deptry . --requirements-files requirements.txt --requirements-files-dev requirements-dev.txt -o"
+            "deptry . --output-posix-paths --requirements-files requirements.txt --requirements-files-dev requirements-dev.txt -o"
             f" {issue_report}"
         )
 
@@ -76,7 +76,7 @@ def test_cli_multiple_requirements_files(pip_venv_factory: PipVenvFactory) -> No
     ) as virtual_env:
         issue_report = f"{uuid.uuid4()}.json"
         result = virtual_env.run(
-            "deptry . --requirements-files requirements.txt,requirements-2.txt --requirements-files-dev"
+            "deptry . --output-posix-paths --requirements-files requirements.txt,requirements-2.txt --requirements-files-dev"
             f" requirements-dev.txt -o {issue_report}"
         )
 
