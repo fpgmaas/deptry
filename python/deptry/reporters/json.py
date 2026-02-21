@@ -27,7 +27,7 @@ class JSONReporter(Reporter):
                     },
                     "module": violation.issue.name,
                     "location": {
-                        "file": str(violation.location.file),
+                        "file": self._format_path(violation.location.file),
                         "line": violation.location.line,
                         "column": violation.location.column,
                     },

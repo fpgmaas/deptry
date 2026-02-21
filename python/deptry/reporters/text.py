@@ -64,7 +64,7 @@ class TextReporter(Reporter):
         if location.line is not None and location.column is not None:
             return self._stylize(
                 "{BOLD}{file}{RESET}{CYAN}:{RESET}{line}{CYAN}:{RESET}{column}",
-                file=location.file,
+                file=self._format_path(location.file),
                 line=location.line,
                 column=location.column,
             )
