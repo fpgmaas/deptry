@@ -16,4 +16,5 @@ class Location:
     file: str
     line: int
     column: int
-    def __init__(self, file: str, line: int, column: int) -> None: ...
+    ignored_rule_codes: list[str]
+    def __init__(self, file: str, line: int, column: int, ignored_rule_codes: list[str] = ...) -> None: ...

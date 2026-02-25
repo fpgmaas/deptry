@@ -13,7 +13,13 @@ class Location:
     file: Path
     line: int | None = None
     column: int | None = None
+    ignored_rule_codes: tuple[str, ...] = ()
 
     @classmethod
     def from_rust_location_object(cls, location: RustLocation) -> Location:
-        return cls(file=Path(location.file), line=location.line, column=location.column)
+        return cls(
+            file=Path(location.file),
+            line=location.line,
+            column=location.column,
+            ignored_rule_codes=tuple(location.ignored_rule_codes),
+        )

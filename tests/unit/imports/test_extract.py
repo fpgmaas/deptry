@@ -218,3 +218,42 @@ def test_python_3_12_f_string_syntax(tmp_path: Path) -> None:
             f.write('import foo\nprint(f"abc{"def"}")')
 
         assert get_imported_modules_from_list_of_files([file_path]) == {"foo": [Location(file_path, 1, 8)]}
+
+
+def test_import_parser_with_inline_ignores() -> None:
+    file_path = Path("tests/fixtures/some_imports_with_inline_ignores.py")
+    assert get_imported_modules_from_list_of_files([file_path]) == {
+        "foo": [Location(file_path, 1, 8, ignored_rule_codes=("DEP001",))],
+        "bar": [Location(file_path, 2, 8, ignored_rule_codes=("DEP001", "DEP003"))],
+        "baz": [Location(file_path, 3, 8, ignored_rule_codes=("ALL",))],
+        "qux": [Location(file_path, 4, 8, ignored_rule_codes=("DEP004",))],
+        "quux": [Location(file_path, 5, 8)],
+    }
+
+
+@pytest.mark.parametrize(
+    ("file_content", "expected_column", "expected_ignored_rule_codes"),
+    [
+        ("import foo", 8, ()),
+        ("import foo  # some comment", 8, ()),
+        ("import foo  # deptry: ignore", 8, ("ALL",)),
+        ("import foo  # deptry: ignore[DEP001]", 8, ("DEP001",)),
+        ("import foo  # deptry: ignore[DEP001,DEP003]", 8, ("DEP001", "DEP003")),
+        ("import foo  # deptry: ignore[DEP001, DEP003]", 8, ("DEP001", "DEP003")),
+        ("import foo  #  deptry:  ignore[DEP004]", 8, ("DEP004",)),
+        ("from foo import bar  # deptry: ignore[DEP001]", 1, ("DEP001",)),
+    ],
+)
+def test_import_parser_inline_ignore_variants(
+    file_content: str, expected_column: int, expected_ignored_rule_codes: tuple[str, ...], tmp_path: Path
+) -> None:
+    file_path = Path("file.py")
+
+    with run_within_dir(tmp_path):
+        with file_path.open("w") as f:
+            f.write(file_content)
+
+        result = get_imported_modules_from_list_of_files([file_path])
+        assert result == {
+            "foo": [Location(file_path, 1, expected_column, ignored_rule_codes=expected_ignored_rule_codes)]
+        }
