@@ -61,7 +61,7 @@ jobs:
           - name: linux
             image: ubuntu-24.04
           - name: macos
-            image: macos-15
+            image: macos-26
           - name: windows
             image: windows-2025
         python-version:
