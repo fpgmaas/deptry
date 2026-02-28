@@ -26,19 +26,19 @@ class GithubReporter(Reporter):
 
     def _print_github_annotation(self, violation: Violation) -> None:
         annotation_severity = "warning" if violation.error_code in self.warning_ids else "error"
-        file_name = violation.location.file
 
         ret = _build_workflow_command(
             annotation_severity,
             violation.error_code,
             violation.get_error_message(),
-            str(file_name),
+            self._format_path(violation.location.file),
             # For dependency files (like "pyproject.toml"), we don't extract a line. Setting the first line in that case
             # allows a comment to be added in GitHub, even if it's not on the proper line, otherwise it doesn't appear
             # at all.
             line=violation.location.line or 1,
             column=violation.location.column,
         )
+
         logging.info(ret)
 
 

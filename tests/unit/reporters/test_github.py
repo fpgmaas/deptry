@@ -45,7 +45,7 @@ expected_error = _build_workflow_command(
 def test_github_annotation(
     caplog: LogCaptureFixture, violation: Violation, warning_ids: tuple[str, ...], expected: str
 ) -> None:
-    reporter = GithubReporter(violations=[violation], warning_ids=warning_ids)
+    reporter = GithubReporter(violations=[violation], enforce_posix_paths=False, warning_ids=warning_ids)
 
     with caplog.at_level(logging.INFO):
         reporter.report()

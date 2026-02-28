@@ -40,6 +40,7 @@ docs = [
     "mkdocs-material==9.7.3",
 ]
 test = [
+    "inline-snapshot==0.32.2",
     "pdm==2.26.6",
     "poetry==2.3.2",
     "pytest==9.0.2",
