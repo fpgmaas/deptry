@@ -38,15 +38,17 @@ class PoetryDependencyGetter(PEP621DependencyGetter):
 
     def _get_dev_dependencies(
         self,
-        dependency_groups_dependencies: dict[str, list[Dependency]],
         dev_dependencies_from_optional: list[Dependency],
+        dev_dependencies_from_dependency_groups: list[Dependency],
     ) -> list[Dependency]:
         """
         Poetry's development dependencies can be specified under either, or both:
         - [tool.poetry.dev-dependencies]
         - [tool.poetry.group.<group>.dependencies]
         """
-        dev_dependencies = super()._get_dev_dependencies(dependency_groups_dependencies, dev_dependencies_from_optional)
+        dev_dependencies = super()._get_dev_dependencies(
+            dev_dependencies_from_optional, dev_dependencies_from_dependency_groups
+        )
 
         pyproject_data = load_pyproject_toml(self.config)
         poetry_dev_dependencies: dict[str, str] = {}
