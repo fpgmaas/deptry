@@ -8,7 +8,7 @@ args==0.1.0
     # via clint
 beautifulsoup4==4.14.3
     # via itchiodl
-certifi==2026.1.4
+certifi==2026.2.25
     # via requests
 charset-normalizer==3.4.4
     # via requests
@@ -22,7 +22,7 @@ h11==0.16.0
     # via uvicorn
 idna==3.11
     # via requests
-isort==7.0.0
+isort==8.0.1
     # via -r requirements.in
 itchiodl==2.3.0
     # via -r requirements.in
@@ -34,5 +34,5 @@ urllib3==2.6.3
     # via
     #   -r requirements.in
     #   requests
-uvicorn==0.40.0
+uvicorn==0.41.0
     # via -r requirements.in
