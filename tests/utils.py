@@ -91,7 +91,14 @@ class VirtualEnvironment:
         if self.project_path.exists():
             return
 
-        virtual_env = venv.EnvBuilder(with_pip=True)
+        virtual_env = venv.EnvBuilder(
+            with_pip=True,
+            # Use symlinks so the venv python binary is a symlink back to the original interpreter
+            # rather than a copy. Copied binaries break on shared-library Python builds (e.g. uv-managed
+            # CPython) because the binary locates libpython via $ORIGIN/../lib/, which resolves relative
+            # to the binary's actual location — a copy in the new venv where the .so doesn't exist.
+            symlinks=True,
+        )
         virtual_env.create(self.project_path)
 
         shutil.copytree(deptry_directory / "tests/fixtures" / self.project, self.project_path / "project")

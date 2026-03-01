@@ -54,6 +54,34 @@ if TYPE_CHECKING:
     import mypy_boto3_s3
 ```
 
+### Inline ignore comments
+
+Individual import statements can be excluded from _deptry_'s analysis by adding an inline `# deptry: ignore` comment,
+similar to `# noqa` in flake8/ruff or `# type: ignore` in mypy. The following forms are supported:
+
+```python
+import foo  # deptry: ignore
+```
+
+This will suppress all violation rules for this import. To suppress only specific rules, provide the rule codes in
+brackets:
+
+```python
+import foo  # deptry: ignore[DEP001]
+import bar  # deptry: ignore[DEP001,DEP003]
+```
+
+The comment must be placed on the same line as the import statement (specifically, on the line where the `import` or
+`from` keyword appears).
+
+!!! note
+
+    Inline ignore comments only apply to rules that report violations on import lines (DEP001, DEP003, DEP004).
+    Rules that report on dependency definitions (DEP002, DEP005) are not affected, as their violations point to
+    `pyproject.toml` or requirements files, not to source code lines.
+
+### Dynamic imports
+
 There is some support for imports created with [`importlib.import_module`](https://docs.python.org/3/library/importlib.html#importlib.import_module) that use a string literal:
 
 ```python

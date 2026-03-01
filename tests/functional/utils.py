@@ -10,6 +10,7 @@ class Project(str, Enum):
     DEPRECATED_OPTIONS = "deprecated_options"
     EXAMPLE = "example"
     GITIGNORE = "gitignore"
+    INLINE_IGNORES = "inline_ignores"
     MULTIPLE_SOURCE_DIRECTORIES = "multiple_source_directories"
     NAMESPACE = "namespace"
     PDM = "pdm"
