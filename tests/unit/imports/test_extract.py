@@ -241,6 +241,8 @@ def test_import_parser_with_inline_ignores() -> None:
         ("import foo  # deptry: ignore[DEP001,DEP003]", 8, ("DEP001", "DEP003")),
         ("import foo  # deptry: ignore[DEP001, DEP003]", 8, ("DEP001", "DEP003")),
         ("import foo  #  deptry:  ignore[DEP004]", 8, ("DEP004",)),
+        ("import foo  # deptry: ignore[DEP001]  # noqa: F401", 8, ("DEP001",)),
+        ("import foo  # noqa: F401  # deptry: ignore[DEP001]", 8, ("DEP001",)),
         ("from foo import bar  # deptry: ignore[DEP001]", 1, ("DEP001",)),
     ],
 )
