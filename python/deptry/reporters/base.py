@@ -5,6 +5,8 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
+    from pathlib import Path
+
     from deptry.violations import Violation
 
 
@@ -13,7 +15,13 @@ class Reporter(ABC):
     """Base class for all violation reporters."""
 
     violations: list[Violation]
+    enforce_posix_paths: bool
 
     @abstractmethod
     def report(self) -> None:
         raise NotImplementedError()
+
+    def _format_path(self, path: Path) -> str:
+        if self.enforce_posix_paths:
+            return str(path.as_posix())
+        return str(path)

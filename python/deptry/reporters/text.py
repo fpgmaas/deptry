@@ -61,14 +61,16 @@ class TextReporter(Reporter):
         )
 
     def _format_location(self, location: Location) -> str:
+        path = self._format_path(location.file)
+
         if location.line is not None and location.column is not None:
             return self._stylize(
                 "{BOLD}{file}{RESET}{CYAN}:{RESET}{line}{CYAN}:{RESET}{column}",
-                file=location.file,
+                file=path,
                 line=location.line,
                 column=location.column,
             )
-        return self._stylize("{BOLD}{file}{RESET}", file=location.file)
+        return self._stylize("{BOLD}{file}{RESET}", file=path)
 
     def _stylize(self, text: str, **kwargs: Any) -> str:
         return text.format(**kwargs, **self._get_colors())

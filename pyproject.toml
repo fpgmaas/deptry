@@ -31,15 +31,16 @@ dependencies = [
     "colorama>=0.4.6; sys_platform == 'win32'",
     "packaging>=23.2",
     "requirements-parser>=0.11.0,<1",
-    "tomli>=2.0.1; python_version < '3.11'",
+    "tomli>=2.0.1; python_version < '3.15'",
 ]
 
 [dependency-groups]
 docs = [
     "mkdocs==1.6.1",
-    "mkdocs-material==9.7.1",
+    "mkdocs-material==9.7.3",
 ]
 test = [
+    "inline-snapshot==0.32.2",
     "pdm==2.26.6",
     "poetry==2.3.2",
     "pytest==9.0.2",

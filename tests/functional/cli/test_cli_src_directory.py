@@ -1,13 +1,11 @@
 from __future__ import annotations
 
-import uuid
-from pathlib import Path
 from typing import TYPE_CHECKING
 
 import pytest
+from inline_snapshot import snapshot
 
 from tests.functional.utils import Project
-from tests.utils import get_issues_report
 
 if TYPE_CHECKING:
     from tests.utils import PipVenvFactory
@@ -16,81 +14,22 @@ if TYPE_CHECKING:
 @pytest.mark.xdist_group(name=Project.SRC_DIRECTORY)
 def test_cli_with_src_directory(pip_venv_factory: PipVenvFactory) -> None:
     with pip_venv_factory(Project.SRC_DIRECTORY) as virtual_env:
-        issue_report = f"{uuid.uuid4()}.json"
-        result = virtual_env.run(f"deptry src -o {issue_report}")
+        result = virtual_env.run_deptry("src")
 
         assert result.returncode == 1
-        assert get_issues_report(Path(issue_report)) == [
-            {
-                "error": {
-                    "code": "DEP002",
-                    "message": "'isort' defined as a dependency but not used in the codebase",
-                },
-                "module": "isort",
-                "location": {
-                    "file": str(Path("pyproject.toml")),
-                    "line": None,
-                    "column": None,
-                },
-            },
-            {
-                "error": {
-                    "code": "DEP002",
-                    "message": "'requests' defined as a dependency but not used in the codebase",
-                },
-                "module": "requests",
-                "location": {
-                    "file": str(Path("pyproject.toml")),
-                    "line": None,
-                    "column": None,
-                },
-            },
-            {
-                "error": {
-                    "code": "DEP002",
-                    "message": "'mypy' defined as a dependency but not used in the codebase",
-                },
-                "module": "mypy",
-                "location": {
-                    "file": str(Path("pyproject.toml")),
-                    "line": None,
-                    "column": None,
-                },
-            },
-            {
-                "error": {
-                    "code": "DEP002",
-                    "message": "'pytest' defined as a dependency but not used in the codebase",
-                },
-                "module": "pytest",
-                "location": {
-                    "file": str(Path("pyproject.toml")),
-                    "line": None,
-                    "column": None,
-                },
-            },
-            {
-                "error": {
-                    "code": "DEP001",
-                    "message": "'httpx' imported but missing from the dependency definitions",
-                },
-                "module": "httpx",
-                "location": {
-                    "file": str(Path("src/foobar.py")),
-                    "line": 1,
-                    "column": 8,
-                },
-            },
-            {
-                "error": {
-                    "code": "DEP001",
-                    "message": "'white' imported but missing from the dependency definitions",
-                },
-                "module": "white",
-                "location": {
-                    "file": str(Path("src/src_directory/foo.py")),
-                    "line": 6,
-                    "column": 8,
-                },
-            },
-        ]
+        assert result.stderr == snapshot("""\
+Assuming the corresponding module name of package 'black' is 'black'. Install the package or configure a package_module_name_map entry to override this behaviour.
+Assuming the corresponding module name of package 'mypy' is 'mypy'. Install the package or configure a package_module_name_map entry to override this behaviour.
+Assuming the corresponding module name of package 'pytest' is 'pytest'. Install the package or configure a package_module_name_map entry to override this behaviour.
+Scanning 5 files...
+
+pyproject.toml: DEP002 'isort' defined as a dependency but not used in the codebase
+pyproject.toml: DEP002 'requests' defined as a dependency but not used in the codebase
+pyproject.toml: DEP002 'mypy' defined as a dependency but not used in the codebase
+pyproject.toml: DEP002 'pytest' defined as a dependency but not used in the codebase
+src/foobar.py:1:8: DEP001 'httpx' imported but missing from the dependency definitions
+src/src_directory/foo.py:6:8: DEP001 'white' imported but missing from the dependency definitions
+Found 6 dependency issues.
+
+For more information, see the documentation: https://deptry.com/
+""")

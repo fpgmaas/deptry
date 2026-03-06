@@ -275,6 +275,13 @@ def display_deptry_version(ctx: click.Context, _param: click.Parameter, value: b
     is_flag=True,
     help="Enable experimental support for namespace package (PEP 420) when detecting local modules (https://peps.python.org/pep-0420/).",
 )
+# This flag is not exposed because it is used in functional tests to have consistent output between platforms.
+@click.option(
+    "--enforce-posix-paths",
+    is_flag=True,
+    hidden=True,
+    help="Enforce posix paths in reporters.",
+)
 @click.pass_context
 def cli(
     ctx: click.Context,
@@ -297,6 +304,7 @@ def cli(
     optional_dependencies_dev_groups: tuple[str, ...],
     non_dev_dependency_groups: tuple[str, ...],
     experimental_namespace_package: bool,
+    enforce_posix_paths: bool,
 ) -> None:
     """Find dependency issues in your Python project.
 
@@ -335,6 +343,7 @@ def cli(
         optional_dependencies_dev_groups=pep621_dev_dependency_groups or optional_dependencies_dev_groups,
         non_dev_dependency_groups=non_dev_dependency_groups,
         experimental_namespace_package=experimental_namespace_package,
+        enforce_posix_paths=enforce_posix_paths,
     ).run()
 
 

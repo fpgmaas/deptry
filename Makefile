@@ -21,7 +21,7 @@ test-unit: ## Run unit tests.
 .PHONY: test-functional
 test-functional: ## Run functional tests.
 	@echo "🚀 Running functional tests"
-	@uv run pytest tests/functional -n auto --dist loadgroup
+	@uv run pytest tests/functional
 
 .PHONY: build
 build: ## Build wheel and sdist files using maturin.
