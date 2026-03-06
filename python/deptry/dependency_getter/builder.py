@@ -55,17 +55,26 @@ class DependencyGetterBuilder:
 
             if self._project_uses_uv(pyproject_toml):
                 return UvDependencyGetter(
-                    self.config, self.package_module_name_map, self.optional_dependencies_dev_groups
+                    self.config,
+                    self.package_module_name_map,
+                    self.optional_dependencies_dev_groups,
+                    self.non_dev_dependency_groups,
                 )
 
             if self._project_uses_pdm(pyproject_toml):
                 return PDMDependencyGetter(
-                    self.config, self.package_module_name_map, self.optional_dependencies_dev_groups
+                    self.config,
+                    self.package_module_name_map,
+                    self.optional_dependencies_dev_groups,
+                    self.non_dev_dependency_groups,
                 )
 
             if self._project_uses_pep_621(pyproject_toml):
                 return PEP621DependencyGetter(
-                    self.config, self.package_module_name_map, self.optional_dependencies_dev_groups
+                    self.config,
+                    self.package_module_name_map,
+                    self.optional_dependencies_dev_groups,
+                    self.non_dev_dependency_groups,
                 )
 
         check, requirements_files = self._project_uses_requirements_files()
