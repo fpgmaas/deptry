@@ -68,11 +68,12 @@ requirements.txt: DEP002 'idna' defined as a dependency but not used in the code
 requirements.txt: DEP002 'isort' defined as a dependency but not used in the codebase
 requirements.txt: DEP002 'requests' defined as a dependency but not used in the codebase
 requirements.txt: DEP002 'soupsieve' defined as a dependency but not used in the codebase
+requirements.txt: DEP002 'typing-extensions' defined as a dependency but not used in the codebase
 requirements.txt: DEP002 'uvicorn' defined as a dependency but not used in the codebase
 src/main.py:4:8: DEP004 'black' imported but declared as a dev dependency
 src/main.py:7:8: DEP001 'white' imported but missing from the dependency definitions
 src/notebook.ipynb:3:8: DEP001 'arrow' imported but missing from the dependency definitions
-Found 12 dependency issues.
+Found 13 dependency issues.
 
 For more information, see the documentation: https://deptry.com/
 """)
