@@ -23,13 +23,12 @@ Scanning 2 files...
 pyproject.toml: DEP002 'isort' defined as a dependency but not used in the codebase
 src/main.py:4:8: DEP004 'black' imported but declared as a dev dependency
 src/main.py:5:8: DEP004 'certifi' imported but declared as a dev dependency
-src/main.py:7:8: DEP004 'idna' imported but declared as a dev dependency
 src/main.py:8:8: DEP004 'mypy' imported but declared as a dev dependency
 src/main.py:9:8: DEP004 'packaging' imported but declared as a dev dependency
 src/main.py:10:8: DEP004 'pytest' imported but declared as a dev dependency
 src/main.py:11:8: DEP004 'pytest_cov' imported but declared as a dev dependency
 src/main.py:12:8: DEP001 'white' imported but missing from the dependency definitions
-Found 9 dependency issues.
+Found 8 dependency issues.
 
 For more information, see the documentation: https://deptry.com/
 """)
