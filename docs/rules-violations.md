@@ -11,7 +11,8 @@ _deptry_ checks your project against the following rules related to dependencies
 | DEP005 | Project should not contain dependencies that are in the standard library    | [link](#standard-library-dependencies-dep005)       |
 
 Any of the checks can be disabled with the [`ignore`](usage.md#ignore) flag. Specific dependencies or modules can be
-ignored with the [`per-rule-ignores`](usage.md#per-rule-ignores) flag.
+ignored with the [`per-rule-ignores`](usage.md#per-rule-ignores) flag. Individual import lines can also be excluded
+using [inline ignore comments](usage.md#inline-ignore-comments).
 
 ## Missing dependencies (DEP001)
 

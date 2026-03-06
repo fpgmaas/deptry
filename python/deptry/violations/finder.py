@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 import operator
 from typing import TYPE_CHECKING
 
@@ -12,7 +13,7 @@ from deptry.violations import (
 )
 
 if TYPE_CHECKING:
-    from collections.abc import Mapping
+    from collections.abc import Mapping, Sequence
 
     from deptry.dependency import Dependency
     from deptry.module import ModuleLocations
@@ -47,7 +48,25 @@ def find_violations(
                     standard_library_modules=standard_library_modules,
                 ).find()
             )
-    return _get_sorted_violations(violations)
+    return _get_sorted_violations(_filter_inline_ignored_violations(violations))
+
+
+def _filter_inline_ignored_violations(violations: Sequence[Violation]) -> list[Violation]:
+    filtered = []
+    for violation in violations:
+        ignored_rule_codes = violation.location.ignored_rule_codes
+        if not ignored_rule_codes:
+            filtered.append(violation)
+        elif "ALL" in ignored_rule_codes or violation.error_code in ignored_rule_codes:
+            logging.debug(
+                "Ignoring violation %s at %s:%s due to inline ignore comment.",
+                violation.error_code,
+                violation.location.file,
+                violation.location.line,
+            )
+        else:
+            filtered.append(violation)
+    return filtered
 
 
 def _get_sorted_violations(violations: list[Violation]) -> list[Violation]:
