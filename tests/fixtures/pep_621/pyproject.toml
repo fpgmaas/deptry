@@ -21,10 +21,8 @@ test = ["pytest==9.0.2"]
 plot = ["matplotlib==3.10.8"]
 
 [dependency-groups]
-foo = [
-    "certifi==2026.1.4",
-    "idna==3.11",
-]
+foo = ["certifi==2026.1.4"]
+bar = ["idna==3.11"]
 all = [{include-group = "foo"}, "packaging==26.0"]
 
 [build-system]
@@ -32,6 +30,7 @@ requires = ["setuptools>=61.0.0"]
 build-backend = "setuptools.build_meta"
 
 [tool.deptry]
+non_dev_dependency_groups = ["bar"]
 optional_dependencies_dev_groups = ["dev"]
 
 [tool.deptry.per_rule_ignores]

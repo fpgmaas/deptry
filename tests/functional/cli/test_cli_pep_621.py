@@ -31,10 +31,9 @@ pyproject.toml: DEP002 'matplotlib' defined as a dependency but not used in the 
 pyproject.toml: DEP005 'asyncio' is defined as a dependency but it is included in the Python standard library.
 src/main.py:5:8: DEP004 'black' imported but declared as a dev dependency
 src/main.py:6:8: DEP004 'certifi' imported but declared as a dev dependency
-src/main.py:8:8: DEP004 'idna' imported but declared as a dev dependency
 src/main.py:9:8: DEP004 'packaging' imported but declared as a dev dependency
 src/main.py:10:8: DEP001 'white' imported but missing from the dependency definitions
-Found 10 dependency issues.
+Found 9 dependency issues.
 
 For more information, see the documentation: https://deptry.com/
 """)

@@ -288,8 +288,10 @@ foo = [
 [package.dev-dependencies]
 all = [
     { name = "certifi" },
-    { name = "idna" },
     { name = "packaging" },
+]
+bar = [
+    { name = "idna" },
 ]
 dev = [
     { name = "black" },
@@ -299,7 +301,6 @@ dev = [
 ]
 foo = [
     { name = "certifi" },
-    { name = "idna" },
 ]
 
 [package.metadata]
@@ -316,19 +317,16 @@ provides-extras = ["foo", "bar"]
 [package.metadata.requires-dev]
 all = [
     { name = "certifi", specifier = "==2026.1.4" },
-    { name = "idna", specifier = "==3.11" },
     { name = "packaging", specifier = "==26.0" },
 ]
+bar = [{ name = "idna", specifier = "==3.11" }]
 dev = [
     { name = "black", specifier = "==26.1.0" },
     { name = "mypy", specifier = "==1.19.1" },
     { name = "pytest", specifier = "==9.0.2" },
     { name = "pytest-cov", specifier = "==7.0.0" },
 ]
-foo = [
-    { name = "certifi", specifier = "==2026.1.4" },
-    { name = "idna", specifier = "==3.11" },
-]
+foo = [{ name = "certifi", specifier = "==2026.1.4" }]
 
 [[package]]
 name = "idna"

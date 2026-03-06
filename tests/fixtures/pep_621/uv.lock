@@ -322,12 +322,13 @@ test = [
 [package.dev-dependencies]
 all = [
     { name = "certifi" },
-    { name = "idna" },
     { name = "packaging" },
+]
+bar = [
+    { name = "idna" },
 ]
 foo = [
     { name = "certifi" },
-    { name = "idna" },
 ]
 
 [package.metadata]
@@ -349,13 +350,10 @@ provides-extras = ["dev", "test", "plot"]
 [package.metadata.requires-dev]
 all = [
     { name = "certifi", specifier = "==2026.1.4" },
-    { name = "idna", specifier = "==3.11" },
     { name = "packaging", specifier = "==26.0" },
 ]
-foo = [
-    { name = "certifi", specifier = "==2026.1.4" },
-    { name = "idna", specifier = "==3.11" },
-]
+bar = [{ name = "idna", specifier = "==3.11" }]
+foo = [{ name = "certifi", specifier = "==2026.1.4" }]
 
 [[package]]
 name = "idna"
