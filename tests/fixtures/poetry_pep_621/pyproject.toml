@@ -16,7 +16,7 @@ requests = { version = "2.32.5" }
 [project.optional-dependencies]
 foo = [
     "click==8.3.1",
-    "isort==7.0.0",
+    "isort==8.0.1",
 ]
 bar = ["urllib3==2.6.3"]
 
