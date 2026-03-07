@@ -24,7 +24,7 @@ all = [{include-group = "foo"}, "packaging==26.0"]
 
 [tool.uv]
 dev-dependencies = [
-    "black==26.1.0",
+    "black==26.3.0",
     "mypy==1.19.1",
     "pytest==9.0.2",
     "pytest-cov==7.0.0",
