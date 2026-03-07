@@ -542,7 +542,7 @@ docs = [
     { name = "mkdocs-material", specifier = "==9.7.3" },
 ]
 test = [
-    { name = "inline-snapshot", specifier = "==0.32.2" },
+    { name = "inline-snapshot", specifier = "==0.32.4" },
     { name = "pdm", specifier = "==2.26.6" },
     { name = "poetry", specifier = "==2.3.2" },
     { name = "pytest", specifier = "==9.0.2" },
@@ -789,7 +789,7 @@ wheels = [
 
 [[package]]
 name = "inline-snapshot"
-version = "0.32.2"
+version = "0.32.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "asttokens" },
@@ -799,9 +799,9 @@ dependencies = [
     { name = "tomli", marker = "python_full_version < '3.11'" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/4e/0f/abc1f55538a348525c441065845fdfeca73af634b5ffd573ed782e3d4bea/inline_snapshot-0.32.2.tar.gz", hash = "sha256:62374e28c471a0de9c60ad23758586fb13355ad449d3698b7b77ab597eed7f59", size = 2624220, upload-time = "2026-02-21T14:37:11.756Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/47/fd/535e30d0dfaf97666e79900c3d8369bf0fe80aabcd3bf56c64dd5b2fd9fc/inline_snapshot-0.32.4.tar.gz", hash = "sha256:f6c21f3a5cb8b4cc5a9ae80fa5d1b66bb642195884ddd6960d383c21a2258318", size = 2626703, upload-time = "2026-03-01T06:19:13.777Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/68/3c/2cdb9e4d004951816d5b3dc720dcebfa3cc9909cfe8e38de4bb72f628755/inline_snapshot-0.32.2-py3-none-any.whl", hash = "sha256:e2866e4f268435a9b8886f63a275cdb7489d13baddb2a0aab6625bf2975c06ce", size = 84285, upload-time = "2026-02-21T14:37:10.481Z" },
+    { url = "https://files.pythonhosted.org/packages/14/c8/7cf871126446634542777e9b8db79230463c9502cce26b75487b3889dcf7/inline_snapshot-0.32.4-py3-none-any.whl", hash = "sha256:39635f91f34453250969bdaba14b0de8d4d02126ef60b2ae654676aafa42f687", size = 84985, upload-time = "2026-03-01T06:19:10.994Z" },
 ]
 
 [[package]]
