@@ -5,11 +5,6 @@ on:
     types: [published]
   workflow_dispatch:
 
-env:
-  PYTHON_VERSION: '3.14'
-  # renovate: datasource=pypi depName=uv
-  UV_VERSION: '0.10.7'
-
 permissions: {}
 
 jobs:
@@ -162,7 +157,7 @@ jobs:
       - name: Install Python
         uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
-          python-version: ${{ env.PYTHON_VERSION }}
+          python-version: '3.14'
 
       - name: Download updated pyproject.toml
         uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
@@ -195,7 +190,7 @@ jobs:
       - name: Install Python
         uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
-          python-version: ${{ env.PYTHON_VERSION }}
+          python-version: '3.14'
 
       - name: Publish to PyPI
         if: ${{ github.event_name == 'release' }}
@@ -219,20 +214,20 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Check out
+      - name: Check out  # zizmor: ignore[artipacked] -- required for publishing documentation to `gh-pages` branch
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Install uv
         uses: astral-sh/setup-uv@5a095e7a2014a4212f075830d4f7277575a9d098 # v7.3.1
         with:
-          version: ${{ env.UV_VERSION }}
+          version: '0.10.7'
           enable-cache: true
           cache-dependency-glob: 'uv.lock'
 
       - name: Install Python
         uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
-          python-version: ${{ env.PYTHON_VERSION }}
+          python-version: '3.14'
 
       - name: Deploy documentation
         if: ${{ github.event_name == 'release' }}

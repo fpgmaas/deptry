@@ -10,11 +10,6 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
-env:
-  PYTHON_VERSION: '3.14'
-  # renovate: datasource=pypi depName=uv
-  UV_VERSION: '0.10.7'
-
 permissions: {}
 
 jobs:
@@ -29,14 +24,14 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@5a095e7a2014a4212f075830d4f7277575a9d098 # v7.3.1
         with:
-          version: ${{ env.UV_VERSION }}
+          version: '0.10.7'
           enable-cache: true
           cache-dependency-glob: 'uv.lock'
 
       - name: Install Python
         uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
-          python-version: ${{ env.PYTHON_VERSION }}
+          python-version: '3.14'
 
       - name: Install Python dependencies
         # We want to install all groups here to make sure that deptry has access to all dependencies for the inspection,
@@ -83,7 +78,7 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@5a095e7a2014a4212f075830d4f7277575a9d098 # v7.3.1
         with:
-          version: ${{ env.UV_VERSION }}
+          version: '0.10.7'
           enable-cache: true
           cache-dependency-glob: 'uv.lock'
           cache-suffix: ${{ matrix.python-version }}
@@ -112,7 +107,7 @@ jobs:
         uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5.5.2
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-        if: ${{ matrix.os.name == 'linux' && matrix.python-version == env.PYTHON_VERSION }}
+        if: ${{ matrix.os.name == 'linux' && matrix.python-version == '3.14' }}
 
   check-docs:
     runs-on: ubuntu-24.04
@@ -125,13 +120,13 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@5a095e7a2014a4212f075830d4f7277575a9d098 # v7.3.1
         with:
-          version: ${{ env.UV_VERSION }}
+          version: '0.10.7'
           enable-cache: true
           cache-dependency-glob: 'uv.lock'
 
       - name: Install Python
         uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
-          python-version: ${{ env.PYTHON_VERSION }}
+          python-version: '3.14'
       - name: Check if documentation can be built
         run: uv run --only-group docs mkdocs build --strict
