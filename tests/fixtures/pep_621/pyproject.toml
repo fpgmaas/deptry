@@ -6,7 +6,7 @@ dependencies = [
     "arrow==1.4.0",
     "asyncio==3.4.3",
     "click==8.3.1",
-    "isort==7.0.0",
+    "isort==8.0.1",
     "pkginfo==1.12.1.2",
     "requests==2.32.5",
     "urllib3==2.6.3",
@@ -22,7 +22,7 @@ plot = ["matplotlib==3.10.8"]
 
 [dependency-groups]
 foo = [
-    "certifi==2026.1.4",
+    "certifi==2026.2.25",
     "idna==3.11",
 ]
 all = [{include-group = "foo"}, "packaging==26.0"]

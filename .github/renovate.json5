@@ -85,7 +85,8 @@
       allowedVersions: "<4",
     },
     {
-      matchPackageNames: ["uv", "astral-sh/uv-pre-commit"],
+      matchDatasources: ["github-releases", "github-tags"],
+      matchPackageNames: ["astral-sh/uv", "astral-sh/uv-pre-commit"],
       groupName: "uv-version",
     },
   ],
