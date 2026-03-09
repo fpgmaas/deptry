@@ -16,10 +16,8 @@ foo = [
 bar = ["requests==2.32.5"]
 
 [dependency-groups]
-foo = [
-    "certifi==2026.2.25",
-    "idna==3.11",
-]
+foo = ["certifi==2026.2.25"]
+bar = ["idna==3.11"]
 all = [{include-group = "foo"}, "packaging==26.0"]
 
 [tool.uv]
@@ -31,6 +29,7 @@ dev-dependencies = [
 ]
 
 [tool.deptry]
+non_dev_dependency_groups = ["bar"]
 optional_dependencies_dev_groups = ["bar"]
 
 [tool.deptry.per_rule_ignores]
