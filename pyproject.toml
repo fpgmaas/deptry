@@ -64,6 +64,10 @@ deptry = "deptry.cli:deptry"
 
 [tool.uv]
 default-groups = "all"
+constraint-dependencies = [
+    # Newer versions make some Poetry tests flaky with PyPy.
+    "virtualenv==20.39.1"
+]
 
 [build-system]
 requires = ["maturin>=1.5,<2.0"]
