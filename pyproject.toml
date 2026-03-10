@@ -37,10 +37,10 @@ dependencies = [
 [dependency-groups]
 docs = [
     "mkdocs==1.6.1",
-    "mkdocs-material==9.7.3",
+    "mkdocs-material==9.7.4",
 ]
 test = [
-    "inline-snapshot==0.32.2",
+    "inline-snapshot==0.32.4",
     "pdm==2.26.6",
     "poetry==2.3.2",
     "pytest==9.0.2",
@@ -64,6 +64,10 @@ deptry = "deptry.cli:deptry"
 
 [tool.uv]
 default-groups = "all"
+constraint-dependencies = [
+    # Newer versions make some Poetry tests flaky with PyPy.
+    "virtualenv==20.39.1"
+]
 
 [build-system]
 requires = ["maturin>=1.5,<2.0"]
