@@ -4,6 +4,7 @@ use crate::visitor;
 use location::Location;
 use pyo3::exceptions::PySyntaxError;
 use pyo3::prelude::*;
+use regex::Regex;
 use ruff_python_ast::visitor::Visitor;
 use ruff_python_ast::{Mod, ModModule};
 use ruff_python_parser::{Mode, ParseOptions, Parsed, parse};
@@ -43,6 +44,32 @@ pub fn extract_imports_from_parsed_file_content(
     visitor.get_imports()
 }
 
+/// Extracts ignored rule codes from an inline `# deptry: ignore` comment on a source line.
+///
+/// Supports:
+/// - `# deptry: ignore` — returns `["ALL"]` to indicate all rules are ignored.
+/// - `# deptry: ignore[DEP001]` — returns `["DEP001"]`.
+/// - `# deptry: ignore[DEP001,DEP003]` — returns `["DEP001", "DEP003"]`.
+///
+/// Returns an empty `Vec` if no ignore comment is found.
+pub fn extract_ignored_rule_codes(line: &str) -> Vec<String> {
+    let re = Regex::new(r"#\s*deptry:\s*ignore(?:\[([A-Z0-9,\s]+)\])?").unwrap();
+
+    if let Some(caps) = re.captures(line) {
+        match caps.get(1) {
+            Some(codes) => codes
+                .as_str()
+                .split(',')
+                .map(|s| s.trim().to_owned())
+                .filter(|s| !s.is_empty())
+                .collect(),
+            None => vec!["ALL".to_owned()],
+        }
+    } else {
+        vec![]
+    }
+}
+
 /// Converts textual ranges of import statements into structured location objects.
 /// Facilitates the mapping of imports to detailed, file-specific location data (file, line, column).
 pub fn convert_imports_with_textranges_to_location_objects(
@@ -51,6 +78,7 @@ pub fn convert_imports_with_textranges_to_location_objects(
     source_code: &str,
 ) -> FileToImportsMap {
     let line_index = LineIndex::from_source_text(source_code);
+    let source_lines: Vec<&str> = source_code.lines().collect();
     let mut imports_with_locations = HashMap::<String, Vec<Location>>::new();
 
     for (module, ranges) in imports {
@@ -58,10 +86,16 @@ pub fn convert_imports_with_textranges_to_location_objects(
             .iter()
             .map(|range| {
                 let line_column = line_index.line_column(range.start(), source_code);
+                let line_number = line_column.line.get();
+                let ignored_rule_codes = source_lines
+                    .get(line_number - 1)
+                    .map(|line| extract_ignored_rule_codes(line))
+                    .unwrap_or_default();
                 Location {
                     file: file_path.to_owned(),
-                    line: Some(line_column.line.get()),
+                    line: Some(line_number),
                     column: Some(line_column.column.get()),
+                    ignored_rule_codes,
                 }
             })
             .collect();
