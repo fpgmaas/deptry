@@ -78,7 +78,7 @@ installed and ready to go.
 
 7. Once you're done, validate that all unit and functional tests are passing:
     ```bash
-    make test
+    just test
     ```
 
 8. Before submitting a pull request, you should also run [tox](https://tox.wiki/en/latest/). This will run the tests across all the Python versions that _deptry_ supports:
