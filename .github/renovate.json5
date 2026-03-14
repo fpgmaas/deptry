@@ -53,12 +53,27 @@
 
   // https://docs.renovatebot.com/configuration-options/#packagerules
   packageRules: [
-    // Ensure that all Ruff Rust dependencies are updated together, as they use a single versioning.
+    // Group all Rust/Cargo dependencies (including Ruff git tags) into a single PR.
     {
-      matchDatasources: ["github-tags"],
-      matchFileNames: ["Cargo.toml"],
-      matchPackageNames: ["astral-sh/ruff"],
-      groupName: "Ruff Rust",
+      matchManagers: ["cargo"],
+      groupName: "Rust dependencies",
+      separateMajorMinor: false,
+      automerge: true,
+    },
+    // Group all Python dependencies (runtime, docs, typing, dev) into a single PR.
+    {
+      matchManagers: ["pep621", "pyproject"],
+      matchFileNames: ["pyproject.toml"],
+      groupName: "Python dependencies",
+      separateMajorMinor: false,
+      automerge: true,
+    },
+    // Group all CI/infra (GitHub Actions + pre-commit) into a single PR.
+    {
+      matchManagers: ["github-actions", "pre-commit"],
+      groupName: "CI and dev tooling",
+      separateMajorMinor: false,
+      automerge: true,
     },
     // Create dedicated branch to update dependencies in tests.
     {
@@ -83,11 +98,6 @@
       // noop (https://discuss.python.org/t/no-op-the-asyncio-package-on-pypi/101218), so we need to depend on the
       // previous version to properly flag the dependency.
       allowedVersions: "<4",
-    },
-    {
-      matchDatasources: ["github-releases", "github-tags"],
-      matchPackageNames: ["astral-sh/uv", "astral-sh/uv-pre-commit"],
-      groupName: "uv-version",
     },
   ],
 }
