@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.25.0 - 2025-03-14
+
+### Features
+
+* Support inline `# deptry: ignore` comments to suppress violations ([#1473](https://github.com/fpgmaas/deptry/pull/1473))
+* Support non-dev dependency groups with `--non-dev-dependency-groups` ([#1440](https://github.com/fpgmaas/deptry/pull/1440))
+* Use `tomli` on Python < 3.15 for TOML 1.1 support ([#1446](https://github.com/fpgmaas/deptry/pull/1446))
+* Add `--optional-dependencies-dev-groups` and deprecate `--pep621-dev-dependency-groups` ([#1391](https://github.com/fpgmaas/deptry/pull/1391))
+
+### Bug Fixes
+
+* Ensure that `--config` does not suppress output ([#1390](https://github.com/fpgmaas/deptry/pull/1390))
+
+### Full Changelog
+
+https://github.com/fpgmaas/deptry/compare/0.24.0...0.25.0
+
 ## 0.24.0 - 2025-11-09
 
 ### Breaking changes
